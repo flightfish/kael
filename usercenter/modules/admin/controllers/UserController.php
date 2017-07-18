@@ -96,7 +96,7 @@ class UserController extends BaseController{
 
     public function actionUpload(){
         try{
-            $model = new User(['scenario'=>User::SCENARIO_USER_UPLOAD]);
+            $model = new User();
             $model->load($this->loadData);
             $model->validate();
             $data = $model->actionImportUser();

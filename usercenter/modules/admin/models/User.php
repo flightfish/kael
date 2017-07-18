@@ -417,7 +417,7 @@ class User extends RequestBaseModel
                 continue;
             }
             if(!empty($v[2])){
-                $emailOnly = UserCenter::find()->where(['stauts'=>0,'email'=>$v[2]]);
+                $emailOnly = UserCenter::find()->where(['status'=>0,'email'=>$v[2]])->asArray(true)->one();
                 if (!empty($emailOnly)) {
                     array_push($error, '第' . ($k + 1) . '行，邮箱已存在不能重复添加');
                     continue;
@@ -444,7 +444,7 @@ class User extends RequestBaseModel
              */
 
             $paramsUcenter[$k] = [
-                'name' => $v[0],
+                'username' => $v[0],
                 'mobile' => $v[1],
                 'email'=>$v[2],
                 'sex' => $v[3],
@@ -456,7 +456,7 @@ class User extends RequestBaseModel
                 'bank_account' => $v[9],
                 'user_source' => $this->user_source,
                 'user_type' => $allDepartment[intval($v[4])]['is_outer'],//0内部员工 1外包
-                'adminId' => $this->user['user_id'],
+                'admin_id' => $this->user['user_id'],
                 'grade_part' => $v[11],
                 'subject' => $v[10],
             ];
@@ -465,7 +465,7 @@ class User extends RequestBaseModel
             $columns = array_keys($paramsUcenter[1]);
             $rows = [];
             foreach($paramsUcenter as $v){
-                $rowsp[] = array_values($v);
+                $rows[] = array_values($v);
             }
             UserCenter::batchInsertAll(UserCenter::tableName(),$columns,$rows,UserCenter::getDb());
         }else{
@@ -488,7 +488,7 @@ class User extends RequestBaseModel
         $platfromStr = array_map(function($v){return $v['platform_id'].':'.$v['platform_name'];},$platformAll);
         $platfromStr = join('；',$platfromStr);
         $deparmentAll = Department::findAllList();
-        $deparmentStr = array_map(function($v){return $v['department_id'].':'.$v['deparment_name'];},$deparmentAll);
+        $deparmentStr = array_map(function($v){return $v['department_id'].':'.$v['department_name'];},$deparmentAll);
         $deparmentStr = join('；',$deparmentStr);
         $title = [
             '姓名',

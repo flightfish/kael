@@ -139,17 +139,13 @@
             </div>
             <div class="modal-body">
                 <div class="ibox-content">
-                    <div class="input-group"><span class="input-group-addon">第一步：检查手机号</span></div>
+                    <div class="input-group"><span class="input-group-addon">第一步：下载格式模版</span></div>
                     <form id="download-form" action="" method="post" class="col-xl-12" >
-                        <div class="input-group">
-                            <span class="input-group-addon">手机号列表</span>
-                            <textarea class="form-control "  name="mobile" id="" cols="30" rows="10"></textarea>
-                            <input type="hidden" name="type" id="type">
-                        </div>
                         <button type="submit" class="btn btn-primary download col-xs-12">
                             下载格式模版
                         </button>
                     </form>
+
                     <div class="input-group"><span class="input-group-addon">第二步：修改后上传</span></div>
                     <form id="my-awesome-dropzone" class="dropzone"  action="">
                         <div class="dropzone-previews"></div>
