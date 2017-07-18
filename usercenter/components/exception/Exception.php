@@ -1,5 +1,5 @@
 <?php
-namespace questionmis\components\exception;
+namespace usercenter\components\exception;
 
 class Exception extends \yii\base\Exception {
 
@@ -56,4 +56,9 @@ class Exception extends \yii\base\Exception {
     const MOBILE_CHANGE = "用户名或密码错误";
     const QUESTION_NONE = "无题目";
     const ASSIST_ID_NOTNULL = "教辅id不能为空";
+
+
+    const SYSTEM_NOERROR_CODE  = 0;
+    const NEW_AGAIN_WRONG = "新密码与确认新密码不一致";
+    const OLD_PASS_WRONG = "原密码错误";
 }

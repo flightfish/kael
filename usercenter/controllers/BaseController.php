@@ -1,8 +1,8 @@
 <?php
-namespace questionmis\controllers;
+namespace usercenter\controllers;
 
-use questionmis\components\exception\Exception;
-use questionmis\components\logs\Log;
+use usercenter\components\exception\Exception;
+use usercenter\components\logs\Log;
 use Yii;
 
 use yii\web\Controller;

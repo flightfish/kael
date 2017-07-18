@@ -1,5 +1,5 @@
 <?php
-namespace questionmis\components\cache;
+namespace usercenter\components\cache;
 
 use common\libs\Constant;
 

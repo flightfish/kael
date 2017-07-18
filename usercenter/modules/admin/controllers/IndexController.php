@@ -1,13 +1,13 @@
 <?php
-namespace questionmis\modules\admin\controllers;
+namespace usercenter\modules\admin\controllers;
 
 use common\businessmodels\WxEduCity;
 use common\businessmodels\WxEduSchool;
 use Yii;
-use questionmis\controllers\BaseController;
+use usercenter\controllers\BaseController;
 use common\basedbmodels\BaseEdition;
 use common\basedbmodels\BaseBook;
-use questionmis\components\exception\Exception;
+use usercenter\components\exception\Exception;
 use yii\web\Controller;
 
 class IndexController extends Controller{

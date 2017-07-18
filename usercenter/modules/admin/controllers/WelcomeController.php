@@ -1,9 +1,9 @@
 <?php
-namespace questionmis\modules\admin\controllers;
+namespace usercenter\modules\admin\controllers;
 
-use questionmis\modules\admin\models\RuKou;
+use usercenter\modules\admin\models\RuKou;
 use Yii;
-use questionmis\controllers\BaseController;
+use usercenter\controllers\BaseController;
 
 class WelcomeController extends BaseController
 {

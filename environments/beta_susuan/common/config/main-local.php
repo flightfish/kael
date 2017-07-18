@@ -3,7 +3,7 @@ return [
     'components' => [
         'db' => [
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=10.9.35.226;port=3339;dbname=questionmis_susuan',
+            'dsn' => 'mysql:host=10.9.35.226;port=3339;dbname=usercenter_susuan',
             'username' => 'test',
             'password' => '123456',
             'charset' => 'utf8',
@@ -30,7 +30,7 @@ return [
             'charset' => 'utf8',
         ],
         'redis' => [
-            'class' => 'questionmis\components\cache\Redis',
+            'class' => 'usercenter\components\cache\Redis',
             'hostname' => 'localhost',
             'port' => 6397,
             'database' => 0,

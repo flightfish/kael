@@ -62,7 +62,7 @@
         var checkmobileURL = "/admin/user/check-mobile"+urlParam;
         var downloadURL = "/admin/user/download"+urlParam;
         var uploadURL = "/admin/user/upload"+urlParam;
-
+        var platURL = "/admin/user/platform-by-department-admin" + urlParam;
     </script>
 </head>
 
@@ -85,15 +85,35 @@
                 批量新增
             </button>
         </div>
-        <div style="width: 200px;float: left;">
-            <select id="filter-role" value="1" class="form-control">
-                <option value="0">全部权限</option>
+
+        <div style="width: 100px;float: left;">
+            <select id="filter-role" value="-1" class="form-control">
+                <option value="-1">全部角色</option>
+                <?php foreach($roleList as $v): ?>
+                    <option value="<?php echo $v['role_id']; ?>"><?php echo $v['role_name'];?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+
+        <div style="width: 100px;float: left;">
+            <select id="filter-platform" value="-1" class="form-control">
+                <option value="-1">全部平台</option>
                 <?php foreach($platformList as $v): ?>
                     <option value="<?php echo $v['platform_id']; ?>"><?php echo $v['platform_name'];?></option>
                 <?php endforeach;?>
             </select>
         </div>
-        <div style="width: 200px;float: left;">
+
+        <div style="width: 100px;float: left;">
+            <select id="filter-department" value="-1" class="form-control">
+                <option value="-1">全部部门</option>
+                <?php foreach($departmentList as $v): ?>
+                    <option value="<?php echo $v['department_id']; ?>"><?php echo $v['department_name'];?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+
+        <div style="width: 100px;float: left;">
             <input id="filter-search" type="text"  class="form-control" placeholder="搜索手机号或用户名">
         </div>
         <div style="width: 100px;float: left;">
@@ -116,7 +136,6 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">批量新增</h4>
-                <!--                                <small class="font-bold">这里可以显示副标题。-->
             </div>
             <div class="modal-body">
                 <div class="ibox-content">
@@ -124,7 +143,6 @@
                     <form id="download-form" action="" method="post" class="col-xl-12" >
                         <div class="input-group">
                             <span class="input-group-addon">手机号列表</span>
-<!--                            <input type="text" id="mobile" class="form-control" placeholder=""  >-->
                             <textarea class="form-control "  name="mobile" id="" cols="30" rows="10"></textarea>
                             <input type="hidden" name="type" id="type">
                         </div>
@@ -132,14 +150,6 @@
                             下载格式模版
                         </button>
                     </form>
-<!--                    <form action="" method="post" class="input-group numdown" style="width: 30%">-->
-<!--                        <span class="input-group-addon" style="display: block;">电话号码</span>-->
-<!--                        <textarea name="mobile" id="mobile" cols="30" rows="10"></textarea>-->
-<!--                        <input type="hidden" name="type" id="type">-->
-<!--                        <button type="submit" class="btn btn-primary download">-->
-<!--                            下载格式模版-->
-<!--                        </button>-->
-<!--                    </form>-->
                     <div class="input-group"><span class="input-group-addon">第二步：修改后上传</span></div>
                     <form id="my-awesome-dropzone" class="dropzone"  action="">
                         <div class="dropzone-previews"></div>
@@ -169,69 +179,105 @@
                 <input type="hidden" id="modid" value="">
 
                 <div class="input-group">
-                    <span class="input-group-addon">手机号</span>
+                    <span class="input-group-addon">手机号 <span style="color:red">*</span></span>
                     <input type="text" id="mobile" class="form-control" placeholder=""  >
                 </div>
 
-                <div id="group-container" style="display: none">
-                    <div class="input-group">
-                        <span class="input-group-addon" >用户名</span>
-                        <input type="text" id="username" class="form-control" placeholder="">
-                    </div>
+                <div class="input-group">
+                    <span class="input-group-addon">邮箱</span>
+                    <input type="email" id="email" class="form-control" placeholder=""  >
+                </div>
 
-                    <div class="input-group">
-                        <span class="input-group-addon" >身份证</span>
-                        <input type="text" id="idcard" class="form-control" placeholder=""  >
-                    </div>
+                <div class="input-group">
+                    <span class="input-group-addon" >用户角色 <span style="color:red">*</span></span>
+                    <select id="role" value="-1" class="form-control">
+                        <option value="-1">请选择角色</option>
+                        <?php foreach($selectRoleList as $v): ?>
+                            <option value="<?php echo $v['role_id']; ?>"><?php echo $v['role_name'];?></option>
+                        <?php endforeach;?>
+                    </select>
+                </div>
 
-                    <div class="input-group">
-                        <span class="input-group-addon" >性别</span>
-                        <div class="form-control">
-                            <input type="radio" name="sex" value="1"/>男
-                            <input type="radio" name="sex" value="2"/>女
-                        </div>
-                    </div>
+                <div class="input-group">
+                    <span class="input-group-addon" >用户名 <span style="color:red">*</span></span>
+                    <input type="text" id="username" class="form-control" placeholder="">
+                </div>
 
-                    <?php //if(in_array($type,['qselect','qualitysys'])):?>
-                        <div class="input-group">
-                            <span class="input-group-addon" >学科</span>
-                            <input type="text" id="subject" class="form-control" placeholder=""  >
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-addon" >学段</span>
-                            <input type="text" id="grade_part" class="form-control" placeholder=""  >
-                        </div>
-                    <?php //endif;?>
+                <div class="input-group">
+                    <span class="input-group-addon" >密码</span>
+                    <input type="password" id="password" class="form-control" placeholder="">
+                </div>
 
-                    <div class="input-group">
-                        <span class="input-group-addon" >银行名称</span>
-                        <input type="text" id="bank_name" class="form-control" placeholder=""  >
-                    </div>
+                <div class="input-group">
+                    <span class="input-group-addon" >性别 <span style="color:red">*</span></span>
+                    <select id="sex" value="-1" class="form-control">
+                        <option value="-1">请选择性别</option>
+                        <option value="1">男</option>
+                        <option value="2">女</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-addon" >用户类型 <span style="color:red">*</span></span>
+                    <select id="user_type" value="-1" class="form-control">
+                        <option value="-1">请选择用户类型</option>
+                        <option value="0">公司员工</option>
+                        <option value="1">外包用户</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-addon" >部门 <span style="color:red">*</span></span>
+                    <select id="department" value="-1" class="form-control" onchange="platfromListByDepart()">
+                        <option value="-1">请选择部门</option>
+                        <?php foreach($departmentList as $v): ?>
+                            <option value="<?php echo $v['department_id']; ?>"><?php echo $v['department_name'];?></option>
+                        <?php endforeach;?>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-addon" >身份证</span>
+                    <input type="text" id="idcard" class="form-control" placeholder=""  >
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-addon" >学科</span>
+                    <input type="text" id="subject" class="form-control" placeholder=""  >
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-addon" >学段</span>
+                    <input type="text" id="grade_part" class="form-control" placeholder=""  >
+                </div>
 
 
-                    <div class="input-group">
-                        <span class="input-group-addon" >银行分行</span>
-                        <input type="text" id="bank_deposit" class="form-control" placeholder=""  >
-                    </div>
+                <div class="input-group">
+                    <span class="input-group-addon" >银行地区</span>
+                    <input type="text" id="bank_area" class="form-control" placeholder=""  >
+                </div>
 
+                <div class="input-group">
+                    <span class="input-group-addon" >银行分行</span>
+                    <input type="text" id="bank_deposit" class="form-control" placeholder=""  >
+                </div>
 
-                    <div class="input-group">
-                        <span class="input-group-addon" >银行地区</span>
-                        <input type="text" id="bank_area" class="form-control" placeholder=""  >
-                    </div>
+                <div class="input-group">
+                    <span class="input-group-addon" >银行名称</span>
+                    <input type="text" id="bank_name" class="form-control" placeholder=""  >
+                </div>
 
-                    <div class="input-group">
-                        <span class="input-group-addon" >银行帐号</span>
-                        <input type="text" id="bank_account" class="form-control" placeholder=""  >
-                    </div>
+                <div class="input-group">
+                    <span class="input-group-addon" >银行帐号</span>
+                    <input type="text" id="bank_account" class="form-control" placeholder=""  >
+                </div>
 
-                    <div class="input-group">
-                        <span class="input-group-addon" >权限</span>
-                        <div class="form-control">
-                            <?php foreach($platformList as $v): ?>
-                                <input type="checkbox" name="role_list" value="<?php echo $v['role_id']?>"/><?php echo $v['name'];?>
-                            <?php endforeach;?>
-                        </div>
+                <div class="input-group">
+                    <span class="input-group-addon" >平台权限</span>
+                    <div class="form-control" id="platform_list_container">
+<!--                        --><?php //foreach($platformList as $v): ?>
+<!--                            <input type="checkbox" name="platform_list" value="--><?php //echo $v['platform_id']?><!--"/>--><?php //echo $v['platform_name'];?>
+<!--                        --><?php //endforeach;?>
                     </div>
                 </div>
 
@@ -239,7 +285,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal" id="closebtn">关闭</button>
                 <button type="button" class="btn btn-primary" id="saveedit" onclick="edit(1)">保存</button>
-                <button type="button" class="btn btn-primary" id="checkmobile" onclick="checkmobile()">检查手机</button>
+<!--                <button type="button" class="btn btn-primary" id="checkmobile" onclick="checkmobile()">检查手机</button>-->
             </div>
         </div>
     </div>
@@ -308,7 +354,7 @@
         pageList: [10,20,50],    //可供选择的每页的行数（*）
         clickToSelect:false,        //是否启用点击选中行
         height: maxheight,         //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
-        uniqueId: "resource_id",           //每一行的唯一标识，一般为主键列
+        uniqueId: "id",           //每一行的唯一标识，一般为主键列
         cardView: false,          //是否显示详细视图
         detailView: false,          //是否显示父子表
         showHeader:true,
@@ -333,22 +379,31 @@
         },
         columns: [
             {
-                field: 'user_id',
+                field: 'id',
                 title: '用户ID',
-                width: '2%',
             }, {
                 field: 'username',
                 title: '用户名',
-                width: '10%'
             },{
                 field: 'mobile',
                 title: '手机号码',
-                width: '10%'
+            },{
+                field: 'email',
+                title: '邮箱',
+            },{
+                field: 'user_type',
+                title: '用户类型',
+                formatter:function(value,row,index){
+                    if(parseInt(value) == 0){
+                        return "员工";
+                    }else{
+                        return "外包";
+                    }
+                }
             },
             {
                 field: 'sex',
                 title: '性别',
-                width: '5%',
                 formatter:function(value,row,index){
                     if(parseInt(value) == 1){
                         return "男";
@@ -358,29 +413,56 @@
                 }
             },
             {
-                field: 'priv',
+                field: 'role_name',
                 title: '用户角色',
+            },
+            {
+                field: 'department_name',
+                title: '所属部门',
                 width: '10%'
             },
             {
-                field: 'idcard',
-                title: '身份证号码',
-                width: '10%'
+                field: 'platform_list',
+                title: '平台权限',
+                width: '10%',
+                formatter:function(value,row,index){
+                    var name = "";
+                    for(var i in value){
+                        if(name){
+                            name += "<br/>";
+                        }
+                        name = name + value[i].platform_name
+                    }
+                    return name;
+                }
             },
-            <?php //if(in_array($type,['qselect','qualitysys'])): ?>
             {
-                field: 'subject',
+                field: 'admin_department_list',
+                title: '可管理部门',
+                width: '10%',
+                formatter:function(value,row,index){
+                    var name = "";
+                    for(var i in value){
+                        if(name){
+                            name += "<br/>";
+                        }
+                        name = name + value[i].department_name
+                    }
+                    return name;
+                }
+            },
+            {
+                field: 'subject_name',
                 title: '学科',
                 width: '5%'
             },
             {
-                field: 'grade_part',
+                field: 'grade_part_name',
                 title: '学段',
                 width: '5%'
             },
-            <?php //endif; ?>
             {
-                field: 'create_time',
+                field: 'add_time',
                 title: '添加时间',
                 width: '15%'
             },
@@ -394,7 +476,7 @@
                 title: '操作',
                 width: '20%',
                 formatter:function(value,row,index){
-                    var id = row.user_id;
+                    var id = row.id;
                     tmpList[id] = row;
                     var btnhtml = '<div class="btn-group" role="group">'+
                         '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editModal" data-whatever="'+ id +'">编辑</button>'+
@@ -406,6 +488,15 @@
         responseHandler:function(res) {
             top.$("#spiner").hide();
             ret =  res.data;
+            if(res.code != 0){
+                this.formatNoMatches = function(){
+                    return res.message;
+                }
+            }else{
+                this.formatNoMatches = function () {  //没有匹配的结果
+                    return '无符合条件的记录';
+                };
+            }
             ret.page = ret.page;
             ret.total = ret.total;
             ret.rows = ret.list;
@@ -422,6 +513,8 @@
             type: platformType,
             filter:{
                 role:$("#filter-role").val(),
+                department:$("#filter-department").val(),
+                platform:$("#filter-platform").val(),
                 search:$("#filter-search").val(),
                 subject:$("#filter-subject").val(),
                 grade:$("#filter-grade").val()
@@ -459,8 +552,6 @@
     $("#mobile").on('change',function(){
         if($('#modal-title').html() == '新建'){
             $("#checkmobile").show();
-            $("#group-container").hide();
-            $("#saveedit").hide();
             $('#username').val("");
             $('#idcard').val("");
             $("input[name='sex'][value='"+ 1 +"']").attr("checked", true);
@@ -512,58 +603,73 @@
         var tmpid = button.data('whatever'); // Extract info from data-* attributes
         var modal = $(this);
         if(tmpid == 0){
-            $("#group-container").hide();
-            $("#saveedit").hide();
-            $("#checkmobile").show();
             modal.find('.modal-title').text('新建');
             var row = {
-                "user_id": "0",
-                "status": "0",
-                "create_time": "",
-                "update_time": "",
+                "id": "0",
                 "username": "",
-                "mobile": "",
+                "password": "",
+                "email": "",
+                "admin": "-1",
+                "admin_id": "0",
                 "idcard": "",
-                "sex": "1",
+                "sex": "-1",
                 "bank_name": "",
                 "bank_deposit": "",
                 "bank_area": "",
                 "bank_account": "",
-                "priv": "",
-                "role_list": []
+                "user_type": "-1",
+                "user_source": "",
+                "mobile": "",
+                "status": "0",
+                "add_time": "",
+                "update_time": "",
+                "subject": "-1",
+                "grade_part": "-1",
+                "department_id": "-1",
+                "subject_name": "",
+                "grade_part_name": "",
+                "admin_department_list": [],
+                "platform_list": [],
+                "role_id": "-1",
+                "role_name": "",
+                "department_name": ""
             };
         }else{
-            $("#group-container").show();
-            $("#checkmobile").hide();
             modal.find('.modal-title').text('编辑');
             var row = tmpList[tmpid];
         }
-        modal.find('#modid').val(row.user_id);
-        modal.find('#username').val(row.username);
+
+        modal.find('#modid').val(row.id);
         modal.find('#mobile').val(row.mobile);
+        modal.find('#email').val(row.email);
+        modal.find('#role').val(row.admin);
+        modal.find('#username').val(row.username);
+        modal.find('#sex').val(row.sex);
         modal.find('#idcard').val(row.idcard);
-//        modal.find('#sex').val(row.sex);
-        $("input[name='sex'][value='"+ row.sex +"']").attr("checked", true);
-        modal.find('#bank_name').val(row.bank_name);
-        modal.find('#bank_deposit').val(row.bank_deposit);
-        modal.find('#bank_area').val(row.bank_area);
-        modal.find('#bank_account').val(row.bank_account);
         modal.find('#subject').val(row.subject);
         modal.find('#grade_part').val(row.grade_part);
+        modal.find('#bank_area').val(row.bank_area);
+        modal.find('#bank_deposit').val(row.bank_deposit);
+        modal.find('#bank_name').val(row.bank_name);
+        modal.find('#bank_account').val(row.bank_account);
+        modal.find('#user_type').val(row.user_type);
+        modal.find('#department').val(row.department_id);
+        $("#department").change();
 
-        $('input[name="rolelist"]').attr("checked", false);
-        for(var i=0;i<row.role_list.length;++i){
-            $("input[name=role_list][value="+ row.role_list[i] +"]").attr("checked", true);
+
+        $('input[name="platform_list"]').attr("checked", false);
+        for(var i=0;i<row.platform_list.length;++i){
+            $("input[name=platform_list][value="+ row.platform_list[i]['platform_id'] +"]").attr("checked", true);
         }
     });
 
     function edit(is_old){
         var id = is_old ? $('#modid').val() : 0;
-        var role_check = $('input[name="role_list"]:checked');
-        var roles = [];
-        $.each(role_check, function () {
-            var roleid = $(this).val()
-            roles.push(roleid);
+        var platform_list_checked = $('input[name="platform_list"]:checked');
+        var platform_list = [];
+        $.each(platform_list_checked, function () {
+            var platform_id = $(this).val()
+            platform_list.push(platform_id);
         });
         $.ajax({
             type:'post',
@@ -573,24 +679,26 @@
                 id:id,
                 data:{
                     "center":{
-                        "username": $('#username').val(),
-                        "mobile": $('#mobile').val(),
-                        "idcard": $('#idcard').val(),
-                        "sex": $('input[name="sex"]:checked').val(),
-                        "bank_name": $('#bank_name').val(),
-                        "bank_deposit": $('#bank_deposit').val(),
-                        "bank_area": $('#bank_area').val(),
-                        "bank_account": $('#bank_account').val(),
-                        "subject": $('#subject').val(),
-                        "grade_part": $('#grade_part').val(),
+                        "mobile":$("#mobile").val(),
+                        "email":$("#email").val(),
+                        "admin":$("#role").val(),
+                        "username":$("#username").val(),
+                        "password":$("#password").val(),
+                        "sex":$("#sex").val(),
+                        "idcard":$("#idcard").val(),
+                        "subject":$("#subject").val(),
+                        "grade_part":$("#grade_part").val(),
+                        "bank_area":$("#bank_area").val(),
+                        "bank_deposit":$("#bank_deposit").val(),
+                        "bank_name":$("#bank_name").val(),
+                        "bank_account":$("#bank_account").val(),
+                        "user_type":$("#user_type").val(),
+                        "department_id":$("#department").val(),
                     },
                     "current":{
-                        <?php //if(in_array($type,['qselect','qualitysys'])):?>
-//                            "subject": $('#subject').val(),
-//                            "grade_part": $('#grade_part').val(),
-                        <?php //endif;?>
+
                     },
-                    "role_list": roles,
+                    "platform_list": platform_list,
                 }
             },
             success:function(data){
@@ -605,13 +713,45 @@
         });
     };
 
+    function platfromListByDepart(){
+        $.ajax({
+            type:'post',
+            url: platURL,
+            data:{
+                department_id: $("#department").val() || -1
+            },
+            success:function(data){
+                if(data.code==0){
+                    //clear
+                    $("#platform_list_container").html("");
+                    let html = "";
+                    for(var i in data.data){
+                        data.data[i]
+                        html +=  '<input type="checkbox" name="platform_list" value="'+ data.data[i].platform_id +'"/>' + data.data[i].platform_name;
+                    }
+                    $("#platform_list_container").html(html);
+                }else{
+                    alert(data.message);
+                }
+            }
+        });
+    }
+
     $("#search-button").on('click',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
     });
 
     $("#filter-role").on('change',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
-    })
+    });
+
+    $("#filter-department").on('change',function(){
+        $('#mytable').bootstrapTable('refresh',{url:listURL});
+    });
+
+    $("#filter-platform").on('change',function(){
+        $('#mytable').bootstrapTable('refresh',{url:listURL});
+    });
 
 </script>
 

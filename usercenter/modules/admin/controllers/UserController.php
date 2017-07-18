@@ -1,9 +1,9 @@
 <?php
-namespace questionmis\modules\admin\controllers;
+namespace usercenter\modules\admin\controllers;
 
-use questionmis\controllers\BaseController;
-use questionmis\modules\admin\models\Resource;
-use questionmis\modules\admin\models\User;
+use usercenter\controllers\BaseController;
+use usercenter\modules\admin\models\Resource;
+use usercenter\modules\admin\models\User;
 use Yii;
 
 class UserController extends BaseController{
@@ -16,11 +16,34 @@ class UserController extends BaseController{
             $model = new User();
             $model->load($this->loadData);
             $model->validate();
+            $roleList = $model->roleList();
             $platformList = $model->platformList();
+            $departmentList = $model->departmentListByAdmin();
+            $selectRoleList = [
+                ['role_id'=>0,'role_name'=>'普通用户'],
+                ['role_id'=>2,'role_name'=>'部门管理员'],
+            ];
             Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
-            return $this->renderPartial('index',['platformList'=>$platformList]);
+            return $this->renderPartial('index',[
+                'platformList'=>$platformList,
+                'departmentList'=>$departmentList,
+                'roleList'=>$roleList,
+                'selectRoleList'=>$selectRoleList,
+            ]);
         }catch(\Exception $e){
             $this->error($e);
+        }
+    }
+
+    public function actionPlatformByDepartmentAdmin(){
+        try{
+            $model = new User(['scenario'=>User::SCENARIO_PLAT_BY_DEPARTMENT]);
+            $model->load($this->loadData);
+            $model->validate();
+            $data = $model->platformListByAdminDepartment();
+            return $this->success($data);
+        }catch(\Exception $e){
+            return $this->error($e);
         }
     }
 
@@ -48,19 +71,6 @@ class UserController extends BaseController{
         }
     }
 
-    public function actionCheckMobile(){
-        try{
-            $model = new User(['scenario'=>User::SCENARIO_CHECKMOBILE]);
-            $model->load($this->loadData);
-            $model->validate();
-            $data = $model->checkUserMobile();
-            return $this->success($data);
-        }catch(\Exception $e){
-            return $this->error($e);
-
-        }
-    }
-
     public function actionEdit(){
         try{
             $model = new User(['scenario'=>User::SCENARIO_EDIT]);
@@ -74,7 +84,7 @@ class UserController extends BaseController{
     }
     public function actionDownload(){
         try{
-            $model = new User(['scenario'=>User::SCENARIO_USER_DOWNLOAD]);
+            $model = new User();
             $model->load($this->loadData);
             $model->validate();
             $data = $model->Download();
@@ -86,7 +96,6 @@ class UserController extends BaseController{
 
     public function actionUpload(){
         try{
-//            var_dump($_REQUEST);die();
             $model = new User(['scenario'=>User::SCENARIO_USER_UPLOAD]);
             $model->load($this->loadData);
             $model->validate();

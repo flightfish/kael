@@ -1,15 +1,18 @@
 <?php
 
-namespace questionmis\models;
+namespace usercenter\models;
 
+use common\libs\AES;
 use common\libs\AppFunc;
 use common\models\EntrystoreAuthUser;
 use common\models\CurlApi;
 use common\models\QselectAuthUser;
 use common\models\QualitysysAuthUser;
 use common\models\UserCenter;
-use questionmis\components\exception\Exception;
-use questionmis\modules\entrystore\user\models\UserApi;
+use usercenter\components\exception\Exception;
+use usercenter\modules\auth\models\UserModel;
+use usercenter\modules\entrystore\user\models\UserApi;
+require_once ('../modules/auth/config/constant.php');
 
 
 class RequestBaseModel extends BaseModel
@@ -49,21 +52,6 @@ class RequestBaseModel extends BaseModel
         }
         $user['name'] = $user['username'];
         $user['user_id'] = $user['id'];
-        //学科学段问题
-        if($user['subject'] == -1){
-            //未设置
-            $subjectUser = QualitysysAuthUser::findOne($user['id']);
-            if(empty($subjectUser)){
-                $subjectUser = QselectAuthUser::findOne($user['id']);
-            }
-            if(!empty($subjectUser)){
-                QualitysysAuthUser::updateAll(['subject'=>$subjectUser['subject'],'grade_part'=>$subjectUser['grade_part']],['user_id'=>$user['id']]);
-                QselectAuthUser::updateAll(['subject'=>$subjectUser['subject'],'grade_part'=>$subjectUser['grade_part']],['user_id'=>$user['id']]);
-                UserCenter::updateAll(['subject'=>$subjectUser['subject'],'grade_part'=>$subjectUser['grade_part']],['id'=>$user['id']]);
-                $user['subject'] = $subjectUser['subject'];
-                $user['grade_part'] = $subjectUser['grade_part'];
-            }
-        }
        self::$_user = $user;
         return self::$_user;
     }
@@ -72,8 +60,25 @@ class RequestBaseModel extends BaseModel
         if(empty($token)){
             throw new Exception(Exception::COMMON_USER_NOT_EXIST_MSG,Exception::COMMON_USER_NOT_EXIST_CODE);
         }
-        //访问用户中心接口获取userId
-        $userId = UserApi::get(UserApi::GET_USERID_BY_TOKEN,['token'=>$this->token]);
+        //解析token
+        $token = str_replace(" ", "+", $token);
+        $aes = new AES();
+        $token = $aes->decode($token);
+        $arrToken = explode('||', $token);
+        if (count($arrToken) != 2) {
+            return ['code'=>'-3','message'=>ERROR_FIND_NO_STUDENT];
+        }
+        $mobile = $arrToken[0];
+        $passwd = $arrToken[1];
+        $userModel = new UserModel();
+        $itemUser = $userModel->getUserByMobile($mobile);
+        if(empty($itemUser)){
+            throw new Exception(Exception::COMMON_USER_NOT_EXIST_MSG,Exception::COMMON_USER_NOT_EXIST_CODE);
+        }
+        if ($passwd != $itemUser['password']) {
+            throw new Exception(Exception::MOBILE_CHANGE,Exception::COMMON_USER_NOT_EXIST_CODE);
+        }
+        $userId = intval($itemUser['id']);
         return $userId;
     }
 

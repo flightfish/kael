@@ -20,9 +20,15 @@ class RelateUserPlatform extends \common\models\BaseActiveRecord
    public static function findListByUserPlatform($userId,$platformId = -1){
        $query = self::find()
            ->where(['user_id'=>$userId,'status'=>self::STATUS_VALID]);
-       $platformId == -1 && $query = $query->andWhere(['paltform_id'=>$platformId]);
+       $platformId != -1 && $query = $query->andWhere(['platform_id'=>$platformId]);
        return $query->asArray(true)->all();
    }
+
+    public static function findListByPlatform($platformId){
+        $query = self::find()
+            ->where(['platform_id'=>$platformId]);
+        return $query->asArray(true)->all();
+    }
 
     public static function batchAdd($userId,$platfromIdList){
         $columns = ['user_id','platform_id'];

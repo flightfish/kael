@@ -1,10 +1,11 @@
 <?php
 
-namespace questionmis\modules\admin\models;
+namespace usercenter\modules\admin\models;
 
 use common\models\EntrystoreAuthUser;
 use common\models\CommonModulesUser;
-use questionmis\models\RequestBaseModel;
+use common\models\Role;
+use usercenter\models\RequestBaseModel;
 use Yii;
 
 class RuKou extends RequestBaseModel
@@ -35,8 +36,15 @@ class RuKou extends RequestBaseModel
         $data = [];
         $data[] = [
             'url' => '/admin/user/index',
-            'name' => '人员管理',
+            'name' => '平台用户管理',
         ];
+        if($this->user['admin'] == Role::ROLE_ADMIN){
+            //超级管理员
+            $data[] = [
+                'url'=>'/admin/department/index',
+                'name' => '部门管理',
+            ];
+        }
         $retData = [
             'list'=>$data,
         ];

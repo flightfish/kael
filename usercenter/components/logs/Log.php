@@ -1,14 +1,14 @@
 <?php
-namespace questionmis\components\logs;
+namespace usercenter\components\logs;
 
-use questionmis\components\exception\Exception;
+use usercenter\components\exception\Exception;
 use Yii;
 use yii\base\Component;
 
 class Log extends Component
 {
 
-    private static $appname = "questionmis";
+    private static $appname = "usercenter";
 
     public static function info($extra = []){
         if (!Yii::$app->request->hasProperty('url')) return;

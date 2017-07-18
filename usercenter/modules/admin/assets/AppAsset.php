@@ -1,6 +1,6 @@
 <?php
 
-namespace questionmis\modules\admin\assets;
+namespace usercenter\modules\admin\assets;
 
 use yii\web\AssetBundle;
 

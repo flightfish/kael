@@ -1,9 +1,9 @@
 <?php
-namespace questionmis\modules\admin;
+namespace usercenter\modules\admin;
 
 class Module extends \yii\base\Module {
 
-    public $controllerNamespace = 'questionmis\modules\admin\controllers';
+    public $controllerNamespace = 'usercenter\modules\admin\controllers';
 
     public function init()
     {

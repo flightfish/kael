@@ -17,7 +17,7 @@ class UserCenter extends \common\models\BaseActiveRecord
 
     public static function getDb()
     {
-        return Yii::$app->get('db_user');
+        return Yii::$app->get('db');
     }
 
     public static function findOneById($userId, $status = self::STATUS_VALID)
@@ -49,30 +49,43 @@ class UserCenter extends \common\models\BaseActiveRecord
     }
 
 
-    public static function findUserSearch($page,$pagesize,$search="")
+    public static function findUserSearch($page,$pagesize,$search="",$where=[],$leftjoin=[])
     {
         $search = trim(strval($search));
         $query = self::find()
-            ->where(['status' => self::STATUS_VALID]);
+            ->from(self::tableName().' a')
+            ->where(['a.status' => self::STATUS_VALID]);
+        foreach($leftjoin as $v){
+            $query->leftJoin($v[0],$v[1].' and b.status = 0');
+        }
+
+        !empty($where) && $query = $query->andWhere($where);
 
         if (!empty($search)) {
-            $query = $query->andWhere(['or', ['like', 'mobile', $search], ['like', 'username', $search], ['id' => $search]]);
+            $query = $query->andWhere(['or', ['like', 'a.mobile', $search], ['like', 'a.username', $search], ['a.id' => $search]]);
         }
-        $list = $query->limit($pagesize)->offset(($page - 1) * $pagesize)->indexBy('id')->all();
+        $list = $query->limit($pagesize)->offset(($page - 1) * $pagesize)->groupBy('a.id')->indexBy('id')->asArray(true)->all();
         return $list;
     }
 
-    public static function findUserSearchCount($search="")
+    public static function findUserSearchCount($search="",$where=[],$leftjoin=[])
     {
         $search = trim(strval($search));
         $query = self::find()
-            ->where(['status' => self::STATUS_VALID]);
+            ->select('distinct a.id')
+            ->from(self::tableName().' a')
+            ->where(['a.status' => self::STATUS_VALID]);
+        foreach($leftjoin as $v){
+            $query->leftJoin($v[0],$v[1].' and b.status = 0');
+        }
+
+        !empty($where) && $query = $query->andWhere($where);
 
         if (!empty($search)) {
-            $query = $query->andWhere(['or', ['like', 'mobile', $search], ['like', 'username', $search], ['id' => $search]]);
+            $query = $query->andWhere(['or', ['like', 'a.mobile', $search], ['like', 'a.username', $search], ['a.id' => $search]]);
         }
-        $count = $query->count();
-        return $count;
+        $count = $query->count('distinct a.id');
+        return intval($count);
     }
 
     public static function findAllList($userIds)
@@ -291,5 +304,9 @@ class UserCenter extends \common\models\BaseActiveRecord
     public static function findIdListByName($name)
     {
         return self::find()->select('id as user_id')->where(['like', 'username', $name])->column();
+    }
+
+    public static function findListByRole($roleId){
+        return self::find()->where(['admin'=>$roleId,'status'=>self::STATUS_VALID])->asArray(true)->all();
     }
 }

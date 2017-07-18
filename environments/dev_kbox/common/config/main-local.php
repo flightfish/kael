@@ -30,7 +30,7 @@ return [
             'charset' => 'utf8',
         ],
         'redis' => [
-            'class' => 'questionmis\components\cache\Redis',
+            'class' => 'usercenter\components\cache\Redis',
             'hostname' => 'localhost',
             'port' => 6397,
             'database' => 0,

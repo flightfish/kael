@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace questionmis\assets;
+namespace usercenter\assets;
 
 use yii\web\AssetBundle;
 

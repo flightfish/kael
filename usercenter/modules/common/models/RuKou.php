@@ -1,14 +1,14 @@
 <?php
 
-namespace questionmis\modules\common\models;
+namespace usercenter\modules\common\models;
 
 use common\models\EntrystoreAuthUser;
 use common\models\CommonModules;
 use common\models\Platform;
 use common\models\RelateUserPlatform;
 use common\models\UserCenter;
-use questionmis\components\exception\Exception;
-use questionmis\models\RequestBaseModel;
+use usercenter\components\exception\Exception;
+use usercenter\models\RequestBaseModel;
 use Yii;
 
 class RuKou extends RequestBaseModel

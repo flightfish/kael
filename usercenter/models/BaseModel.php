@@ -1,8 +1,8 @@
 <?php
 
-namespace questionmis\models;
+namespace usercenter\models;
 
-use questionmis\components\exception\Exception;
+use usercenter\components\exception\Exception;
 use yii\base\Model;
 
 

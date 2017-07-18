@@ -21,4 +21,8 @@ class Department extends \common\models\BaseActiveRecord
     public static function findListById($departmentId){
         return self::find()->where(['department_id'=>$departmentId])->indexBy('department_id')->asArray(true)->all();
     }
+
+    public static function findAllList(){
+        return self::find()->where(['status' => self::STATUS_VALID])->asArray(true)->indexBy('department_id')->all();
+    }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace questionmis\components\cache;
+namespace usercenter\components\cache;
 
 
 use yii\base\Component;
