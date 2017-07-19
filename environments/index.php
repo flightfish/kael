@@ -29,8 +29,8 @@
  * ```
  */
 return [
-    'DevelopmentKBox' => [
-        'path' => 'dev_kbox',
+    'Development' => [
+        'path' => 'dev',
         'setWritable' => [
             'usercenter/runtime',
             'usercenter/web/assets',
@@ -44,81 +44,8 @@ return [
             'usercenter/config/main-local.php',
         ],
     ],
-    'DevelopmentSusuan' => [
-        'path' => 'dev_susuan',
-        'setWritable' => [
-            'usercenter/runtime',
-            'usercenter/web/assets',
-            'console/runtime'
-        ],
-        'setExecutable' => [
-            'yii',
-            'tests/codeception/bin/yii',
-        ],
-        'setCookieValidationKey' => [
-            'usercenter/config/main-local.php',
-        ],
-    ],
-    'DevelopmentWordtribe' => [
-        'path' => 'dev_wordtribe',
-        'setWritable' => [
-            'usercenter/runtime',
-            'usercenter/web/assets',
-            'console/runtime'
-        ],
-        'setExecutable' => [
-            'yii',
-            'tests/codeception/bin/yii',
-        ],
-        'setCookieValidationKey' => [
-            'usercenter/config/main-local.php',
-        ],
-    ],
-    'BetaSusuan' => [
-        'path' => 'beta_susuan',
-        'setWritable' => [
-            'usercenter/runtime',
-            'usercenter/web/assets',
-            'console/runtime'
-        ],
-        'setExecutable' => [
-            'yii',
-            'tests/codeception/bin/yii',
-        ],
-        'setCookieValidationKey' => [
-            'usercenter/config/main-local.php',
-        ],
-    ],
-    'ProductionKbox' => [
-        'path' => 'prod_kbox',
-        'setWritable' => [
-            'usercenter/runtime',
-            'usercenter/web/assets',
-            'console/runtime'
-        ],
-        'setExecutable' => [
-            'yii',
-        ],
-        'setCookieValidationKey' => [
-            'usercenter/config/main-local.php',
-        ],
-    ],
-    'ProductionSusuan' => [
-        'path' => 'prod_susuan',
-        'setWritable' => [
-            'usercenter/runtime',
-            'usercenter/web/assets',
-            'console/runtime'
-        ],
-        'setExecutable' => [
-            'yii',
-        ],
-        'setCookieValidationKey' => [
-            'usercenter/config/main-local.php',
-        ],
-    ],
-    'ProductionWordTribe' => [
-        'path' => 'prod_wordtribe',
+    'Production' => [
+        'path' => 'prod',
         'setWritable' => [
             'usercenter/runtime',
             'usercenter/web/assets',
