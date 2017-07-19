@@ -106,4 +106,27 @@ class UserController extends BaseController{
         }
     }
 
+    public function actionDownloadPriv(){
+        try{
+            $model = new User();
+            $model->load($this->loadData);
+            $model->validate();
+            $data = $model->DownloadPriv();
+            return $this->success($data);
+        }catch(\Exception $e){
+            return $this->error($e);
+        }
+    }
+
+    public function actionUploadPriv(){
+        try{
+            $model = new User();
+            $model->load($this->loadData);
+            $model->validate();
+            $data = $model->importUserPriv();
+            return $this->success($data);
+        }catch(\Exception $e){
+            return $this->error($e);
+        }
+    }
 }

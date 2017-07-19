@@ -63,7 +63,8 @@
         var downloadURL = "/admin/user/download"+urlParam;
         var uploadURL = "/admin/user/upload"+urlParam;
         var platURL = "/admin/user/platform-by-department-admin" + urlParam;
-    </script>
+        var downloadPrivURL = "/admin/user/download-priv"+urlParam;
+        var uploadPrivURL = "/admin/user/upload-priv"+urlParam;    </script>
 </head>
 
 <body>
@@ -84,6 +85,7 @@
             <button type="button" class="btn btn-primary addmany" data-toggle="modal" data-target="#batchAdd">
                 批量新增
             </button>
+            <button class="btn btn-info" data-toggle="modal" data-target="#batchPriv" data-whatever="0">批量添加外包权限</button>
         </div>
 
         <div style="width: 100px;float: left;">
@@ -153,6 +155,34 @@
                         <input type="hidden" name="type" id="type1">
                     </form>
                 </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white closefile" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal fade" id="batchPriv" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">批量添加外包权限</h4>
+            </div>
+            <div class="modal-body">
+                <a id="download-priv" href="" class="btn btn-primary ">下载格式模版</a>
+<!--                <form id="upload-priv"   action="" method="post" enctype="multipart/form-data">-->
+<!--                    <input type="file" name="file" class=" pull-left" required>-->
+<!--                    <input type="submit" value="上传" class="btn btn-success  pull-left">-->
+<!--                </form>-->
+                <form id="upload-priv" class="dropzone"  action="">
+                    <div class="dropzone-previews"></div>
+                    <button type="submit" class="btn btn-primary pull-right">上传</button>
+                    <input type="hidden" name="type" id="type1">
+                </form>
+                <div style="height:30px"></div>
             </div>
 
             <div class="modal-footer">
@@ -294,12 +324,20 @@
     $('#type1').attr('value',platformType);
     $('#download-form').attr('action',downloadURL);
     $('#my-awesome-dropzone').attr('action',uploadURL);
+    $("#download-priv").attr('href',downloadPrivURL);
+    $("#upload-priv").attr('action',uploadPrivURL);
     $(".chosen-select").chosen();
     zone();
     $('#batchAdd .modal-footer .closefile').click(function(){
         zone();
     });
     $('#batchAdd .close').click(function(){
+        zone();
+    });
+    $('#batchPriv .modal-footer .closefile').click(function(){
+        zone();
+    });
+    $('#batchPriv .close').click(function(){
         zone();
     });
     function zone(){
@@ -331,7 +369,35 @@
                 this.on("errormultiple", function (files, response) {
                 })
             }
-        }
+        };
+        Dropzone.options.uploadPriv = {
+            autoProcessQueue: false,
+            uploadMultiple: true,
+            parallelUploads: 100,
+            maxFiles: 100,
+            init: function () {
+                var myDropzone = this;
+                this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    myDropzone.processQueue()
+                });
+                this.on("sendingmultiple", function () {
+                });
+                this.on("successmultiple", function (files, response) {
+                    if (response.code != 0) {
+                        swal("上传失败！", response.message, "error");
+                    } else {
+                        swal("上传成功！", response.data, "success");
+                        $('#batchAdd .modal-footer .closefile').trigger("click");
+                        zone();
+                        table();
+                    }
+                });
+                this.on("errormultiple", function (files, response) {
+                })
+            }
+        };
     }
     if(platformType == "entrystore"){
         $('.addmany').remove();

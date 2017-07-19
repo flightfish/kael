@@ -113,8 +113,11 @@ class User extends RequestBaseModel
         return $platList;
     }
 
-    public function platformListByAdminDepartment()
+    public function platformListByAdminDepartment($departmentId = -1)
     {
+        if($departmentId > 0){
+            $this->department_id = $departmentId;
+        }
         if($this->user['admin'] == Role::ROLE_ADMIN){
             if($this->department_id == -1){
                 $platList = [];
@@ -520,5 +523,180 @@ class User extends RequestBaseModel
         header('Cache-Control: max-age=1');
         $objWriter->save('php://output');
         return '';
+    }
+
+    public function DownloadPriv()
+    {
+        $this->checkUserAuth();
+        $platformAll = $this->platformList();
+        $platfromStr = array_map(function($v){return $v['platform_id'].':'.$v['platform_name'];},$platformAll);
+        $platfromStr = join('；',$platfromStr);
+        $title = [
+            '手机号',
+            '邮箱（邮箱和手机号必须填写一个）',
+            '新增平台权限(逗号分割)('.$platfromStr.')',
+            '清除平台权限(逗号分割)('.$platfromStr.')',
+        ];
+
+        $excelData = [];
+        $excelData[] = $title;
+
+        $objPHPExcel = new \PHPExcel();
+        $objSheet = $objPHPExcel->getActiveSheet();
+        $objSheet->setTitle('error');
+        $objSheet->fromArray($excelData);
+
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="权限格式模版.xls"');
+        header('Cache-Control: max-age=1');
+        $objWriter->save('php://output');
+        return '';
+    }
+
+    public function importUserPriv()
+    {
+        set_time_limit(0);
+        $this->checkUserAuth();
+        $filePath = $_FILES['file']['tmp_name'][0];
+        $PHPReader = new \PHPExcel_Reader_Excel2007(); // Reader很关键，用来读excel文件
+        if (!$PHPReader->canRead($filePath)) { // 这里是用Reader尝试去读文件，07不行用05，05不行就报错。注意，这里的return是Yii框架的方式。
+            $PHPReader = new \PHPExcel_Reader_Excel5();
+            if (!$PHPReader->canRead($filePath)) {
+                $errorMessage = "Can not read file.";
+                array_push($error, $errorMessage);
+                return $error;
+            }
+        }
+        $objPHPExcel = $PHPReader->load($filePath); // Reader读出来后，加载给Excel实例
+        $data = $objPHPExcel->getSheet(0)->toArray();
+        $error = array();
+
+        $mobileList = [];
+        $emailList = [];
+        $userList  = [];
+        foreach($data as $k=>$v){
+            if($k == 0){
+                continue;
+            }
+            $v = array_map('strval',$v);
+            $v = array_map('trim',$v);
+            if(!empty($v[0])){
+                array_push($mobileList,$v[0]);
+            }elseif(!empty($v[1])){
+                array_push($emailList,$v[1]);
+            }
+        }
+        !empty($mobileList) && $userList = array_merge($userList,UserCenter::find()->where(['mobile'=>$mobileList,'status'=>0])->asArray(true)->all());
+        !empty($emailList) && $userList = array_merge($userList,UserCenter::find()->where(['email'=>$emailList,'status'=>0])->asArray(true)->all());
+        $departmentIdList = array_column($userList,'department_id');
+        $userListMobile = [];
+        $userListEmail = [];
+        foreach($userList as $v){
+            !empty($v['mobile']) && $userListMobile[$v['mobile']] = $v;
+            !empty($v['email']) && $userListEmail[$v['email']] = $v;
+        }
+
+        $departmentPrivList = [];
+        foreach($departmentIdList as $departmentIdOne){
+            $privOneList = $this->platformListByAdminDepartment($departmentIdOne);
+            $departmentPrivList[$departmentIdOne] = array_column($privOneList,'platform_id');
+        }
+
+        $addColumn = ['user_id','platform_id'];
+        $addRows = [];
+        $delRelate =[];
+
+
+        foreach ($data as $k => $v) {
+            if ($k == 0) {
+                continue;//标题行
+            }
+            $v = array_map('strval',$v);
+            $v = array_map('trim',$v);
+
+            if (empty($v[0]) && empty($v[1])) {
+                array_push($error, '第' . ($k + 1) . '行，手机和和邮箱不能同时为空');
+                continue;
+            }
+
+            if(!empty($v[0])){
+                $uname = $v[0];
+                if(!isset($userListMobile[$v[0]])){
+                    array_push($error, '第' . ($k + 1) . '行，用户不存在'.$uname);
+                    continue;
+                }
+                $userInfo = $userListMobile[$v[0]];
+            }elseif(!empty($v[1])){
+                $uname = $v[1];
+                if(!isset($userListEmail[$v[1]])){
+                    array_push($error, '第' . ($k + 1) . '行，用户不存在'.$uname);
+                    continue;
+                }
+                $userInfo = $userListEmail[$v[1]];
+            }
+
+            //增加
+            if(!empty($v[2])){
+                $addPrivIds = explode(',',$v[2]);//增加
+                $departmentIdOne = $userInfo['department_id'];
+                $diff = array_diff($addPrivIds,$departmentPrivList[$departmentIdOne]);
+                if(!empty($diff)){
+                    //权限不足
+                    array_push($error, '第' . ($k + 1) . '行，对用户该平台无权限'.$uname);
+                    continue;
+                }
+                foreach($addPrivIds as $privOne){
+                    $delRelate[] = ['user_id'=>$userInfo['id'],'platform_id'=>$privOne];
+                    $addRows[] = [$userInfo['id'],$privOne];
+                }
+            }
+
+            //删除
+            if(!empty($v[3])){
+                $delPriv = explode(',',$v[2]);//增加
+                $departmentIdOne = $userInfo['department_id'];
+                $diff = array_diff($delPriv,$departmentPrivList[$departmentIdOne]);
+                if(!empty($diff)){
+                    //权限不足
+                    array_push($error, '第' . ($k + 1) . '行，对用户该平台无权限'.$uname);
+                    continue;
+                }
+                foreach($delPriv as $privOne){
+                    $delRelate[] = ['user_id'=>$userInfo['id'],'platform_id'=>$privOne];
+                }
+            }
+
+        }
+
+
+        $trans = RelateUserPlatform::getDb()->beginTransaction();
+        try{
+            foreach($delRelate as $delWhere){
+                RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID],$delWhere);
+            }
+
+            if(!empty($addRows)){
+                RelateUserPlatform::batchInsertAll(
+                    RelateUserPlatform::tableName(),
+                    $addColumn,
+                    $addRows,
+                    RelateUserPlatform::getDb(),
+                    'INSERT'
+                );
+            }
+            $trans->commit();
+        }catch(\Exception $e){
+            $trans->rollBack();
+            throw $e;
+        }
+
+        if (!empty($error)) {
+            $error = join('----------', $error);
+            throw new Exception($error, Exception::ERROR_COMMON);
+        } else {
+            return "导入成功";
+        }
+
     }
 }
