@@ -322,23 +322,24 @@ class CommonApi extends RequestBaseModel {
 
     //校验权限
     public function checkPlatformAuth(){
+
         $sourceUrl = Yii::$app->request->referrer;
         if(empty($sourceUrl)){
-            return 0;
+            throw new Exception('权限不足，请联系系统管理员',Exception::ERROR_COMMON);
         }
         $sourceUrlArr = parse_url($sourceUrl);
         $host = $sourceUrlArr['host'];
         if(empty($host)){
-            return 0;
+            throw new Exception('权限不足，请联系系统管理员',Exception::ERROR_COMMON);
         }
         $platformInfo = Platform::findOneByHost($host);
         if(empty($platformInfo)){
-            return 0;
+            throw new Exception('权限不足，请联系管理员',Exception::ERROR_COMMON);
         }
         $relate = RelateUserPlatform::findListByUserPlatform($this->user['id'],$platformInfo['palatform_id']);
         if(empty($relate)){
-            return 0;
+            throw new Exception('权限不足，请确认有权限后重试',Exception::ERROR_COMMON);
         }
-        return 1;
+        return true;
     }
 }
