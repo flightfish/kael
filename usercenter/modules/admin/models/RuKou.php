@@ -34,15 +34,25 @@ class RuKou extends RequestBaseModel
     public function RuKou()
     {
         $data = [];
-        $data[] = [
-            'url' => '/admin/user/index',
-            'name' => '平台用户管理',
-        ];
+
         if($this->user['admin'] == Role::ROLE_ADMIN){
             //超级管理员
             $data[] = [
+                'url' => '/admin/user/index',
+                'name' => '用户管理',
+            ];
+            $data[] = [
+                'url' => '/admin/user/indexlimit',
+                'name' => '权限管理',
+            ];
+            $data[] = [
                 'url'=>'/admin/department/index',
                 'name' => '部门管理',
+            ];
+        }else{
+            $data[] = [
+                'url' => '/admin/user/indexlimit',
+                'name' => '权限管理',
             ];
         }
         $retData = [

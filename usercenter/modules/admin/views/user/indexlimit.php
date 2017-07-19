@@ -59,11 +59,11 @@
         var listURL = "/admin/user/list"+urlParam;
         var editURL = "/admin/user/edit"+urlParam;
         var delURL = "/admin/user/del"+urlParam;
-        var downloadURL = "/admin/user/download"+urlParam;
-        var uploadURL = "/admin/user/upload"+urlParam;
         var platURL = "/admin/user/platform-by-department-admin" + urlParam;
         var downloadPrivURL = "/admin/user/download-priv"+urlParam;
-        var uploadPrivURL = "/admin/user/upload-priv"+urlParam;    </script>
+        var uploadPrivURL = "/admin/user/upload-priv"+urlParam;
+        var updatePriv = "/admin/user/update-priv"+urlParam;
+    </script>
 </head>
 
 <body>
@@ -79,11 +79,8 @@
 <div id="toolbar">
 
     <div style="width: 100%;">
+
         <div style="float: left;">
-            <button class="btn btn-info" data-toggle="modal" data-target="#editModal" data-whatever="0">添加</button>
-            <button type="button" class="btn btn-primary addmany" data-toggle="modal" data-target="#batchAdd">
-                批量新增
-            </button>
             <button class="btn btn-info" data-toggle="modal" data-target="#batchPriv" data-whatever="0">批量添加外包权限</button>
         </div>
 
@@ -130,39 +127,6 @@
 
 </div>
 
-
-<div class="modal inmodal fade" id="batchAdd" tabindex="-1" role="dialog"  aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">批量新增</h4>
-            </div>
-            <div class="modal-body">
-                <div class="ibox-content">
-                    <div class="input-group"><span class="input-group-addon">第一步：下载格式模版</span></div>
-                    <form id="download-form" action="" method="post" class="col-xl-12" >
-                        <button type="submit" class="btn btn-primary download col-xs-12">
-                            下载格式模版
-                        </button>
-                    </form>
-
-                    <div class="input-group"><span class="input-group-addon">第二步：修改后上传</span></div>
-                    <form id="my-awesome-dropzone" class="dropzone"  action="">
-                        <div class="dropzone-previews"></div>
-                        <button type="submit" class="btn btn-primary pull-right">上传</button>
-                        <input type="hidden" name="type" id="type1">
-                    </form>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-white closefile" data-dismiss="modal">关闭</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div class="modal inmodal fade" id="batchPriv" tabindex="-1" role="dialog"  aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -172,10 +136,6 @@
             </div>
             <div class="modal-body">
                 <a id="download-priv" href="" class="btn btn-primary ">下载格式模版</a>
-<!--                <form id="upload-priv"   action="" method="post" enctype="multipart/form-data">-->
-<!--                    <input type="file" name="file" class=" pull-left" required>-->
-<!--                    <input type="submit" value="上传" class="btn btn-success  pull-left">-->
-<!--                </form>-->
                 <form id="upload-priv" class="dropzone"  action="">
                     <div class="dropzone-previews"></div>
                     <button type="submit" class="btn btn-primary pull-right">上传</button>
@@ -198,110 +158,16 @@
         <div class="modal-content" >
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="modal-title">新建</h4>
+                <h4 class="modal-title" id="modal-title">权限修改</h4>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
 
                 <div class="input-group">
-                    <span class="input-group-addon">手机号 <span style="color:red">*</span></span>
-                    <input type="text" id="mobile" class="form-control" placeholder=""  >
+                    <span class="input-group-addon" >平台权限</span>
+                    <div class="form-control" id="platform_list_container">
+                    </div>
                 </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon">邮箱</span>
-                    <input type="email" id="email" class="form-control" placeholder=""  >
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >用户角色 <span style="color:red">*</span></span>
-                    <select id="role" value="-1" class="form-control">
-                        <option value="-1">请选择角色</option>
-                        <?php foreach($selectRoleList as $v): ?>
-                            <option value="<?php echo $v['role_id']; ?>"><?php echo $v['role_name'];?></option>
-                        <?php endforeach;?>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >用户名 <span style="color:red">*</span></span>
-                    <input type="text" id="username" class="form-control" placeholder="">
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >密码</span>
-                    <input type="password" id="password" class="form-control" placeholder="">
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >性别 <span style="color:red">*</span></span>
-                    <select id="sex" value="-1" class="form-control">
-                        <option value="-1">请选择性别</option>
-                        <option value="1">男</option>
-                        <option value="2">女</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >用户类型 <span style="color:red">*</span></span>
-                    <select id="user_type" value="-1" class="form-control">
-                        <option value="-1">请选择用户类型</option>
-                        <option value="0">公司员工</option>
-                        <option value="1">外包用户</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >部门 <span style="color:red">*</span></span>
-                    <select id="department" value="-1" class="form-control" onchange="platfromListByDepart()">
-                        <option value="-1">请选择部门</option>
-                        <?php foreach($departmentList as $v): ?>
-                            <option value="<?php echo $v['department_id']; ?>"><?php echo $v['department_name'];?></option>
-                        <?php endforeach;?>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >身份证</span>
-                    <input type="text" id="idcard" class="form-control" placeholder=""  >
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >学科</span>
-                    <input type="text" id="subject" class="form-control" placeholder=""  >
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >学段</span>
-                    <input type="text" id="grade_part" class="form-control" placeholder=""  >
-                </div>
-
-
-                <div class="input-group">
-                    <span class="input-group-addon" >银行地区</span>
-                    <input type="text" id="bank_area" class="form-control" placeholder=""  >
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >银行分行</span>
-                    <input type="text" id="bank_deposit" class="form-control" placeholder=""  >
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >银行名称</span>
-                    <input type="text" id="bank_name" class="form-control" placeholder=""  >
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon" >银行帐号</span>
-                    <input type="text" id="bank_account" class="form-control" placeholder=""  >
-                </div>
-
-<!--                <div class="input-group">-->
-<!--                    <span class="input-group-addon" >平台权限</span>-->
-<!--                    <div class="form-control" id="platform_list_container">-->
-<!--                    </div>-->
-<!--                </div>-->
 
             </div>
             <div class="modal-footer">
@@ -317,18 +183,10 @@
     //批量上传开始
     $('#type').attr('value',platformType);
     $('#type1').attr('value',platformType);
-    $('#download-form').attr('action',downloadURL);
-    $('#my-awesome-dropzone').attr('action',uploadURL);
     $("#download-priv").attr('href',downloadPrivURL);
     $("#upload-priv").attr('action',uploadPrivURL);
     $(".chosen-select").chosen();
     zone();
-    $('#batchAdd .modal-footer .closefile').click(function(){
-        zone();
-    });
-    $('#batchAdd .close').click(function(){
-        zone();
-    });
     $('#batchPriv .modal-footer .closefile').click(function(){
         zone();
     });
@@ -337,34 +195,6 @@
     });
     function zone(){
         $('.dz-preview').remove();
-        Dropzone.options.myAwesomeDropzone = {
-            autoProcessQueue: false,
-            uploadMultiple: true,
-            parallelUploads: 100,
-            maxFiles: 100,
-            init: function () {
-                var myDropzone = this;
-                this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    myDropzone.processQueue()
-                });
-                this.on("sendingmultiple", function () {
-                });
-                this.on("successmultiple", function (files, response) {
-                    if (response.code != 0) {
-                        swal("上传失败！", response.message, "error");
-                    } else {
-                        swal("上传成功！", response.data, "success");
-                        $('#batchAdd .modal-footer .closefile').trigger("click");
-                        zone();
-                        table();
-                    }
-                });
-                this.on("errormultiple", function (files, response) {
-                })
-            }
-        };
         Dropzone.options.uploadPriv = {
             autoProcessQueue: false,
             uploadMultiple: true,
@@ -394,9 +224,7 @@
             }
         };
     }
-    if(platformType == "entrystore"){
-        $('.addmany').remove();
-    }
+
     //批量上传结束
     var maxheight = $('body').height();
     var tmpList = [];
@@ -611,59 +439,9 @@
         var button = $(event.relatedTarget); // Button that triggered the modal
         var tmpid = button.data('whatever'); // Extract info from data-* attributes
         var modal = $(this);
-        if(tmpid == 0){
-            modal.find('.modal-title').text('新建');
-            var row = {
-                "id": "0",
-                "username": "",
-                "password": "",
-                "email": "",
-                "admin": "-1",
-                "admin_id": "0",
-                "idcard": "",
-                "sex": "-1",
-                "bank_name": "",
-                "bank_deposit": "",
-                "bank_area": "",
-                "bank_account": "",
-                "user_type": "-1",
-                "user_source": "",
-                "mobile": "",
-                "status": "0",
-                "add_time": "",
-                "update_time": "",
-                "subject": "-1",
-                "grade_part": "-1",
-                "department_id": "-1",
-                "subject_name": "",
-                "grade_part_name": "",
-                "admin_department_list": [],
-                "platform_list": [],
-                "role_id": "-1",
-                "role_name": "",
-                "department_name": ""
-            };
-        }else{
-            modal.find('.modal-title').text('编辑');
-            var row = tmpList[tmpid];
-        }
 
-        modal.find('#modid').val(row.id);
-        modal.find('#mobile').val(row.mobile);
-        modal.find('#email').val(row.email);
-        modal.find('#role').val(row.admin);
-        modal.find('#username').val(row.username);
-        modal.find('#sex').val(row.sex);
-        modal.find('#idcard').val(row.idcard);
-        modal.find('#subject').val(row.subject);
-        modal.find('#grade_part').val(row.grade_part);
-        modal.find('#bank_area').val(row.bank_area);
-        modal.find('#bank_deposit').val(row.bank_deposit);
-        modal.find('#bank_name').val(row.bank_name);
-        modal.find('#bank_account').val(row.bank_account);
-        modal.find('#user_type').val(row.user_type);
-        modal.find('#department').val(row.department_id);
-//        $("#department").change();
+        var row = tmpList[tmpid];
+
         platfromListByDepartWithFunc(row.department_id,function(){
             $('input[name="platform_list"]').prop("checked", false);
             for(var i=0;i<row.platform_list.length;++i){
@@ -673,10 +451,11 @@
         });
 
 
-        $('input[name="platform_list"]').attr("checked", false);
-        for(var i=0;i<row.platform_list.length;++i){
-            $("input[name=platform_list][value="+ row.platform_list[i]['platform_id'] +"]").prop("checked", true);
-        }
+//        $('input[name="platform_list"]').prop("checked", false);
+//        for(var i=0;i<row.platform_list.length;++i){
+//            console.log("input[name=platform_list][value="+ row.platform_list[i]['platform_id'] +"]");
+//            $("input[name=platform_list][value="+ row.platform_list[i]['platform_id'] +"]").prop("checked", true);
+//        }
     });
 
     function edit(is_old){
@@ -689,31 +468,11 @@
         });
         $.ajax({
             type:'post',
-            url: editURL,
+            url: uploadPrivURL,
             data:{
                 type:platformType,
                 id:id,
                 data:{
-                    "center":{
-                        "mobile":$("#mobile").val(),
-                        "email":$("#email").val(),
-                        "admin":$("#role").val(),
-                        "username":$("#username").val(),
-                        "password":$("#password").val(),
-                        "sex":$("#sex").val(),
-                        "idcard":$("#idcard").val(),
-                        "subject":$("#subject").val(),
-                        "grade_part":$("#grade_part").val(),
-                        "bank_area":$("#bank_area").val(),
-                        "bank_deposit":$("#bank_deposit").val(),
-                        "bank_name":$("#bank_name").val(),
-                        "bank_account":$("#bank_account").val(),
-                        "user_type":$("#user_type").val(),
-                        "department_id":$("#department").val(),
-                    },
-                    "current":{
-
-                    },
                     "platform_list": platform_list,
                 }
             },
@@ -728,30 +487,6 @@
             }
         });
     };
-
-    function platfromListByDepart(){
-        $.ajax({
-            type:'post',
-            url: platURL,
-            data:{
-                department_id: $("#department").val() || -1
-            },
-            success:function(data){
-                if(data.code==0){
-                    //clear
-                    $("#platform_list_container").html("");
-                    let html = "";
-                    for(var i in data.data){
-                        data.data[i]
-                        html +=  '<input type="checkbox" name="platform_list" value="'+ data.data[i].platform_id +'"/>' + data.data[i].platform_name;
-                    }
-                    $("#platform_list_container").html(html);
-                }else{
-                    alert(data.message);
-                }
-            }
-        });
-    }
 
     function platfromListByDepartWithFunc(department_id,func){
         $.ajax({

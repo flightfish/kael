@@ -267,7 +267,7 @@ class User extends RequestBaseModel
      */
     public function mixAddEdit()
     {
-        $this->checkUserAuth();
+        $this->checkSuperAuth();
 
         if (empty($this->data['center']) || empty($this->data['center']['mobile'])) {
             throw new Exception('手机号不能为空', Exception::ERROR_COMMON);
@@ -330,7 +330,7 @@ class User extends RequestBaseModel
             $ret = $model->insert();
             $userId = $model->id;
             //权限
-            RelateUserPlatform::batchAdd($userId,$this->data['platform_list']);
+//            RelateUserPlatform::batchAdd($userId,$this->data['platform_list']);
         } else {
             //编辑
             $oldOne = UserCenter::findOneById($this->id);
@@ -353,10 +353,34 @@ class User extends RequestBaseModel
                 }
             }
             $ret = UserCenter::updateAll($this->data['center'], ['id' => $this->id]);
-            RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID],['user_id' => $this->id,'platform_id'=>$platformListAllow]);
-            RelateUserPlatform::batchAdd($this->id,$this->data['platform_list']);
+//            RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID],['user_id' => $this->id,'platform_id'=>$platformListAllow]);
+//            RelateUserPlatform::batchAdd($this->id,$this->data['platform_list']);
         }
         return $ret;
+    }
+
+    public function updatePriv(){
+        $this->checkUserAuth();
+        //固定权限
+        $platformListAllow = $this->platformListByAdminDepartment();
+        $platformListAllow = array_column($platformListAllow,'platform_id');
+        if(empty($this->data['platform_list'])){
+            $this->data['platform_list'] = [];
+        }else{
+            $this->data['platform_list'] = array_intersect($this->data['platform_list'],$platformListAllow);
+        }
+
+
+        //编辑
+        $oldOne = UserCenter::findOneById($this->id);
+        if (empty($oldOne)) {
+            throw new Exception("用户不存在", Exception::ERROR_COMMON);
+        }
+
+        RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID],['user_id' => $this->id,'platform_id'=>$platformListAllow]);
+        RelateUserPlatform::batchAdd($this->id,$this->data['platform_list']);
+
+        return true;
     }
 
     /**

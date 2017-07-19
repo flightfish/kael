@@ -35,6 +35,31 @@ class UserController extends BaseController{
         }
     }
 
+    public function actionIndexlimit()
+    {
+        try{
+            $model = new User();
+            $model->load($this->loadData);
+            $model->validate();
+            $roleList = $model->roleList();
+            $platformList = $model->platformList();
+            $departmentList = $model->departmentListByAdmin();
+            $selectRoleList = [
+                ['role_id'=>0,'role_name'=>'普通用户'],
+                ['role_id'=>2,'role_name'=>'部门管理员'],
+            ];
+            Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
+            return $this->renderPartial('indexlimit',[
+                'platformList'=>$platformList,
+                'departmentList'=>$departmentList,
+                'roleList'=>$roleList,
+                'selectRoleList'=>$selectRoleList,
+            ]);
+        }catch(\Exception $e){
+            $this->error($e);
+        }
+    }
+
     public function actionPlatformByDepartmentAdmin(){
         try{
             $model = new User(['scenario'=>User::SCENARIO_PLAT_BY_DEPARTMENT]);
@@ -82,6 +107,19 @@ class UserController extends BaseController{
             return $this->error($e);
         }
     }
+
+    public function actionUpdatePriv(){
+        try{
+            $model = new User(['scenario'=>User::SCENARIO_EDIT]);
+            $model->load($this->loadData);
+            $model->validate();
+            $data = $model->updatePriv();
+            return $this->success($data);
+        }catch(\Exception $e){
+            return $this->error($e);
+        }
+    }
+
     public function actionDownload(){
         try{
             $model = new User();
