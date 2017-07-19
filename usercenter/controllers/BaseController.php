@@ -52,7 +52,7 @@ class BaseController extends Controller
         $result = [
             'code'      => 0,
             'message'   => 'successs',
-            'product'   => \Yii::$app->params['product_id'],
+//            'product'   => \Yii::$app->params['product_id'],
             'requestId'   => Yii::$app->params['requestId'],
             'data'      => $data
         ];
