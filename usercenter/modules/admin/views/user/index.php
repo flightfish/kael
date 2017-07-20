@@ -228,12 +228,12 @@
 
                 <div class="input-group">
                     <span class="input-group-addon" >用户名 <span style="color:red">*</span></span>
-                    <input type="text" id="username_edit" class="form-control" placeholder="">
+                    <input type="text" id="edit_unm" class="form-control" placeholder="">
                 </div>
 
                 <div class="input-group">
                     <span class="input-group-addon" >密码</span>
-                    <input type="password" id="password_edit" class="form-control" placeholder="">
+                    <input type="password" id="edit_pd" class="form-control" placeholder="">
                 </div>
 
                 <div class="input-group">
@@ -659,7 +659,7 @@
         modal.find('#mobile').val(row.mobile);
         modal.find('#email').val(row.email);
         modal.find('#role').val(row.admin);
-        modal.find('#username_edit').val(row.username);
+        modal.find('#edit_unm').val(row.username);
         modal.find('#sex').val(row.sex);
         modal.find('#idcard').val(row.idcard);
 //        modal.find('#subject').val(row.subject);
@@ -705,8 +705,8 @@
                         "mobile":$("#mobile").val(),
                         "email":$("#email").val(),
                         "admin":$("#role").val(),
-                        "username":$("#username_edit").val(),
-                        "password":$("#password_edit").val(),
+                        "username":$("#edit_unm").val(),
+                        "password":$("#edit_pd").val(),
                         "sex":$("#sex").val(),
                         "idcard":$("#idcard").val(),
 //                        "subject":$("#subject").val(),
