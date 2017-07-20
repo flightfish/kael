@@ -89,7 +89,7 @@ class BaseController extends Controller
             'code'      => $code,
             'message'   => $message,
             'requestId'   => Yii::$app->params['requestId'],
-            'product'   => \Yii::$app->params['product_id'],
+//            'product'   => \Yii::$app->params['product_id'],
             'data'      => $data
         ];
         return $result;
