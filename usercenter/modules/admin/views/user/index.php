@@ -210,10 +210,6 @@
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
 
-                <input type="text" style="display:none"/>
-
-                <input type="password" style="display:none"/>
-
                 <div class="input-group">
                     <span class="input-group-addon">手机号 <span style="color:red">*</span></span>
                     <input type="text" id="mobile" class="form-control" placeholder=""  >
@@ -236,12 +232,12 @@
 
                 <div class="input-group">
                     <span class="input-group-addon" >姓名 <span style="color:red">*</span></span>
-                    <input type="text" id="username" class="form-control" placeholder="" autocomplete="off">
+                    <input type="text" id="username" class="form-control" placeholder="" readonly onfocus="this.removeAttribute('readonly');">
                 </div>
 
                 <div class="input-group">
                     <span class="input-group-addon" >密码</span>
-                    <input type="password" id="password" class="form-control" placeholder="" autocomplete="off">
+                    <input type="password" id="password" class="form-control" placeholder="" readonly onfocus="this.removeAttribute('readonly');">
                 </div>
 
                 <div class="input-group">
