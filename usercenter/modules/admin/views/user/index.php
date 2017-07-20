@@ -84,7 +84,7 @@
             <button type="button" class="btn btn-primary addmany" data-toggle="modal" data-target="#batchAdd">
                 批量新增
             </button>
-            <button class="btn btn-info" data-toggle="modal" data-target="#batchPriv" data-whatever="0">批量添加外包权限</button>
+<!--            <button class="btn btn-info" data-toggle="modal" data-target="#batchPriv" data-whatever="0">批量添加外包权限</button>-->
         </div>
 
         <div style="width: 100px;float: left;">

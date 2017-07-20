@@ -81,7 +81,7 @@
     <div style="width: 100%;">
 
         <div style="float: left;">
-            <button class="btn btn-info" data-toggle="modal" data-target="#batchPriv" data-whatever="0">批量添加外包权限</button>
+            <button class="btn btn-info" data-toggle="modal" data-target="#batchPriv" data-whatever="0">批量添加权限</button>
         </div>
 
         <div style="width: 100px;float: left;">
@@ -132,7 +132,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">批量添加外包权限</h4>
+                <h4 class="modal-title">批量添加权限</h4>
             </div>
             <div class="modal-body">
                 <a id="download-priv" href="" class="btn btn-primary ">下载格式模版</a>
