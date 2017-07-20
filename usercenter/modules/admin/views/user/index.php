@@ -232,12 +232,12 @@
 
                 <div class="input-group">
                     <span class="input-group-addon" >用户名 <span style="color:red">*</span></span>
-                    <input type="text" id="username" class="form-control" placeholder="">
+                    <input type="text" id="username" class="form-control" placeholder="" autocomplete="off">
                 </div>
 
                 <div class="input-group">
                     <span class="input-group-addon" >密码</span>
-                    <input type="password" id="password" class="form-control" placeholder="">
+                    <input type="password" id="password" class="form-control" placeholder="" autocomplete="off">
                 </div>
 
                 <div class="input-group">
