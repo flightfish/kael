@@ -58,7 +58,7 @@ class RuKou extends RequestBaseModel
                 }
             }
             $data[] = [
-                'url' => $info['platform_url'],
+                'url' => $info['platform_url'] ."?token=".$this->token,
                 'name' => $info['platform_name'],
             ];
         }
