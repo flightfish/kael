@@ -6,6 +6,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta   http-equiv= "Pragma"   content= "no-cache" />
+    <meta   http-equiv= "Cache-Control"   content= "no-cache" />
+    <meta   http-equiv= "Expires"   content= "0" />
+
     <link rel="shortcut icon" href="favicon.ico">
     <link href="/statics/css/bootstrap.min14ed.css?v=3.3.6" rel="stylesheet">
     <link href="/statics/css/font-awesome.min93e3.css?v=4.4.0" rel="stylesheet">
@@ -228,12 +232,12 @@
 
                 <div class="input-group">
                     <span class="input-group-addon" >用户名 <span style="color:red">*</span></span>
-                    <input type="text" id="edit_unm" class="form-control" placeholder="">
+                    <input type="text" id="username" class="form-control" placeholder="">
                 </div>
 
                 <div class="input-group">
                     <span class="input-group-addon" >密码</span>
-                    <input type="password" id="edit_pd" class="form-control" placeholder="">
+                    <input type="password" id="password" class="form-control" placeholder="">
                 </div>
 
                 <div class="input-group">
@@ -659,7 +663,7 @@
         modal.find('#mobile').val(row.mobile);
         modal.find('#email').val(row.email);
         modal.find('#role').val(row.admin);
-        modal.find('#edit_unm').val(row.username);
+        modal.find('#username').val(row.username);
         modal.find('#sex').val(row.sex);
         modal.find('#idcard').val(row.idcard);
 //        modal.find('#subject').val(row.subject);
@@ -705,8 +709,8 @@
                         "mobile":$("#mobile").val(),
                         "email":$("#email").val(),
                         "admin":$("#role").val(),
-                        "username":$("#edit_unm").val(),
-                        "password":$("#edit_pd").val(),
+                        "username":$("#username").val(),
+                        "password":$("#password").val(),
                         "sex":$("#sex").val(),
                         "idcard":$("#idcard").val(),
 //                        "subject":$("#subject").val(),
