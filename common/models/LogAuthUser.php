@@ -38,20 +38,6 @@ class LogAuthUser extends \common\models\BaseActiveRecord
         return Yii::$app->get('db');
     }
 
-    public static function LogGroup($adminId,$groupIds,$op,$data){
-        $columns = ['admin_id','group_id','op_type','memo'];
-        $data = is_array($data) ? json_encode($data) : strval($data);
-        !is_array($groupIds) && $groupIds =  [$groupIds];
-        foreach($groupIds as $groupId){
-            $rows[] = [
-                $adminId,
-                $groupId,
-                $op,
-                $data
-            ];
-        }
-        return self::getDb()->createCommand()->batchInsert(self::tableName(),$columns,$rows)->execute();
-    }
     public static function LogUser($adminId,$userIds,$op,$data){
         $columns = ['admin_id','user_id','op_type','memo'];
         $data = is_array($data) ? json_encode($data) : strval($data);
@@ -66,37 +52,8 @@ class LogAuthUser extends \common\models\BaseActiveRecord
         }
         return self::getDb()->createCommand()->batchInsert(self::tableName(),$columns,$rows)->execute();
     }
-    public static function LogUserRole($adminId,$userIds,$roleId,$op,$data){
-        $columns = ['admin_id','user_id','role_id','op_type','memo'];
-        $roleId = is_array($roleId) ? json_encode($roleId) : strval($roleId);
-        $data = is_array($data) ? json_encode($data) : strval($data);
-        !is_array($userIds) && $userIds =  [$userIds];
-        foreach($userIds as $userId){
-            $rows[] = [
-                $adminId,
-                $userId,
-                $roleId,
-                $op,
-                $data
-            ];
-        }
-        return self::getDb()->createCommand()->batchInsert(self::tableName(),$columns,$rows)->execute();
-    }
-    public static function LogUserFree($adminId,$freeIds,$op,$data){
-        $columns = ['admin_id','free_status','op_type','memo'];
-        $data = is_array($data) ? json_encode($data) : strval($data);
-        !is_array($freeIds) && $freeIds =  [$freeIds];
-        foreach($freeIds as $freeId){
-            $rows[] = [
-                $adminId,
-                $freeId,
-                $op,
-                $data
-            ];
-        }
 
-        return self::getDb()->createCommand()->batchInsert(self::tableName(),$columns,$rows)->execute();
-    }
+
     public static function LogLogin($adminId,$op,$data){
         $columns = ['admin_id','op_type','memo'];
         $data = is_array($data) ? json_encode($data) : strval($data);

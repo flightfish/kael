@@ -226,15 +226,23 @@ class Departments extends RequestBaseModel
             throw new Exception('部门不存在', Exception::ERROR_COMMON);
         }
 
-        if(empty($this->platform_list)){
-            //不存在
-            RelateAdminDepartment::updateAll(['status'=>RelateAdminDepartment::STATUS_INVALID],['user_id'=>$this->user_id,'department_id'=>$this->department_id]);
-        }else{
-            //存在
-            $column = ['user_id','department_id','platform_id'];
+        $model =  new User;
+        $model->token = $this->token;
+        $allowPlatformList = $model->platformListByAdminDepartment($this->department_id);
+        $allowPlatformIds = array_column($allowPlatformList,'platform_id');
+
+        //删除旧的
+        RelateAdminDepartment::updateAll(
+            ['status'=>RelateAdminDepartment::STATUS_INVALID,'delete_user'=>$this->user['id']],
+            ['user_id'=>$this->user_id,'department_id'=>$this->department_id,'platform_id'=>$allowPlatformIds,'status'=>RelateAdminDepartment::STATUS_VALID]);
+
+        //添加新的
+        if(!empty($this->platform_list)){
+            $this->platform_list = array_intersect($this->platform_list,$allowPlatformIds);
+            $column = ['user_id','department_id','platform_id','create_user'];
             $rows = [];
             foreach($this->platform_list as $platformId){
-                $rows[] = [$this->user_id,$this->department_id,$platformId];
+                $rows[] = [$this->user_id,$this->department_id,$platformId,$this->user['id']];
             }
             RelateAdminDepartment::batchInsertAll(RelateAdminDepartment::tableName(),$column,$rows,RelateAdminDepartment::getDb(),'REPLACE');
         }

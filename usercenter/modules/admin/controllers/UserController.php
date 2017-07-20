@@ -19,10 +19,11 @@ class UserController extends BaseController{
             $roleList = $model->roleList();
             $platformList = $model->platformList();
             $departmentList = $model->departmentListByAdmin();
-            $selectRoleList = [
-                ['role_id'=>0,'role_name'=>'普通用户'],
-                ['role_id'=>2,'role_name'=>'部门管理员'],
-            ];
+//            $selectRoleList = [
+//                ['role_id'=>0,'role_name'=>'普通用户'],
+//                ['role_id'=>2,'role_name'=>'部门管理员'],
+//            ];
+            $selectRoleList = $roleList;
             Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
             return $this->renderPartial('index',[
                 'platformList'=>$platformList,

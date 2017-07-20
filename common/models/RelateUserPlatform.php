@@ -30,11 +30,11 @@ class RelateUserPlatform extends \common\models\BaseActiveRecord
         return $query->asArray(true)->all();
     }
 
-    public static function batchAdd($userId,$platfromIdList){
-        $columns = ['user_id','platform_id'];
+    public static function batchAdd($userId,$platfromIdList,$createUserId = 0){
+        $columns = ['user_id','platform_id','create_user'];
         $rows = [];
         foreach($platfromIdList as $v){
-            $rows[] = [$userId,$v];
+            $rows[] = [$userId,$v,$createUserId];
         }
         self::batchInsertAll(self::tableName(), $columns, $rows, self::getDb(), 'REPLACE');
     }

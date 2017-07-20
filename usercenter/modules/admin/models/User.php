@@ -5,6 +5,7 @@ namespace usercenter\modules\admin\models;
 use common\libs\Constant;
 use common\models\CommonModulesUser;
 use common\models\Department;
+use common\models\LogAuthUser;
 use common\models\Platform;
 use common\models\RelateAdminDepartment;
 use common\models\RelateDepartmentPlatform;
@@ -254,6 +255,14 @@ class User extends RequestBaseModel
     public function del()
     {
         $this->checkUserAuth();
+        $oldOne = UserCenter::findOneById($this->id);
+        if(empty($oldOne)){
+            throw new Exception('用户不存在', Exception::ERROR_COMMON);
+        }
+        if($oldOne['admin'] == Role::ROLE_ADMIN){
+            throw new Exception('无权限删除超级管理员', Exception::ERROR_COMMON);
+        }
+        LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_DEL_USER,'del');
         UserCenter::updateAll(['status'=>UserCenter::STATUS_INVALID],['id' => $this->id]);
         return [];
     }
@@ -302,6 +311,9 @@ class User extends RequestBaseModel
         }
 
         if (0 == $this->id) {
+            if($this->data['center']['admin'] == Role::ROLE_ADMIN){
+                throw new Exception('无权限新增超级管理员', Exception::ERROR_COMMON);
+            }
             //唯一性
             $old = UserCenter::find()->where(['mobile'=>$this->data['center']['mobile'],'status'=>UserCenter::STATUS_VALID])->one();
             if(!empty($old)){
@@ -329,6 +341,7 @@ class User extends RequestBaseModel
             }
             $ret = $model->insert();
             $userId = $model->id;
+            LogAuthUser::LogUser($this->user['id'],$userId,LogAuthUser::OP_ADD_USER,$this->data);
             //权限
 //            RelateUserPlatform::batchAdd($userId,$this->data['platform_list']);
         } else {
@@ -336,6 +349,9 @@ class User extends RequestBaseModel
             $oldOne = UserCenter::findOneById($this->id);
             if (empty($oldOne)) {
                 throw new Exception("用户不存在", Exception::ERROR_COMMON);
+            }
+            if($oldOne['admin'] == Role::ROLE_ADMIN && $this->user['id'] != $this->id){
+                throw new Exception('无权限修改其他超级管理员信息', Exception::ERROR_COMMON);
             }
             //唯一性
             if($oldOne['mobile'] != $this->data['center']['mobile']){
@@ -352,6 +368,7 @@ class User extends RequestBaseModel
                     }
                 }
             }
+            LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_EDIT_USER,$this->data);
             $ret = UserCenter::updateAll($this->data['center'], ['id' => $this->id]);
 //            RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID],['user_id' => $this->id,'platform_id'=>$platformListAllow]);
 //            RelateUserPlatform::batchAdd($this->id,$this->data['platform_list']);
@@ -377,9 +394,11 @@ class User extends RequestBaseModel
             throw new Exception("用户不存在", Exception::ERROR_COMMON);
         }
 
-        RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID],['user_id' => $this->id,'platform_id'=>$platformListAllow]);
-        RelateUserPlatform::batchAdd($this->id,$this->data['platform_list']);
-
+        RelateUserPlatform::updateAll(
+            ['status'=>RelateUserPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
+            ['user_id' => $this->id,'platform_id'=>$platformListAllow,'status'=>RelateUserPlatform::STATUS_VALID]);
+        RelateUserPlatform::batchAdd($this->id,$this->data['platform_list'],$this->user['id']);
+        LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_EDIT_USER_ROLE,$this->data);
         return true;
     }
 
@@ -405,6 +424,10 @@ class User extends RequestBaseModel
         $paramsUcenter = [];
 
         $allDepartment = Department::findAllList();
+
+        $startUserId = UserCenter::find()->select('id')->orderBy('id desc')->limit(1)->asArray(true)->one();
+        $startUserId = empty($startUserId) ? 0 : $startUserId['id'];
+        $startUserId = $startUserId + 100;
 
         foreach ($data as $k => $v) {
             if ($k == 0) {
@@ -471,6 +494,7 @@ class User extends RequestBaseModel
              */
 
             $paramsUcenter[$k] = [
+                'id'=>$startUserId + $k,
                 'username' => $v[0],
                 'mobile' => $v[1],
                 'email'=>$v[2],
@@ -483,7 +507,7 @@ class User extends RequestBaseModel
                 'bank_account' => $v[9],
                 'user_source' => $this->user_source,
                 'user_type' => $allDepartment[intval($v[4])]['is_outer'],//0内部员工 1外包
-                'admin_id' => $this->user['user_id'],
+                'admin_id' => $this->user['id'],
 //                'grade_part' => $v[11],
 //                'subject' => $v[10],
             ];
@@ -495,6 +519,7 @@ class User extends RequestBaseModel
                 $rows[] = array_values($v);
             }
             UserCenter::batchInsertAll(UserCenter::tableName(),$columns,$rows,UserCenter::getDb());
+            LogAuthUser::LogUser($this->user['id'],array_column($paramsUcenter,'id'),LogAuthUser::OP_ADD_USER,"import");
         }else{
             array_push($error, '没有有效数据');
         }
@@ -627,10 +652,11 @@ class User extends RequestBaseModel
             $departmentPrivList[$departmentIdOne] = array_column($privOneList,'platform_id');
         }
 
-        $addColumn = ['user_id','platform_id'];
+        $addColumn = ['user_id','platform_id','create_user'];
         $addRows = [];
         $delRelate =[];
-
+        $logPlatAuthAdd = [];
+        $logPlatAuthDel = [];
 
         foreach ($data as $k => $v) {
             if ($k == 0) {
@@ -670,9 +696,10 @@ class User extends RequestBaseModel
                     array_push($error, '第' . ($k + 1) . '行，对用户该平台无权限'.$uname);
                     continue;
                 }
+                $logPlatAuthAdd[$userInfo['id']] = $addPrivIds;
                 foreach($addPrivIds as $privOne){
                     $delRelate[] = ['user_id'=>$userInfo['id'],'platform_id'=>$privOne];
-                    $addRows[] = [$userInfo['id'],$privOne];
+                    $addRows[] = [$userInfo['id'],$privOne,$this->user['id']];
                 }
             }
 
@@ -686,8 +713,9 @@ class User extends RequestBaseModel
                     array_push($error, '第' . ($k + 1) . '行，对用户该平台无权限'.$uname);
                     continue;
                 }
+                $logPlatAuthDel[$userInfo['id']] = $delPriv;
                 foreach($delPriv as $privOne){
-                    $delRelate[] = ['user_id'=>$userInfo['id'],'platform_id'=>$privOne];
+                    $delRelate[] = ['user_id'=>$userInfo['id'],'platform_id'=>$privOne,'status'=>RelateUserPlatform::STATUS_VALID];
                 }
             }
 
@@ -697,7 +725,7 @@ class User extends RequestBaseModel
         $trans = RelateUserPlatform::getDb()->beginTransaction();
         try{
             foreach($delRelate as $delWhere){
-                RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID],$delWhere);
+                RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],$delWhere);
             }
 
             if(!empty($addRows)){
@@ -708,6 +736,13 @@ class User extends RequestBaseModel
                     RelateUserPlatform::getDb(),
                     'INSERT'
                 );
+            }
+            //log
+            foreach($logPlatAuthAdd as $k=>$v){
+                LogAuthUser::LogUser($this->user['id'],$k,LogAuthUser::OP_ADD_USER_ROLE,$v);
+            }
+            foreach($logPlatAuthDel as $k=>$v){
+                LogAuthUser::LogUser($this->user['id'],$k,LogAuthUser::OP_DEL_USER_ROLE,$v);
             }
             $trans->commit();
         }catch(\Exception $e){
