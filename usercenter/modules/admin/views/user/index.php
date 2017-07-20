@@ -232,12 +232,13 @@
 
                 <div class="input-group">
                     <span class="input-group-addon" >姓名 <span style="color:red">*</span></span>
-                    <input type="text" id="username" class="form-control" placeholder="" readonly onfocus="this.removeAttribute('readonly');">
+                    <input type="text" id="username" class="form-control" placeholder="">
                 </div>
 
                 <div class="input-group">
                     <span class="input-group-addon" >密码</span>
-                    <input type="password" id="password" class="form-control" placeholder="" readonly onfocus="this.removeAttribute('readonly');">
+                    <input type="password" style="width: 1px; height: 1px; position: absolute; border: 0px; padding: 0px;">
+                    <input type="password" id="password" class="form-control" placeholder="" autocomplete="new-password">
                 </div>
 
                 <div class="input-group">
