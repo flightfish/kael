@@ -210,6 +210,10 @@
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
 
+                <input type="text" style="display:none"/>
+
+                <input type="password" style="display:none"/>
+
                 <div class="input-group">
                     <span class="input-group-addon">手机号 <span style="color:red">*</span></span>
                     <input type="text" id="mobile" class="form-control" placeholder=""  >
@@ -231,7 +235,7 @@
                 </div>
 
                 <div class="input-group">
-                    <span class="input-group-addon" >用户名 <span style="color:red">*</span></span>
+                    <span class="input-group-addon" >姓名 <span style="color:red">*</span></span>
                     <input type="text" id="username" class="form-control" placeholder="" autocomplete="off">
                 </div>
 
@@ -451,7 +455,7 @@
                 title: '用户ID',
             }, {
                 field: 'username',
-                title: '用户名',
+                title: '姓名',
             },{
                 field: 'mobile',
                 title: '手机号码',
