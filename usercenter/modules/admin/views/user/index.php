@@ -117,12 +117,15 @@
         <div style="width: 100px;float: left;">
             <input id="filter-search" type="text"  class="form-control" placeholder="搜索手机号或用户名">
         </div>
-        <div style="width: 100px;float: left;">
-            <input id="filter-subject" type="text"  class="form-control" placeholder="学科">
-        </div>
-        <div style="width: 100px;float: left;">
-            <input id="filter-grade" type="text"  class="form-control" placeholder="学段">
-        </div>
+<!--        <div style="display: none;">-->
+<!--            <div style="width: 100px;float: left;">-->
+<!--                <input id="filter-subject" type="text"  class="form-control" placeholder="学科">-->
+<!--            </div>-->
+<!--            <div style="width: 100px;float: left;">-->
+<!--                <input id="filter-grade" type="text"  class="form-control" placeholder="学段">-->
+<!--            </div>-->
+<!--        </div>-->
+
         <div style="float: left;">
             <button id="search-button" class="btn btn-info">搜索</button>
         </div>
@@ -266,15 +269,19 @@
                     <input type="text" id="idcard" class="form-control" placeholder=""  >
                 </div>
 
-                <div class="input-group">
-                    <span class="input-group-addon" >学科</span>
-                    <input type="text" id="subject" class="form-control" placeholder=""  >
-                </div>
+<!---->
+<!--                <div style="display: none;">-->
+<!--                    <div class="input-group">-->
+<!--                        <span class="input-group-addon" >学科</span>-->
+<!--                        <input type="text" id="subject" class="form-control" placeholder=""  >-->
+<!--                    </div>-->
+<!---->
+<!--                    <div class="input-group">-->
+<!--                        <span class="input-group-addon" >学段</span>-->
+<!--                        <input type="text" id="grade_part" class="form-control" placeholder=""  >-->
+<!--                    </div>-->
+<!--                </div>-->
 
-                <div class="input-group">
-                    <span class="input-group-addon" >学段</span>
-                    <input type="text" id="grade_part" class="form-control" placeholder=""  >
-                </div>
 
 
                 <div class="input-group">
@@ -508,16 +515,16 @@
                     return name;
                 }
             },
-            {
-                field: 'subject_name',
-                title: '学科',
-                width: '5%'
-            },
-            {
-                field: 'grade_part_name',
-                title: '学段',
-                width: '5%'
-            },
+//            {
+//                field: 'subject_name',
+//                title: '学科',
+//                width: '5%'
+//            },
+//            {
+//                field: 'grade_part_name',
+//                title: '学段',
+//                width: '5%'
+//            },
             {
                 field: 'add_time',
                 title: '添加时间',
@@ -573,8 +580,8 @@
                 department:$("#filter-department").val(),
                 platform:$("#filter-platform").val(),
                 search:$("#filter-search").val(),
-                subject:$("#filter-subject").val(),
-                grade:$("#filter-grade").val()
+//                subject:$("#filter-subject").val(),
+//                grade:$("#filter-grade").val()
             }
         };
         return temp;
@@ -632,11 +639,11 @@
                 "status": "0",
                 "add_time": "",
                 "update_time": "",
-                "subject": "-1",
-                "grade_part": "-1",
+//                "subject": "-1",
+//                "grade_part": "-1",
                 "department_id": "-1",
-                "subject_name": "",
-                "grade_part_name": "",
+//                "subject_name": "",
+//                "grade_part_name": "",
                 "admin_department_list": [],
                 "platform_list": [],
                 "role_id": "-1",
@@ -655,8 +662,8 @@
         modal.find('#username_edit').val(row.username);
         modal.find('#sex').val(row.sex);
         modal.find('#idcard').val(row.idcard);
-        modal.find('#subject').val(row.subject);
-        modal.find('#grade_part').val(row.grade_part);
+//        modal.find('#subject').val(row.subject);
+//        modal.find('#grade_part').val(row.grade_part);
         modal.find('#bank_area').val(row.bank_area);
         modal.find('#bank_deposit').val(row.bank_deposit);
         modal.find('#bank_name').val(row.bank_name);
@@ -702,8 +709,8 @@
                         "password":$("#password_edit").val(),
                         "sex":$("#sex").val(),
                         "idcard":$("#idcard").val(),
-                        "subject":$("#subject").val(),
-                        "grade_part":$("#grade_part").val(),
+//                        "subject":$("#subject").val(),
+//                        "grade_part":$("#grade_part").val(),
                         "bank_area":$("#bank_area").val(),
                         "bank_deposit":$("#bank_deposit").val(),
                         "bank_name":$("#bank_name").val(),

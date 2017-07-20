@@ -186,8 +186,8 @@ class User extends RequestBaseModel
                 $where['department_id'] = array_column($departmentList,'department_id');
             }
         }
-        isset($this->filter['subject']) && is_numeric($this->filter['subject']) && $where['subject'] = $this->filter['subject'];
-        isset($this->filter['grade_part']) && is_numeric($this->filter['grade_part']) && $where['grade_part'] = $this->filter['grade_part'];
+//        isset($this->filter['subject']) && is_numeric($this->filter['subject']) && $where['subject'] = $this->filter['subject'];
+//        isset($this->filter['grade_part']) && is_numeric($this->filter['grade_part']) && $where['grade_part'] = $this->filter['grade_part'];
 
         $leftjoin = [];
         if(isset($this->filter['platform']) && $this->filter['platform'] != -1){
@@ -206,8 +206,8 @@ class User extends RequestBaseModel
         $platformEntity = Platform::findAllList();
         //拼装
         foreach($userList as $k=>$v){
-            $v['subject_name'] = empty(Constant::ENUM_SUBJECT[$v['subject']]) ? "未知" : Constant::ENUM_SUBJECT[$v['subject']];
-            $v['grade_part_name'] = empty(Constant::ENUM_GRADE_ALL[$v['grade_part']]) ? "未知" : Constant::ENUM_GRADE_ALL[$v['grade_part']];
+//            $v['subject_name'] = empty(Constant::ENUM_SUBJECT[$v['subject']]) ? "未知" : Constant::ENUM_SUBJECT[$v['subject']];
+//            $v['grade_part_name'] = empty(Constant::ENUM_GRADE_ALL[$v['grade_part']]) ? "未知" : Constant::ENUM_GRADE_ALL[$v['grade_part']];
             $v['admin_department_list'] = [];
             $v['platform_list'] = [];
             $v['role_id'] = $v['admin'];
@@ -429,14 +429,14 @@ class User extends RequestBaseModel
                 array_push($error, '第' . ($k + 1) . '行，部门不存在');
                 continue;
             }
-            if (!isset($v[10]) || !is_numeric($v[10])) {
-                array_push($error, '第' . ($k + 1) . '行，请填写学科');
-                continue;
-            }
-            if (!isset($v[11]) || !is_numeric($v[11])) {
-                array_push($error, '第' . ($k + 1) . '行，请填写学段');
-                continue;
-            }
+//            if (!isset($v[10]) || !is_numeric($v[10])) {
+//                array_push($error, '第' . ($k + 1) . '行，请填写学科');
+//                continue;
+//            }
+//            if (!isset($v[11]) || !is_numeric($v[11])) {
+//                array_push($error, '第' . ($k + 1) . '行，请填写学段');
+//                continue;
+//            }
 
             $MobileOnly = UserCenter::findByMobile($v[1]);
             if (!empty($MobileOnly)) {
@@ -465,8 +465,8 @@ class User extends RequestBaseModel
             '银行区域',7
             '银行卡类型'8,
             '银行卡号',9
-            '学科(0:数学；1:语文；2:英语；3:物理；4:化学；5:生物；6:历史；7:地理；8:政治；9:信息技术)',10
-            '学段(10:小学;20:初中;30:高中;)',11
+//            '学科(0:数学；1:语文；2:英语；3:物理；4:化学；5:生物；6:历史；7:地理；8:政治；9:信息技术)',10
+//            '学段(10:小学;20:初中;30:高中;)',11
         ];
              */
 
@@ -484,8 +484,8 @@ class User extends RequestBaseModel
                 'user_source' => $this->user_source,
                 'user_type' => $allDepartment[intval($v[4])]['is_outer'],//0内部员工 1外包
                 'admin_id' => $this->user['user_id'],
-                'grade_part' => $v[11],
-                'subject' => $v[10],
+//                'grade_part' => $v[11],
+//                'subject' => $v[10],
             ];
         }
         if(!empty($paramsUcenter)){
@@ -528,8 +528,8 @@ class User extends RequestBaseModel
             '银行区域',
             '银行卡类型',
             '银行卡号',
-            '学科(0:数学；1:语文；2:英语；3:物理；4:化学；5:生物；6:历史；7:地理；8:政治；9:信息技术)',
-            '学段(10:小学;20:初中;30:高中;)',
+//            '学科(0:数学；1:语文；2:英语；3:物理；4:化学；5:生物；6:历史；7:地理；8:政治；9:信息技术)',
+//            '学段(10:小学;20:初中;30:高中;)',
 //            '平台权限(逗号分割)('.$platfromStr.')'
         ];
 
