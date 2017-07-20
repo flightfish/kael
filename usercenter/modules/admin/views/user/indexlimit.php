@@ -62,7 +62,7 @@
         var platURL = "/admin/user/platform-by-department-admin" + urlParam;
         var downloadPrivURL = "/admin/user/download-priv"+urlParam;
         var uploadPrivURL = "/admin/user/upload-priv"+urlParam;
-        var updatePriv = "/admin/user/update-priv"+urlParam;
+        var updatePrivURL = "/admin/user/update-priv"+urlParam;
     </script>
 </head>
 
@@ -440,6 +440,8 @@
         var tmpid = button.data('whatever'); // Extract info from data-* attributes
         var modal = $(this);
 
+        $('#modid').val(tmpid);
+
         var row = tmpList[tmpid];
 
         platfromListByDepartWithFunc(row.department_id,function(){
@@ -468,7 +470,7 @@
         });
         $.ajax({
             type:'post',
-            url: uploadPrivURL,
+            url: updatePrivURL,
             data:{
                 type:platformType,
                 id:id,

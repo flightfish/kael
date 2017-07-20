@@ -378,8 +378,15 @@ class User extends RequestBaseModel
 
     public function updatePriv(){
         $this->checkUserAuth();
+
+        //编辑
+        $oldOne = UserCenter::findOneById($this->id);
+        if (empty($oldOne)) {
+            throw new Exception("用户不存在", Exception::ERROR_COMMON);
+        }
+
         //固定权限
-        $platformListAllow = $this->platformListByAdminDepartment();
+        $platformListAllow = $this->platformListByAdminDepartment($oldOne['department_id']);
         $platformListAllow = array_column($platformListAllow,'platform_id');
         if(empty($this->data['platform_list'])){
             $this->data['platform_list'] = [];
@@ -388,17 +395,13 @@ class User extends RequestBaseModel
         }
 
 
-        //编辑
-        $oldOne = UserCenter::findOneById($this->id);
-        if (empty($oldOne)) {
-            throw new Exception("用户不存在", Exception::ERROR_COMMON);
-        }
 
         RelateUserPlatform::updateAll(
             ['status'=>RelateUserPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
             ['user_id' => $this->id,'platform_id'=>$platformListAllow,'status'=>RelateUserPlatform::STATUS_VALID]);
         RelateUserPlatform::batchAdd($this->id,$this->data['platform_list'],$this->user['id']);
         LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_EDIT_USER_ROLE,$this->data);
+        
         return true;
     }
 

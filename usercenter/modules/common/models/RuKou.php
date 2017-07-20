@@ -45,10 +45,17 @@ class RuKou extends RequestBaseModel
         $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id']);
         $platformIds = array_column($relateList,'platform_id');
         $platformList = Platform::findListById($platformIds);
+        $ip = Yii::$app->request->getUserIP();
 
         foreach($platformList as $info){
             if(empty($info['platform_url'])){
                 continue;
+            }
+            if(!empty($info['allow_ips'])){
+                $allowIps = explode(',',$info['allow_ips']);
+                if(!in_array($ip,$allowIps)){
+                    continue;
+                }
             }
             $data[] = [
                 'url' => $info['platform_url'],
