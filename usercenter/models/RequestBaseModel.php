@@ -6,14 +6,9 @@ use common\libs\AES;
 use common\libs\AppFunc;
 use common\libs\Constant;
 use common\libs\UserToken;
-use common\models\EntrystoreAuthUser;
-use common\models\CurlApi;
-use common\models\QselectAuthUser;
-use common\models\QualitysysAuthUser;
 use common\models\UserCenter;
 use usercenter\components\exception\Exception;
 use usercenter\modules\auth\models\UserModel;
-use usercenter\modules\entrystore\user\models\UserApi;
 require_once ('../modules/auth/config/constant.php');
 
 
