@@ -341,13 +341,13 @@ class CommonApi extends RequestBaseModel {
         $clientIPAllow = explode(',',$platformInfo['allow_ips']);
         $serverIP = Yii::$app->request->getUserIP();
         $clientIP = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : "";
-        if(!empty($serverIPList) && !in_array($serverIP,$serverIPList)){
+        if(!empty($platformInfo['server_ips']) && !in_array($serverIP,$serverIPList)){
             throw new Exception('发生异常，请联系管理员',Exception::ERROR_COMMON);
         }
-        if(!empty($clientIPAllow) && !in_array($clientIP,$clientIPAllow)){
+        if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
             throw new Exception('无权访问，请联系管理员',Exception::ERROR_COMMON);
         }
-        $relate = RelateUserPlatform::findListByUserPlatform($this->user['id'],$platformInfo['palatform_id']);
+        $relate = RelateUserPlatform::findListByUserPlatform($this->user['id'],$platformInfo['platform_id']);
         if(empty($relate)){
             throw new Exception('权限不足，请确认有权限后重试',Exception::ERROR_COMMON);
         }
