@@ -7,6 +7,7 @@ class Constant{
     const SWITCH_CACHE = 1;
 
     const LOGIN_TOKEN_NAME = "IUCTOKEN";
+    const LOGIN_TOKEN_HOST = ".knowbox.cn";
 
     ########  产品  ###
     const PRODUCT_KBOX = 1;

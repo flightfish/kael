@@ -207,11 +207,13 @@ class CommonApi extends RequestBaseModel {
 //        }
         return $user;
     }
-    public function encodeToken($mobile,$password){
-        $aes = new AES;
-        $token = $aes->encode($mobile . '||' . $password);
-        return $token;
-    }
+
+//    public function encodeToken($mobile,$password){
+//        $aes = new AES;
+//        $token = $aes->encode($mobile . '||' . $password);
+//        return $token;
+//    }
+
     //登录
     public function Login(){
         $user = CommonUser::findByMobile($this->user_mobile);
@@ -222,16 +224,15 @@ class CommonApi extends RequestBaseModel {
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
-        CommonUser::updateAll(['login_ip'=>strval(Yii::$app->request->userIP)],['user_id'=>$user['id']]);
+        CommonUser::updateAll(['login_ip'=>strval(Yii::$app->request->userIP)],['id'=>$user['id']]);
         $token = UserToken::userToToken($user);
-        $_COOKIE[Constant::LOGIN_TOKEN_NAME] = $token;
-//        $token = $this->encodeToken($user['mobile'],$user['password']);
         $user['token']=$token;
         //记日志
-//        $userLog = self::$_user;
         LogAuthUser::LogLogin($user['id'],LogAuthUser::OP_LOGIN,$user);
+        setcookie(Constant::LOGIN_TOKEN_NAME, $token, time() + 7*24*3600, '/', Constant::LOGIN_TOKEN_HOST);
         return ['token'=>$token];
     }
+
     //登出
     public function LoginOut(){
         //记日志
@@ -243,8 +244,11 @@ class CommonApi extends RequestBaseModel {
             'name'=>$userLog['name'],
         ];
         LogAuthUser::LogLogin($userLog['id'],LogAuthUser::OP_LOGIN_OUT,$data);
+        setcookie(Constant::LOGIN_TOKEN_NAME, "", time() - 3600, '/', Constant::LOGIN_TOKEN_HOST);
         return [];
     }
+
+
     //修改密码
     public function ChangePass(){
         if (empty($this->user_pass) && empty($this->token)) {
@@ -263,7 +267,7 @@ class CommonApi extends RequestBaseModel {
         }
 
         $ret = $this->modifyPassword($user, $this->user_pass, $this->old_pass);
-        $token = $this->encodeToken($user['mobile'],md5($this->user_pass));
+        $token = UserToken::userToToken($user);;
         $user['token']=$token;
         //记日志
         LogAuthUser::LogLogin($user['id'],LogAuthUser::OP_CHANGE_PASS,$user);
@@ -320,7 +324,7 @@ class CommonApi extends RequestBaseModel {
         if (!$verifycode->verifyKey($this->code,$verifycode::getStudentPasswordCodeKey($this->user_mobile))) {
             throw new Exception(Exception::CODE_WRONG,Exception::ERROR_COMMON);
         }
-        $token = $this->encodeToken($user['mobile'],$user['password']);
+        $token = UserToken::userToToken($user);//$this->encodeToken($user['mobile'],$user['password']);
         //记日志
         LogAuthUser::LogLogin($this->user_mobile,LogAuthUser::OP_VERIFY_CODE,$token);
         return ['token'=>$token];

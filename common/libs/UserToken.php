@@ -10,7 +10,10 @@ class UserToken
 {
 
 
-    public static function tokenToUser($token){
+    public static function tokenToUser($token=""){
+        if(empty($token)){
+            $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+        }
         //根据token获取userId
         $token = str_replace(" ", "+", $token);
         $aes = new AES();
