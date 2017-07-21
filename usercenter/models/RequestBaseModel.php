@@ -26,7 +26,7 @@ class RequestBaseModel extends BaseModel
     public function rules()
     {
         return [
-//            [['token'], 'required'],
+            [['token'], 'required'],
             ['token', 'string'],
         ];
     }

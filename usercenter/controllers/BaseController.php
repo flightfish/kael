@@ -1,6 +1,7 @@
 <?php
 namespace usercenter\controllers;
 
+use common\libs\Constant;
 use usercenter\components\exception\Exception;
 use usercenter\components\logs\Log;
 use Yii;
@@ -22,8 +23,7 @@ class BaseController extends Controller
         $this->response = yii::$app->response;
         $this->response->format = \yii\web\Response::FORMAT_JSON;
         $this->loadData = \Yii::$app->request->post();
-        $token = \Yii::$app->request->get('token','');
-        empty($token) && isset($_COOKIE['token']) && $token = $_COOKIE['token'];
+        $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $token = $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
         if($token){
             $this->loadData['token'] = $token;
         }
