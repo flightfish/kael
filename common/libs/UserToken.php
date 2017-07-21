@@ -36,7 +36,8 @@ class UserToken
         if($passwd != $user['password'] || $mobile != $user['mobile'] || $email != $user['email']){
             throw new Exception("登录信息已过期，请重新登录",Exception::ERROR_COMMON);
         }
-        if($noise != $user['login_ip'] ||  !in_array($user['login_ip'],[\Yii::$app->request->userIP,$_SERVER['HTTP_CLIENT_IP']])){
+        $allIpArr = isset($_SERVER['HTTP_CLIENT_IP']) ? [\Yii::$app->request->userIP,$_SERVER['HTTP_CLIENT_IP']] : [\Yii::$app->request->userIP];
+        if($noise != $user['login_ip'] ||  !in_array($user['login_ip'],])){
             throw new Exception('登录信息已过期，请重试',Exception::ERROR_COMMON);
         }
         $user['name'] = $user['username'];
