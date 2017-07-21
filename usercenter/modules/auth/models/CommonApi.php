@@ -230,6 +230,7 @@ class CommonApi extends RequestBaseModel {
         //记日志
         LogAuthUser::LogLogin($user['id'],LogAuthUser::OP_LOGIN,$user);
         setcookie(Constant::LOGIN_TOKEN_NAME, $token, time() + 7*24*3600, '/', Constant::LOGIN_TOKEN_HOST);
+        !isset($_COOKIE['token']) && setcookie('token', $token, time() + 7*24*3600, '/', Constant::LOGIN_TOKEN_HOST);
         return ['token'=>$token];
     }
 
