@@ -23,4 +23,10 @@ class RelateDepartmentPlatform extends \common\models\BaseActiveRecord
        return $query->asArray(true)->all();
    }
 
+    public static function findListByDepartmentPlatform($departmentId,$platformId){
+        $query = self::find()
+            ->where(['department_id'=>$departmentId,'platform_id'=>$platformId,'status'=>self::STATUS_VALID]);
+        return $query->asArray(true)->all();
+    }
+
 }

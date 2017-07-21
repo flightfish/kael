@@ -2,6 +2,7 @@
 
 namespace usercenter\modules\auth\models;
 use common\models\Platform;
+use common\models\RelateDepartmentPlatform;
 use common\models\RelateUserPlatform;
 use common\libs\AES;
 use common\models\CommonUser;
@@ -347,9 +348,14 @@ class CommonApi extends RequestBaseModel {
         if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
             throw new Exception('无权访问，请联系管理员',Exception::ERROR_COMMON);
         }
-        $relate = RelateUserPlatform::findListByUserPlatform($this->user['id'],$platformInfo['platform_id']);
+        //判断部门权限
+        $relate = RelateDepartmentPlatform::findListByDepartmentPlatform($this->user['department_id'],$platformInfo['platform_id']);
         if(empty($relate)){
             throw new Exception('权限不足，请确认有权限后重试',Exception::ERROR_COMMON);
+        }
+        $relate = RelateUserPlatform::findListByUserPlatform($this->user['id'],$platformInfo['platform_id']);
+        if(empty($relate)){
+            throw new Exception('您的权限不足，请确认有权限后重试',Exception::ERROR_COMMON);
         }
         return $this->user;
     }
