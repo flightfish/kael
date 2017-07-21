@@ -37,7 +37,7 @@ class UserToken
             throw new Exception("登录信息已过期，请重新登录",Exception::ERROR_COMMON);
         }
         $allIpArr = isset($_SERVER['HTTP_CLIENT_IP']) ? [\Yii::$app->request->userIP,$_SERVER['HTTP_CLIENT_IP']] : [\Yii::$app->request->userIP];
-        if($noise != $user['login_ip'] ||  !in_array($user['login_ip'],])){
+        if($noise != $user['login_ip'] ||  !in_array($user['login_ip'],$allIpArr)){
             throw new Exception('登录信息已过期，请重试',Exception::ERROR_COMMON);
         }
         $user['name'] = $user['username'];
