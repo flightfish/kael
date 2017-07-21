@@ -4,6 +4,8 @@ namespace usercenter\models;
 
 use common\libs\AES;
 use common\libs\AppFunc;
+use common\libs\Constant;
+use common\libs\UserToken;
 use common\models\EntrystoreAuthUser;
 use common\models\CurlApi;
 use common\models\QselectAuthUser;
@@ -40,19 +42,21 @@ class RequestBaseModel extends BaseModel
     public function getUser(){
         //根据token获取userId
         if(!empty(self::$_user)) return self::$_user;
-        if(empty($this->token)){
-            $this->token = \Yii::$app->request->get('token',"");
-        }
-
-        $userId = $this->getUserIdByToken($this->token);
-
-        $user = UserCenter::findOneById($userId);
-        if(empty($user)){
-            throw new Exception(Exception::COMMON_USER_NOT_EXIST_MSG,Exception::COMMON_USER_NOT_EXIST_CODE);
-        }
-        $user['name'] = $user['username'];
-        $user['user_id'] = $user['id'];
-       self::$_user = $user;
+//        if(empty($this->token)){
+//            $this->token = \Yii::$app->request->get('token',"");
+//        }
+//
+//        $userId = $this->getUserIdByToken($this->token);
+//
+//        $user = UserCenter::findOneById($userId);
+//        if(empty($user)){
+//            throw new Exception(Exception::COMMON_USER_NOT_EXIST_MSG,Exception::COMMON_USER_NOT_EXIST_CODE);
+//        }
+//        $user['name'] = $user['username'];
+//        $user['user_id'] = $user['id'];
+        $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+        $user = UserToken::tokenToUser($token);
+        self::$_user = $user;
         return self::$_user;
     }
 

@@ -1,6 +1,8 @@
 <?php
 
 namespace usercenter\modules\auth\models;
+use common\libs\Constant;
+use common\libs\UserToken;
 use common\models\Platform;
 use common\models\RelateDepartmentPlatform;
 use common\models\RelateUserPlatform;
@@ -220,7 +222,10 @@ class CommonApi extends RequestBaseModel {
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
-        $token = $this->encodeToken($user['mobile'],$user['password']);
+        CommonUser::updateAll(['login_ip'=>strval(Yii::$app->request->userIP)],['user_id'=>$user['id']]);
+        $token = UserToken::userToToken($user);
+        $_COOKIE[Constant::LOGIN_TOKEN_NAME] = $token;
+//        $token = $this->encodeToken($user['mobile'],$user['password']);
         $user['token']=$token;
         //记日志
 //        $userLog = self::$_user;

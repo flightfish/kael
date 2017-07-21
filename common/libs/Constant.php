@@ -6,6 +6,8 @@ class Constant{
 
     const SWITCH_CACHE = 1;
 
+    const LOGIN_TOKEN_NAME = "IUCTOKEN";
+
     ########  产品  ###
     const PRODUCT_KBOX = 1;
     const PRODUCT_SUSUAN = 2;
