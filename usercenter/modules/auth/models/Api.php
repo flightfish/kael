@@ -17,6 +17,7 @@ class Api extends RequestBaseModel {
 
 
     public $where = [];
+    public $where2 = [];
     public $page;
     public $pagesize;
 
@@ -29,8 +30,8 @@ class Api extends RequestBaseModel {
     public function scenarios()
     {
         $scenarios =  parent::scenarios();
-        $scenarios[self::SCENARIO_WHERE] = ['token','where'];
-        $scenarios[self::SCENARIO_WHERE_PAGE] = ['token','where','page','pagesize'];
+        $scenarios[self::SCENARIO_WHERE] = ['token','where','where2'];
+        $scenarios[self::SCENARIO_WHERE_PAGE] = ['token','where','page','pagesize','where2'];
         return $scenarios;
     }
 
@@ -73,6 +74,7 @@ class Api extends RequestBaseModel {
 
         $userList = UserCenter::find()
             ->where($this->where)
+            ->andWhere($this->where2)
             ->andWhere(['status'=>UserCenter::STATUS_VALID])
             ->asArray(true)->all();
         $userIds = array_column($userList,'id');
@@ -91,6 +93,7 @@ class Api extends RequestBaseModel {
     public function getUserListByWhere(){
         $userList = UserCenter::find()
             ->where($this->where)
+            ->andWhere($this->where2)
             ->andWhere(['status'=>UserCenter::STATUS_VALID])
             ->asArray(true)->all();
         return $userList;
