@@ -24,9 +24,22 @@ class RelateUserPlatform extends \common\models\BaseActiveRecord
        return $query->asArray(true)->all();
    }
 
-    public static function findListByPlatform($platformId){
+    public static function findListByPlatformPage($platformId,$page,$pagesize){
+
         $query = self::find()
-            ->where(['platform_id'=>$platformId]);
+            ->distinct('user_id')
+            ->where(['platform_id'=>$platformId,'status'=>self::STATUS_VALID]);
+
+        $query = $query->offset(($page-1)*$pagesize)->limit($pagesize);
+
+        return $query->asArray(true)->all();
+    }
+
+    public static function findListByUserPlatformPage($userId,$platformId = -1,$page,$pagesize){
+        $query = self::find()
+            ->where(['user_id'=>$userId,'status'=>self::STATUS_VALID]);
+        $platformId != -1 && $query = $query->andWhere(['platform_id'=>$platformId]);
+        $query = $query->offset(($page-1)*$pagesize)->limit($pagesize);
         return $query->asArray(true)->all();
     }
 

@@ -367,6 +367,7 @@ class CommonApi extends RequestBaseModel {
         if(empty($relate)){
             throw new Exception('您的权限不足，请确认有权限后重试',Exception::ERROR_COMMON);
         }
+
         return $this->user;
     }
 }
