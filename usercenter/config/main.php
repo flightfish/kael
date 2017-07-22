@@ -20,6 +20,9 @@ return [
         'user' => [
             'class' => 'usercenter\modules\auth\Module',
         ],
+        'auth' => [
+            'class' => 'usercenter\modules\auth\Module',
+        ],
     ],
     'controllerNamespace' => 'usercenter\controllers',
     'components' => [
