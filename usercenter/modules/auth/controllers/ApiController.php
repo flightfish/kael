@@ -39,7 +39,7 @@ class ApiController extends BaseController
 
     public function actionUserListPageByPlatformWhere(){
         try{
-            $model = new Api(['scenario'=>Api::SCENARIO_WHERE]);
+            $model = new Api(['scenario'=>Api::SCENARIO_WHERE_PAGE]);
             $model->load($this->loadData);
             $model->validate();
             $ret = $model->getUserListPageByPlatformWhere();
