@@ -60,7 +60,7 @@ class Api extends RequestBaseModel {
     public function rules()
     {
         return array_merge([
-            [['where'], 'safe'],
+            [['where','where2'], 'safe'],
             [['page','pagesize'], 'integer'],
             [['where'], 'required','on'=>self::SCENARIO_WHERE],
             [['page','pagesize'],'required','on'=>self::SCENARIO_WHERE_PAGE]
@@ -69,16 +69,14 @@ class Api extends RequestBaseModel {
 
 
     public function getUserListByPlatformWhere(){
-
-        $this->getPlatformId();
-
+        
         $userList = UserCenter::find()
             ->where($this->where)
             ->andWhere($this->where2)
             ->andWhere(['status'=>UserCenter::STATUS_VALID])
             ->asArray(true)->all();
         $userIds = array_column($userList,'id');
-        $relate = RelateUserPlatform::findListByUserPlatform($userIds,$this->platform_id);
+        $relate = RelateUserPlatform::findListByUserPlatform($userIds,$this->getPlatformId());
         $userIds = array_column($relate,'user_id');
         $userListFitler = [];
         foreach($userList as $v){
@@ -100,11 +98,12 @@ class Api extends RequestBaseModel {
     }
 
     public function getUserListPageByPlatformWhere(){
+
         $this->pagesize = max($this->pagesize,1);
         $this->page = max($this->page,1);
 
         if(empty($this->where)){
-            $relateList = RelateUserPlatform::findListByPlatformPage($this->platform_id,$this->page,$this->pagesize);
+            $relateList = RelateUserPlatform::findListByPlatformPage($this->getPlatformId(),$this->page,$this->pagesize);
             $userIds = array_column($relateList,'user_id');
             $this->where = ['id'=>$userIds];
             return $this->getUserListByWhere();
