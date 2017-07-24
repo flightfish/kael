@@ -24,14 +24,14 @@ class Api extends RequestBaseModel {
     const SCENARIO_WHERE = "SCENARIO_WHERE";
     const SCENARIO_WHERE_PAGE = "SCENARIO_WHERE_PAGE";
 
-    public $platform_id;
+    public $platform_id = 0;
 
 
     public function scenarios()
     {
         $scenarios =  parent::scenarios();
-        $scenarios[self::SCENARIO_WHERE] = ['token','where','where2'];
-        $scenarios[self::SCENARIO_WHERE_PAGE] = ['token','where','page','pagesize','where2'];
+        $scenarios[self::SCENARIO_WHERE] = ['token','where','where2','platform_id'];
+        $scenarios[self::SCENARIO_WHERE_PAGE] = ['token','where','page','pagesize','where2','platform_id'];
         return $scenarios;
     }
 
@@ -61,7 +61,7 @@ class Api extends RequestBaseModel {
     {
         return array_merge([
             [['where','where2'], 'safe'],
-            [['page','pagesize'], 'integer'],
+            [['page','pagesize','platform_id'], 'integer'],
             [['where'], 'required','on'=>self::SCENARIO_WHERE],
             [['page','pagesize'],'required','on'=>self::SCENARIO_WHERE_PAGE]
         ],parent::rules());

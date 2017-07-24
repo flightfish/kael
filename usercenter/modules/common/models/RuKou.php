@@ -51,6 +51,9 @@ class RuKou extends RequestBaseModel
             if(empty($info['platform_url'])){
                 continue;
             }
+            if(empty($info['is_show'])){
+                continue;
+            }
             if(!empty($info['allow_ips'])){
                 $allowIps = explode(',',$info['allow_ips']);
                 if(!in_array($ip,$allowIps)){
