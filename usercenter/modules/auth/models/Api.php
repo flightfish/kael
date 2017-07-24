@@ -69,7 +69,7 @@ class Api extends RequestBaseModel {
 
 
     public function getUserListByPlatformWhere(){
-        
+
         $userList = UserCenter::find()
             ->where($this->where)
             ->andWhere($this->where2)
@@ -104,12 +104,19 @@ class Api extends RequestBaseModel {
 
         if(empty($this->where)){
             $relateList = RelateUserPlatform::findListByPlatformPage($this->getPlatformId(),$this->page,$this->pagesize);
+            $count = RelateUserPlatform::findCoutByPlatfrom($this->getPlatformId());
             $userIds = array_column($relateList,'user_id');
             $this->where = ['id'=>$userIds];
-            return $this->getUserListByWhere();
+            $list = $this->getUserListByWhere();
         }else{
             $userList = $this->getUserListByPlatformWhere();
-            return array_slice($userList,($this->page - 1),$this->pagesize);
+            $list = array_slice($userList,($this->page - 1),$this->pagesize);
+            $count = count($userList);
         }
+
+        return [
+            'list'=>$list,
+            'total'=>$count,
+        ];
     }
 }

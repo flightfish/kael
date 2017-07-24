@@ -35,6 +35,17 @@ class RelateUserPlatform extends \common\models\BaseActiveRecord
         return $query->asArray(true)->all();
     }
 
+
+    public static function findCoutByPlatfrom($platformId){
+        $query = self::find()
+//            ->distinct('user_id')
+            ->where(['platform_id'=>$platformId,'status'=>self::STATUS_VALID]);
+
+        $count = $query->count('distinct user_id');
+
+        return intval($count);
+    }
+
     public static function findListByUserPlatformPage($userId,$platformId = -1,$page,$pagesize){
         $query = self::find()
             ->where(['user_id'=>$userId,'status'=>self::STATUS_VALID]);
