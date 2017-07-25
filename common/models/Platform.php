@@ -35,4 +35,9 @@ class Platform extends \common\models\BaseActiveRecord
     public static function findAllList(){
         return self::find()->where(['status' => self::STATUS_VALID])->asArray(true)->indexBy('platform_id')->all();
     }
+
+    public static function findOneById($platformId){
+        return self::find()->where(['status'=>self::STATUS_VALID,'platform_id'=>$platformId])
+            ->asArray(true)->one();
+    }
 }

@@ -20,4 +20,18 @@ class WelcomeController extends BaseController
             return $this->error($exception);
         }
     }
+
+    public function actionLoginPlatform(){
+        try {
+            $model = new RuKou(['scenario' => RuKou::SCENARIO_RUKOU]);
+            $model->load($this->loadData);
+            $model->platform_id = Yii::$app->request->get('platform_id','');
+            $model->validate();
+            $url = $model->platformUrlWithLog();
+            return $this->redirect($url);
+//            return $this->success($ret);
+        } catch (\Exception $exception) {
+            return $this->error($exception);
+        }
+    }
 }

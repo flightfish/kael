@@ -15,18 +15,22 @@ class RuKou extends RequestBaseModel
 {
 
     const SCENARIO_RUKOU = "SCENARIO_RUKOU";
+    const SCENARIO_LOGIN_PLATFORM = "SCENARIO_LOGIN_PLATFORM";
+
+    public $platform_id;
 
     public function scenarios()
     {
         $scenarios = parent::scenarios();
         $scenarios[self::SCENARIO_RUKOU] = ['token'];
-
+        $scenarios[self::SCENARIO_LOGIN_PLATFORM] = ['token','platform_id'];
         return $scenarios;
     }
 
     public function rules()
     {
         return array_merge([
+            [['platform_id'],'integer'],
         ], parent::rules());
     }
 
@@ -42,10 +46,15 @@ class RuKou extends RequestBaseModel
         }
         $data = [];
 
-        $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id']);
+        $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],-1);
         $platformIds = array_column($relateList,'platform_id');
         $platformList = Platform::findListById($platformIds);
         $ip = Yii::$app->request->getUserIP();
+
+        usort($platformList,function($a,$b){
+            return ($a['login_time'] == $b['login_time']) ? 0 :(($a['login_time'] < $b['login_time']) ? 1 : -1);
+        });
+
 
         foreach($platformList as $info){
             if(empty($info['platform_url'])){
@@ -61,7 +70,8 @@ class RuKou extends RequestBaseModel
                 }
             }
             $data[] = [
-                'url' => $info['platform_url'],// ."?token=".$this->token,
+                'url'=>'/common/welcome/login-platform?platform_id='.$info['platform_id'],
+//                'url' => $info['platform_url'],// ."?token=".$this->token,
                 'name' => $info['platform_name'],
                 'icon' => $info['platform_icon']
             ];
@@ -72,5 +82,38 @@ class RuKou extends RequestBaseModel
             'username'=>$username
         ];
         return $retData;
+    }
+
+    public function platformUrlWithLog(){
+        if($this->user['user_type'] != self::USER_TYPE_INNER){
+            //非内部员工
+            throw new Exception("权限不足",Exception::ERROR_COMMON);
+        }
+        $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],$this->platform_id);
+        if(empty($relateList)){
+            throw new Exception("权限不足",Exception::ERROR_COMMON);
+        }
+        $platformInfo = Platform::findOneById($this->platform_id);
+        if(empty($platformInfo['platform_url'])){
+            throw new Exception("系统不存在",Exception::ERROR_COMMON);
+        }
+        if(empty($platformInfo['is_show'])){
+            throw new Exception("系统不存在",Exception::ERROR_COMMON);
+        }
+        $ip = Yii::$app->request->getUserIP();
+        if(!empty($platformInfo['allow_ips'])){
+            $allowIps = explode(',',$platformInfo['allow_ips']);
+            if(!in_array($ip,$allowIps)){
+                throw new Exception("权限不存在",Exception::ERROR_COMMON);
+            }
+        }
+        RelateUserPlatform::updateAll(
+            ['login_time'=>date('Y-m-d H:i:s')],
+            [
+                'user_id'=>$this->user['id'],
+                'platform_id'=>$this->platform_id,
+                'status'=>RelateUserPlatform::STATUS_VALID
+            ]);
+        return $platformInfo['platform_url'];
     }
 }
