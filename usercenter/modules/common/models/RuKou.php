@@ -5,6 +5,7 @@ namespace usercenter\modules\common\models;
 use common\models\EntrystoreAuthUser;
 use common\models\CommonModules;
 use common\models\Platform;
+use common\models\RelateDepartmentPlatform;
 use common\models\RelateUserPlatform;
 use common\models\UserCenter;
 use usercenter\components\exception\Exception;
@@ -45,18 +46,26 @@ class RuKou extends RequestBaseModel
             throw new Exception("权限不足",Exception::ERROR_COMMON);
         }
         $data = [];
-
+        $deparmentPlatList = RelateDepartmentPlatform::findListByDepartment($this->user['department_id']);
+        $platformIdsDepartment = array_column($deparmentPlatList,'platform_id');
         $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],-1);
         $platformIds = array_column($relateList,'platform_id');
+        $platformIds = array_intersect($platformIds,$platformIdsDepartment);
         $platformList = Platform::findListById($platformIds);
         $ip = Yii::$app->request->getUserIP();
 
-        usort($platformList,function($a,$b){
+
+        usort($relateList,function($a,$b){
             return ($a['login_time'] == $b['login_time']) ? 0 :(($a['login_time'] < $b['login_time']) ? 1 : -1);
         });
 
 
-        foreach($platformList as $info){
+        foreach($relateList as $relateInfo){
+            $platformId = $relateInfo['platform_id'];
+            if(empty($platformList[$platformId])){
+                continue;
+            }
+            $info = $platformList[$platformId];
             if(empty($info['platform_url'])){
                 continue;
             }
@@ -77,6 +86,9 @@ class RuKou extends RequestBaseModel
             ];
         }
         $username[]['username'] = $this->user['username'];
+
+
+
         $retData = [
             'list'=>array_values($data),
             'username'=>$username
