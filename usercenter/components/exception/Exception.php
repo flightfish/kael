@@ -10,6 +10,9 @@ class Exception extends \yii\base\Exception {
 
     const API_USERCENTER_ERROR = 1001;
 
+    const NOT_LOGIN_CODE = -1;
+    const NOT_LOGIN_MSG = "用户尚未登录,请登陆后操作";
+
     const COMMON_USER_NOT_EXIST_CODE = 404;
     const COMMON_USER_NOT_EXIST_MSG = "用户不存在";
 

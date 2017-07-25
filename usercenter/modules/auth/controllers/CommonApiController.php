@@ -1,6 +1,8 @@
 <?php
 namespace usercenter\modules\auth\controllers;
 
+use common\libs\Constant;
+use usercenter\components\exception\Exception;
 use usercenter\modules\auth\models\CommonApi;
 use usercenter\controllers\BaseController;
 use Yii;
@@ -118,6 +120,18 @@ class CommonApiController extends BaseController
             $model->validate();
             $ret = $model->Login();
             return $this->success($ret);
+        }catch(\Exception $exception){
+            return $this->error($exception);
+        }
+    }
+
+    public function actionIsLogin(){
+        try{
+            $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+            if(empty($token)){
+                throw new Exception(Exception::NOT_LOGIN_MSG,Exception::NOT_LOGIN_CODE);
+            }
+            return $this->success();
         }catch(\Exception $exception){
             return $this->error($exception);
         }
