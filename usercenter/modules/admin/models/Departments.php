@@ -182,8 +182,12 @@ class Departments extends RequestBaseModel
                 'platform_name'=>$platformList[$v['platform_id']]['platform_name'],
             ];
         }
+
         foreach($departmentPlatformList as $k=>$v){
-            $departmentExtPlatform[$v['department_id']][] = $platformList[$v['platform_id']];
+
+            isset($platformList[$v['platform_id']])
+               &&  $departmentExtPlatform[$v['department_id']][] = $platformList[$v['platform_id']];
+
         }
 
         foreach($departmentList as $k=>$v){
