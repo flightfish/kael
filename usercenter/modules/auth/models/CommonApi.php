@@ -237,14 +237,14 @@ class CommonApi extends RequestBaseModel {
     //登出
     public function LoginOut(){
         //记日志
-        parent::getUser();
-        $userLog = self::$_user;
-        $data = [
-            'user_id'=>$userLog['id'],
-            'mobile'=>$userLog['mobile'],
-            'name'=>$userLog['name'],
-        ];
-        LogAuthUser::LogLogin($userLog['id'],LogAuthUser::OP_LOGIN_OUT,$data);
+//        parent::getUser();
+//        $userLog = self::$_user;
+//        $data = [
+//            'user_id'=>$userLog['id'],
+//            'mobile'=>$userLog['mobile'],
+//            'name'=>$userLog['name'],
+//        ];
+//        LogAuthUser::LogLogin($userLog['id'],LogAuthUser::OP_LOGIN_OUT,$data);
         setcookie(Constant::LOGIN_TOKEN_NAME, "", time() - 3600, '/', Constant::LOGIN_TOKEN_HOST);
         return [];
     }
