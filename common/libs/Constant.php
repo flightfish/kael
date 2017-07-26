@@ -8,6 +8,7 @@ class Constant{
 
     const LOGIN_TOKEN_NAME = "UCENTER_IUCTOKEN";
     const LOGIN_TOKEN_HOST = ".knowbox.cn";
+    const LOGIN_TOKEN_TIME = 7*24*3600;
 
     ########  产品  ###
     const PRODUCT_KBOX = 1;
