@@ -3,7 +3,7 @@ return [
     'components' => [
         'db' => [//用户中心
             'class' => 'yii\db\Connection',
-            'dsn' => 'mysql:host=10.10.48.120;port=3308;dbname=usercenter_new',
+            'dsn' => 'mysql:host=10.10.48.120;port=3308;dbname=usercenter_new2',
             'username' => 'lyj',
             'password' => 'lyj123',
             'charset' => 'utf8',

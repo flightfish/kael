@@ -78,4 +78,4 @@ ALTER TABLE `user`
 ADD `email` varchar(20) NOT NULL DEFAULT '',
 ADD `department_id` int(11) NOT NULL DEFAULT '0',
 ADD  `login_ip` varchar(100) NOT NULL COMMENT '上次登录ip',
-ADD INDEX ('email');
+ADD INDEX (email);
