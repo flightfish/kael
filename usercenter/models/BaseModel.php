@@ -2,6 +2,7 @@
 
 namespace usercenter\models;
 
+use common\libs\Constant;
 use usercenter\components\exception\Exception;
 use yii\base\Model;
 
@@ -30,6 +31,12 @@ class BaseModel extends Model
 
     public function load($data, $formName = null)
     {
+        if(!isset($data['auth_platform_id'])){
+            $data['auth_platform_id'] = \Yii::$app->request->post('auth_platform_id',0);
+        }
+
+        $data['token'] = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+
         $this->sourceLoadData = $data;
         if($formName === null){
             $data = ['dataForm'=>$data];

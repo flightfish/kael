@@ -23,10 +23,10 @@ class BaseController extends Controller
         $this->response = yii::$app->response;
         $this->response->format = \yii\web\Response::FORMAT_JSON;
         $this->loadData = \Yii::$app->request->post();
-        $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $token = $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
-        if($token){
-            $this->loadData['token'] = $token;
-        }
+//        $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $token = $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+//        if($token){
+//            $this->loadData['token'] = $token;
+//        }
         parent::init();
     }
 

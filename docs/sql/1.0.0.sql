@@ -14,6 +14,7 @@ CREATE TABLE `platform` (
   `platform_id` int(11) NOT NULL AUTO_INCREMENT,
   `platform_name` varchar(100) NOT NULL DEFAULT '' COMMENT '名称',
   `platform_url` varchar(255) NOT NULL DEFAULT '' COMMENT '平台地址',
+  `platform_api` varchar(255) NOT NULL DEFAULT '' COMMENT '平台接口地址',
   `platform_icon` varchar(255) NOT NULL DEFAULT '' COMMENT '平台图标',
   `server_ips` varchar(255) NOT NULL DEFAULT '' COMMENT '服务器ip 逗号分割',
   `allow_ips` varchar(200) NOT NULL DEFAULT '' COMMENT '访问ip白名单 逗号分割 空为不限制',

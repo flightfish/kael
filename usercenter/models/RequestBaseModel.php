@@ -23,9 +23,13 @@ class RequestBaseModel extends BaseModel
 
     public $token;
 
+    public $auth_platform_id = 0;
+
+
     public function rules()
     {
         return [
+            [['auth_platform_id'],'integer'],
             [['token'], 'required'],
             ['token', 'string'],
         ];

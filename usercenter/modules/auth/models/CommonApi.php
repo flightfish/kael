@@ -14,6 +14,7 @@ use usercenter\models\RequestBaseModel;
 use Yii;
 class CommonApi extends RequestBaseModel {
 
+
     public $page=1;
     public $pagesize=20;
     public $userId=[1,2,3];
@@ -71,7 +72,7 @@ class CommonApi extends RequestBaseModel {
         $scenarios[self::SCENARIO_USER_BYTOKEN] = ['token'];
         $scenarios[self::SCENARIO_USER_BYID] = ['token','userId'];
         $scenarios[self::SCENARIO_USER_BYMOBILE] = ['token','mobile'];
-        $scenarios[self::SCENARIO_CHECK_PLATFORM_AUTH] = ['token'];
+        $scenarios[self::SCENARIO_CHECK_PLATFORM_AUTH] = ['token','auth_platform_id'];
         return $scenarios;
     }
 
@@ -344,7 +345,7 @@ class CommonApi extends RequestBaseModel {
         if(empty($host)){
             throw new Exception('权限不足，请联系系统管理员',Exception::ERROR_COMMON);
         }
-        $platformInfo = Platform::findOneByHost($host);
+        $platformInfo = Platform::findOneByHost($host,$this->auth_platform_id);
         if(empty($platformInfo)){
             throw new Exception('权限不足，请联系管理员',Exception::ERROR_COMMON);
         }

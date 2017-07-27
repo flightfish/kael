@@ -18,11 +18,15 @@ class Platform extends \common\models\BaseActiveRecord
     }
 
 
-    public static function findOneByHost($host){
+    public static function findOneByHost($host,$platformId){
         if(empty($host)){
             return null;
         }
-        return self::find()->where(['status'=>self::STATUS_VALID])->andWhere(['like','platform_url',$host])->asArray(true)->one();
+        if(empty($platformId)){
+            return self::find()->where(['status'=>self::STATUS_VALID])->andWhere(['like','platform_url',$host])->asArray(true)->one();
+        }else{
+            return self::find()->where(['status'=>self::STATUS_VALID,'platform_id'=>$platformId])->andWhere(['like','platform_api',$host])->asArray(true)->one();
+        }
     }
 
     public static function findListById($platformId){

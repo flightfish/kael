@@ -48,7 +48,7 @@ class Api extends RequestBaseModel {
         if(empty($host)){
             throw new Exception('权限不足，请联系系统管理员',Exception::ERROR_COMMON);
         }
-        $platformInfo = Platform::findOneByHost($host);
+        $platformInfo = Platform::findOneByHost($host,$this->auth_platform_id);
         if(empty($platformInfo)){
             throw new Exception('权限不足，请联系管理员',Exception::ERROR_COMMON);
         }
