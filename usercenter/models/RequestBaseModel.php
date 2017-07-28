@@ -30,7 +30,7 @@ class RequestBaseModel extends BaseModel
     {
         return [
             [['auth_platform_id'],'integer'],
-            [['token'], 'required'],
+//            [['token'], 'required'],
             ['token', 'string'],
         ];
     }
