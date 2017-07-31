@@ -53,7 +53,7 @@ class RequestBaseModel extends BaseModel
 //        }
 //        $user['name'] = $user['username'];
 //        $user['user_id'] = $user['id'];
-        $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+        $token = UserToken::getToken();
         if(empty($token)){
             throw new Exception(Exception::NOT_LOGIN_MSG,Exception::NOT_LOGIN_CODE);
         }

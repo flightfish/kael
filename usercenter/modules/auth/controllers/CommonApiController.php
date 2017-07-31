@@ -2,6 +2,7 @@
 namespace usercenter\modules\auth\controllers;
 
 use common\libs\Constant;
+use common\libs\UserToken;
 use usercenter\components\exception\Exception;
 use usercenter\modules\auth\models\CommonApi;
 use usercenter\controllers\BaseController;
@@ -127,7 +128,7 @@ class CommonApiController extends BaseController
 
     public function actionIsLogin(){
         try{
-            $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+            $token = UserToken::getToken();
             if(empty($token)){
                 throw new Exception(Exception::NOT_LOGIN_MSG,Exception::NOT_LOGIN_CODE);
             }

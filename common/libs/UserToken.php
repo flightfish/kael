@@ -9,10 +9,18 @@ use usercenter\components\exception\Exception;
 class UserToken
 {
 
+    public static function getToken(){
+        $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+        if(empty($token)){
+            $token = \Yii::$app->request->get('token',"");
+        }
+        return $token;
+    }
+
 
     public static function tokenToUser($token=""){
         if(empty($token)){
-            $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+            $token = self::getToken();
         }
         //根据token获取userId
         $token = str_replace(" ", "+", $token);

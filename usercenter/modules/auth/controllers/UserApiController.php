@@ -155,7 +155,7 @@ class UserApiController extends Controller
     public function actionGetUserid()
     {
 //        $token = Yii::$app->request->getQueryParam('token', '');
-        $token = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+        $token = UserToken::getToken();
         $user = UserToken::tokenToUser($token);
 
 //        $token = str_replace(" ", "+", $token);

@@ -3,6 +3,7 @@
 namespace usercenter\models;
 
 use common\libs\Constant;
+use common\libs\UserToken;
 use usercenter\components\exception\Exception;
 use yii\base\Model;
 
@@ -35,7 +36,7 @@ class BaseModel extends Model
             $data['auth_platform_id'] = \Yii::$app->request->post('auth_platform_id',0);
         }
 
-        $data['token'] = isset($_COOKIE[Constant::LOGIN_TOKEN_NAME]) ? $_COOKIE[Constant::LOGIN_TOKEN_NAME] : "";
+        $data['token'] = UserToken::getToken();
 
         $this->sourceLoadData = $data;
         if($formName === null){
