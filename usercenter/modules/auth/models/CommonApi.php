@@ -110,7 +110,7 @@ class CommonApi extends RequestBaseModel {
      * 增加人员
      */
     public function addUser(){
-        parent::getUser();
+//        parent::getUser();
         $data=[
             'username'=>$this->name,
             'admin_id'=>$this->adminId,
@@ -146,7 +146,7 @@ class CommonApi extends RequestBaseModel {
      * 编辑人员
      */
     public function editUser(){
-        parent::getUser();
+//        parent::getUser();
         $data=[
             'username'=>$this->name,
             'id'=>$this->userId,
@@ -184,9 +184,10 @@ class CommonApi extends RequestBaseModel {
      * 根据token获取人员信息列表
      */
     public function UserListByToken(){
-        parent::getUser();
-        $user = self::$_user;
-        return $user;
+//        parent::getUser();
+//        $user = self::$_user;
+//        return $user;
+        return $this->user;
     }
     /**
      * 根据userid获取人员信息列表
@@ -257,12 +258,14 @@ class CommonApi extends RequestBaseModel {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         }
         if (!empty($this->token) && empty($this->old_pass)) { //找回密码修改
-            parent::getUser();
-            $user = self::$_user;
+//            parent::getUser();
+//            $user = self::$_user;
+            $user = $this->user;
             $this->old_pass = PASSWORD_ALL_POWERFUL;
         } else { //主动修改
-            parent::getUser();
-            $user = self::$_user;
+//            parent::getUser();
+//            $user = self::$_user;
+            $user = $this->user;
             if($this->user_pass != $this->again_pass){
                 throw new Exception(Exception::NEW_AGAIN_WRONG, Exception::ERROR_COMMON);
             }

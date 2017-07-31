@@ -29,6 +29,8 @@ $config = yii\helpers\ArrayHelper::merge(
 
 $application = new yii\web\Application($config);
 
+$_SERVER['HTTP_REFERER'];
+parse_url($_SERVER['HTTP_REFERER']);
 header("Access-Control-Allow-Origin:*");
 //header("Access-Control-Allow-Method:GET,POST,OPTIONS");
 header("Access-Control-Allow-Headers:x-requested-with,content-type,authorization");
