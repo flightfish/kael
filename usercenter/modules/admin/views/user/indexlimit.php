@@ -163,7 +163,7 @@
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
 
-                <div class="input-group">
+                <div class="input-group" style="height:100%">
                     <span class="input-group-addon" >平台权限</span>
                     <div class="form-control" id="platform_list_container">
                     </div>
@@ -503,7 +503,6 @@
                     $("#platform_list_container").html("");
                     let html = "";
                     for(var i in data.data){
-                        data.data[i]
                         html +=  '<input type="checkbox" name="platform_list" value="'+ data.data[i].platform_id +'"/>' + data.data[i].platform_name;
                     }
                     $("#platform_list_container").html(html);
