@@ -11,7 +11,7 @@ class BaseCache extends Component
     const CACHE_TIME_ONE_HOUR = 3600;
     const CACHE_TIME_TEN_MINUTES = 600;
 
-    const CACHE_PREFIX = "entrystore:";
+    const CACHE_PREFIX = "ucenter:";
 
     public static function gen()
     {
