@@ -2,7 +2,8 @@
 
 $requestUri = $_SERVER["REQUEST_URI"];
 if(empty($requestUri)|| $requestUri == '/'){
-    header('Location:/login.html');
+//    header('Location:/login.html');
+    header('Location:/html/index.html');
     exit();
 }
 //if(false === stripos($queryString,'token')){
