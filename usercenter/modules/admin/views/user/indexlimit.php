@@ -163,9 +163,9 @@
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
 
-                <div class="input-group" style="height:100%">
+                <div class="input-group">
                     <span class="input-group-addon" >平台权限</span>
-                    <div class="form-control" id="platform_list_container">
+                    <div class="form-control" id="platform_list_container"  style="height:100%">
                     </div>
                 </div>
 
