@@ -503,7 +503,7 @@
                     $("#platform_list_container").html("");
                     let html = "";
                     for(var i in data.data){
-                        html +=  '<input type="checkbox" name="platform_list" value="'+ data.data[i].platform_id +'"/>' + data.data[i].platform_name;
+                        html +=  '<div style="width:30%;float:left;"><input type="checkbox" name="platform_list" value="'+ data.data[i].platform_id +'"/>' + data.data[i].platform_name + "</div>";
                     }
                     html += '<div style="clear:both"></div>';
                     $("#platform_list_container").html(html);
