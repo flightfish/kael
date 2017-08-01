@@ -505,6 +505,7 @@
                     for(var i in data.data){
                         html +=  '<input type="checkbox" name="platform_list" value="'+ data.data[i].platform_id +'"/>' + data.data[i].platform_name;
                     }
+                    html += '<div style="clear:both"></div>';
                     $("#platform_list_container").html(html);
                 }else{
                     alert(data.message);
