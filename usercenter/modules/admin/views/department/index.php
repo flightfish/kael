@@ -183,7 +183,7 @@
             },{
                 field: 'platform_list',
                 title: '平台权限',
-                width:"30%"
+                width:"30%",
                 formatter:function(value,row,index){
                     var name = "";
                     for(var i in value){
@@ -197,7 +197,7 @@
             },{
                 field: 'admin_list',
                 title: '部门管理员',
-                width:"30%"
+                width:"30%",
                 formatter:function(value,row,index){
                     var name = "";
                     for(var i in value){
