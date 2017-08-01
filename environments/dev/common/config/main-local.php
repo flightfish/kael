@@ -11,7 +11,7 @@ return [
         'redis' => [
             'class' => 'usercenter\components\cache\Redis',
             'hostname' => 'localhost',
-            'port' => 6397,
+            'port' => 6379,
             'database' => 0,
         ],
         'mailer' => [
