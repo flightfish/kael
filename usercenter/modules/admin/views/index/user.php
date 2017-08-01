@@ -50,7 +50,7 @@ $this->title = '人员管理';
 <!--                    <a href="javascript:;" class="active J_menuTab" data-id="index_v1.html">用户管理</a>-->
 <!--                </div>-->
 <!--            </nav>-->
-            <a href="<?=Url::toRoute('/nav.html')?>" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
+            <a href="/" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
         </div>
         <div class="row J_mainContent" id="content-main">
             <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="" frameborder="0" data-id="index_v1.html" seamless></iframe>
