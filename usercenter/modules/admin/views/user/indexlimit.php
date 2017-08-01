@@ -304,12 +304,11 @@
             {
                 field: 'department_name',
                 title: '所属部门',
-                width: '10%'
             },
             {
                 field: 'platform_list',
                 title: '平台权限',
-                width: '10%',
+                width: '30%',
                 formatter:function(value,row,index){
                     var name = "";
                     for(var i in value){
@@ -324,7 +323,6 @@
             {
                 field: 'admin_department_list',
                 title: '可管理部门',
-                width: '10%',
                 formatter:function(value,row,index){
                     var name = "";
                     for(var i in value){
@@ -339,22 +337,18 @@
             {
                 field: 'subject_name',
                 title: '学科',
-                width: '5%'
             },
             {
                 field: 'grade_part_name',
                 title: '学段',
-                width: '5%'
             },
             {
                 field: 'add_time',
                 title: '添加时间',
-                width: '15%'
             },
             {
                 field: 'update_time',
                 title: '修改时间',
-                width: '15%'
             },
             {
                 field: 'caozuo',

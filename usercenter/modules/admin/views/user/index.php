@@ -493,7 +493,7 @@
             {
                 field: 'platform_list',
                 title: '平台权限',
-                width: '10%',
+                width: '30%',
                 formatter:function(value,row,index){
                     var name = "";
                     for(var i in value){
@@ -508,7 +508,6 @@
             {
                 field: 'admin_department_list',
                 title: '可管理部门',
-                width: '10%',
                 formatter:function(value,row,index){
                     var name = "";
                     for(var i in value){
@@ -533,12 +532,10 @@
             {
                 field: 'add_time',
                 title: '添加时间',
-                width: '15%'
             },
             {
                 field: 'update_time',
                 title: '修改时间',
-                width: '15%'
             },
             {
                 field: 'caozuo',
