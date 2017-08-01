@@ -192,6 +192,7 @@
                         }
                         name = name + value[i].platform_name
                     }
+                    name = '<div style="max-height:100px;overflow-y:scroll;">'+name+'<div style="max-height:100px;overflow-y:scroll;">';
                     return name;
                 }
             },{
@@ -213,6 +214,7 @@
                         }
                         name += ')';
                     }
+                    name = '<div style="max-height:100px;overflow-y:scroll;">'+name+'<div style="max-height:100px;overflow-y:scroll;">';
                     return name;
                 }
             },
