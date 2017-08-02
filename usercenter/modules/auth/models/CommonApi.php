@@ -333,6 +333,7 @@ class CommonApi extends RequestBaseModel {
         $token = UserToken::userToToken($user);//$this->encodeToken($user['mobile'],$user['password']);
         //记日志
         LogAuthUser::LogLogin($this->user_mobile,LogAuthUser::OP_VERIFY_CODE,$token);
+        setcookie(Constant::LOGIN_TOKEN_NAME, $token, time() + Constant::LOGIN_TOKEN_TIME, '/', Constant::LOGIN_TOKEN_HOST);
         return ['token'=>$token];
     }
 
