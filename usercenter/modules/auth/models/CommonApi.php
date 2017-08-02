@@ -272,7 +272,7 @@ class CommonApi extends RequestBaseModel {
         }
 
         $ret = $this->modifyPassword($user, $this->user_pass, $this->old_pass);
-        $user['password'] = $this->user_pass;
+        $user['password'] = md5($this->user_pass);
         $token = UserToken::userToToken($user);;
         $user['token']=$token;
         //记日志
