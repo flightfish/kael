@@ -47,7 +47,7 @@ class UserToken
         $allIpArr = [];
         $allIpArr[] = \Yii::$app->request->userIP;
         isset($_SERVER['HTTP_CLIENT_IP']) && $allIpArr[] = $_SERVER['HTTP_CLIENT_IP'];
-        isset(\Yii::$app->request->headers['x-real-ip']) && $allIpArr[] = \Yii::$app->request->headers['x-real-ip'][0];
+        isset(\Yii::$app->request->headers['x-real-ip']) && $allIpArr[] = \Yii::$app->request->headers['x-real-ip'];
         if($noise != $user['login_ip'] ||  !in_array($user['login_ip'],$allIpArr)){
             throw new Exception('登录信息已过期，请重试',Exception::ERROR_COMMON);
         }
