@@ -272,6 +272,7 @@ class CommonApi extends RequestBaseModel {
         }
 
         $ret = $this->modifyPassword($user, $this->user_pass, $this->old_pass);
+        $user['password'] = $this->user_pass;
         $token = UserToken::userToToken($user);;
         $user['token']=$token;
         //记日志
@@ -286,11 +287,12 @@ class CommonApi extends RequestBaseModel {
     {
         if ($userInfo['password'] == md5($oldPassword) || $oldPassword == PASSWORD_ALL_POWERFUL) {
             $ret = CommonUser::modifyPassword($userInfo['id'], md5($password));
-            if (!$ret) {
-                throw new Exception(Exception::CHANGE_PASS_WRONG, Exception::ERROR_COMMON);
-            } else {
-                return true;
-            }
+            return true;
+//            if (!$ret) {
+//                throw new Exception(Exception::CHANGE_PASS_WRONG, Exception::ERROR_COMMON);
+//            } else {
+//                return true;
+//            }
         } else {
             throw new Exception(Exception::OLD_PASS_WRONG, Exception::ERROR_COMMON);
         }
