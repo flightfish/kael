@@ -44,7 +44,10 @@ class UserToken
         if($passwd != $user['password'] || $mobile != $user['mobile'] || $email != $user['email']){
             throw new Exception("登录信息已过期，请重新登录",Exception::ERROR_COMMON);
         }
-        $allIpArr = isset($_SERVER['HTTP_CLIENT_IP']) ? [\Yii::$app->request->userIP,$_SERVER['HTTP_CLIENT_IP']] : [\Yii::$app->request->userIP];
+        $allIpArr = [];
+        $allIpArr[] = \Yii::$app->request->userIP;
+        isset($_SERVER['HTTP_CLIENT_IP']) && $allIpArr[] = $_SERVER['HTTP_CLIENT_IP'];
+        isset(\Yii::$app->request->headers['x-real-ip']) && $allIpArr[] = \Yii::$app->request->headers['x-real-ip'][0];
         if($noise != $user['login_ip'] ||  !in_array($user['login_ip'],$allIpArr)){
             throw new Exception('登录信息已过期，请重试',Exception::ERROR_COMMON);
         }
