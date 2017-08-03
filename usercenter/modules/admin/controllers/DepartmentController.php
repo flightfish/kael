@@ -1,6 +1,7 @@
 <?php
 namespace usercenter\modules\admin\controllers;
 
+use common\models\Platform;
 use common\models\Role;
 use common\models\UserCenter;
 use usercenter\controllers\BaseController;
@@ -17,9 +18,11 @@ class DepartmentController extends BaseController{
     {
         try{
             $adminList = UserCenter::findListByRole([Role::ROLE_ADMIN,Role::ROLE_DEPARTMENT_ADMIN]);
+            $platformList = Platform::findAllList();
             Yii::$app->response->format = \yii\web\Response::FORMAT_HTML;
             return $this->renderPartial('index',[
-                'adminList'=>$adminList
+                'adminList'=>$adminList,
+                'platformList'=>$platformList
             ]);
         }catch(\Exception $e){
             $this->error($e);
@@ -53,12 +56,24 @@ class DepartmentController extends BaseController{
 
 
 
-    public function actionEdit(){
+    public function actionEditAdmin(){
         try{
-            $model = new Departments(['scenario'=>User::SCENARIO_EDIT]);
+            $model = new Departments(['scenario'=>Departments::SCENARIO_EDIT]);
             $model->load($this->loadData);
             $model->validate();
-            $model->edit();
+            $model->editAdmin();
+            return $this->success();
+        }catch(\Exception $e){
+            return $this->error($e);
+        }
+    }
+
+    public function actionEditDepartment(){
+        try{
+            $model = new Departments(['scenario'=>Departments::SCENARIO_EDIT_DEPARTMENT]);
+            $model->load($this->loadData);
+            $model->validate();
+            $model->editDepartment();
             return $this->success();
         }catch(\Exception $e){
             return $this->error($e);

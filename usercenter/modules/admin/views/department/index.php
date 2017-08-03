@@ -56,7 +56,8 @@
     <script>
         var urlParam = "?token="+$.cookie('token' )+ "&source=admin";
         var listURL = "/admin/department/list"+urlParam;
-        var editURL = "/admin/department/edit"+urlParam;
+        var editDepatmentURL = "/admin/department/edit-department"+urlParam;
+        var editAdminURL = "/admin/department/edit-admin"+urlParam;
         var delURL = "/admin/department/del"+urlParam;
         var platURL = "/admin/user/platform-by-department-admin" + urlParam;
     </script>
@@ -76,12 +77,17 @@
 
     <div style="width: 100%;">
 
+
         <div style="width: 300px;float: left;">
             <input id="filter-search" type="text"  class="form-control" placeholder="搜索部门名称">
         </div>
         <div style="float: left;">
             <button id="search-button" class="btn btn-info">搜索</button>
         </div>
+        <div style="float: left;">
+            <button class="btn btn-success" data-toggle="modal" data-target="#editDepartModal" data-whatever="0">新建部门</button>
+        </div>
+
     </div>
 
 </div>
@@ -107,9 +113,9 @@
                     </select>
                 </div>
 
-                <div class="input-group">
+                <div class="input-group" >
                     <span class="input-group-addon" >平台权限</span>
-                    <div class="form-control" id="platform_list_container">
+                    <div style="height: 100%;" class="form-control" id="platform_list_container">
 
                     </div>
                 </div>
@@ -118,6 +124,48 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal" id="closebtn">关闭</button>
                 <button type="button" class="btn btn-primary" id="saveedit" onclick="edit(1)">保存当前管理员配置</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal inmodal fade" id="editDepartModal" tabindex="-1" role="dialog"  aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="modal-title2">编辑</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modid-department" value="">
+
+                <div class="input-group">
+                    <span class="input-group-addon" >部门名称</span>
+                    <input id="department_name_edit" value="" class="form-control"/>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" >部门类型</span>
+                    <select id="is_outer" value="-1" class="form-control">
+                        <option value="-1">请选择</option>
+                        <option value="0">公司内部</option>
+                        <option value="1">外包</option>
+                    </select>
+                </div>
+                <div  class="input-group">
+                    <span class="input-group-addon" >部门权限</span>
+                    <div class="form-control" id="platform_list_container2"  style="height: 100%;">
+                        <?php foreach($platformList as $v) :?>
+                            <div style="width: 30%;float: left"><input type="checkbox" name="platform_list_edit" value="<?php echo $v['platform_id'];?>"/><?php echo $v['platform_name'];?></div>
+                        <?php endforeach;?>
+                        <div style='clear: both'></div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" data-dismiss="modal" id="closebtn-department">关闭</button>
+                <button type="button" class="btn btn-primary" id="saveedit-department" onclick="editDepartment(1)">保存</button>
             </div>
         </div>
     </div>
@@ -227,7 +275,8 @@
                     var id = row.department_id;
                     tmpList[id] = row;
                     var btnhtml = '<div class="btn-group" role="group">'+
-                        '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editAdminModal" data-whatever="'+ id +'">编辑</button>'+
+                        '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#editAdminModal" data-whatever="'+ id +'">管理员编辑</button>'+
+                        '<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#editDepartModal" data-whatever="'+ id +'">部门编辑</button>'+
                         '<button class="btn btn-danger btn-sm" onclick="setdel('+ id +')">删除</button>'+
                         '</div>';
                     return btnhtml;
@@ -308,8 +357,17 @@
                 $("input[name='platform_list'][value='"+ tmpList[departmentId]['admin_list'][i]['platform_list'][j]['platform_id'] +"']").prop("checked", true);
             }
         }
+    }
 
-
+    function updatePlatCheckDepartment(){
+        let departmentId = $("#modid-department").val();
+        $("input[name='platform_list_edit']").prop("checked", false);
+        if(tmpList[departmentId]){
+            for(let i in tmpList[departmentId]['platform_list']){
+                console.log(tmpList[departmentId]['platform_list'][i]['platform_id'])
+                $("input[name='platform_list_edit'][value='"+ tmpList[departmentId]['platform_list'][i]['platform_id'] +"']").prop("checked", true);
+            }
+        }
     }
 
 
@@ -324,6 +382,24 @@
         $("#admin_user").val(-1);
     });
 
+    $('#editDepartModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var tmpid = button.data('whatever'); // Extract info from data-* attributes
+        var modal = $(this);
+        if(tmpList[tmpid]){
+            $("#department_name_edit").val(tmpList[tmpid]['department_name']);
+            $("#modal-title2").html("编辑");
+            $("#is_outer").val(tmpList[tmpid]['is_outer']);
+        }else{
+            $("#department_name_edit").val("");
+            $("#modal-title2").html("新建");
+            $("#is_outer").val(-1);
+        }
+        $("#modid-department").val(tmpid);
+
+        updatePlatCheckDepartment();
+    });
+
     function edit(is_old){
         var id = is_old ? $('#modid').val() : 0;
         var platform_list_checked = $('input[name="platform_list"]:checked');
@@ -334,7 +410,7 @@
         });
         $.ajax({
             type:'post',
-            url: editURL,
+            url: editAdminURL,
             data:{
                 department_id:id,
                 user_id:$("#admin_user").val(),
@@ -352,6 +428,40 @@
         });
     };
 
+    function editDepartment(is_old){
+        var id = is_old ? $('#modid-department').val() : 0;
+        var platform_list_checked = $('input[name="platform_list_edit"]:checked');
+        var platform_list = [];
+        $.each(platform_list_checked, function () {
+            var platform_id = $(this).val()
+            platform_list.push(platform_id);
+        });
+        if($("#is_outer").val() == -1){
+            alert("请选择部门类型");
+            return false;
+        }
+        $.ajax({
+            type:'post',
+            url: editDepatmentURL,
+            data:{
+                department_id:id,
+                department_name:$("#department_name_edit").val(),
+                is_outer:$("#is_outer").val(),
+                platform_list: platform_list,
+            },
+            success:function(data){
+                if(data.code==0){
+                    alert("操作成功");
+                    $("#closebtn-department").click();
+                    $("#mytable").bootstrapTable("refresh");
+                }else{
+                    alert(data.message);
+                }
+            }
+        });
+    };
+
+
     function platfromListByDepart(department_id){
         var adminList = tmpList[department_id]['admin_list'];
         $.ajax({
@@ -366,10 +476,10 @@
                     $("#platform_list_container").html("");
                     let html = "";
                     for(var i in data.data){
-                        html +=  '<input type="checkbox" name="platform_list" value="'+ data.data[i].platform_id +'"/>' + data.data[i].platform_name;
+                        html +=  '<div style="width: 30%;float: left""><input type="checkbox" name="platform_list" value="'+ data.data[i].platform_id +'"/>' + data.data[i].platform_name+"</div>";
                     }
+                    html +="<div style='clear: both'></div>";
                     $("#platform_list_container").html(html);
-
                 }else{
                     alert(data.message);
                 }

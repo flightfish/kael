@@ -26,6 +26,9 @@ class Departments extends RequestBaseModel
     const SCENARIO_USER_UPLOAD = "SCENARIO_USER_UPLOAD";
     const SCENARIO_USER_DOWNLOAD = "SCENARIO_USER_DOWNLOAD";
     const SCENARIO_PLAT_BY_DEPARTMENT = "SCENARIO_PLAT_BY_DEPARTMENT";
+    const SCENARIO_EDIT_DEPARTMENT = "SCENARIO_EDIT_DEPARTMENT";
+
+
     public $page = 1;
     public $pagesize = 20;
     public $data = [];
@@ -39,14 +42,17 @@ class Departments extends RequestBaseModel
     public $department_id;
     public $user_id;
     public $platform_list;
+    public $department_name;
+    public $is_outer;
 
 
     public function rules()
     {
         return array_merge([
-            [['page', 'pagesize', 'id','department_id','user_id'], 'integer'],
-            [['type', 'mobile'], 'string'],
+            [['page', 'pagesize', 'id','department_id','user_id','is_outer'], 'integer'],
+            [['type', 'mobile','department_name'], 'string'],
             [[ 'user_id','department_id'], 'required', 'on' => self::SCENARIO_EDIT],
+            [[ 'department_name','department_id','is_outer'], 'required', 'on' => self::SCENARIO_EDIT_DEPARTMENT],
             [['id'], 'required', 'on' => self::SCENARIO_DEL],
             [['page', 'pagesize'], 'required', 'on' => self::SCENARIO_LIST],
             [['data', 'filter','platform_list'], 'safe']
@@ -208,6 +214,10 @@ class Departments extends RequestBaseModel
     public function del()
     {
         $this->checkUserAuth();
+        $sub = UserCenter::find()->where(['department_id'=>$this->id,'status'=>UserCenter::STATUS_VALID])->limit(1)->one();
+        if(!empty($sub)){
+            throw new Exception('该分组下存在用户，不可删除', Exception::ERROR_COMMON);
+        }
         Department::updateAll(['status'=>Department::STATUS_INVALID],['department_id' => $this->id]);
         return [];
     }
@@ -219,7 +229,7 @@ class Departments extends RequestBaseModel
      * @throws \Exception
      * 仅创建者可以修改
      */
-    public function edit()
+    public function editAdmin()
     {
         $this->checkUserAuth();
 
@@ -245,13 +255,47 @@ class Departments extends RequestBaseModel
             $this->platform_list = array_intersect($this->platform_list,$allowPlatformIds);
             $column = ['user_id','department_id','platform_id','create_user'];
             $rows = [];
+            $this->platform_list = array_unique($this->platform_list);
             foreach($this->platform_list as $platformId){
                 $rows[] = [$this->user_id,$this->department_id,$platformId,$this->user['id']];
             }
-            RelateAdminDepartment::batchInsertAll(RelateAdminDepartment::tableName(),$column,$rows,RelateAdminDepartment::getDb(),'REPLACE');
+            RelateAdminDepartment::batchInsertAll(RelateAdminDepartment::tableName(),$column,$rows,RelateAdminDepartment::getDb());
         }
 
     }
 
+    public function editDepartment()
+    {
+        $this->checkUserAuth();
+
+        if(empty($this->department_id)){
+            //新增部门
+            $updateInfo = ['department_name'=>$this->department_name,'is_outer'=>$this->is_outer];
+            $this->department_id = Department::add($updateInfo);
+            if(empty($this->department_id)){
+                throw new Exception('新增部门失败',Exception::ERROR_COMMON);
+            }
+        }else{
+            //基本信息
+            $updateInfo = ['department_name'=>$this->department_name,'is_outer'=>$this->is_outer];
+            Department::updateAll($updateInfo,['department_id'=>$this->department_id]);
+        }
+        //关联关系
+        //删除旧的
+        RelateDepartmentPlatform::updateAll(
+            ['status'=>RelateDepartmentPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
+            ['department_id'=>$this->department_id,'status'=>RelateDepartmentPlatform::STATUS_VALID]);
+        //添加新的
+        if(!empty($this->platform_list)){
+            $column = ['department_id','platform_id','create_user'];
+            $rows = [];
+            $this->platform_list = array_unique($this->platform_list);
+            foreach($this->platform_list as $platformId){
+                $rows[] = [$this->department_id,$platformId,$this->user['id']];
+            }
+            RelateDepartmentPlatform::batchInsertAll(RelateDepartmentPlatform::tableName(),$column,$rows,RelateDepartmentPlatform::getDb());
+        }
+
+    }
 
 }

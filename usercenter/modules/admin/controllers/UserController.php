@@ -10,7 +10,7 @@ class UserController extends BaseController{
 
     public $enableCsrfValidation = false;
 
-    public function actionIndex()
+    public function actionIndexUser()
     {
         try{
             $model = new User();
@@ -36,7 +36,7 @@ class UserController extends BaseController{
         }
     }
 
-    public function actionIndexlimit()
+    public function actionIndexPriv()
     {
         try{
             $model = new User();
