@@ -249,6 +249,11 @@ class CommonApi extends RequestBaseModel {
 //        ];
 //        LogAuthUser::LogLogin($userLog['id'],LogAuthUser::OP_LOGIN_OUT,$data);
         setcookie(Constant::LOGIN_TOKEN_NAME, "", time() - 3600, '/', Constant::LOGIN_TOKEN_HOST);
+        try{
+            LogAuthUser::LogLogin($this->user['id'],LogAuthUser::OP_LOGIN_OUT,$this->user);
+        }catch(\Exception $e){
+            return ['message'=>'未登录'];
+        }
         return [];
     }
 

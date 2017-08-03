@@ -5,6 +5,7 @@ namespace usercenter\modules\admin\models;
 use common\libs\Constant;
 use common\models\CommonModulesUser;
 use common\models\Department;
+use common\models\LogAuthUser;
 use common\models\Platform;
 use common\models\RelateAdminDepartment;
 use common\models\RelateDepartmentPlatform;
@@ -219,6 +220,7 @@ class Departments extends RequestBaseModel
             throw new Exception('该分组下存在用户，不可删除', Exception::ERROR_COMMON);
         }
         Department::updateAll(['status'=>Department::STATUS_INVALID],['department_id' => $this->id]);
+        LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_DEL_GROUP,'del');
         return [];
     }
 
@@ -244,6 +246,9 @@ class Departments extends RequestBaseModel
         $model->token = $this->token;
         $allowPlatformList = $model->platformListByAdminDepartment($this->department_id);
         $allowPlatformIds = array_column($allowPlatformList,'platform_id');
+
+        LogAuthUser::LogUser($this->user['id'],$this->department_id,LogAuthUser::OP_EDIT_GROUPADMIN,['platform'=>$this->platform_list,'department'=>$this->department_id]);
+
 
         //删除旧的
         RelateAdminDepartment::updateAll(
@@ -275,10 +280,14 @@ class Departments extends RequestBaseModel
             if(empty($this->department_id)){
                 throw new Exception('新增部门失败',Exception::ERROR_COMMON);
             }
+            LogAuthUser::LogUser($this->user['id'],$this->department_id,LogAuthUser::OP_ADD_GROUP,['platform'=>$this->platform_list,'department'=>$updateInfo]);
+
         }else{
             //基本信息
             $updateInfo = ['department_name'=>$this->department_name,'is_outer'=>$this->is_outer];
             Department::updateAll($updateInfo,['department_id'=>$this->department_id]);
+            LogAuthUser::LogUser($this->user['id'],$this->department_id,LogAuthUser::OP_EDIT_GROUP,['platform'=>$this->platform_list,'department'=>$updateInfo]);
+
         }
         //关联关系
         //删除旧的

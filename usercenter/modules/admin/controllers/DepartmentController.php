@@ -6,7 +6,6 @@ use common\models\Role;
 use common\models\UserCenter;
 use usercenter\controllers\BaseController;
 use usercenter\modules\admin\models\Departments;
-use usercenter\modules\admin\models\Resource;
 use usercenter\modules\admin\models\User;
 use Yii;
 
