@@ -227,6 +227,7 @@ class CommonApi extends RequestBaseModel {
             }
         }
         CommonUser::updateAll(['login_ip'=>strval(Yii::$app->request->userIP)],['id'=>$user['id']]);
+        $user['login_ip'] = Yii::$app->request->userIP;
         $token = UserToken::userToToken($user);
         $user['token']=$token;
         //记日志
