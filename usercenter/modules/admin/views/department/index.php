@@ -253,14 +253,18 @@
                         if(name){
                             name += "<br/>";
                         }
-                        name = name + value[i].username + '(';
+//                        let title = "";
+                        name = name +  '<span style="font-weight: bold;">'+value[i].username + '&nbsp;&nbsp;</span>(';
                         for(var j in value[i]['platform_list']){
                             if(j>0){
                                 name += ',';
+//                                title += ',';
                             }
                             name += value[i]['platform_list'][j].platform_name;
+//                            title += value[i]['platform_list'][j].platform_name;
                         }
                         name += ')';
+//                        name = name + '<span data-toggle="tooltip" data-placement="left" title="'+ title +'">'+ value[i].username +'</span>';
                     }
                     name = '<div style="max-height:100px;overflow-y:scroll;">'+name+'<div style="max-height:100px;overflow-y:scroll;">';
                     return name;
@@ -502,6 +506,10 @@
     $("#filter-platform").on('change',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
     });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 
 </script>
 
