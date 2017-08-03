@@ -2,6 +2,7 @@
 
 namespace usercenter\modules\common\models;
 
+use common\libs\UserToken;
 use common\models\EntrystoreAuthUser;
 use common\models\CommonModules;
 use common\models\Platform;
@@ -52,7 +53,7 @@ class RuKou extends RequestBaseModel
         $platformIds = array_column($relateList,'platform_id');
         $platformIds = array_intersect($platformIds,$platformIdsDepartment);
         $platformList = Platform::findListById($platformIds);
-        $ip = Yii::$app->request->getUserIP();
+        $ip = UserToken::getRealIP(false);;
 
 
         usort($relateList,function($a,$b){
@@ -112,7 +113,7 @@ class RuKou extends RequestBaseModel
         if(empty($platformInfo['is_show'])){
             throw new Exception("系统不存在",Exception::ERROR_COMMON);
         }
-        $ip = Yii::$app->request->getUserIP();
+        $ip = UserToken::getRealIP(false);;
         if(!empty($platformInfo['allow_ips'])){
             $allowIps = explode(',',$platformInfo['allow_ips']);
             if(!in_array($ip,$allowIps)){

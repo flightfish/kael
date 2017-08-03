@@ -17,6 +17,12 @@ class UserToken
         return $token;
     }
 
+    public static function getRealIP($withNginx = true){
+        $ip = \Yii::$app->request->userIP;
+        $withNginx && isset(\Yii::$app->request->headers['x-real-ip']) && $ip = \Yii::$app->request->headers['x-real-ip'];
+        return $ip;
+    }
+
 
     public static function tokenToUser($token=""){
         if(empty($token)){
@@ -45,9 +51,9 @@ class UserToken
             throw new Exception("登录信息已过期，请重新登录",Exception::ERROR_COMMON);
         }
         $allIpArr = [];
-        $allIpArr[] = \Yii::$app->request->userIP;
+        $allIpArr[] = self::getRealIP();
         isset($_SERVER['HTTP_CLIENT_IP']) && $allIpArr[] = $_SERVER['HTTP_CLIENT_IP'];
-        isset(\Yii::$app->request->headers['x-real-ip']) && $allIpArr[] = \Yii::$app->request->headers['x-real-ip'];
+//        isset(\Yii::$app->request->headers['x-real-ip']) && $allIpArr[] = \Yii::$app->request->headers['x-real-ip'];
         if($noise != $user['login_ip'] ||  !in_array($user['login_ip'],$allIpArr)){
             throw new Exception('登录信息已过期，请重试',Exception::ERROR_COMMON);
         }

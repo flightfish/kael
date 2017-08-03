@@ -226,8 +226,8 @@ class CommonApi extends RequestBaseModel {
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
-        CommonUser::updateAll(['login_ip'=>strval(Yii::$app->request->userIP)],['id'=>$user['id']]);
-        $user['login_ip'] = Yii::$app->request->userIP;
+        CommonUser::updateAll(['login_ip'=>UserToken::getRealIP()],['id'=>$user['id']]);
+        $user['login_ip'] = UserToken::getRealIP();
         $token = UserToken::userToToken($user);
         $user['token']=$token;
         //记日志
@@ -364,7 +364,7 @@ class CommonApi extends RequestBaseModel {
         //ip限定
         $serverIPList = explode(',',$platformInfo['server_ips']);
         $clientIPAllow = explode(',',$platformInfo['allow_ips']);
-        $serverIP = Yii::$app->request->getUserIP();
+        $serverIP = UserToken::getRealIP(false);
         $clientIP = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : "";
         if(!empty($platformInfo['server_ips']) && !in_array($serverIP,$serverIPList)){
             throw new Exception('发生异常，请联系管理员',Exception::ERROR_COMMON);
