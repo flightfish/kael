@@ -156,7 +156,7 @@ class UserApiController extends Controller
     {
 //        $token = Yii::$app->request->getQueryParam('token', '');
         $token = UserToken::getToken();
-        $user = UserToken::tokenToUser($token);
+        $user = UserToken::tokenToUser($token,false);
 
 //        $token = str_replace(" ", "+", $token);
 //        $aes = new AES;

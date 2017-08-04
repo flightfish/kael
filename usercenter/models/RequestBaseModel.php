@@ -21,6 +21,8 @@ class RequestBaseModel extends BaseModel
 
     private $user;
 
+    public $checkIp = true;
+
     public $token;
 
     public $auth_platform_id = 0;
@@ -57,7 +59,7 @@ class RequestBaseModel extends BaseModel
         if(empty($token)){
             throw new Exception(Exception::NOT_LOGIN_MSG,Exception::NOT_LOGIN_CODE);
         }
-        $user = UserToken::tokenToUser($token);
+        $user = UserToken::tokenToUser($token,$this->checkIp);
         self::$_user = $user;
         return self::$_user;
     }

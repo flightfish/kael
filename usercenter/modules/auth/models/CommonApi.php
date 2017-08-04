@@ -348,6 +348,7 @@ class CommonApi extends RequestBaseModel {
     //校验权限
     public function checkPlatformAuth(){
 
+
         $sourceUrl = Yii::$app->request->referrer;
         if(empty($sourceUrl)){
             throw new Exception('权限不足，请联系系统管理员',Exception::ERROR_COMMON);
@@ -360,6 +361,10 @@ class CommonApi extends RequestBaseModel {
         $platformInfo = Platform::findOneByHost($host,$this->auth_platform_id);
         if(empty($platformInfo)){
             throw new Exception('权限不足，请联系管理员',Exception::ERROR_COMMON);
+        }
+        if($platformInfo['platform_id'] == 1001){
+            //深蓝
+            $this->checkIp = false;
         }
         //ip限定
         $serverIPList = explode(',',$platformInfo['server_ips']);
