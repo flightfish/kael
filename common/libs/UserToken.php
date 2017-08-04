@@ -54,7 +54,7 @@ class UserToken
         $allIpArr[] = self::getRealIP();
         isset($_SERVER['HTTP_CLIENT_IP']) && $allIpArr[] = $_SERVER['HTTP_CLIENT_IP'];
 //        isset(\Yii::$app->request->headers['x-real-ip']) && $allIpArr[] = \Yii::$app->request->headers['x-real-ip'];
-        if($checkIp || $noise != $user['login_ip'] ||  !in_array($user['login_ip'],$allIpArr)){
+        if($checkIp && ($noise != $user['login_ip'] ||  !in_array($user['login_ip'],$allIpArr))){
             //判断是否深蓝平台
             throw new Exception('登录信息已过期，请重试',Exception::ERROR_COMMON);
         }
