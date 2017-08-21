@@ -191,6 +191,7 @@ class User extends RequestBaseModel
         }
 //        isset($this->filter['subject']) && is_numeric($this->filter['subject']) && $where['subject'] = $this->filter['subject'];
 //        isset($this->filter['grade_part']) && is_numeric($this->filter['grade_part']) && $where['grade_part'] = $this->filter['grade_part'];
+        isset($this->filter['user_type']) && $this->filter['user_type'] != -1 && $where['user_type'] = $this->filter['user_type'];
 
         $leftjoin = [];
         if(isset($this->filter['platform']) && $this->filter['platform'] != -1){

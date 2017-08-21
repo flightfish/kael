@@ -119,6 +119,14 @@
         </div>
 
         <div style="width: 100px;float: left;">
+            <select id="filter-usertype" value="-1" class="form-control">
+                <option value="-1">全部类型</option>
+                <option value="0">公司员工</option>
+                <option value="1">外包用户</option>
+            </select>
+        </div>
+
+        <div style="width: 100px;float: left;">
             <input id="filter-search" type="text"  class="form-control" placeholder="搜索手机号或用户名">
         </div>
 <!--        <div style="display: none;">-->
@@ -584,6 +592,7 @@
                 department:$("#filter-department").val(),
                 platform:$("#filter-platform").val(),
                 search:$("#filter-search").val(),
+                user_type:$("#filter-usertype").val(),
 //                subject:$("#filter-subject").val(),
 //                grade:$("#filter-grade").val()
             }
@@ -802,6 +811,10 @@
     });
 
     $("#filter-platform").on('change',function(){
+        $('#mytable').bootstrapTable('refresh',{url:listURL});
+    });
+
+    $("#filter-usertype").on('change',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
     });
 
