@@ -223,7 +223,7 @@ class User extends RequestBaseModel
                 continue;
             }
             $platformInfo = $platformEntity[$v['platform_id']];
-            $userList[$v['user_id']]['platform_list'][] = [
+            $userList[$v['user_id']]['platform_list'][$v['platform_id']] = [
                 'platform_id'=>$v['platform_id'],
                 'platform_name'=>$platformInfo['platform_name'],
             ];
