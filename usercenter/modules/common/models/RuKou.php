@@ -79,13 +79,14 @@ class RuKou extends RequestBaseModel
                     continue;
                 }
             }
-            $data[] = [
+            $data[$info['platform_id']] = [
                 'url'=>'/common/welcome/login-platform?platform_id='.$info['platform_id'],
 //                'url' => $info['platform_url'],// ."?token=".$this->token,
                 'name' => $info['platform_name'],
                 'icon' => $info['platform_icon']
             ];
         }
+        $data = array_values($data);
         $username[]['username'] = $this->user['username'];
 
 
