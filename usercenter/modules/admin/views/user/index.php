@@ -677,7 +677,7 @@
 //        $("#department").change();
         platfromListByDepartWithFunc(row.department_id,function(){
             $('input[name="platform_list"]').prop("checked", false);
-            for(var i=0;i<row.platform_list.length;++i){
+            for(var i in row.platform_list){
                 console.log("input[name=platform_list][value="+ row.platform_list[i]['platform_id'] +"]");
                 $("input[name=platform_list][value="+ row.platform_list[i]['platform_id'] +"]").prop("checked", true);
             }
@@ -685,7 +685,7 @@
 
 
         $('input[name="platform_list"]').attr("checked", false);
-        for(var i=0;i<row.platform_list.length;++i){
+        for(var i in row.platform_list){
             $("input[name=platform_list][value="+ row.platform_list[i]['platform_id'] +"]").prop("checked", true);
         }
     });
