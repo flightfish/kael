@@ -27,6 +27,7 @@ class User extends RequestBaseModel
     const SCENARIO_USER_UPLOAD = "SCENARIO_USER_UPLOAD";
     const SCENARIO_USER_DOWNLOAD = "SCENARIO_USER_DOWNLOAD";
     const SCENARIO_PLAT_BY_DEPARTMENT = "SCENARIO_PLAT_BY_DEPARTMENT";
+    const SCENARIO_EDITPRIV = "SCENARIO_EDITPRIV";
     public $page = 1;
     public $pagesize = 20;
     public $data = [];
@@ -46,6 +47,7 @@ class User extends RequestBaseModel
             [['page', 'pagesize', 'id','department_id'], 'integer'],
             [['type', 'mobile'], 'string'],
             [['data', 'id'], 'required', 'on' => self::SCENARIO_EDIT],
+            [['id'], 'required', 'on' => self::SCENARIO_EDITPRIV],
             [['mobile'], 'required', 'on' => self::SCENARIO_CHECKMOBILE],
             [['id'], 'required', 'on' => self::SCENARIO_DEL],
             [['page', 'pagesize'], 'required', 'on' => self::SCENARIO_LIST],

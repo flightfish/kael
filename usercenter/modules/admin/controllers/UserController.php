@@ -111,7 +111,7 @@ class UserController extends BaseController{
 
     public function actionUpdatePriv(){
         try{
-            $model = new User(['scenario'=>User::SCENARIO_EDIT]);
+            $model = new User(['scenario'=>User::SCENARIO_EDITPRIV]);
             $model->load($this->loadData);
             $model->validate();
             $data = $model->updatePriv();
