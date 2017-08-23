@@ -44,6 +44,20 @@ return [
             'usercenter/config/main-local.php',
         ],
     ],
+    'Beta' => [
+        'path' => 'beta',
+        'setWritable' => [
+            'usercenter/runtime',
+            'usercenter/web/assets',
+            'console/runtime'
+        ],
+        'setExecutable' => [
+            'yii',
+        ],
+        'setCookieValidationKey' => [
+            'usercenter/config/main-local.php',
+        ],
+    ],
     'Production' => [
         'path' => 'prod',
         'setWritable' => [

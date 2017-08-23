@@ -7,6 +7,7 @@ if(empty($requestUri)|| $requestUri == '/'){
 }
 
 
+
 defined('YII_DEBUG') or define('YII_DEBUG', false);
 defined('YII_ENV') or define('YII_ENV', 'prod');
 
@@ -23,5 +24,6 @@ $config = yii\helpers\ArrayHelper::merge(
 );
 
 $application = new yii\web\Application($config);
+
 
 $application->run();
