@@ -2,7 +2,7 @@
 CREATE TABLE `department` (
   `department_id` int(11) NOT NULL AUTO_INCREMENT,
   `department_name` varchar(255) NOT NULL DEFAULT '',
-  `is_outer` int(11) NOT NULL DEFAULT '0' COMMENT '是否外包组',
+  `is_outer` int(11) NOT NULL DEFAULT '-1' COMMENT '1外包 0公司内部分组',
   `status` int(11) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -72,6 +72,8 @@ CREATE TABLE `relate_department_platform` (
   `relate_id` int(11) NOT NULL AUTO_INCREMENT,
   `department_id` int(11) NOT NULL DEFAULT '0',
   `platform_id` int(11) NOT NULL DEFAULT '0',
+  `create_user` int(11) NOT NULL DEFAULT '0',
+  `delete_user` int(11) NOT NULL DEFAULT '0',
   `status` int(11) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
