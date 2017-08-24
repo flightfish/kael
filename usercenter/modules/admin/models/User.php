@@ -450,7 +450,7 @@ class User extends RequestBaseModel
                 array_push($error, '第' . ($k + 1) . '行，手机号不存在');
                 continue;
             }
-            if (empty($v[4]) || !is_numeric($v[4])) {
+            if (empty($v[3]) || !is_numeric($v[3])) {
                 array_push($error, '第' . ($k + 1) . '行，性别不存在');
                 continue;
             }
