@@ -109,6 +109,10 @@ CREATE TABLE `role` (
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO `role` VALUES ('0', '普通用户', '0');
+INSERT INTO `role` VALUES ('1', '超级管理员', '0');
+INSERT INTO `role` VALUES ('2', '部门管理员', '0');
+
 
 ALTER TABLE `user`
 ADD `email` varchar(20) NOT NULL DEFAULT '',
