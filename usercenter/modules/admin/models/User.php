@@ -199,7 +199,7 @@ class User extends RequestBaseModel
             $where['b.platform_id'] = $this->filter['platform'];
         }
         $userList = UserCenter::findUserSearch($this->page,$this->pagesize,$search,$where,$leftjoin);
-        $total  = UserCenter::findUserSearchCount($search);
+        $total  = UserCenter::findUserSearchCount($search,$where,$leftjoin);
         //部门 权限
         $roleEntity = Role::findAllList();
         $userIds = array_column($userList,'id');
@@ -230,7 +230,10 @@ class User extends RequestBaseModel
             ];
         }
         foreach($relateAdminDepart as $v){
-            if(empty($userList[$v['user_id']]['admin_department_list'][$v['department_id']])){
+            if(empty($departmentEntity[$v['department_id']])){
+                continue;
+            }
+            if(empty($userList[$v['user_id']]['admin_department_list'][$v['department_id']]) ){
                 $userList[$v['user_id']]['admin_department_list'][$v['department_id']] = [
                     'department_id'=>$v['department_id'],
                     'department_name'=>$departmentEntity[$v['department_id']]['department_name'],
@@ -711,7 +714,7 @@ class User extends RequestBaseModel
 
             //删除
             if(!empty($v[3])){
-                $delPriv = explode(',',$v[2]);//增加
+                $delPriv = explode(',',$v[3]);//增加
                 $departmentIdOne = $userInfo['department_id'];
                 $diff = array_diff($delPriv,$departmentPrivList[$departmentIdOne]);
                 if(!empty($diff)){
