@@ -122,12 +122,12 @@
         <div style="width: 100px;float: left;">
             <input id="filter-search" type="text"  class="form-control" placeholder="搜索手机号或用户名">
         </div>
-        <div style="width: 100px;float: left;">
-            <input id="filter-subject" type="text"  class="form-control" placeholder="学科">
-        </div>
-        <div style="width: 100px;float: left;">
-            <input id="filter-grade" type="text"  class="form-control" placeholder="学段">
-        </div>
+<!--        <div style="width: 100px;float: left;">-->
+<!--            <input id="filter-subject" type="text"  class="form-control" placeholder="学科">-->
+<!--        </div>-->
+<!--        <div style="width: 100px;float: left;">-->
+<!--            <input id="filter-grade" type="text"  class="form-control" placeholder="学段">-->
+<!--        </div>-->
         <div style="float: left;">
             <button id="search-button" class="btn btn-info">搜索</button>
         </div>
@@ -344,14 +344,14 @@
                     return name;
                 }
             },
-            {
-                field: 'subject_name',
-                title: '学科',
-            },
-            {
-                field: 'grade_part_name',
-                title: '学段',
-            },
+//            {
+//                field: 'subject_name',
+//                title: '学科',
+//            },
+//            {
+//                field: 'grade_part_name',
+//                title: '学段',
+//            },
             {
                 field: 'add_time',
                 title: '添加时间',
