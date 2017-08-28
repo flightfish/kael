@@ -122,6 +122,11 @@ ADD `department_id` int(11) NOT NULL DEFAULT '0',
 ADD  `login_ip` varchar(100) NOT NULL COMMENT '上次登录ip',
 ADD INDEX (email);
 
+ALTER TABLE `user`
+MODIFY COLUMN `update_time`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
+
+
+
 update `user` set `admin` = 1 where mobile in ('13683602952');
 update `user` set `department_id` = 100;
 update `user` set `user_type` = 0,`department_id` = 101 where mobile in ('13683602952','15010986303','13811762727');
