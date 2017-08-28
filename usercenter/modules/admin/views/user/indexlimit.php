@@ -119,7 +119,7 @@
             </select>
         </div>
 
-        <div style="width: 100px;float: left;">
+        <div style="width: 200px;float: left;">
             <input id="filter-search" type="text"  class="form-control" placeholder="搜索手机号或用户名">
         </div>
 <!--        <div style="width: 100px;float: left;">-->
