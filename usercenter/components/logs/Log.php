@@ -36,6 +36,7 @@ class Log extends Component
                 'message'   => $exception->getMessage()
             ];
             $type = "CUSTOM_ERROR";
+            Yii::warning($type."\t".json_encode($logInfo), self::$appname);
         }else{
             $logInfo = [
                 'url'       => Yii::$app->request->url,
@@ -47,10 +48,10 @@ class Log extends Component
                 'message'   => $exception->getMessage(),
                 'file'  => $exception->getFile(),
                 'line'  => $exception->getLine(),
-                'trace'  => $exception->getTrace(),
+                'trace'  => $exception->getTraceAsString(),
             ];
             $type = "SYS_ERROR";
+            Yii::error($type."\t".json_encode($logInfo), self::$appname);
         }
-        Yii::error($type."\t".json_encode($logInfo), self::$appname);
     }
 }
