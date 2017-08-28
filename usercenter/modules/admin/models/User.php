@@ -205,11 +205,22 @@ class User extends RequestBaseModel
         $userIds = array_column($userList,'id');
         $platformList = RelateUserPlatform::findListByUserPlatform($userIds);
         $relateAdminDepart = RelateAdminDepartment::findListByAdmin($userIds);
+        $platformListUpdateTime = RelateUserPlatform::findLastUpdateTime($userIds);
+        $relateAdminDepartUpdateTime = RelateAdminDepartment::findLastUpdateTime($userIds);
         //实体
         $departmentEntity  = Department::findAllList();
         $platformEntity = Platform::findAllList();
         //拼装
         foreach($userList as $k=>$v){
+            //updateTime
+            isset($platformListUpdateTime[$v['user_id']])
+            && $platformListUpdateTime[$v['user_id']]['update_time'] > $v['update_time']
+            && $v['update_time'] = $platformListUpdateTime[$v['user_id']]['update_time'];
+
+            isset($relateAdminDepartUpdateTime[$v['user_id']])
+            && $relateAdminDepartUpdateTime[$v['user_id']]['update_time'] > $v['update_time']
+            && $v['update_time'] = $relateAdminDepartUpdateTime[$v['user_id']]['update_time'];
+
 //            $v['subject_name'] = empty(Constant::ENUM_SUBJECT[$v['subject']]) ? "未知" : Constant::ENUM_SUBJECT[$v['subject']];
 //            $v['grade_part_name'] = empty(Constant::ENUM_GRADE_ALL[$v['grade_part']]) ? "未知" : Constant::ENUM_GRADE_ALL[$v['grade_part']];
             $v['admin_department_list'] = [];

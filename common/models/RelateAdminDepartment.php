@@ -23,10 +23,22 @@ class RelateAdminDepartment extends \common\models\BaseActiveRecord
        return $query->asArray(true)->all();
    }
 
+    public static function findLastUpdateTime($userId){
+        return self::find()
+            ->select('user_id,max(update_time) as update_time')
+            ->where(['user_id'=>$userId])
+            ->groupBy('user_id')
+            ->indexBy('user_id')
+            ->asArray(true)
+            ->all();
+    }
+
     public static function findListByAdminDepartment($userId,$department){
         $query = self::find()
             ->where(['user_id'=>$userId,'department_id'=>$department,'status'=>self::STATUS_VALID]);
         return $query->asArray(true)->all();
     }
+
+
 
 }
