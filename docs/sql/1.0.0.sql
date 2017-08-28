@@ -29,27 +29,26 @@ CREATE TABLE `platform` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
-INSERT INTO `platform` VALUES ('1', '系统人员管理', '/admin/index/user', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/人员管理.png', '', '', '1', '0', '2017-07-27 20:20:07', '2017-08-05 13:59:01');
-INSERT INTO `platform` VALUES ('101', '题库MIS系统【作业盒子】', 'http://entrystore.test.knowbox.cn/nav.html', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/题库-盒子.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:53');
-INSERT INTO `platform` VALUES ('102', '题库MIS系统【速算】', 'http://entrystore_susuan.test.knowbox.cn/nav.html', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/题库-速算.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:53');
-INSERT INTO `platform` VALUES ('103', '题库MIS系统【单词部落】', 'http://entrystore_word.test.knowbox.cn/nav.html', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/题库-单词.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:53');
-INSERT INTO `platform` VALUES ('104', '中学英语内容管理平台【单词部落】', 'http://wordcow.test.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/中学英语.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:53');
-INSERT INTO `platform` VALUES ('105', '小学语文内容管理平台【速算】', 'http://yuwencow.test.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/小学语文.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-17 16:19:25');
-INSERT INTO `platform` VALUES ('501', 'KBManage运营活动管理平台', 'http://kbmanage.test.knowbox.cn/#http://mytest3.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/KBManage 运营平台.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-15 17:40:24');
-INSERT INTO `platform` VALUES ('502', '学校地区管理平台【速算】', 'http://alliance.test.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/学校管理-速.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:53');
-INSERT INTO `platform` VALUES ('503', '学校地区管理平台【单词部落】', 'http://horde.test.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/学校管理-单.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:53');
-INSERT INTO `platform` VALUES ('1001', '深蓝数据', 'http://bd.test.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/深蓝.png', '', '', '0', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:53');
-INSERT INTO `platform` VALUES ('1002', '深蓝数据管理后台', 'http://bdmanage.test.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/深蓝-后.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-15 14:45:55');
-INSERT INTO `platform` VALUES ('1003', 'Rubick数据需求导出平台', 'http://export.test.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/rubick-前.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:54');
-INSERT INTO `platform` VALUES ('1004', 'Rubick数据需求导出平台管理后台', 'http://exportmanage.test.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/rubick-后.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:54');
-INSERT INTO `platform` VALUES ('1005', '商业化变现分析平台', 'http://businesstest.test.knowbox.cn/', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/商业化变现分析平台.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-18 16:27:38');
-INSERT INTO `platform` VALUES ('1006', 'Medivh题库使用分析平台', 'http://tkcp.test.knowbox.cn/', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/medivh.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:54');
-INSERT INTO `platform` VALUES ('1011', '运营数据监控平台【作业盒子】', 'http://datamonitor.platform.knowbox.cn', 'http://datamonitor.platform.knowbox.cn', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/运营监管-盒子.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:54');
-INSERT INTO `platform` VALUES ('1012', '运营数据监控平台【速算】', 'http://datamonitor.platform.knowbox.cn/susuan.html', 'http://datamonitor.platform.knowbox.cn', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/运营监管-速算.png', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:54');
-INSERT INTO `platform` VALUES ('1013', '运营数据监控平台【单词部落】', 'http://wttest.platform.knowbox.cn/app', 'http://octest.platform.knowbox.cn', 'https://knowboxqiniu.knowbox.cn/Fv8rnmprbUSLpup8qLEqPhbtmcds', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:54');
-INSERT INTO `platform` VALUES ('1100', 'Hera数据分析平台', 'http://heratest.platform.knowbox.cn', 'http://zeustest.platform.knowbox.cn', 'https://knowboxqiniu.knowbox.cn/Fv8rnmprbUSLpup8qLEqPhbtmcds', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:54');
-INSERT INTO `platform` VALUES ('2000', 'Furion用研中心（接口测试用）', 'http://callcenter.test.knowbox.cn/test.html', '', 'https://knowboxqiniu.knowbox.cn/Fv8rnmprbUSLpup8qLEqPhbtmcds', '', '', '1', '0', '2017-07-27 20:19:55', '2017-08-14 17:49:54');
-
+INSERT INTO `platform` VALUES ('1', '系统人员管理', '/admin/index/user', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/人员管理.png', '10.10.131.245,106.75.2.33', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:20:07', '2017-08-28 15:00:10');
+INSERT INTO `platform` VALUES ('101', '题库MIS系统【作业盒子】', 'http://kbqmis.knowbox.cn/nav.html', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/题库-盒子.png', '10.10.131.245,106.75.2.33', '', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:00:10');
+INSERT INTO `platform` VALUES ('102', '题库MIS系统【速算】', 'http://ssqmis.knowbox.cn/nav.html', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/题库-速算.png', '10.10.131.245,106.75.2.33', '', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:00:19');
+INSERT INTO `platform` VALUES ('103', '题库MIS系统【单词部落】', 'http://wtqmis.knowbox.cn/nav.html', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/题库-单词.png', '10.10.131.245,106.75.2.33', '', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:00:28');
+INSERT INTO `platform` VALUES ('104', '中学英语内容管理平台【单词部落】', 'http://wordcow.platform.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/中学英语.png', '10.10.66.161,123.59.44.22', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:00:52');
+INSERT INTO `platform` VALUES ('105', '小学语文内容管理平台【速算】', '', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/小学语文.png', '', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '1', '2017-07-27 20:19:55', '2017-08-28 14:58:15');
+INSERT INTO `platform` VALUES ('501', 'KBManage运营活动管理平台', 'http://kbmanage.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/KBManage 运营平台.png', '10.10.66.161,123.59.44.22', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:01:01');
+INSERT INTO `platform` VALUES ('502', '学校地区管理平台【速算】', '', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/学校管理-速.png', '', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '1', '2017-07-27 20:19:55', '2017-08-28 14:58:23');
+INSERT INTO `platform` VALUES ('503', '学校地区管理平台【单词部落】', '', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/学校管理-单.png', '', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '1', '2017-07-27 20:19:55', '2017-08-28 14:58:23');
+INSERT INTO `platform` VALUES ('1001', '深蓝数据', '', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/深蓝.png', '', '', '0', '0', '2017-07-27 20:19:55', '2017-08-28 14:58:07');
+INSERT INTO `platform` VALUES ('1002', '深蓝数据管理后台', '', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/深蓝-后.png', '', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 14:58:07');
+INSERT INTO `platform` VALUES ('1003', 'Rubick数据需求导出平台', 'http://rubick.platform.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/rubick-前.png', '10.10.66.161,123.59.44.22', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:01:11');
+INSERT INTO `platform` VALUES ('1004', 'Rubick数据需求导出平台管理后台', 'http://rubickmanage.platform.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/rubick-后.png', '10.10.66.161,123.59.44.22', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:01:15');
+INSERT INTO `platform` VALUES ('1005', '商业化变现分析平台', 'http://businesslike.test.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/商业化变现分析平台.png', '10.10.213.219,123.59.66.74', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 14:59:53');
+INSERT INTO `platform` VALUES ('1006', 'Medivh题库使用分析平台', 'http://medivh.knowbox.cn', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/medivh.png', '10.10.66.161,123.59.44.22', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:01:21');
+INSERT INTO `platform` VALUES ('1011', '运营数据监控平台【作业盒子】', 'http://datamonitor.platform.knowbox.cn', 'http://datamonitor.platform.knowbox.cn', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/运营监管-盒子.png', '10.10.66.161,123.59.44.22', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:01:39');
+INSERT INTO `platform` VALUES ('1012', '运营数据监控平台【速算】', 'http://datamonitor.platform.knowbox.cn/susuan.html', 'http://datamonitor.platform.knowbox.cn', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/运营监管-速算.png', '10.10.66.161,123.59.44.22', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:01:39');
+INSERT INTO `platform` VALUES ('1013', '运营数据监控平台【单词部落】', 'http://worddata.knowbox.cn/app', 'http://octopus_wordtribe.knowbox.cn', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/运营监管-单词.png', '10.10.66.161,123.59.44.22', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:01:39');
+INSERT INTO `platform` VALUES ('1100', 'Hera数据分析平台', 'http://hera.platform.knowbox.cn', 'http://zeus.platform.knowbox.cn', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/HeraNew.png', '10.10.66.161,123.59.44.22', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '0', '2017-07-27 20:19:55', '2017-08-28 15:01:39');
+INSERT INTO `platform` VALUES ('2000', 'Furion用研中心', '', '', 'http://ov2iw51h2.bkt.clouddn.com/iconkael/fuiron.png', '', '36.110.92.194,36.110.92.195,36.110.92.196,36.110.92.197,36.110.92.198', '1', '1', '2017-07-27 20:19:55', '2017-08-28 15:01:49');
 
 
 CREATE TABLE `relate_admin_department` (
@@ -102,6 +101,9 @@ CREATE TABLE `relate_user_platform` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`relate_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `relate_user_platform` (`user_id`,`platform_id`)
+VALUES (11090,1);
 
 
 CREATE TABLE `role` (
