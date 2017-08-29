@@ -435,7 +435,7 @@
                 if(data.code==0){
                     alert("操作成功");
 //                    $("#closebtn").click();
-                    $("#current_admin_"+$("#admin_user").val()).append(spanhtml);
+                    $("#current_admin_"+$("#admin_user").val()).remove();
                     let spanhtml = "<span id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"&nbsp;&nbsp;</span>"
                     $("#current_admin").append(spanhtml);
 //                    $("#mytable").bootstrapTable("refresh");
