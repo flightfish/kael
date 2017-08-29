@@ -43,7 +43,7 @@
             height:100%;
         }
         .sweet-alert{
-            max-height: 50%;
+            max-height: 80%;
             overflow-y: scroll;
         }
     </style>
