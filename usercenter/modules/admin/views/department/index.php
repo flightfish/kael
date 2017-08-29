@@ -102,7 +102,9 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
-                <div id="current_admin">当前管理员</div>
+                <div class="input-group">
+                    <span id="current_admin">当前管理员</span>
+                </div>
                 <div class="input-group">
                     <span class="input-group-addon" >新增/修改管理员列表</span>
                     <select id="admin_user" value="-1" class="form-control" onchange="updatePlatCheck()">
@@ -384,7 +386,7 @@
         modal.find('#modid').val(tmpid);
         $("#current_admin").html("当前管理员：");
         for(var i in row.admin_list){
-            let spanhtml = "<span id="+ row.admin_list[i]['id'] +">"+ row.admin_list[i]['username']  +"</span>"
+            let spanhtml = "<span id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
             $("#current_admin").append(spanhtml)
         }
         platfromListByDepart(tmpid);
@@ -417,6 +419,10 @@
             var platform_id = $(this).val()
             platform_list.push(platform_id);
         });
+        if(!($("#admin_user").val() > 0)){
+            alert("请选择管理员");
+            return false;
+        }
         $.ajax({
             type:'post',
             url: editAdminURL,
@@ -429,9 +435,9 @@
                 if(data.code==0){
                     alert("操作成功");
                     $("#closebtn").click();
-//                    let spanhtml = "<span id="+ row.admin_list[i]['id'] +">"+ row.admin_list[i]['username']  +"</span>"
-//                    $("#current_admin").append(spanhtml)
-                    $("#mytable").bootstrapTable("refresh");
+                    let spanhtml = "<span id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"&nbsp;&nbsp;</span>"
+                    $("#current_admin").append(spanhtml);
+//                    $("#mytable").bootstrapTable("refresh");
                 }else{
                     alert(data.message);
                 }
