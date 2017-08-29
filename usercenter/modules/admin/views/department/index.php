@@ -103,7 +103,7 @@
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
                 <div class="input-group">
-                    <span id="current_admin">当前管理员</span>
+                    <span class="input-group-addon" id="current_admin">当前管理员</span>
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" >新增/修改管理员列表</span>
@@ -435,9 +435,10 @@
                 if(data.code==0){
                     alert("操作成功");
 //                    $("#closebtn").click();
+                    $("#current_admin_"+$("#admin_user").val()).append(spanhtml);
                     let spanhtml = "<span id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"&nbsp;&nbsp;</span>"
                     $("#current_admin").append(spanhtml);
-                    $("#mytable").bootstrapTable("refresh");
+//                    $("#mytable").bootstrapTable("refresh");
                 }else{
                     alert(data.message);
                 }
