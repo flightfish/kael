@@ -99,6 +99,13 @@ class UserCenter extends \common\models\BaseActiveRecord
         return $userList;
     }
 
+
+    public static function findListByDepartment($departmentId,$select='*')
+    {
+        $userList = UserCenter::find()->select($select)->where(['department_id' => $departmentId])->asArray(true)->all();
+        return $userList;
+    }
+
     public static function findListById($userIds, $status = self::STATUS_VALID)
     {
         $where = $status === -1

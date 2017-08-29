@@ -626,6 +626,15 @@ class User extends RequestBaseModel
         $excelData = [];
         $excelData[] = $title;
 
+        $getDepartmentId = intval(Yii::$app->request->get('department_id',0));
+        if($getDepartmentId > 0){
+            //有效部门
+            $userList = UserCenter::findListByDepartment($getDepartmentId,'mobile,email');
+            foreach($userList as $v){
+                $excelData[] = [$v['mobile'],$v['email'],'',''];
+            }
+        }
+
         $objPHPExcel = new \PHPExcel();
         $objSheet = $objPHPExcel->getActiveSheet();
         $objSheet->setTitle('error');
