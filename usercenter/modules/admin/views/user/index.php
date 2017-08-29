@@ -42,6 +42,10 @@
             width:100%;
             height:100%;
         }
+        .sweet-alert{
+            max-height: 50%;
+            overflow-y: scroll;
+        }
     </style>
 
     <script src="/statics/js/jquery.min.js?v=2.1.4"></script>
