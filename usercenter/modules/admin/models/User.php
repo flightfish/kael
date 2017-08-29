@@ -3,6 +3,7 @@
 namespace usercenter\modules\admin\models;
 
 use common\libs\Constant;
+use common\libs\UserToken;
 use common\models\CommonModulesUser;
 use common\models\Department;
 use common\models\LogAuthUser;
@@ -77,6 +78,12 @@ class User extends RequestBaseModel
     }
 
     public function checkSuperAuth(){
+        $platformInfo = Platform::findOneById(1);
+        $clientIPAllow = explode(',',$platformInfo['allow_ips']);
+        $clientIP = UserToken::getRealIP(false);
+        if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
+            throw new Exception('无权访问，请联系管理员',Exception::ERROR_COMMON);
+        }
         if(!in_array($this->user['admin'],[Role::ROLE_ADMIN])){
             throw new Exception('权限不足',Exception::ERROR_COMMON);
         }
@@ -86,6 +93,12 @@ class User extends RequestBaseModel
 
     public function checkUserAuth($userId=-1)
     {
+        $platformInfo = Platform::findOneById(1);
+        $clientIPAllow = explode(',',$platformInfo['allow_ips']);
+        $clientIP = UserToken::getRealIP(false);
+        if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
+            throw new Exception('无权访问，请联系管理员',Exception::ERROR_COMMON);
+        }
         if(!in_array($this->user['admin'],[Role::ROLE_ADMIN,Role::ROLE_DEPARTMENT_ADMIN])){
             throw new Exception('权限不足',Exception::ERROR_COMMON);
         }

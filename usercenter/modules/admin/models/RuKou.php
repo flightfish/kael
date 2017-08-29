@@ -2,9 +2,11 @@
 
 namespace usercenter\modules\admin\models;
 
-use common\models\EntrystoreAuthUser;
+use common\libs\UserToken;
 use common\models\CommonModulesUser;
+use common\models\Platform;
 use common\models\Role;
+use usercenter\components\exception\Exception;
 use usercenter\models\RequestBaseModel;
 use Yii;
 
@@ -33,6 +35,13 @@ class RuKou extends RequestBaseModel
      */
     public function RuKou()
     {
+        $platformInfo = Platform::findOneById(1);
+        $clientIPAllow = explode(',',$platformInfo['allow_ips']);
+        $clientIP = UserToken::getRealIP(false);
+        if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
+            throw new Exception('无权访问，请联系管理员',Exception::ERROR_COMMON);
+        }
+
         $data = [];
 
         if($this->user['admin'] == Role::ROLE_ADMIN){
