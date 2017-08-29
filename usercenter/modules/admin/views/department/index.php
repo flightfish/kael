@@ -108,7 +108,7 @@
 
                 </div>
                 <button class="btn btn-white" onclick="showSelectAdminUser(-1)">新增管理员</button>
-                <div class="input-group">
+                <div class="input-group" style="display: none;">
                     <span class="input-group-addon" >新增/修改管理员列表</span>
                     <select id="admin_user" value="-1" class="form-control" onchange="updatePlatCheck()">
                         <option value="-1">请选择部门管理员</option>
