@@ -353,6 +353,28 @@
         });
     }
 
+    updateTmpListAdminList(){
+        let departmentId = $("#modid").val();
+        let adminId = $("#admin_user").val();
+        for(let i in tmpList[departmentId]['admin_list']){
+            if(parseInt(tmpList[departmentId]['admin_list'][i]['id']) == parseInt(adminId)){
+                tmpList[departmentId]['admin_list'].splice(i,1);
+            }
+        }
+        //增加
+        var platform_list_checked = $('input[name="platform_list"]:checked');
+        var platform_list = [];
+        $.each(platform_list_checked, function () {
+            let platform_id = $(this).val();
+            platform_list.push(platform_id);
+        });
+        tmpList[departmentId]['admin_list'][] = {
+            'id':adminId,
+            'username':$("#admin_user").find("option:selected").text(),
+            'platform_list':platform_list
+        }
+
+    };
 
     function updatePlatCheck(){
         let departmentId = $("#modid").val();
@@ -445,9 +467,14 @@
                     alert("操作成功");
 //                    $("#closebtn").click();
                     $("#current_admin_"+$("#admin_user").val()).remove();
-                    let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-outline btn-primary' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
-                    $("#current_admin").append(spanhtml);
-                    $("#current_admin_"+$("#admin_user").val()).click();
+                    if(platform_list.length > 0){
+                        let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-outline btn-primary' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
+                        $("#current_admin").append(spanhtml);
+                        $("#current_admin_"+$("#admin_user").val()).click();
+                    }else{
+                        $("#current_admin").children().removeClass('active');
+                        $("#platform_list_container").parent().hide();
+                    }
 //                    $("#mytable").bootstrapTable("refresh");
                 }else{
                     alert(data.message);
