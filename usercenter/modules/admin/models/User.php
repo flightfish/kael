@@ -617,6 +617,7 @@ class User extends RequestBaseModel
         $platfromStr = array_map(function($v){return $v['platform_id'].':'.$v['platform_name'];},$platformAll);
         $platfromStr = join('；',$platfromStr);
         $title = [
+            '用户名（可不填,修改无效）',
             '手机号',
             '邮箱（邮箱和手机号必须填写一个）',
             '新增平台权限(逗号分割)('.$platfromStr.')',
@@ -629,9 +630,9 @@ class User extends RequestBaseModel
         $getDepartmentId = intval(Yii::$app->request->get('department_id',0));
         if($getDepartmentId > 0){
             //有效部门
-            $userList = UserCenter::findListByDepartment($getDepartmentId,'mobile,email');
+            $userList = UserCenter::findListByDepartment($getDepartmentId,'mobile,email,username');
             foreach($userList as $v){
-                $excelData[] = [$v['mobile'],$v['email'],'',''];
+                $excelData[] = [$v['mobile'],$v['email'],'','',$v['username']];
             }
         }
 
