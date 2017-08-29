@@ -368,11 +368,11 @@
             let platform_id = $(this).val();
             platform_list.push(platform_id);
         });
-        tmpList[departmentId]['admin_list'][] = {
+        tmpList[departmentId]['admin_list'].push({
             'id':adminId,
             'username':$("#admin_user").find("option:selected").text(),
             'platform_list':platform_list
-        }
+        });
     };
 
     function updatePlatCheck(){
