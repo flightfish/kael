@@ -534,7 +534,7 @@
 
     $("#filter-department").on('change',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
-        $("#download-priv").attr('href',downloadPrivURL + "&department_id="+ $("#filter-platform").val());
+        $("#download-priv").attr('href',downloadPrivURL + "&department_id="+ $("#filter-department").val());
     });
 
     $("#filter-platform").on('change',function(){
