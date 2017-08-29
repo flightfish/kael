@@ -447,6 +447,7 @@
                     $("#current_admin_"+$("#admin_user").val()).remove();
                     let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-outline btn-primary' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
                     $("#current_admin").append(spanhtml);
+                    $("#current_admin_"+$("#admin_user").val()).click();
 //                    $("#mytable").bootstrapTable("refresh");
                 }else{
                     alert(data.message);
