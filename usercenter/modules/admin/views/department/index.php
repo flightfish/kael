@@ -102,7 +102,7 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
-
+                <div id="current_admin">当前管理员</div>
                 <div class="input-group">
                     <span class="input-group-addon" >新增/修改管理员列表</span>
                     <select id="admin_user" value="-1" class="form-control" onchange="updatePlatCheck()">
@@ -382,6 +382,11 @@
         var modal = $(this);
         var row = tmpList[tmpid];
         modal.find('#modid').val(tmpid);
+        $("#current_admin").html("当前管理员："):
+        for(var i in row.admin_list){
+            let spanhtml = "<span id="+ row.admin_list[i]['id'] +">"+ row.admin_list[i]['username']  +"</span>"
+            $("#current_admin").append(spanhtml)
+        }
         platfromListByDepart(tmpid);
         $("#admin_user").val(-1);
     });
@@ -424,6 +429,8 @@
                 if(data.code==0){
                     alert("操作成功");
                     $("#closebtn").click();
+//                    let spanhtml = "<span id="+ row.admin_list[i]['id'] +">"+ row.admin_list[i]['username']  +"</span>"
+//                    $("#current_admin").append(spanhtml)
                     $("#mytable").bootstrapTable("refresh");
                 }else{
                     alert(data.message);
