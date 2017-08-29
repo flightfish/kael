@@ -102,12 +102,16 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
-                <div class="input-group">
-<!--                        <span class="input-group-addon">-->
-                            <span class="input-group-addon" id="current_admin">当前管理员</span>
-                            &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-warning btn-small" onclick="showSelectAdminUser(-1)">新增</button>
-<!--                        </span>-->
+<!--                <div class="input-group">-->
+<!--<!--                        <span class="input-group-addon">-->-->
+<!--                            <span class="input-group-addon" id="current_admin">当前管理员</span>-->
+<!--                            <button class="btn btn-warning btn-small" onclick="showSelectAdminUser(-1)">新增</button>-->
+<!--<!--                        </span>-->-->
+<!--                </div>-->
+                <div class="btn-group" id="current_admin">
+
                 </div>
+                <button class="btn btn-white btn-small" onclick="showSelectAdminUser(-1)">新增</button>
                 <div class="input-group">
                     <span class="input-group-addon" >新增/修改管理员列表</span>
                     <select id="admin_user" value="-1" class="form-control" onchange="updatePlatCheck()">
@@ -395,6 +399,7 @@
         }
         platfromListByDepart(tmpid);
         $("#admin_user").val(-1);
+        $("#admin_user").change()
     });
 
     $('#editAdminModal').on('hidden.bs.modal', function (event) {
@@ -536,11 +541,13 @@
     function changeSelectAdminUser(userid){
         $("#admin_user").parent().hide();
         $("#admin_user").val(userid);
+        $("#admin_user").change()
     }
 
     function showSelectAdminUser(userid){
         $("#admin_user").parent().show();
         $("#admin_user").val(userid);
+        $("#admin_user").change()
     }
 
 </script>
