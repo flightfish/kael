@@ -230,6 +230,7 @@
                         zone();
                         table();
                     }
+                    $("#mytable").bootstrapTable("refresh");
                 });
                 this.on("errormultiple", function (files, response) {
                 })
