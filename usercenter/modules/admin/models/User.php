@@ -549,7 +549,7 @@ class User extends RequestBaseModel
             ];
         }
         if(!empty($paramsUcenter)){
-            $columns = array_keys($paramsUcenter[1]);
+            $columns = array_keys(array_values($paramsUcenter)[0]);
             $rows = [];
             foreach($paramsUcenter as $v){
                 $rows[] = array_values($v);
