@@ -102,16 +102,11 @@
             </div>
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
-<!--                <div class="input-group">-->
-<!--<!--                        <span class="input-group-addon">-->-->
-<!--                            <span class="input-group-addon" id="current_admin">当前管理员</span>-->
-<!--                            <button class="btn btn-warning btn-small" onclick="showSelectAdminUser(-1)">新增</button>-->
-<!--<!--                        </span>-->-->
-<!--                </div>-->
+
                 <div class="btn-group" id="current_admin">
 
                 </div>
-                <button class="btn btn-white btn-small" onclick="showSelectAdminUser(-1)">新增</button>
+                <button class="btn btn-white btn-small" onclick="showSelectAdminUser(-1)">新增管理员</button>
                 <div class="input-group">
                     <span class="input-group-addon" >新增/修改管理员列表</span>
                     <select id="admin_user" value="-1" class="form-control" onchange="updatePlatCheck()">
@@ -394,7 +389,7 @@
         $("#current_admin").html("当前管理员：");
         for(var i in row.admin_list){
 //            let spanhtml = "<span id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
-            let spanhtml = "<button onclick='changeSelectAdminUser("+ row.admin_list[i]['id'] +")' class='btn btn-success btn-small' id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
+            let spanhtml = "<button onclick='changeSelectAdminUser("+ row.admin_list[i]['id'] +")' class='btn btn-white btn-small' id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
             $("#current_admin").append(spanhtml)
         }
         platfromListByDepart(tmpid);
@@ -449,7 +444,7 @@
                     alert("操作成功");
 //                    $("#closebtn").click();
                     $("#current_admin_"+$("#admin_user").val()).remove();
-                    let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-success btn-small' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
+                    let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-white btn-small' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
                     $("#current_admin").append(spanhtml);
 //                    $("#mytable").bootstrapTable("refresh");
                 }else{
