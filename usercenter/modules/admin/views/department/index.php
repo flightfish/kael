@@ -373,7 +373,6 @@
             'username':$("#admin_user").find("option:selected").text(),
             'platform_list':platform_list
         }
-
     };
 
     function updatePlatCheck(){
