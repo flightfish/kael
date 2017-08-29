@@ -103,7 +103,10 @@
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
                 <div class="input-group">
-                    <span class="input-group-addon" id="current_admin">当前管理员</span>
+                        <span class="input-group-addon">
+                            <span class="input-group-addon" id="current_admin">当前管理员</span>
+                            &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-warning btn-small" onclick="showSelectAdminUser(-1)">新增</button>
+                        </span>
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" >新增/修改管理员列表</span>
@@ -386,7 +389,8 @@
         modal.find('#modid').val(tmpid);
         $("#current_admin").html("当前管理员：");
         for(var i in row.admin_list){
-            let spanhtml = "<span id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
+//            let spanhtml = "<span id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
+            let spanhtml = "<button onclick='changeSelectAdminUser("+ row.admin_list[i]['id'] +")' class='btn btn-success btn-small' id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
             $("#current_admin").append(spanhtml)
         }
         platfromListByDepart(tmpid);
@@ -440,7 +444,7 @@
                     alert("操作成功");
 //                    $("#closebtn").click();
                     $("#current_admin_"+$("#admin_user").val()).remove();
-                    let spanhtml = "<span id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"&nbsp;&nbsp;</span>"
+                    let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-success btn-small' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
                     $("#current_admin").append(spanhtml);
 //                    $("#mytable").bootstrapTable("refresh");
                 }else{
@@ -527,7 +531,17 @@
 
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
-    })
+    });
+
+    function changeSelectAdminUser(userid){
+        $("#admin_user").parent().hidden();
+        $("#admin_user").val(userid);
+    }
+
+    function showSelectAdminUser(userid){
+        $("#admin_user").parent().show();
+        $("#admin_user").val(userid);
+    }
 
 </script>
 
