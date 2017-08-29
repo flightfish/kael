@@ -103,7 +103,7 @@
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
 
-                <span class="btn btn-white" >当前管理员</span>
+                <span class="btn btn-link" >当前管理员</span>
                 <div class="btn-group" id="current_admin">
 
                 </div>
