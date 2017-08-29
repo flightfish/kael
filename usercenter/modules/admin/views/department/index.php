@@ -434,10 +434,10 @@
             success:function(data){
                 if(data.code==0){
                     alert("操作成功");
-                    $("#closebtn").click();
+//                    $("#closebtn").click();
                     let spanhtml = "<span id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"&nbsp;&nbsp;</span>"
                     $("#current_admin").append(spanhtml);
-//                    $("#mytable").bootstrapTable("refresh");
+                    $("#mytable").bootstrapTable("refresh");
                 }else{
                     alert(data.message);
                 }
