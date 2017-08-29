@@ -382,7 +382,7 @@
                         swal("上传成功！", response.data, "success");
                         $('#batchAdd .modal-footer .closefile').trigger("click");
                         zone();
-                        table();
+//                        table();
                     }
                     $("#mytable").bootstrapTable("refresh");
                 });
