@@ -446,6 +446,10 @@
         });
     };
 
+    $("#closebtn").on("click",function(){
+        $("#mytable").bootstrapTable("refresh");
+    });
+
     function editDepartment(is_old){
         var id = is_old ? $('#modid-department').val() : 0;
         var platform_list_checked = $('input[name="platform_list_edit"]:checked');
