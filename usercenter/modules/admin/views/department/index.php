@@ -538,13 +538,16 @@
     function changeSelectAdminUser(userid){
         $("#admin_user").parent().hide();
         $("#admin_user").val(userid);
-        $("#admin_user").change()
+        $("#admin_user").change();
+        $("#current_admin").children().removeClass('active');
+        $("#current_admin_"+$("#admin_user").val()).addClass('active');
     }
 
     function showSelectAdminUser(userid){
         $("#admin_user").parent().show();
         $("#admin_user").val(userid);
-        $("#admin_user").change()
+        $("#admin_user").change();
+        $("#current_admin").children().removeClass('active');
     }
 
 </script>
