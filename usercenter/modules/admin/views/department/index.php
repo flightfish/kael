@@ -366,7 +366,11 @@
         var platform_list = [];
         $.each(platform_list_checked, function () {
             let platform_id = $(this).val();
-            platform_list.push(platform_id);
+            let platform_name = $("#this").parent().text();
+            platform_list.push({
+                'platform_id':platform_id,
+                'platform_name':platform_name
+            });
         });
         tmpList[departmentId]['admin_list'].push({
             'id':adminId,
