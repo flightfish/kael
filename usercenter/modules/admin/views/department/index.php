@@ -103,10 +103,10 @@
             <div class="modal-body">
                 <input type="hidden" id="modid" value="">
                 <div class="input-group">
-                        <span class="input-group-addon">
+<!--                        <span class="input-group-addon">-->
                             <span class="input-group-addon" id="current_admin">当前管理员</span>
                             &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-warning btn-small" onclick="showSelectAdminUser(-1)">新增</button>
-                        </span>
+<!--                        </span>-->
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" >新增/修改管理员列表</span>
@@ -534,7 +534,7 @@
     });
 
     function changeSelectAdminUser(userid){
-        $("#admin_user").parent().hidden();
+        $("#admin_user").parent().hide();
         $("#admin_user").val(userid);
     }
 
