@@ -382,7 +382,7 @@
         var modal = $(this);
         var row = tmpList[tmpid];
         modal.find('#modid').val(tmpid);
-        $("#current_admin").html("当前管理员："):
+        $("#current_admin").html("当前管理员：");
         for(var i in row.admin_list){
             let spanhtml = "<span id="+ row.admin_list[i]['id'] +">"+ row.admin_list[i]['username']  +"</span>"
             $("#current_admin").append(spanhtml)
