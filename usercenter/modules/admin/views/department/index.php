@@ -393,6 +393,10 @@
         $("#admin_user").val(-1);
     });
 
+    $('#editAdminModal').on('hidden.bs.modal', function (event) {
+        $("#mytable").bootstrapTable("refresh");
+    });
+
     $('#editDepartModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
         var tmpid = button.data('whatever'); // Extract info from data-* attributes
@@ -445,10 +449,6 @@
             }
         });
     };
-
-    $("#closebtn").on("click",function(){
-        $("#mytable").bootstrapTable("refresh");
-    });
 
     function editDepartment(is_old){
         var id = is_old ? $('#modid-department').val() : 0;
