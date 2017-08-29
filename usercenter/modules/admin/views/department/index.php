@@ -407,6 +407,7 @@
 
 
     $('#editAdminModal').on('show.bs.modal', function (event) {
+        $("#platform_list_container").parent().hide();
         var button = $(event.relatedTarget); // Button that triggered the modal
         var tmpid = button.data('whatever'); // Extract info from data-* attributes
         var modal = $(this);
@@ -420,7 +421,7 @@
         }
         platfromListByDepart(tmpid);
         $("#admin_user").val(-1);
-        $("#admin_user").change()
+        $("#admin_user").change();
     });
 
     $('#editAdminModal').on('hidden.bs.modal', function (event) {
