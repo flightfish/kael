@@ -383,7 +383,7 @@ class User extends RequestBaseModel
             if($oldOne['admin'] == Role::ROLE_ADMIN && $this->user['admin'] != Role::ROLE_ADMIN){
                 throw new Exception('无权限修改超级管理员', Exception::ERROR_COMMON);
             }
-            if($this->data['center']['admin'] == Role::ROLE_ADMIN && $this->user['admin'] !== Role::ROLE_ADMIN){
+            if($this->data['center']['admin'] == Role::ROLE_ADMIN && $this->user['admin'] != Role::ROLE_ADMIN){
                 throw new Exception('无权限修改超级管理员', Exception::ERROR_COMMON);
             }
             //唯一性
