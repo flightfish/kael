@@ -390,7 +390,7 @@
         $("#current_admin").html("");
         for(var i in row.admin_list){
 //            let spanhtml = "<span id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
-            let spanhtml = "<button onclick='changeSelectAdminUser("+ row.admin_list[i]['id'] +")' class='btn btn-white btn-outline' id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
+            let spanhtml = "<button onclick='changeSelectAdminUser("+ row.admin_list[i]['id'] +")' class='btn btn-outline btn-primary' id='current_admin_"+ row.admin_list[i]['id'] +"'>"+ row.admin_list[i]['username']  +"&nbsp;&nbsp;</span>"
             $("#current_admin").append(spanhtml)
         }
         platfromListByDepart(tmpid);
@@ -445,7 +445,7 @@
                     alert("操作成功");
 //                    $("#closebtn").click();
                     $("#current_admin_"+$("#admin_user").val()).remove();
-                    let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-white btn-outline' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
+                    let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-outline btn-primary' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
                     $("#current_admin").append(spanhtml);
 //                    $("#mytable").bootstrapTable("refresh");
                 }else{
