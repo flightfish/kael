@@ -328,7 +328,7 @@ class User extends RequestBaseModel
         }
 
         if (0 == $this->id) {
-            if($this->data['center']['admin'] == Role::ROLE_ADMIN){
+            if($this->data['center']['admin'] == Role::ROLE_ADMIN && $this->user['admin'] !== Role::ROLE_ADMIN){
                 throw new Exception('无权限新增超级管理员', Exception::ERROR_COMMON);
             }
             //唯一性
@@ -367,8 +367,11 @@ class User extends RequestBaseModel
             if (empty($oldOne)) {
                 throw new Exception("用户不存在", Exception::ERROR_COMMON);
             }
-            if($oldOne['admin'] == Role::ROLE_ADMIN && $this->user['id'] != $this->id){
-                throw new Exception('无权限修改其他超级管理员信息', Exception::ERROR_COMMON);
+            if($oldOne['admin'] == Role::ROLE_ADMIN && $this->user['admin'] != Role::ROLE_ADMIN){
+                throw new Exception('无权限修改超级管理员', Exception::ERROR_COMMON);
+            }
+            if($this->data['center']['admin'] == Role::ROLE_ADMIN && $this->user['admin'] !== Role::ROLE_ADMIN){
+                throw new Exception('无权限修改超级管理员', Exception::ERROR_COMMON);
             }
             //唯一性
             if($oldOne['mobile'] != $this->data['center']['mobile']){
