@@ -465,6 +465,7 @@
                 if(data.code==0){
                     alert("操作成功");
 //                    $("#closebtn").click();
+                    updateTmpListAdminList();
                     $("#current_admin_"+$("#admin_user").val()).remove();
                     if(platform_list.length > 0){
                         let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-outline btn-primary' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
