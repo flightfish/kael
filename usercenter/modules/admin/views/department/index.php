@@ -353,7 +353,7 @@
         });
     }
 
-    updateTmpListAdminList(){
+    function updateTmpListAdminList(){
         let departmentId = $("#modid").val();
         let adminId = $("#admin_user").val();
         for(let i in tmpList[departmentId]['admin_list']){
