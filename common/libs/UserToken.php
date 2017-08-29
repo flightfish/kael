@@ -38,6 +38,14 @@ class UserToken
             throw new Exception('登录过期，请重新登录',Exception::ERROR_COMMON);
         }
         list($time,$userId,$passwd,$check,$mobile,$email,$timeRev,$noise) = $arrToken;
+        //时间校验
+
+        if($checkIp){
+            $timeExpireChcek = time() - $time;
+            if($timeExpireChcek > 7 * 24 * 3600 || $timeExpireChcek < 0){
+                throw new Exception('登录过期，请重新登录',Exception::ERROR_COMMON);
+            }
+        }
         if(strrev($time) != $timeRev){
             throw new Exception('登录失败，请重试',Exception::ERROR_COMMON);
         }
@@ -55,10 +63,10 @@ class UserToken
         $allIpArr[] = self::getRealIP();
         isset($_SERVER['HTTP_CLIENT_IP']) && $allIpArr[] = $_SERVER['HTTP_CLIENT_IP'];
 //        isset(\Yii::$app->request->headers['x-real-ip']) && $allIpArr[] = \Yii::$app->request->headers['x-real-ip'];
-        if($checkIp && ($noise != $user['login_ip'] ||  !in_array($user['login_ip'],$allIpArr))){
-            //判断是否深蓝平台
-            throw new Exception('登录信息已过期，请重试',Exception::ERROR_COMMON);
-        }
+//        if($checkIp && ($noise != $user['login_ip'] ||  !in_array($user['login_ip'],$allIpArr))){
+//            //判断是否深蓝平台
+//            throw new Exception('登录信息已过期，请重试',Exception::ERROR_COMMON);
+//        }
         $user['name'] = $user['username'];
         $user['user_id'] = $user['id'];
         return $user;
