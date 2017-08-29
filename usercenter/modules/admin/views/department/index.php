@@ -120,7 +120,7 @@
 
                 <div class="input-group" >
                     <span class="input-group-addon" >平台权限</span>
-                    <div style="height: 100%;display: none" class="form-control" id="platform_list_container">
+                    <div style="height: 100%;" class="form-control" id="platform_list_container">
 
                     </div>
                 </div>
@@ -537,7 +537,6 @@
 
     function changeSelectAdminUser(userid){
         $("#admin_user").parent().hide();
-        $("#platform_list_container").parent().show();
         $("#admin_user").val(userid);
         $("#admin_user").change();
         $("#current_admin").children().removeClass('active');
@@ -546,7 +545,6 @@
 
     function showSelectAdminUser(userid){
         $("#admin_user").parent().show();
-        $("#platform_list_container").parent().show();
         $("#admin_user").val(userid);
         $("#admin_user").change();
         $("#current_admin").children().removeClass('active');
