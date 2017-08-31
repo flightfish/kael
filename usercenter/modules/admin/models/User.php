@@ -633,7 +633,7 @@ class User extends RequestBaseModel
             //有效部门
             $userList = UserCenter::findListByDepartment($getDepartmentId,'mobile,email,username');
             foreach($userList as $v){
-                $excelData[] = [$v['mobile'],$v['email'],'','',$v['username']];
+                $excelData[] = [$v['username'],$v['mobile'],$v['email'],'',''];
             }
         }
 
@@ -704,7 +704,7 @@ class User extends RequestBaseModel
         $excelData = [];
         $excelData[] = $title;
         foreach($userList as $v){
-            $excelData[] = [$v['mobile'],$v['email'],'','',$v['username']];
+            $excelData[] = [$v['username'],$v['mobile'],$v['email'],'',''];
         }
 
         $objPHPExcel = new \PHPExcel();
@@ -717,6 +717,7 @@ class User extends RequestBaseModel
         $objSheet->fromArray($platformData);
         $objSheet = $objPHPExcel->getSheet(0);
         $objSheet->fromArray($excelData);
+        $objPHPExcel->setActiveSheetIndex(0);
 
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
         header('Content-Type: application/vnd.ms-excel');
