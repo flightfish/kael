@@ -903,7 +903,7 @@ class User extends RequestBaseModel
         }
 
         if (!empty($error)) {
-            $error = join("\r\n", $error);
+            $error = join("\n", $error);
             throw new Exception($error, Exception::ERROR_COMMON);
         } else {
             return "导入成功";
