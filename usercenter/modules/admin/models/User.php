@@ -617,7 +617,7 @@ class User extends RequestBaseModel
         $platfromStr = array_map(function($v){return $v['platform_id'].':'.$v['platform_name'];},$platformAll);
         $platfromStr = join('；',$platfromStr);
         $title = [
-             '用户名（可不填,修改无效）',
+            '用户名（可不填,修改无效）',
             '手机号',
             '邮箱（邮箱和手机号必须填写一个）',
             '新增平台权限(逗号分割)('.$platfromStr.')',
@@ -675,7 +675,7 @@ class User extends RequestBaseModel
             $leftjoin[] = [RelateUserPlatform::tableName().' b','a.id = b.user_id'];
             $where['b.platform_id'] = $this->filter['platform'];
         }
-        $selectColumn = 'a.mobile,a.email,a.username';
+        $selectColumn = 'a.id,a.mobile,a.email,a.username';
         $userList = UserCenter::findUserSearch(1,50000,$search,$where,$leftjoin,$selectColumn);
 
         //excel
@@ -711,7 +711,7 @@ class User extends RequestBaseModel
         $objSheet = $objPHPExcel->createSheet(0);
         $objSheet->setTitle('用户列表');
         $objSheet = $objPHPExcel->createSheet(1);
-        $objSheet->setTitle('平台列表');
+        $objSheet->setTitle('填写说明');
 
         $objSheet = $objPHPExcel->getSheet(1);
         $objSheet->fromArray($platformData);
