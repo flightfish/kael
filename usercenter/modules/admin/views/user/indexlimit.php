@@ -563,7 +563,7 @@
             search:$("#filter-search").val(),
             user_type:$("#filter-usertype").val(),
         };
-        window.location.href = downloadPrivURL + 'filter='+JSON.stringify(filter);
+        window.location.href = downloadPrivURL + '&filter='+JSON.stringify(filter);
     });
 </script>
 
