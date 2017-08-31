@@ -658,7 +658,7 @@ class User extends RequestBaseModel
 
         $this->checkUserAuth();
         $this->filter = Yii::$app->request->get('filter',"");
-        $this->filter = json_decode($this->filter);
+        $this->filter = json_decode($this->filter,true);
         empty($this->filter) && $this->filter = [];
         $search = !empty($this->filter['search']) ? trim($this->filter['search']) : "";
         $where = [];
