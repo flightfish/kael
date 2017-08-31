@@ -545,7 +545,7 @@
     });
 
 
-    $("#download-priv").on('click',function()){
+    $("#download-priv").on('click',function(){
 //        let fdata = new FormData();
 //        fdata.append('filter[role]',$("#filter-role").val());
 //        fdata.append('filter[department]',$("#filter-department").val());
@@ -564,7 +564,7 @@
             user_type:$("#filter-usertype").val(),
         };
         window.location.href = downloadPrivURL + 'filter='+JSON.stringify(filter);
-    }
+    });
 </script>
 
 </body>
