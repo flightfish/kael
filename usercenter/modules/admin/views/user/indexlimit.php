@@ -147,7 +147,7 @@
                 <h4 class="modal-title">批量添加权限</h4>
             </div>
             <div class="modal-body">
-                <a id="download-priv" href="" class="btn btn-primary ">下载格式模版</a>
+                <button id="download-priv" class="btn btn-primary ">下载格式模版</button>
                 <form id="upload-priv" class="dropzone"  action="">
                     <div class="dropzone-previews"></div>
                     <button type="submit" class="btn btn-primary pull-right">上传</button>
