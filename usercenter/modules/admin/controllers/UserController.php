@@ -150,7 +150,7 @@ class UserController extends BaseController{
             $model = new User();
             $model->load($this->loadData);
             $model->validate();
-            $data = $model->DownloadPriv();
+            $data = $model->downloadPrivNew();
             return $this->success($data);
         }catch(\Exception $e){
             return $this->error($e);

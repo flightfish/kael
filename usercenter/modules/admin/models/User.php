@@ -617,11 +617,12 @@ class User extends RequestBaseModel
         $platfromStr = array_map(function($v){return $v['platform_id'].':'.$v['platform_name'];},$platformAll);
         $platfromStr = join('；',$platfromStr);
         $title = [
+             '用户名（可不填,修改无效）',
             '手机号',
             '邮箱（邮箱和手机号必须填写一个）',
             '新增平台权限(逗号分割)('.$platfromStr.')',
             '清除平台权限(逗号分割)('.$platfromStr.')',
-            '用户名（可不填,修改无效）',
+
         ];
 
         $excelData = [];
@@ -649,6 +650,86 @@ class User extends RequestBaseModel
         return '';
     }
 
+
+
+
+    public function downloadPrivNew()
+    {
+
+        $this->checkUserAuth();
+        $this->filter = Yii::$app->request->get('filter',[]);
+        $search = !empty($this->filter['search']) ? trim($this->filter['search']) : "";
+        $where = [];
+        isset($this->filter['role']) && $this->filter['role'] != -1 && $where['admin'] = $this->filter['role'];
+        isset($this->filter['department']) && $this->filter['department'] != -1 && $where['department_id'] = $this->filter['department'];
+        if(isset($this->filter['department']) && $this->filter['department'] == -1){
+            if($this->user['admin'] == Role::ROLE_DEPARTMENT_ADMIN){
+                $departmentList = RelateAdminDepartment::findListByAdmin($this->user['id']);
+                $where['department_id'] = array_column($departmentList,'department_id');
+            }
+        }
+        isset($this->filter['user_type']) && $this->filter['user_type'] != -1 && $where['user_type'] = $this->filter['user_type'];
+
+        $leftjoin = [];
+        if(isset($this->filter['platform']) && $this->filter['platform'] != -1){
+            $leftjoin[] = [RelateUserPlatform::tableName().' b','a.id = b.user_id'];
+            $where['b.platform_id'] = $this->filter['platform'];
+        }
+        $selectColumn = 'a.mobile,a.email,a.username';
+        $userList = UserCenter::findUserSearch(1,50000,$search,$where,$leftjoin,$selectColumn);
+
+        //excel
+        $platformAll = $this->platformList();
+        $platformData = [];
+        $platformData[] = ['填写说明：',''];
+        $platformData[] = ['用户名可不填，仅查看使用，修改无效',''];
+        $platformData[] = ['手机号和邮箱作为用户认定条件，至少填写一个（当手机号存在对应用户是以手机号为准）',''];
+        $platformData[] = ['新增/清除平台权限时可选多个，用英文,分割',''];
+        $platformData[] = ['只可修改自己有权限修改的平台权限，其余无效',''];
+        $platformData[] = ['',''];
+        $platformData[] = ['平台列表如下：',''];
+        $platformData[] = ['平台ID','平台名称'];
+        foreach($platformAll as $v){
+            $platformData[] = [$v['platform_id'],$v['platform_name']];
+        }
+
+        $title = [
+            '用户名',
+            '手机号',
+            '邮箱',
+            '新增平台权限(逗号分割)',
+            '清除平台权限(逗号分割)',
+        ];
+
+        $excelData = [];
+        $excelData[] = $title;
+        foreach($userList as $v){
+            $excelData[] = [$v['mobile'],$v['email'],'','',$v['username']];
+        }
+
+        $objPHPExcel = new \PHPExcel();
+        $objSheet = $objPHPExcel->createSheet(0);
+        $objSheet->setTitle('用户列表');
+        $objSheet = $objPHPExcel->createSheet(1);
+        $objSheet->setTitle('平台列表');
+
+        $objSheet = $objPHPExcel->getSheet(1);
+        $objSheet->fromArray($platformData);
+        $objSheet = $objPHPExcel->getSheet(0);
+        $objSheet->fromArray($excelData);
+
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="批量添加权限.xls"');
+        header('Cache-Control: max-age=1');
+        $objWriter->save('php://output');
+        return '';
+
+    }
+
+
+
+
     public function importUserPriv()
     {
         set_time_limit(0);
@@ -672,14 +753,36 @@ class User extends RequestBaseModel
         $userList  = [];
         foreach($data as $k=>$v){
             if($k == 0){
+                $title = [
+                    '用户名',
+                    '手机号',
+                    '邮箱',
+                    '新增平台权限(逗号分割)',
+                    '清除平台权限(逗号分割)',
+                ];
+                foreach($title as $titleIndex=>$titleValue){
+                    if(empty($v[$titleIndex])){
+                        throw new Exception("请无修改原始表结构",Exception::ERROR_COMMON);
+                    }
+                    if($v[$titleIndex] != $titleValue){
+                        throw new Exception("请无修改原始表结构",Exception::ERROR_COMMON);
+                    }
+                }
                 continue;
             }
             $v = array_map('strval',$v);
             $v = array_map('trim',$v);
-            if(!empty($v[0])){
-                array_push($mobileList,$v[0]);
-            }elseif(!empty($v[1])){
-                array_push($emailList,$v[1]);
+            if(!empty($v[1])){
+                //mobile
+                if(!is_numeric($v[1])){
+                    throw new Exception("请检查手机号格式",Exception::ERROR_COMMON);
+                }
+                array_push($mobileList,$v[1]);
+            }elseif(!empty($v[2])){
+                if(strpos($v[2],'@') === false){
+                    throw new Exception("请检查邮箱格式",Exception::ERROR_COMMON);
+                }
+                array_push($emailList,$v[2]);
             }
         }
         !empty($mobileList) && $userList = array_merge($userList,UserCenter::find()->where(['mobile'=>$mobileList,'status'=>0])->asArray(true)->all());
@@ -711,30 +814,30 @@ class User extends RequestBaseModel
             $v = array_map('strval',$v);
             $v = array_map('trim',$v);
 
-            if (empty($v[0]) && empty($v[1])) {
+            if (empty($v[1]) && empty($v[2])) {
                 array_push($error, '第' . ($k + 1) . '行，手机和和邮箱不能同时为空');
                 continue;
             }
 
-            if(!empty($v[0])){
-                $uname = $v[0];
-                if(!isset($userListMobile[$v[0]])){
-                    array_push($error, '第' . ($k + 1) . '行，用户不存在'.$uname);
-                    continue;
-                }
-                $userInfo = $userListMobile[$v[0]];
-            }elseif(!empty($v[1])){
+            if(!empty($v[1])){
                 $uname = $v[1];
-                if(!isset($userListEmail[$v[1]])){
+                if(!isset($userListMobile[$v[1]])){
                     array_push($error, '第' . ($k + 1) . '行，用户不存在'.$uname);
                     continue;
                 }
-                $userInfo = $userListEmail[$v[1]];
+                $userInfo = $userListMobile[$v[1]];
+            }elseif(!empty($v[2])){
+                $uname = $v[2];
+                if(!isset($userListEmail[$v[2]])){
+                    array_push($error, '第' . ($k + 1) . '行，用户不存在'.$uname);
+                    continue;
+                }
+                $userInfo = $userListEmail[$v[2]];
             }
 
             //增加
-            if(!empty($v[2])){
-                $addPrivIds = explode(',',$v[2]);//增加
+            if(!empty($v[3])){
+                $addPrivIds = explode(',',$v[3]);//增加
                 $departmentIdOne = $userInfo['department_id'];
                 $diff = array_diff($addPrivIds,$departmentPrivList[$departmentIdOne]);
                 if(!empty($diff)){
@@ -750,8 +853,8 @@ class User extends RequestBaseModel
             }
 
             //删除
-            if(!empty($v[3])){
-                $delPriv = explode(',',$v[3]);//增加
+            if(!empty($v[4])){
+                $delPriv = explode(',',$v[4]);//增加
                 $departmentIdOne = $userInfo['department_id'];
                 $diff = array_diff($delPriv,$departmentPrivList[$departmentIdOne]);
                 if(!empty($diff)){
@@ -797,7 +900,7 @@ class User extends RequestBaseModel
         }
 
         if (!empty($error)) {
-            $error = join('----------', $error);
+            $error = join('<br/>', $error);
             throw new Exception($error, Exception::ERROR_COMMON);
         } else {
             return "导入成功";

@@ -49,10 +49,11 @@ class UserCenter extends \common\models\BaseActiveRecord
     }
 
 
-    public static function findUserSearch($page,$pagesize,$search="",$where=[],$leftjoin=[])
+    public static function findUserSearch($page,$pagesize,$search="",$where=[],$leftjoin=[],$select='a.*')
     {
         $search = trim(strval($search));
         $query = self::find()
+            ->select($select)
             ->from(self::tableName().' a')
             ->where(['a.status' => self::STATUS_VALID]);
         foreach($leftjoin as $v){
