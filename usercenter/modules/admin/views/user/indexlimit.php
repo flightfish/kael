@@ -195,7 +195,6 @@
     //批量上传开始
     $('#type').attr('value',platformType);
     $('#type1').attr('value',platformType);
-    $("#download-priv").attr('href',downloadPrivURL);
     $("#upload-priv").attr('action',uploadPrivURL);
     $(".chosen-select").chosen();
     zone();
@@ -535,7 +534,6 @@
 
     $("#filter-department").on('change',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
-        $("#download-priv").attr('href',downloadPrivURL + "&department_id="+ $("#filter-department").val());
     });
 
     $("#filter-platform").on('change',function(){
@@ -546,6 +544,27 @@
         $('#mytable').bootstrapTable('refresh',{url:listURL});
     });
 
+
+    $("#download-priv").on('click',function()){
+//        let fdata = new FormData();
+//        fdata.append('filter[role]',$("#filter-role").val());
+//        fdata.append('filter[department]',$("#filter-department").val());
+//        fdata.append('filter[platform]',$("#filter-platform").val());
+//        fdata.append('filter[search]',$("#filter-search").val());
+//        fdata.append('filter[user_type]',$("#filter-user_type").val());
+//        var xhr =new XMLHttpRequest();
+//        xhr.open("POST", downloadPrivURL);
+//        xhr.send(formData);
+//        $("#download-priv").attr('href',downloadPrivURL);
+        filter = {
+            role:$("#filter-role").val(),
+            department:$("#filter-department").val(),
+            platform:$("#filter-platform").val(),
+            search:$("#filter-search").val(),
+            user_type:$("#filter-usertype").val(),
+        };
+        window.location.href = downloadPrivURL + 'filter='+JSON.stringify(filter);
+    }
 </script>
 
 </body>
