@@ -9,6 +9,7 @@ use common\models\RelateUserPlatform;
 use common\libs\AES;
 use common\models\CommonUser;
 use common\models\LogAuthUser;
+use common\models\UserCenter;
 use usercenter\components\exception\Exception;
 use usercenter\models\RequestBaseModel;
 use Yii;
@@ -222,6 +223,10 @@ class CommonApi extends RequestBaseModel {
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         } else {
+            if(empty($user['password'])){
+                $user['password'] = md5('123456');
+                UserCenter::updateAll(['password'=>md5('123456')],['id'=>$user['id']]);
+            }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
