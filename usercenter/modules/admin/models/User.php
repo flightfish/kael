@@ -765,10 +765,10 @@ class User extends RequestBaseModel
                 ];
                 foreach($title as $titleIndex=>$titleValue){
                     if(empty($v[$titleIndex])){
-                        throw new Exception("请无修改原始表结构",Exception::ERROR_COMMON);
+                        throw new Exception("请不要修改原始表结构",Exception::ERROR_COMMON);
                     }
                     if($v[$titleIndex] != $titleValue){
-                        throw new Exception("请无修改原始表结构",Exception::ERROR_COMMON);
+                        throw new Exception("请不要修改原始表结构",Exception::ERROR_COMMON);
                     }
                 }
                 continue;
