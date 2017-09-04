@@ -818,7 +818,7 @@ class User extends RequestBaseModel
             $v = array_map('trim',$v);
 
             if (empty($v[1]) && empty($v[2])) {
-                array_push($error, '第' . ($k + 1) . '行，手机和和邮箱不能同时为空');
+                array_push($error, '第' . ($k + 1) . '行，手机和邮箱不能同时为空');
                 continue;
             }
 
