@@ -46,6 +46,14 @@ class RuKou extends RequestBaseModel
             //非内部员工
             throw new Exception("权限不足",Exception::ERROR_COMMON);
         }
+
+        //密码权限设置
+        if($this->user['user_type'] == 0){
+            if(empty($this->user['password']) || $this->user['password'] == md5('123456')){
+                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
+            }
+        }
+
         $data = [];
         $deparmentPlatList = RelateDepartmentPlatform::findListByDepartment($this->user['department_id']);
         $platformIdsDepartment = array_column($deparmentPlatList,'platform_id');

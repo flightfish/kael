@@ -223,6 +223,11 @@ class CommonApi extends RequestBaseModel {
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         } else {
+            if($user['user_type'] == 0){
+                if(empty($user['password']) || $user['password'] == md5('123456')){
+                    throw new Exception("密码过于简单，请点击忘记密码修改密码", Exception::ERROR_COMMON);
+                }
+            }
             if(empty($user['password'])){
                 $user['password'] = md5('123456');
                 UserCenter::updateAll(['password'=>md5('123456')],['id'=>$user['id']]);
@@ -267,6 +272,11 @@ class CommonApi extends RequestBaseModel {
     public function ChangePass(){
         if (empty($this->user_pass) && empty($this->token)) {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
+        }
+        if($this->user['user_type'] == 0){
+            if($this->user_pass == md5('123456')){
+                throw new Exception("密码过于简单，请重新设置", Exception::ERROR_COMMON);
+            }
         }
         if (!empty($this->token) && empty($this->old_pass)) { //找回密码修改
 //            parent::getUser();
@@ -381,6 +391,12 @@ class CommonApi extends RequestBaseModel {
         }
         if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
             throw new Exception('无权访问，请联系管理员',Exception::ERROR_COMMON);
+        }
+        //密码权限设置
+        if($this->user['user_type'] == 0){
+            if(empty($this->user['password']) || $this->user['password'] == md5('123456')){
+                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
+            }
         }
         //判断部门权限
         $relate = RelateDepartmentPlatform::findListByDepartmentPlatform($this->user['department_id'],$platformInfo['platform_id']);
