@@ -274,7 +274,7 @@ class CommonApi extends RequestBaseModel {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         }
         if($this->user['user_type'] == 0){
-            if($this->user_pass == md5('123456')){
+            if($this->user_pass == '123456'){
                 throw new Exception("密码过于简单，请重新设置", Exception::ERROR_COMMON);
             }
         }
