@@ -281,6 +281,28 @@
                     </select>
                 </div>
 
+
+                <div class="input-group">
+                    <span class="input-group-addon" >工种 <span style="color:red">*</span></span>
+                    <select id="work_type" value="-1" class="form-control">
+                        <option value="-1">请选择工种</option>
+                        <?php foreach($workTypeList as $v): ?>
+                            <option value="<?php echo $v['id']; ?>"><?php echo $v['name'];?></option>
+                        <?php endforeach;?>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-group-addon" >级别 <span style="color:red">*</span></span>
+                    <select id="work_level" value="-1" class="form-control">
+                        <option value="-1">请选择级别</option>
+                        <?php foreach($workLevelList as $v): ?>
+                            <option value="<?php echo $v['id']; ?>"><?php echo $v['name'];?></option>
+                        <?php endforeach;?>
+                    </select>
+                </div>
+
+
                 <div class="input-group">
                     <span class="input-group-addon" >身份证</span>
                     <input type="text" id="idcard" class="form-control" placeholder=""  >
@@ -504,6 +526,14 @@
                 width: '10%'
             },
             {
+                field: 'work_type_name',
+                title: '工种'
+            },
+            {
+                field: 'work_level_name',
+                title: '级别'
+            },
+            {
                 field: 'platform_list',
                 title: '平台权限',
                 width: '30%',
@@ -660,6 +690,8 @@
 //                "subject": "-1",
 //                "grade_part": "-1",
                 "department_id": "-1",
+                "work_type": "-1",
+                "work_level": "-1",
 //                "subject_name": "",
 //                "grade_part_name": "",
                 "admin_department_list": [],
@@ -688,6 +720,8 @@
         modal.find('#bank_account').val(row.bank_account);
         modal.find('#user_type').val(row.user_type);
         modal.find('#department').val(row.department_id);
+        modal.find('#work_type').val(row.work_type);
+        modal.find('#work_level').val(row.work_level);
 //        $("#department").change();
         platfromListByDepartWithFunc(row.department_id,function(){
             $('input[name="platform_list"]').prop("checked", false);
@@ -735,6 +769,8 @@
                         "bank_account":$("#bank_account").val(),
                         "user_type":$("#user_type").val(),
                         "department_id":$("#department").val(),
+                        "work_type":$("#work_type").val(),
+                        "work_level":$("#work_level").val(),
                     },
                     "current":{
 

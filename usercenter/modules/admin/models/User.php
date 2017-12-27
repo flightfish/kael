@@ -13,6 +13,8 @@ use common\models\RelateDepartmentPlatform;
 use common\models\RelateUserPlatform;
 use common\models\Role;
 use common\models\UserCenter;
+use common\models\WorkLevel;
+use common\models\WorkType;
 use usercenter\components\exception\Exception;
 use usercenter\models\RequestBaseModel;
 use Yii;
@@ -168,6 +170,20 @@ class User extends RequestBaseModel
         return $departmentList;
     }
 
+    public function workTypeList()
+    {
+
+        $list = WorkType::findAllList();
+        return $list;
+    }
+
+    public function workLevelList()
+    {
+
+        $list = WorkLevel::findAllList();
+        return $list;
+    }
+
     public function departmentListByAdmin()
     {
         if($this->user['admin'] == Role::ROLE_DEPARTMENT_ADMIN){
@@ -223,6 +239,8 @@ class User extends RequestBaseModel
         //实体
         $departmentEntity  = Department::findAllList();
         $platformEntity = Platform::findAllList();
+        $workTypeEntity = WorkType::findAllList();
+        $workLevelEntity = WorkLevel::findAllList();
         //拼装
         foreach($userList as $k=>$v){
             //updateTime
@@ -241,6 +259,8 @@ class User extends RequestBaseModel
             $v['role_id'] = $v['admin'];
             $v['role_name'] = isset($roleEntity[$v['admin']]) ?$roleEntity[$v['admin']]['role_name'] : "未知";
             $v['department_name'] = isset($departmentEntity[$v['department_id']]) ? $departmentEntity[$v['department_id']]['department_name'] : "未知";
+            $v['work_type_name'] = isset($workTypeEntity[$v['work_type']]) ? $workTypeEntity[$v['work_type']]['name'] : "未知";
+            $v['work_level_name'] = isset($workTypeEntity[$v['work_level']]) ? $workTypeEntity[$v['work_level']]['name'] : "未知";
             $userList[$k] = $v;
         }
         foreach($platformList as $v){
@@ -325,6 +345,12 @@ class User extends RequestBaseModel
         }
         if(!isset($this->data['center']['department_id']) || $this->data['center']['department_id'] == -1){
             throw new Exception('请选择部门', Exception::ERROR_COMMON);
+        }
+        if(!isset($this->data['center']['work_type']) || $this->data['center']['work_type'] == -1){
+            throw new Exception('请选择工种', Exception::ERROR_COMMON);
+        }
+        if(!isset($this->data['center']['work_level']) || $this->data['center']['work_level'] == -1){
+            throw new Exception('请选择级别', Exception::ERROR_COMMON);
         }
         $this->data['center']['user_source'] = $this->user_source;
         $this->data['center']['password'] = !empty($this->data['center']['password']) ? md5($this->data['center']['password']) : "";
