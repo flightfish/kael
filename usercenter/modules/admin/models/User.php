@@ -260,7 +260,7 @@ class User extends RequestBaseModel
             $v['role_name'] = isset($roleEntity[$v['admin']]) ?$roleEntity[$v['admin']]['role_name'] : "未知";
             $v['department_name'] = isset($departmentEntity[$v['department_id']]) ? $departmentEntity[$v['department_id']]['department_name'] : "未知";
             $v['work_type_name'] = isset($workTypeEntity[$v['work_type']]) ? $workTypeEntity[$v['work_type']]['name'] : "未知";
-            $v['work_level_name'] = isset($workTypeEntity[$v['work_level']]) ? $workTypeEntity[$v['work_level']]['name'] : "未知";
+            $v['work_level_name'] = isset($workLevelEntity[$v['work_level']]) ? $workLevelEntity[$v['work_level']]['name'] : "未知";
             $userList[$k] = $v;
         }
         foreach($platformList as $v){
