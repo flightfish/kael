@@ -10,6 +10,8 @@ use common\libs\AES;
 use common\models\CommonUser;
 use common\models\LogAuthUser;
 use common\models\UserCenter;
+use common\models\WorkLevel;
+use common\models\WorkType;
 use usercenter\components\exception\Exception;
 use usercenter\models\RequestBaseModel;
 use Yii;
@@ -79,8 +81,13 @@ class Api extends RequestBaseModel {
         $relate = RelateUserPlatform::findListByUserPlatform($userIds,$this->getPlatformId());
         $userIds = array_column($relate,'user_id');
         $userListFitler = [];
+        $workTypeEntity = WorkLevel::findAllList();
+        $workLevelEntity = WorkType::findAllList();
         foreach($userList as $v){
             if(in_array($v['id'],$userIds)){
+                $v['work_type_name'] = isset($workTypeEntity[$v['work_type']]) ? $workTypeEntity[$v['work_type']]['name'] : "未知";
+                $v['work_level_name'] = isset($workLevelEntity[$v['work_level']]) ? $workLevelEntity[$v['work_level']]['name'] : "未知";
+                $v['password'] = "";
                 $userListFitler[] = $v;
             }
         }
@@ -94,6 +101,14 @@ class Api extends RequestBaseModel {
             ->andWhere($this->where2)
             ->andWhere(['status'=>UserCenter::STATUS_VALID])
             ->asArray(true)->all();
+        $workTypeEntity = WorkLevel::findAllList();
+        $workLevelEntity = WorkType::findAllList();
+        foreach($userList as $k=>$v){
+            $v['work_type_name'] = isset($workTypeEntity[$v['work_type']]) ? $workTypeEntity[$v['work_type']]['name'] : "未知";
+            $v['work_level_name'] = isset($workLevelEntity[$v['work_level']]) ? $workLevelEntity[$v['work_level']]['name'] : "未知";
+            $v['password'] = "";
+            $userList[$k] = $v;
+        }
         return $userList;
     }
 
