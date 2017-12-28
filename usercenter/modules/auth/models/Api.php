@@ -71,7 +71,6 @@ class Api extends RequestBaseModel {
 
 
     public function getUserListByPlatformWhere(){
-
         $userList = UserCenter::find()
             ->where($this->where)
             ->andWhere($this->where2)

@@ -1,6 +1,8 @@
 <?php
 namespace usercenter\modules\auth\controllers;
 
+use common\models\WorkLevel;
+use common\models\WorkType;
 use usercenter\modules\auth\models\Api;
 use usercenter\modules\auth\models\CommonApi;
 use usercenter\controllers\BaseController;
@@ -47,6 +49,18 @@ class ApiController extends BaseController
         }catch(\Exception $exception){
             return $this->error($exception);
         }
+    }
+
+    /**
+     * 工种&类型
+     */
+    public function actionWorkInfo(){
+        $workLevelEntity = WorkLevel::findAllList();
+        $workTypeEntity = WorkType::findAllList();
+        return [
+            'work_level'=>array_map(function($v){return ['id'=>$v['id'],'name'=>$v['name']];},$workLevelEntity),
+            'work_type'=>array_map(function($v){return ['id'=>$v['id'],'name'=>$v['name']];},$workTypeEntity),
+        ];
     }
 
 }
