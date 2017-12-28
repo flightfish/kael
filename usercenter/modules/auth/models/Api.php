@@ -81,8 +81,8 @@ class Api extends RequestBaseModel {
         $relate = RelateUserPlatform::findListByUserPlatform($userIds,$this->getPlatformId());
         $userIds = array_column($relate,'user_id');
         $userListFitler = [];
-        $workTypeEntity = WorkLevel::findAllList();
-        $workLevelEntity = WorkType::findAllList();
+        $workTypeEntity = WorkType::findAllList();
+        $workLevelEntity = WorkLevel::findAllList();
         foreach($userList as $v){
             if(in_array($v['id'],$userIds)){
                 $v['work_type_name'] = isset($workTypeEntity[$v['work_type']]) ? $workTypeEntity[$v['work_type']]['name'] : "未知";
