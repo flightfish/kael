@@ -58,8 +58,8 @@ class ApiController extends BaseController
         $workLevelEntity = WorkLevel::findAllList();
         $workTypeEntity = WorkType::findAllList();
         return [
-            'work_level'=>array_map(function($v){return ['id'=>$v['id'],'name'=>$v['name']];},$workLevelEntity),
-            'work_type'=>array_map(function($v){return ['id'=>$v['id'],'name'=>$v['name']];},$workTypeEntity),
+            'work_level'=>array_values(array_map(function($v){return ['id'=>$v['id'],'name'=>$v['name']];},$workLevelEntity)),
+            'work_type'=>array_values(array_map(function($v){return ['id'=>$v['id'],'name'=>$v['name']];},$workTypeEntity)),
         ];
     }
 
