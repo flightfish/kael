@@ -101,8 +101,8 @@ class Api extends RequestBaseModel {
             ->andWhere($this->where2)
             ->andWhere(['status'=>UserCenter::STATUS_VALID])
             ->asArray(true)->all();
-        $workTypeEntity = WorkLevel::findAllList();
-        $workLevelEntity = WorkType::findAllList();
+        $workTypeEntity = WorkType::findAllList();
+        $workLevelEntity = WorkLevel::findAllList();
         foreach($userList as $k=>$v){
             $v['work_type_name'] = isset($workTypeEntity[$v['work_type']]) ? $workTypeEntity[$v['work_type']]['name'] : "未知";
             $v['work_level_name'] = isset($workLevelEntity[$v['work_level']]) ? $workLevelEntity[$v['work_level']]['name'] : "未知";
