@@ -3,6 +3,7 @@
 namespace usercenter\modules\auth\models;
 use common\libs\Constant;
 use common\libs\UserToken;
+use common\models\Department;
 use common\models\Platform;
 use common\models\RelateDepartmentPlatform;
 use common\models\RelateUserPlatform;
@@ -82,10 +83,12 @@ class Api extends RequestBaseModel {
         $userListFitler = [];
         $workTypeEntity = WorkType::findAllList();
         $workLevelEntity = WorkLevel::findAllList();
+        $departmentEntity = Department::findAllList();
         foreach($userList as $v){
             if(in_array($v['id'],$userIds)){
                 $v['work_type_name'] = isset($workTypeEntity[$v['work_type']]) ? $workTypeEntity[$v['work_type']]['name'] : "未知";
                 $v['work_level_name'] = isset($workLevelEntity[$v['work_level']]) ? $workLevelEntity[$v['work_level']]['name'] : "未知";
+                $v['department_name'] = isset($departmentEntity[$v['department_id']]) ? $departmentEntity[$v['department_id']]['department_name'] : "未知";
                 $v['password'] = "";
                 $userListFitler[] = $v;
             }
@@ -102,9 +105,11 @@ class Api extends RequestBaseModel {
             ->asArray(true)->all();
         $workTypeEntity = WorkType::findAllList();
         $workLevelEntity = WorkLevel::findAllList();
+        $departmentEntity = Department::findAllList();
         foreach($userList as $k=>$v){
             $v['work_type_name'] = isset($workTypeEntity[$v['work_type']]) ? $workTypeEntity[$v['work_type']]['name'] : "未知";
             $v['work_level_name'] = isset($workLevelEntity[$v['work_level']]) ? $workLevelEntity[$v['work_level']]['name'] : "未知";
+            $v['department_name'] = isset($departmentEntity[$v['department_id']]) ? $departmentEntity[$v['department_id']]['department_name'] : "未知";
             $v['password'] = "";
             $userList[$k] = $v;
         }

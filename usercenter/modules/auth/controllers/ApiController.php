@@ -1,6 +1,7 @@
 <?php
 namespace usercenter\modules\auth\controllers;
 
+use common\models\Department;
 use common\models\WorkLevel;
 use common\models\WorkType;
 use usercenter\modules\auth\models\Api;
@@ -57,9 +58,11 @@ class ApiController extends BaseController
     public function actionWorkInfo(){
         $workLevelEntity = WorkLevel::findAllList();
         $workTypeEntity = WorkType::findAllList();
+        $departmentEntity = Department::findAllList();
         return [
             'work_level'=>array_values(array_map(function($v){return ['id'=>$v['id'],'name'=>$v['name']];},$workLevelEntity)),
             'work_type'=>array_values(array_map(function($v){return ['id'=>$v['id'],'name'=>$v['name']];},$workTypeEntity)),
+            'department'=>array_values(array_map(function($v){return ['id'=>$v['department_id'],'name'=>$v['department_name']];},$departmentEntity)),
         ];
     }
 
