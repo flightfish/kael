@@ -2,6 +2,8 @@
 namespace common\libs;
 
 
+use common\libs\kmsclient\KMSClient;
+
 class AppFunc{
 
 
@@ -249,5 +251,18 @@ class AppFunc{
         $str = str_replace('&gt;','>',$str);
         $str = trim($str);
         return $str;
+    }
+
+    /**
+     * @param $mobile
+     * @param $content
+     * 发送短信
+     */
+    public static function smsSend($mobile,$content){
+        list($ok, $data) = KMSClient::getInstance()->getResult(
+            'sms',
+            'sendMarketingSMS',
+            ['mobile' => $mobile, 'content' => $content], $mobile);
+        return ['ok'=>$ok ?? 0,'data'=>$data??[]];
     }
 }

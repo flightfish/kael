@@ -1,6 +1,7 @@
 <?php
 
 namespace usercenter\modules\auth\models;
+use common\libs\AppFunc;
 use common\libs\Constant;
 use common\libs\UserToken;
 use common\models\Platform;
@@ -325,12 +326,14 @@ class CommonApi extends RequestBaseModel {
         if(empty($user)){
             throw new Exception(Exception::MOBILE_NOT_FIND,Exception::ERROR_COMMON);
         }
-        $smsType = isset($body['sms_type']) ? $body['sms_type'] : 1;
-
         $verifycode = new VerifyCode();
-
         $verifyKeys = $verifycode->getStudentPasswordVerifyCode($this->user_mobile);
-
+        $forgetMsg = SMS_MESSAGE_PICA_FORGET_PASSWORD;
+        $forgetMsg = str_replace('{0}', $verifyKeys[0], $forgetMsg);
+        $res = AppFunc::smsSend($this->user_mobile,$forgetMsg);
+        /*
+        $smsType = 1;
+//        $smsType = isset($body['sms_type']) ? $body['sms_type'] : 1;
         $sms = new Sms();
         $forgetMsg = ($smsType != 1) ? SMS_MESSAGE_FORGET_PASSWORD
             : SMS_MESSAGE_PICA_FORGET_PASSWORD;
@@ -339,6 +342,7 @@ class CommonApi extends RequestBaseModel {
             str_replace('{0}', $verifyKeys[0], $forgetMsg),
             $smsType
         );
+        */
         //记日志
         LogAuthUser::LogLogin($this->user_mobile,LogAuthUser::OP_SEND_CODE,$res);
         return $res;

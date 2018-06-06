@@ -2,9 +2,7 @@
 namespace usercenter\controllers;
 
 
-
-
-class UsernApiController extends \usercenter\modules\auth\controllers\UserApiController
+class UserApiController extends \usercenter\modules\auth\controllers\UserApiController
 {
     
 }
