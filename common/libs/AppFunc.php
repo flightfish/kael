@@ -261,7 +261,7 @@ class AppFunc{
     public static function smsSend($mobile,$content){
         list($ok, $data) = KMSClient::getInstance()->getResult(
             'sms',
-            'sendMarketingSMS',
+            'sendNoticeSMS',
             ['mobile' => $mobile, 'content' => $content], $mobile);
         return ['ok'=>$ok ?? 0,'data'=>$data??[]];
     }
