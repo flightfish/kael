@@ -149,13 +149,9 @@
                     <span class="input-group-addon" >部门名称</span>
                     <input id="department_name_edit" value="" class="form-control"/>
                 </div>
-                <div class="input-group" style="display: none">
-                    <span class="input-group-addon" >部门负责人ID</span>
-                    <input id="department_leader_id" value="" class="form-control"/>
-                </div>
                 <div class="input-group">
-                    <span class="input-group-addon" >部门负责人</span>
-                    <input id="department_leader_name" value="" class="form-control"/>
+                    <span class="input-group-addon" >部门负责人手机号/邮箱</span>
+                    <input id="department_leader_edit" value="" class="form-control"/>
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" >部门类型</span>
@@ -449,10 +445,12 @@
         var modal = $(this);
         if(tmpList[tmpid]){
             $("#department_name_edit").val(tmpList[tmpid]['department_name']);
+            $("#department_leader_edit").val(tmpList[tmpid]['department_leader_name']);
             $("#modal-title2").html("编辑");
             $("#is_outer").val(tmpList[tmpid]['is_outer']);
         }else{
             $("#department_name_edit").val("");
+            $("#department_leader_edit").val("");
             $("#modal-title2").html("新建");
             $("#is_outer").val(-1);
         }
@@ -523,7 +521,7 @@
                 department_name:$("#department_name_edit").val(),
                 is_outer:$("#is_outer").val(),
                 platform_list: platform_list,
-                leader_id:$("#department_leader_id").val()
+                leader:$("#department_leader_edit").val()
             },
             success:function(data){
                 if(data.code==0){
