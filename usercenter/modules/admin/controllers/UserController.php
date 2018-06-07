@@ -49,6 +49,8 @@ class UserController extends BaseController{
             $roleList = $model->roleList();
             $platformList = $model->platformList();
             $departmentList = $model->departmentListByAdmin();
+            $workTypeList = $model->workTypeList();
+            $workLevelList = $model->workLevelList();
             $selectRoleList = [
                 ['role_id'=>0,'role_name'=>'普通用户'],
                 ['role_id'=>2,'role_name'=>'部门管理员'],
@@ -59,6 +61,8 @@ class UserController extends BaseController{
                 'departmentList'=>$departmentList,
                 'roleList'=>$roleList,
                 'selectRoleList'=>$selectRoleList,
+                'workTypeList'=>$workTypeList,
+                'workLevelList'=>$workLevelList,
             ]);
         }catch(\Exception $e){
             $this->error($e);
