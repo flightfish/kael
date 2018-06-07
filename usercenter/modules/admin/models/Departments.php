@@ -285,10 +285,10 @@ class Departments extends RequestBaseModel
     public function editDepartment()
     {
         $this->checkUserAuth();
-
+        $leader_id = $this->_getDepartmentLeaderId($this->leader);
         if(empty($this->department_id)){
             //新增部门
-            $updateInfo = ['department_name'=>$this->department_name,'is_outer'=>$this->is_outer];
+            $updateInfo = ['department_name'=>$this->department_name,'is_outer'=>$this->is_outer, 'leader_user_id' => $leader_id];
             $this->department_id = Department::add($updateInfo);
             if(empty($this->department_id)){
                 throw new Exception('新增部门失败',Exception::ERROR_COMMON);
@@ -297,7 +297,7 @@ class Departments extends RequestBaseModel
 
         }else{
             //基本信息
-            $updateInfo = ['department_name'=>$this->department_name,'is_outer'=>$this->is_outer];
+            $updateInfo = ['department_name'=>$this->department_name,'is_outer'=>$this->is_outer,'leader_user_id' => $leader_id];
             Department::updateAll($updateInfo,['department_id'=>$this->department_id]);
             LogAuthUser::LogUser($this->user['id'],$this->department_id,LogAuthUser::OP_EDIT_GROUP,['platform'=>$this->platform_list,'department'=>$updateInfo]);
 
@@ -318,6 +318,21 @@ class Departments extends RequestBaseModel
             RelateDepartmentPlatform::batchInsertAll(RelateDepartmentPlatform::tableName(),$column,$rows,RelateDepartmentPlatform::getDb());
         }
 
+    }
+
+    private function _getDepartmentLeaderId ($leader) {
+        $user = null;
+        if (preg_match("/^1[34578]{1}\d{9}$/",$leader)) {
+            $phone = $leader;
+            $user = UserCenter::findByMobile($phone);
+        } elseif (preg_match("/^[A-Za-z0-9]+@knowbox\.cn$/",$leader)) {
+            $email = $leader;
+            $user = UserCenter::findOne(['email' => $email, 'status' => 0]);
+        }
+        if ($user) {
+            return $user['id'];
+        }
+        return 0;
     }
 
 }
