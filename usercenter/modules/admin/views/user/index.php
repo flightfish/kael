@@ -656,8 +656,8 @@
                 user_type:$("#filter-usertype").val(),
 //                subject:$("#filter-subject").val(),
 //                grade:$("#filter-grade").val()
-                work_level:$('#work_level').val(),
-                work_type:$('#work_type').val(),
+                work_level:$('#filter-worklevel').val(),
+                work_type:$('#filter-worktype').val(),
             }
         };
         return temp;
