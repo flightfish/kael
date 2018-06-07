@@ -750,6 +750,7 @@
         modal.find('#department').val(row.department_id);
         modal.find('#work_type').val(row.work_type);
         modal.find('#work_level').val(row.work_level);
+        modal.find('#work_number').val(row.work_number);
 //        $("#department").change();
         platfromListByDepartWithFunc(row.department_id,function(){
             $('input[name="platform_list"]').prop("checked", false);
