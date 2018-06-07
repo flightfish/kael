@@ -430,8 +430,8 @@
                 user_type:$("#filter-usertype").val(),
 //                subject:$("#filter-subject").val(),
 //                grade:$("#filter-grade").val()
-                work_level:$("#filter-worklevel").val(),
-                work_type:$("#ffilter-worktype").val(),
+                work_level:$('#filter-worklevel').val(),
+                work_type:$('#filter-worktype').val(),
             }
         };
         return temp;
@@ -561,6 +561,13 @@
     });
 
     $("#filter-usertype").on('change',function(){
+        $('#mytable').bootstrapTable('refresh',{url:listURL});
+    });
+    $("#filter-worklevel").on('change',function(){
+        $('#mytable').bootstrapTable('refresh',{url:listURL});
+    });
+
+    $("#filter-worktype").on('change',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
     });
 
