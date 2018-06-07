@@ -123,6 +123,24 @@
             </select>
         </div>
 
+        <div style="width: 100px;float: left;">
+            <select id="filter-worklevel" value="-1" class="form-control">
+                <option value="-1">全部职级</option>
+                <?php foreach($workLevelList as $v): ?>
+                    <option value="<?php echo $v['id']; ?>"><?php echo $v['name'];?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+
+        <div style="width: 100px;float: left;">
+            <select id="filter-worktype" value="-1" class="form-control">
+                <option value="-1">全部工种</option>
+                <?php foreach($workTypeList as $v): ?>
+                    <option value="<?php echo $v['id']; ?>"><?php echo $v['name'];?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+
         <div style="width: 200px;float: left;">
             <input id="filter-search" type="text"  class="form-control" placeholder="搜索手机号或用户名">
         </div>
@@ -412,6 +430,8 @@
                 user_type:$("#filter-usertype").val(),
 //                subject:$("#filter-subject").val(),
 //                grade:$("#filter-grade").val()
+                work_level:$("#filter-worklevel").val(),
+                work_type:$("#ffilter-worktype").val(),
             }
         };
         return temp;
