@@ -441,7 +441,7 @@
         var modal = $(this);
         if(tmpList[tmpid]){
             $("#department_name_edit").val(tmpList[tmpid]['department_name']);
-            $("#department_leader_edit").val(tmpList[tmpid]['department_leader_name']);
+            $("#department_leader_edit").val(tmpList[tmpid]['department_leader_email']);
             $("#modal-title2").html("编辑");
             $("#is_outer").val(tmpList[tmpid]['is_outer']);
         }else{
