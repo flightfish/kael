@@ -213,6 +213,7 @@ class Departments extends RequestBaseModel
             $v['platform_list'] = isset($departmentExtPlatform[$v['department_id']]) ? $departmentExtPlatform[$v['department_id']] : [];
             $v['admin_list'] = isset($departmentExtAdmin[$v['department_id']]) ? array_values($departmentExtAdmin[$v['department_id']]) : [];
             $v['department_leader_email'] = $v['leader_user_id'] ?  $leaderUserList[$v['leader_user_id']]: null;
+            $v['department_leader_id']    = $v['leader_user_id'] ?? null;
             $departmentList[$k] = $v;
         }
 
