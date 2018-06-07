@@ -227,13 +227,9 @@
             }, {
                 field: 'department_name',
                 title: '部门名称',
-            },
-            {
-                field: 'department_leader_id',
-                title: '部门负责人ID',
-            }{
-                field: 'department_leader_name',
-                title: '部门负责人',
+            },{
+                field: 'department_leader_email',
+                title: '部门负责人邮箱',
             },{
                 field: 'is_outer',
                 title: '部门类型',

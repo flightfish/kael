@@ -46,12 +46,13 @@ class Departments extends RequestBaseModel
     public $platform_list;
     public $department_name;
     public $is_outer;
+    public $leader;
 
 
     public function rules()
     {
         return array_merge([
-            [['page', 'pagesize', 'id','department_id','user_id','is_outer'], 'integer'],
+            [['page', 'pagesize', 'id','department_id','user_id','is_outer', 'leader'], 'integer'],
             [['type', 'mobile','department_name'], 'string'],
             [[ 'user_id','department_id'], 'required', 'on' => self::SCENARIO_EDIT],
             [[ 'department_name','department_id','is_outer'], 'required', 'on' => self::SCENARIO_EDIT_DEPARTMENT],
@@ -180,7 +181,7 @@ class Departments extends RequestBaseModel
 
         $leader_ids = array_column($departmentList, 'leader_user_id');
         $leaderUserList = UserCenter::findAllList($leader_ids);
-        $leaderUserList = array_column($leaderUserList, 'name', 'id');
+        $leaderUserList = array_column($leaderUserList, 'email', 'id');
 
         $departmentAdminList = RelateAdminDepartment::find()->where(['status'=>Department::STATUS_VALID])->asArray(true)->all();
         $platformList  = Platform::findAllList();
@@ -211,7 +212,7 @@ class Departments extends RequestBaseModel
         foreach($departmentList as $k=>$v){
             $v['platform_list'] = isset($departmentExtPlatform[$v['department_id']]) ? $departmentExtPlatform[$v['department_id']] : [];
             $v['admin_list'] = isset($departmentExtAdmin[$v['department_id']]) ? array_values($departmentExtAdmin[$v['department_id']]) : [];
-            $v['department_leader_name'] = $v['leader_user_id'] ?  $leaderUserList[$v['leader_user_id']]: null;
+            $v['department_leader_email'] = $v['leader_user_id'] ?  $leaderUserList[$v['leader_user_id']]: null;
             $departmentList[$k] = $v;
         }
 
