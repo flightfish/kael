@@ -589,6 +589,8 @@
             platform:$("#filter-platform").val(),
             search:$("#filter-search").val(),
             user_type:$("#filter-usertype").val(),
+            work_level:$("#filter-worklevel").val(),
+            work_type:$("#filter-worktype").val(),
         };
         window.location.href = downloadPrivURL + '&filter='+JSON.stringify(filter);
     });
