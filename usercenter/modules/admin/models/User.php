@@ -42,13 +42,16 @@ class User extends RequestBaseModel
     public $user_type = "1";
     public $is_admin = "0";
     public $department_id;
+    public $work_level;
+    public $work_type;
+    public $work_number;
 
 
     public function rules()
     {
         return array_merge([
-            [['page', 'pagesize', 'id','department_id'], 'integer'],
-            [['type', 'mobile'], 'string'],
+            [['page', 'pagesize', 'id','department_id', 'work_level', 'work_type'], 'integer'],
+            [['type', 'mobile', 'work_number'], 'string'],
             [['data', 'id'], 'required', 'on' => self::SCENARIO_EDIT],
             [['id'], 'required', 'on' => self::SCENARIO_EDITPRIV],
             [['mobile'], 'required', 'on' => self::SCENARIO_CHECKMOBILE],
@@ -210,6 +213,9 @@ class User extends RequestBaseModel
         $this->checkUserAuth();
         $search = !empty($this->filter['search']) ? trim($this->filter['search']) : "";
         $where = [];
+        isset($this->filter['work_level']) && $this->filter['work_level'] != -1 && $where['work_level'] = $this->filter['work_level'];
+        isset($this->filter['work_type']) && $this->filter['work_type'] != -1 && $where['work_type'] = $this->filter['work_type'];
+
         isset($this->filter['role']) && $this->filter['role'] != -1 && $where['admin'] = $this->filter['role'];
         isset($this->filter['department']) && $this->filter['department'] != -1 && $where['department_id'] = $this->filter['department'];
         if(isset($this->filter['department']) && $this->filter['department'] == -1){
@@ -328,6 +334,9 @@ class User extends RequestBaseModel
     {
         $this->checkSuperAuth();
 
+        if (empty($this->data['center']) || empty($this->data['center']['work_number'])) {
+            throw new Exception('工号不能为空', Exception::ERROR_COMMON);
+        }
         if (empty($this->data['center']) || empty($this->data['center']['mobile'])) {
             throw new Exception('手机号不能为空', Exception::ERROR_COMMON);
         }
@@ -570,6 +579,9 @@ class User extends RequestBaseModel
                 'user_source' => $this->user_source,
                 'user_type' => $allDepartment[intval($v[4])]['is_outer'],//0内部员工 1外包
                 'admin_id' => $this->user['id'],
+                'work_level'  => $v[10],
+                'work_type'   => $v[11],
+                'work_number' => $v[12],
 //                'grade_part' => $v[11],
 //                'subject' => $v[10],
             ];

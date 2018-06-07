@@ -149,6 +149,14 @@
                     <span class="input-group-addon" >部门名称</span>
                     <input id="department_name_edit" value="" class="form-control"/>
                 </div>
+                <div class="input-group" style="display: none">
+                    <span class="input-group-addon" >部门负责人ID</span>
+                    <input id="department_leader_id" value="" class="form-control"/>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon" >部门负责人</span>
+                    <input id="department_leader_name" value="" class="form-control"/>
+                </div>
                 <div class="input-group">
                     <span class="input-group-addon" >部门类型</span>
                     <select id="is_outer" value="-1" class="form-control">
@@ -223,6 +231,13 @@
             }, {
                 field: 'department_name',
                 title: '部门名称',
+            },
+            {
+                field: 'department_leader_id',
+                title: '部门负责人ID',
+            }{
+                field: 'department_leader_name',
+                title: '部门负责人',
             },{
                 field: 'is_outer',
                 title: '部门类型',
@@ -508,6 +523,7 @@
                 department_name:$("#department_name_edit").val(),
                 is_outer:$("#is_outer").val(),
                 platform_list: platform_list,
+                leader_id:$("#department_leader_id").val()
             },
             success:function(data){
                 if(data.code==0){

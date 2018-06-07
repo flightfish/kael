@@ -177,6 +177,11 @@ class Departments extends RequestBaseModel
         }
         $departmentList = $departmentList->indexBy('department_id')->asArray(true)->all();
         $total = count($departmentList);
+
+        $leader_ids = array_column($departmentList, 'leader_user_id');
+        $leaderUserList = UserCenter::findAllList($leader_ids);
+        $leaderUserList = array_column($leaderUserList, 'name', 'id');
+
         $departmentAdminList = RelateAdminDepartment::find()->where(['status'=>Department::STATUS_VALID])->asArray(true)->all();
         $platformList  = Platform::findAllList();
         $departmentPlatformList = RelateDepartmentPlatform::find()->where(['status'=>RelateDepartmentPlatform::STATUS_VALID])->asArray(true)->all();
@@ -206,6 +211,7 @@ class Departments extends RequestBaseModel
         foreach($departmentList as $k=>$v){
             $v['platform_list'] = isset($departmentExtPlatform[$v['department_id']]) ? $departmentExtPlatform[$v['department_id']] : [];
             $v['admin_list'] = isset($departmentExtAdmin[$v['department_id']]) ? array_values($departmentExtAdmin[$v['department_id']]) : [];
+            $v['department_leader_name'] = $v['leader_user_id'] ?  $leaderUserList[$v['leader_user_id']]: null;
             $departmentList[$k] = $v;
         }
 

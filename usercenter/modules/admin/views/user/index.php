@@ -130,6 +130,24 @@
             </select>
         </div>
 
+        <div style="width: 100px;float: left;">
+            <select id="filter-worklevel" value="-1" class="form-control">
+                <option value="-1">全部职级</option>
+                <?php foreach($worklevelList as $v): ?>
+                    <option value="<?php echo $v['id']; ?>"><?php echo $v['name'];?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+
+        <div style="width: 100px;float: left;">
+            <select id="filter-worktype" value="-1" class="form-control">
+                <option value="-1">全部工种</option>
+                <?php foreach($worktypeList as $v): ?>
+                    <option value="<?php echo $v['id']; ?>"><?php echo $v['name'];?></option>
+                <?php endforeach;?>
+            </select>
+        </div>
+
         <div style="width: 200px;float: left;">
             <input id="filter-search" type="text"  class="form-control" placeholder="搜索手机号或用户名">
         </div>
@@ -302,6 +320,10 @@
                     </select>
                 </div>
 
+                <div class="input-group">
+                    <span class="input-group-addon" >工号 <span style="color:red">*</span></span>
+                    <input type="text" id="work_number" class="form-control" placeholder="">
+                </div>
 
                 <div class="input-group">
                     <span class="input-group-addon" >身份证</span>
@@ -534,6 +556,10 @@
                 title: '级别'
             },
             {
+                field: 'work_number',
+                title: '工号'
+            },
+            {
                 field: 'platform_list',
                 title: '平台权限',
                 width: '30%',
@@ -630,6 +656,8 @@
                 user_type:$("#filter-usertype").val(),
 //                subject:$("#filter-subject").val(),
 //                grade:$("#filter-grade").val()
+                work_level:$('#work_level').val(),
+                work_type:$('#work_type').val(),
             }
         };
         return temp;
@@ -771,6 +799,7 @@
                         "department_id":$("#department").val(),
                         "work_type":$("#work_type").val(),
                         "work_level":$("#work_level").val(),
+                        "work_number":$("#work_number").val(),
                     },
                     "current":{
 
@@ -856,6 +885,14 @@
     });
 
     $("#filter-usertype").on('change',function(){
+        $('#mytable').bootstrapTable('refresh',{url:listURL});
+    });
+
+    $("#filter-worklevel").on('change',function(){
+        $('#mytable').bootstrapTable('refresh',{url:listURL});
+    });
+
+    $("#filter-worktype").on('change',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
     });
 
