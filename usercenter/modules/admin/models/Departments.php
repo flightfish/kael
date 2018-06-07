@@ -52,8 +52,8 @@ class Departments extends RequestBaseModel
     public function rules()
     {
         return array_merge([
-            [['page', 'pagesize', 'id','department_id','user_id','is_outer', 'leader'], 'integer'],
-            [['type', 'mobile','department_name'], 'string'],
+            [['page', 'pagesize', 'id','department_id','user_id','is_outer'], 'integer'],
+            [['type', 'mobile','department_name', 'leader'], 'string'],
             [[ 'user_id','department_id'], 'required', 'on' => self::SCENARIO_EDIT],
             [[ 'department_name','department_id','is_outer'], 'required', 'on' => self::SCENARIO_EDIT_DEPARTMENT],
             [['id'], 'required', 'on' => self::SCENARIO_DEL],
