@@ -582,6 +582,7 @@ class User extends RequestBaseModel
                 'work_level'  => $v[10],
                 'work_type'   => $v[11],
                 'work_number' => $v[12],
+                'password'    => empty($v[13]) ? md5('1234567') : md5($v[13]),
 //                'grade_part' => $v[11],
 //                'subject' => $v[10],
             ];
@@ -630,6 +631,7 @@ class User extends RequestBaseModel
             '职级(1:初级; 2:中级; 3:高级; 4:未知)',
             '工种(1:BD; 2:运营; 3:市场; 4:研发; 5:产品; 6:设计; 7:职能; 8:教学; 9:教研; 10:创始人; 11:未知)',
             '工号',
+            '密码',
 //            '学科(0:数学；1:语文；2:英语；3:物理；4:化学；5:生物；6:历史；7:地理；8:政治；9:信息技术)',
 //            '学段(10:小学;20:初中;30:高中;)',
 //            '平台权限(逗号分割)('.$platfromStr.')'
