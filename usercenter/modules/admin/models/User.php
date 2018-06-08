@@ -545,6 +545,14 @@ class User extends RequestBaseModel
                 }
             }
 
+            if (!empty($v[12])) {
+                $work_number = UserCenter::find()->where(['status'=>0, 'work_number'=>$v[12]])->asArray(true)->one();
+                if (!empty($work_number)) {
+                    array_push($error, '第' . ($k + 1) . '行，工号已被人占用');
+                    continue;
+                }
+            }
+
             $this->user_source = "admin";
 
             /*
