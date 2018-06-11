@@ -466,6 +466,7 @@
                     }
                 });
                 this.on("errormultiple", function (files, response) {
+                    console.log(2222);
                 })
             }
         };
