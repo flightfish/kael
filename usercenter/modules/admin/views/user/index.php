@@ -413,8 +413,9 @@
             init: function () {
                 var myDropzone = this;
                 this.element.querySelector("button[type=submit]").addEventListener("click",  (e)=> {
-                    console.log(123);
-                    console.log(myDropzone);
+                    if(myDropzone.files.length == 0){
+                        swal("文件缺失！", '请点击灰色区域上传文件', "error");
+                    }
                     e.preventDefault();
                     e.stopPropagation();
                     myDropzone.processQueue()
