@@ -352,10 +352,10 @@ class User extends RequestBaseModel
         if(!isset($this->data['center']['department_id']) || $this->data['center']['department_id'] <= 0){
             throw new Exception('请选择部门', Exception::ERROR_COMMON);
         }
-        if(!isset($this->data['center']['work_type']) || $this->data['center']['work_type'] <= 0){
+        if(isset($this->data['center']['work_type']) && $this->data['center']['work_type'] >= 0 && $this->data['center']['work_type'] <= 10){
             throw new Exception('请选择工种', Exception::ERROR_COMMON);
         }
-        if(!isset($this->data['center']['work_level']) || $this->data['center']['work_level'] <= 0){
+        if(isset($this->data['center']['work_level']) && $this->data['center']['work_level'] >= 0 && $this->data['center']['work_level'] <= 3){
             throw new Exception('请选择级别', Exception::ERROR_COMMON);
         }
         $this->data['center']['user_source'] = $this->user_source;
