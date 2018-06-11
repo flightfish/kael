@@ -412,8 +412,9 @@
             maxFiles: 100,
             init: function () {
                 var myDropzone = this;
-                this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
+                this.element.querySelector("button[type=submit]").addEventListener("click",  (e)=> {
                     console.log(123);
+                    console.log(myDropzone);
                     e.preventDefault();
                     e.stopPropagation();
                     myDropzone.processQueue()
