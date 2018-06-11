@@ -650,7 +650,7 @@ class User extends RequestBaseModel
 
         $objPHPExcel = new \PHPExcel();
         $objSheet = $objPHPExcel->getActiveSheet();
-        $objSheet->setTitle('error');
+        $objSheet->setTitle('批量新增格式模板');
         $objSheet->fromArray($excelData);
 
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');

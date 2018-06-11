@@ -420,6 +420,8 @@
                 this.on("sendingmultiple", function () {
                 });
                 this.on("successmultiple", function (files, response) {
+                    console.log(111);
+                    console.log(files);
                     if (response.code != 0) {
                         swal("上传失败！", response.message, "error");
                     } else {
@@ -431,6 +433,7 @@
                     $("#mytable").bootstrapTable("refresh");
                 });
                 this.on("errormultiple", function (files, response) {
+                    console.log(files);
                 })
             }
         };
