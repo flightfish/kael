@@ -413,6 +413,7 @@
             init: function () {
                 var myDropzone = this;
                 this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
+                    console.log(123);
                     e.preventDefault();
                     e.stopPropagation();
                     myDropzone.processQueue()
@@ -445,6 +446,7 @@
             init: function () {
                 var myDropzone = this;
                 this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
+                    console.log(234);
                     e.preventDefault();
                     e.stopPropagation();
                     myDropzone.processQueue()
