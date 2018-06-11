@@ -446,7 +446,7 @@
             init: function () {
                 var myDropzone = this;
                 this.element.querySelector("button[type=submit]").addEventListener("click", function (e) {
-                    console.log(234);
+                    console.log(myDropzone);
                     e.preventDefault();
                     e.stopPropagation();
                     myDropzone.processQueue()
