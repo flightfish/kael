@@ -450,8 +450,12 @@
                     myDropzone.processQueue()
                 });
                 this.on("sendingmultiple", function () {
+                    console.log('ing');
+
                 });
                 this.on("successmultiple", function (files, response) {
+                    console.log(111);
+
                     if (response.code != 0) {
                         swal("上传失败！", response.message, "error");
                     } else {
