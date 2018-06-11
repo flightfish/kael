@@ -321,7 +321,7 @@
                 </div>
 
                 <div class="input-group">
-                    <span class="input-group-addon" >工号 <span style="color:red">*</span></span>
+                    <span class="input-group-addon" >工号</span>
                     <input type="text" id="work_number" class="form-control" placeholder="">
                 </div>
 

@@ -334,9 +334,6 @@ class User extends RequestBaseModel
     {
         $this->checkSuperAuth();
 
-        if (empty($this->data['center']) || empty($this->data['center']['work_number'])) {
-            throw new Exception('工号不能为空', Exception::ERROR_COMMON);
-        }
         if (empty($this->data['center']) || empty($this->data['center']['mobile'])) {
             throw new Exception('手机号不能为空', Exception::ERROR_COMMON);
         }
