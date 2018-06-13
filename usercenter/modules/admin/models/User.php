@@ -320,6 +320,8 @@ class User extends RequestBaseModel
         }
         LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_DEL_USER,'del');
         UserCenter::updateAll(['status'=>UserCenter::STATUS_INVALID],['id' => $this->id]);
+        RelateAdminDepartment::updateAll(['status'=>2],['user_id'=>$this->id,'status'=>0]);
+        RelateUserPlatform::updateAll(['status'=>2],['user_id'=>$this->id,'status'=>0]);
         return [];
     }
 
