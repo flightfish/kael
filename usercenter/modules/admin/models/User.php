@@ -586,8 +586,8 @@ class User extends RequestBaseModel
                 'user_source' => $this->user_source,
                 'user_type' => $allDepartment[intval($v[4])]['is_outer'],//0内部员工 1外包
                 'admin_id' => $this->user['id'],
-                'work_level'  => $v[10],
-                'work_type'   => $v[11],
+                'work_level'  => $v[10] ?? 0,
+                'work_type'   => $v[11] ?? 0,
                 'work_number' => $v[12],
                 'password'    => empty($v[13]) ? md5('1234567') : md5($v[13]),
 //                'grade_part' => $v[11],
