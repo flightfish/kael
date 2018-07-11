@@ -3,11 +3,11 @@ project="kale"
 tag="kael"
 env=${1}
 if [ ${env} ]; then
-    if ["${env}" = "dev"]; then
+    if [ "${env}" = "dev" ]; then
         phpenv="Development"
-    elif ["${env}" = "beta"]; then
+    elif [ "${env}" = "beta" ]; then
         phpenv="Beta"
-    elif ["${env}" = "prod"]; then
+    elif [ "${env}" = "prod" ]; then
         phpenv="Production"
     else
         echo "环境不存在"
