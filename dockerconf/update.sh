@@ -1,5 +1,5 @@
 #!/bin/bash
-project="kale"
+project="kael"
 tag="kael"
 env=${1}
 if [ ${env} ]; then
