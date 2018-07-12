@@ -196,7 +196,7 @@ class Departments extends RequestBaseModel
                 'id'=>$v['user_id'],
                 'username'=>empty($userList[$v['user_id']]) ? "" : $userList[$v['user_id']]['username']
             ];
-            $departmentExtAdmin[$v['department_id']][$v['user_id']]['platform_list'][] = [
+            !empty($platformList[$v['platform_id']]) && $departmentExtAdmin[$v['department_id']][$v['user_id']]['platform_list'][] = [
                 'platform_id'=>$platformList[$v['platform_id']]['platform_id'],
                 'platform_name'=>$platformList[$v['platform_id']]['platform_name'],
             ];
