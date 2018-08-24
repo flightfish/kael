@@ -389,7 +389,7 @@ class CommonApi extends RequestBaseModel {
         $serverIPList = explode(',',$platformInfo['server_ips']);
         $clientIPAllow = explode(',',$platformInfo['allow_ips']);
         $serverIP = UserToken::getRealIP(false);
-        $clientIP = UserToken::getRealIP(true);;//isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : "";
+        $clientIP = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : "";
         if(!empty($platformInfo['server_ips']) && !in_array($serverIP,$serverIPList)){
             throw new Exception('发生异常，请联系管理员',Exception::ERROR_COMMON);
         }
