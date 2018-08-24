@@ -394,7 +394,7 @@ class CommonApi extends RequestBaseModel {
             throw new Exception('发生异常，请联系管理员',Exception::ERROR_COMMON);
         }
         if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
-            throw new Exception('无权访问，请联系管理员',Exception::ERROR_COMMON);
+            throw new Exception('无权访问，请联系管理员'.$clientIP,Exception::ERROR_COMMON);
         }
         //密码权限设置
         if($this->user['user_type'] == 0){
