@@ -389,12 +389,12 @@ class CommonApi extends RequestBaseModel {
         $serverIPList = explode(',',$platformInfo['server_ips']);
         $clientIPAllow = explode(',',$platformInfo['allow_ips']);
         $serverIP = UserToken::getRealIP(false);
-        $clientIP = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : "";
+        $clientIP = UserToken::getRealIP(true);;//isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : "";
         if(!empty($platformInfo['server_ips']) && !in_array($serverIP,$serverIPList)){
             throw new Exception('发生异常，请联系管理员',Exception::ERROR_COMMON);
         }
         if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
-            throw new Exception('无权访问，请联系管理员'.$clientIP,Exception::ERROR_COMMON);
+            throw new Exception('无权访问，请联系管理员'.$clientIP.'-'.$serverIP,Exception::ERROR_COMMON);
         }
         //密码权限设置
         if($this->user['user_type'] == 0){
