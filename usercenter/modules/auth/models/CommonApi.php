@@ -239,9 +239,11 @@ class CommonApi extends RequestBaseModel
     {
         $cacheKey = ['user_mobile', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
-        if($checkCount&&$checkCount['count']>3){
+        if($checkCount){
             $checkRes = $checkCount['count'];
-            throw new Exception(Exception::MOBILE_CHECKOUT, Exception::ERROR_COMMON);
+            if($checkRes>3){
+                throw new Exception(Exception::MOBILE_CHECKOUT, Exception::ERROR_COMMON);
+            }
         }
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
