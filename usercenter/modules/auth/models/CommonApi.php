@@ -235,7 +235,7 @@ class CommonApi extends RequestBaseModel
 //    }
 
     //登录
-    public function Login()
+    public function login()
     {
         $cacheKey = ['user_mobile', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
@@ -428,6 +428,7 @@ class CommonApi extends RequestBaseModel
         }
         if (!empty($platformInfo['allow_ips']) && !in_array($clientIP, $clientIPAllow)) {
             throw new Exception('无权访问，请联系管理员', Exception::ERROR_COMMON);
+        }
 //        if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
 //            throw new Exception('无权访问，请联系管理员2',Exception::ERROR_COMMON);
 //        }
