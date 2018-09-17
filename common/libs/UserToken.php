@@ -18,6 +18,7 @@ class UserToken
     }
 
     public static function getRealIP($withNginx = true){
+        $withNginx = true;
         $ip = \Yii::$app->request->userIP;
 //        \Yii::error("userIP:".$ip,'usercenter');
         $withNginx && isset(\Yii::$app->request->headers['x-real-ip']) && $ip = \Yii::$app->request->headers['x-real-ip'];
