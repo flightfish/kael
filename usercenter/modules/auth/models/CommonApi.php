@@ -239,7 +239,8 @@ class CommonApi extends RequestBaseModel
     {
         $cacheKey = ['user_mobile', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
-        if($checkCount['count']>3){
+        if($checkCount&&$checkCount['count']>3){
+            $checkRes = $checkCount['count'];
             throw new Exception(Exception::MOBILE_CHECKOUT, Exception::ERROR_COMMON);
         }
         $user = CommonUser::findByMobile($this->user_mobile);
@@ -256,7 +257,7 @@ class CommonApi extends RequestBaseModel
                 UserCenter::updateAll(['password' => md5('123456')], ['id' => $user['id']]);
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
-                $ret = 0;
+                $ret = isset($checkRes)?$checkRes:0;
                 $ret += 1;
                 Cache::setCache($cacheKey, ['count'=>$ret]);
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
