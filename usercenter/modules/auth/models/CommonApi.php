@@ -239,7 +239,6 @@ class CommonApi extends RequestBaseModel
     {
         $cacheKey = ['user_mobile', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
-        file_put_contents('/tmp/kael.txt',print_r($checkCount,1),FILE_APPEND);
         if($checkCount){
             $checkRes = $checkCount['count'];
             if($checkRes>3){
