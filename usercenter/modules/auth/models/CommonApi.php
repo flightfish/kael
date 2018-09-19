@@ -259,7 +259,7 @@ class CommonApi extends RequestBaseModel
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
                 $checkRes += 1;
-                $checkRes >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $checkRes - 3);
+                $checkRes >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $checkRes - 3)*60;
                 Cache::setCache($cacheKey, ['count' => $checkRes]);
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
