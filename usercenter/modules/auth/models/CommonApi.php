@@ -239,12 +239,10 @@ class CommonApi extends RequestBaseModel
     {
         $cacheKey = ['user_mobile', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
-        $checkRes = isset($checkCount['count'])?$checkCount['count']:0;
-        if ($checkCount) {
-            if ($checkRes >= 3) {
-                $waittime = pow(2, $checkRes - 3);
-                throw new Exception(Exception::MOBILE_CHECKOUT . "，请{$waittime}分钟后重试", Exception::ERROR_COMMON);
-            }
+        $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
+        if ($checkCount && $checkRes >= 3) {
+            $waittime = pow(2, $checkRes - 3);
+            throw new Exception(Exception::MOBILE_CHECKOUT . "，请{$waittime}分钟后重试", Exception::ERROR_COMMON);
         }
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
@@ -260,10 +258,9 @@ class CommonApi extends RequestBaseModel
                 UserCenter::updateAll(['password' => md5('123456')], ['id' => $user['id']]);
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
-                $ret = $checkRes;
-                $ret += 1;
-                $ret >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $ret - 3);
-                Cache::setCache($cacheKey, ['count' => $ret]);
+                $checkRes += 1;
+                $checkRes >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $checkRes - 3);
+                Cache::setCache($cacheKey, ['count' => $checkRes]);
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
