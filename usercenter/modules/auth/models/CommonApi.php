@@ -242,6 +242,9 @@ class CommonApi extends RequestBaseModel
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
+            $checkRes += 1;
+            $checkRes >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $checkRes - 3)*60;
+            Cache::setCache($cacheKey, ['count' => $checkRes]);
             throw new Exception(Exception::MOBILE_CHECKOUT . "，请{$waittime}分钟后重试", Exception::ERROR_COMMON);
         }
         $user = CommonUser::findByMobile($this->user_mobile);
