@@ -59,7 +59,7 @@ class Exception extends \yii\base\Exception {
     const MOBILE_CHANGE = "用户名或密码错误";
     const QUESTION_NONE = "无题目";
     const ASSIST_ID_NOTNULL = "教辅id不能为空";
-    const MOBILE_CHECKOUT = "用户名密码输入错误次数较多，请1分钟后重试";
+    const MOBILE_CHECKOUT = "用户名密码输入错误次数较多";
 
 
     const SYSTEM_NOERROR_CODE  = 0;
