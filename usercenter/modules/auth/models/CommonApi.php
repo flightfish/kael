@@ -267,7 +267,6 @@ class CommonApi extends RequestBaseModel
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
-        Cache::setCache($cacheKey, ['count' => 0]);
         CommonUser::updateAll(['login_ip' => UserToken::getRealIP()], ['id' => $user['id']]);
         $user['login_ip'] = UserToken::getRealIP();
         $token = UserToken::userToToken($user);
@@ -276,6 +275,7 @@ class CommonApi extends RequestBaseModel
         LogAuthUser::LogLogin($user['id'], LogAuthUser::OP_LOGIN, $user);
         setcookie(Constant::LOGIN_TOKEN_NAME, $token, time() + Constant::LOGIN_TOKEN_TIME, '/', Constant::LOGIN_TOKEN_HOST);
 //        !isset($_COOKIE['token']) && setcookie('token', $token, time() + 7*24*3600, '/', Constant::LOGIN_TOKEN_HOST);
+        Cache::setCache($cacheKey, ['count' => 0]);
         return ['token' => $token];
     }
 
