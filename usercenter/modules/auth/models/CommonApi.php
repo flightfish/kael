@@ -242,7 +242,7 @@ class CommonApi extends RequestBaseModel
     //登录
     public function login()
     {
-        $cacheKey = ['user_mobile', $this->user_mobile];
+        $cacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
@@ -280,7 +280,7 @@ class CommonApi extends RequestBaseModel
         LogAuthUser::LogLogin($user['id'], LogAuthUser::OP_LOGIN, $user);
         setcookie(Constant::LOGIN_TOKEN_NAME, $token, time() + Constant::LOGIN_TOKEN_TIME, '/', Constant::LOGIN_TOKEN_HOST);
 //        !isset($_COOKIE['token']) && setcookie('token', $token, time() + 7*24*3600, '/', Constant::LOGIN_TOKEN_HOST);
-        $this->setCache($cacheKey,0);
+        $this->setCache($cacheKey,['count' => 0]);
         return ['token' => $token];
     }
 

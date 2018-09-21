@@ -10,7 +10,7 @@ return [
         ],
         'redis' => [
             'class' => 'usercenter\components\cache\Redis',
-            'hostname' => 'localhost',
+            'hostname' => '10.10.213.219',
             'port' => 6379,
             'database' => 0,
         ],
