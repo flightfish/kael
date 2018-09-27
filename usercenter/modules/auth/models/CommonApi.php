@@ -247,7 +247,7 @@ class CommonApi extends RequestBaseModel
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
-            $this->setCache($cacheKey,$checkRes);
+//            $this->setCache($cacheKey,$checkRes);
             if($checkRes<10){
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，请{$waittime}分钟后重试", Exception::ERROR_COMMON);
             }else{
