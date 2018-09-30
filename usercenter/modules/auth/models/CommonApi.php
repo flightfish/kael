@@ -242,11 +242,8 @@ class CommonApi extends RequestBaseModel
         Cache::setCache($cacheKeyTime, ['time' => time()]);
     }
 
-    //登录
-    public function login()
-    {
-        $cacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
-        $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
+    private function checkPassCount($cacheKey,$cacheKeyTime){
+
         $checkCount = Cache::checkCache($cacheKey);
         $checkTime = Cache::checkCache($cacheKeyTime);
         $checkTimeRes = isset($checkTime['time'])?$checkTime['time']:time();
@@ -262,6 +259,14 @@ class CommonApi extends RequestBaseModel
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，已被锁定，请联系运营人员处理", Exception::ERROR_COMMON);
             }
         }
+        return $checkRes;
+    }
+
+    //登录
+    public function login()
+    {
+        $cacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
+        $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
@@ -276,6 +281,7 @@ class CommonApi extends RequestBaseModel
                 UserCenter::updateAll(['password' => md5('123456')], ['id' => $user['id']]);
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
+                $checkRes = $this->checkPassCount($cacheKey,$cacheKeyTime);
                 $this->setCache($cacheKey, $checkRes);
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
