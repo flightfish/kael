@@ -251,7 +251,7 @@ class CommonApi extends RequestBaseModel
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
-            if(time()-$checkTime>60){
+            if(time()-$checkTime>$waittime*60){
                 $this->setCache($cacheKey,$checkRes);
             }
             if($checkRes<10){
