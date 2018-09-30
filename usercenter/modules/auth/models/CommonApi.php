@@ -233,7 +233,8 @@ class CommonApi extends RequestBaseModel
 //        $token = $aes->encode($mobile . '||' . $password);
 //        return $token;
 //    }
-    private function setCache($cacheKey,$checkRes){
+    private function setCache($cacheKey, $checkRes)
+    {
         $checkRes += 1;
 //        $checkRes >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $checkRes - 3)*60;
         $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
@@ -248,15 +249,16 @@ class CommonApi extends RequestBaseModel
         $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
         $checkTime = Cache::checkCache($cacheKeyTime);
+        $checkTimeTes = isset($checkTime['time'])?$checkTime['time']:time();
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
-            if(time()-$checkTime>$waittime*60){
-                $this->setCache($cacheKey,$checkRes);
+            if (time() - $checkTime > $waittime * 60) {
+                $this->setCache($cacheKey, $checkRes);
             }
-            if($checkRes<10){
+            if ($checkRes < 10) {
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，请{$waittime}分钟后重试", Exception::ERROR_COMMON);
-            }else{
+            } else {
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，已被锁定，请联系运营人员处理", Exception::ERROR_COMMON);
             }
         }
@@ -274,7 +276,7 @@ class CommonApi extends RequestBaseModel
                 UserCenter::updateAll(['password' => md5('123456')], ['id' => $user['id']]);
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
-                $this->setCache($cacheKey,$checkRes);
+                $this->setCache($cacheKey, $checkRes);
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
@@ -286,7 +288,7 @@ class CommonApi extends RequestBaseModel
         LogAuthUser::LogLogin($user['id'], LogAuthUser::OP_LOGIN, $user);
         setcookie(Constant::LOGIN_TOKEN_NAME, $token, time() + Constant::LOGIN_TOKEN_TIME, '/', Constant::LOGIN_TOKEN_HOST);
 //        !isset($_COOKIE['token']) && setcookie('token', $token, time() + 7*24*3600, '/', Constant::LOGIN_TOKEN_HOST);
-        $this->setCache($cacheKey,0);
+        $this->setCache($cacheKey, 0);
         return ['token' => $token];
     }
 
