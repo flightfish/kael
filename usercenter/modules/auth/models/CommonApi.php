@@ -235,7 +235,7 @@ class CommonApi extends RequestBaseModel
 //    }
     private function setCache($cacheKey, $checkRes)
     {
-        !empty($checkRes) && $checkRes += 1;
+        $checkRes += 1;
 //        $checkRes >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $checkRes - 3)*60;
         $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         Cache::setCache($cacheKey, ['count' => $checkRes]);
