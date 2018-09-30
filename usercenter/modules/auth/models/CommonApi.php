@@ -249,11 +249,11 @@ class CommonApi extends RequestBaseModel
         $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
         $checkTime = Cache::checkCache($cacheKeyTime);
-        $checkTimeTes = isset($checkTime['time'])?$checkTime['time']:time();
+        $checkTimeRes = isset($checkTime['time'])?$checkTime['time']:time();
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
-            if (time() - $checkTime > $waittime * 60) {
+            if (time() - $checkTimeRes > $waittime * 60) {
                 $this->setCache($cacheKey, $checkRes);
             }
             if ($checkRes < 10) {
