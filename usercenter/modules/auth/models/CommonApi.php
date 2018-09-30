@@ -280,7 +280,6 @@ class CommonApi extends RequestBaseModel
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，请{$waittime}分钟后重试", Exception::ERROR_COMMON);
             }
         }
-        return $checkRes;
 
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
