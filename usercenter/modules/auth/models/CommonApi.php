@@ -235,19 +235,25 @@ class CommonApi extends RequestBaseModel
 //    }
     private function setCache($cacheKey,$checkRes){
         $checkRes += 1;
-        $checkRes >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $checkRes - 3)*60;
+//        $checkRes >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $checkRes - 3)*60;
+        $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         Cache::setCache($cacheKey, ['count' => $checkRes]);
+        Cache::setCache($cacheKeyTime, ['time' => time()]);
     }
 
     //登录
     public function login()
     {
         $cacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
+        $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
+        $checkTime = Cache::checkCache($cacheKeyTime);
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
-//            $this->setCache($cacheKey,$checkRes);
+            if(time()-$checkTime>60){
+                $this->setCache($cacheKey,$checkRes);
+            }
             if($checkRes<10){
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，请{$waittime}分钟后重试", Exception::ERROR_COMMON);
             }else{
