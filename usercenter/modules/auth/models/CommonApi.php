@@ -326,6 +326,7 @@ class CommonApi extends RequestBaseModel
                 $this->setCacheTime();
                 $checkRes = $this->checkPassCount($cacheKey,$cacheKeyTime);
 //                $this->setCache($cacheKey, $checkRes);
+
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
