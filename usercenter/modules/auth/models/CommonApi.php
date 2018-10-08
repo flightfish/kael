@@ -267,6 +267,9 @@ class CommonApi extends RequestBaseModel
             } else {
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，已被锁定，请联系运营人员处理", Exception::ERROR_COMMON);
             }
+        }else{
+            $this->setCache($cacheKey, $checkRes);
+
         }
         return $checkRes;
     }
@@ -325,7 +328,6 @@ class CommonApi extends RequestBaseModel
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
                 $this->setCacheTime();
                 $checkRes = $this->checkPassCount($cacheKey,$cacheKeyTime);
-//                $this->setCache($cacheKey, $checkRes);
 
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
