@@ -243,13 +243,6 @@ class CommonApi extends RequestBaseModel
         return $checkRes;
     }
 
-    private function setCacheTime()
-    {
-        $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
-        Cache::setCache($cacheKeyTime, ['time' => time()]);
-        return true;
-    }
-
     private function checkPassCount($cacheKey,$cacheKeyTime){
 
         $checkCount = Cache::checkCache($cacheKey);
@@ -306,7 +299,6 @@ class CommonApi extends RequestBaseModel
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
                 $checkRes = $this->checkPassCount($cacheKey,$cacheKeyTime);
-
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
