@@ -240,6 +240,7 @@ class CommonApi extends RequestBaseModel
         $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         Cache::setCache($cacheKey, ['count' => $checkRes]);
         Cache::setCache($cacheKeyTime, ['time' => time()]);
+        return $checkRes;
     }
 
     private function checkPassCount($cacheKey,$cacheKeyTime){
@@ -251,7 +252,8 @@ class CommonApi extends RequestBaseModel
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
             if (time() - $checkTimeRes > $waittime * 60) {
-                $this->setCache($cacheKey, $checkRes);
+                $checkRes = $this->setCache($cacheKey, $checkRes);
+                $waittime = pow(2, $checkRes - 3);
             }
             if ($checkRes < 10) {
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，请{$waittime}分钟后重试", Exception::ERROR_COMMON);
