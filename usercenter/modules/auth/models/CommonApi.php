@@ -297,7 +297,7 @@ class CommonApi extends RequestBaseModel
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
                 $checkRes = $this->checkPassCount($cacheKey,$cacheKeyTime);
-                $this->setCache($cacheKey, $checkRes);
+//                $this->setCache($cacheKey, $checkRes);
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
