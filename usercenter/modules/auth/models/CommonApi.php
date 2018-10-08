@@ -269,7 +269,6 @@ class CommonApi extends RequestBaseModel
             }
         }else{
             $this->setCache($cacheKey, $checkRes);
-
         }
         return $checkRes;
     }
