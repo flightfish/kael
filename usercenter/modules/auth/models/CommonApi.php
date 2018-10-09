@@ -241,6 +241,7 @@ class CommonApi extends RequestBaseModel
         Cache::setCacheNoTime($cacheKey, ['count' => $checkRes]);
         Cache::setCacheNoTime($cacheKeyTime, ['time' => time()]);
         return $checkRes;
+
     }
 
     private function checkPassCount($cacheKey,$cacheKeyTime){
