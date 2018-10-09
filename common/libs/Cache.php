@@ -35,4 +35,12 @@ class Cache
         }
     }
 
+    public static function setCacheNoTime($cacheKey, $ret)
+    {
+        $cacheKey = $cacheKey[0] . '_' . md5(join($cacheKey, '-'));
+        if (Yii::$app->params['redis_cache'] and !empty($ret)) {
+            Yii::$app->redis->set($cacheKey, json_encode($ret));
+        }
+    }
+
 }
