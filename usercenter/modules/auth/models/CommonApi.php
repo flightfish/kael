@@ -278,7 +278,7 @@ class CommonApi extends RequestBaseModel
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
-            if ($checkRes > 10) {
+            if ($checkRes >= 10) {
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，已被锁定，请联系运营人员处理", Exception::ERROR_COMMON);
             }
             if (time() - $checkTimeRes < $waittime * 60) {
