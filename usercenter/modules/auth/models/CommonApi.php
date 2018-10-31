@@ -401,7 +401,7 @@ class CommonApi extends RequestBaseModel
         $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
         $checkCount = Cache::checkCache($cacheKey);
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
-        if($checkCount && $checkRes >= 3){
+        if($checkCount && $checkRes >= 10){
             throw new Exception("每小时只能访问10次", Exception::ERROR_COMMON);
         }else{
             $checkRes += 1;
