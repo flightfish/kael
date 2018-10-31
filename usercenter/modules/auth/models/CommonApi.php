@@ -19,8 +19,6 @@ use Yii;
 
 class CommonApi extends RequestBaseModel
 {
-
-
     public $page = 1;
     public $pagesize = 20;
     public $userId = [1, 2, 3];
@@ -236,7 +234,6 @@ class CommonApi extends RequestBaseModel
     private function setCache($cacheKey, $checkRes)
     {
         $checkRes += 1;
-//        $checkRes >= 3 && Yii::$app->params['redis_cache_time'] = pow(2, $checkRes - 3)*60;
         $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         Cache::setCacheNoTime($cacheKey, ['count' => $checkRes]);
         Cache::setCacheNoTime($cacheKeyTime, ['time' => time()]);
@@ -244,11 +241,12 @@ class CommonApi extends RequestBaseModel
 
     }
 
-    private function checkPassCount($cacheKey,$cacheKeyTime){
+    private function setPassCount($cacheKey, $cacheKeyTime)
+    {
 
         $checkCount = Cache::checkCache($cacheKey);
         $checkTime = Cache::checkCache($cacheKeyTime);
-        $checkTimeRes = isset($checkTime['time'])?$checkTime['time']:time();
+        $checkTimeRes = isset($checkTime['time']) ? $checkTime['time'] : time();
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
@@ -261,20 +259,17 @@ class CommonApi extends RequestBaseModel
             } else {
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，已被锁定，请联系运营人员处理", Exception::ERROR_COMMON);
             }
-        }else{
+        } else {
             $this->setCache($cacheKey, $checkRes);
         }
         return $checkRes;
     }
 
-    //登录
-    public function login()
+    private function RedisKeyCheck($cacheKey, $cacheKeyTime)
     {
-        $cacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
-        $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         $checkCount = Cache::checkCache($cacheKey);
         $checkTime = Cache::checkCache($cacheKeyTime);
-        $checkTimeRes = isset($checkTime['time'])?$checkTime['time']:time();
+        $checkTimeRes = isset($checkTime['time']) ? $checkTime['time'] : time();
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if ($checkCount && $checkRes >= 3) {
             $waittime = pow(2, $checkRes - 3);
@@ -285,6 +280,14 @@ class CommonApi extends RequestBaseModel
                 throw new Exception(Exception::MOBILE_CHECKOUT . "，请{$waittime}分钟后重试", Exception::ERROR_COMMON);
             }
         }
+    }
+
+    //登录
+    public function login()
+    {
+        $cacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
+        $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
+        $this->RedisKeyCheck($cacheKey, $cacheKeyTime);
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
@@ -299,7 +302,7 @@ class CommonApi extends RequestBaseModel
                 UserCenter::updateAll(['password' => md5('123456')], ['id' => $user['id']]);
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
-                $checkRes = $this->checkPassCount($cacheKey,$cacheKeyTime);
+                $this->setPassCount($cacheKey, $cacheKeyTime);
                 throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
             }
         }
@@ -394,6 +397,16 @@ class CommonApi extends RequestBaseModel
     //发送验证码
     public function SendPasswordCode()
     {
+        $login_ip = UserToken::getRealIP();
+        $cacheKey = ['kael_deepblue_user_mobile', $this->$login_ip];
+        $checkCount = Cache::checkCache($cacheKey);
+        $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
+        if($checkCount && $checkRes >= 3){
+            throw new Exception("每小时只能访问10次", Exception::ERROR_COMMON);
+        }else{
+            $checkRes += 1;
+            Cache::setCache($cacheKey, ['count' => $checkRes]);
+        }
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_NOT_FIND, Exception::ERROR_COMMON);
