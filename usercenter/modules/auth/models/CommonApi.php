@@ -398,7 +398,7 @@ class CommonApi extends RequestBaseModel
     public function SendPasswordCode()
     {
         $login_ip = UserToken::getRealIP();
-        $cacheKey = ['kael_deepblue_user_mobile', $this->$login_ip];
+        $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
         $checkCount = Cache::checkCache($cacheKey);
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
         if($checkCount && $checkRes >= 3){
