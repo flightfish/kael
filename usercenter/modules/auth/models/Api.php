@@ -129,7 +129,7 @@ class Api extends RequestBaseModel {
             $list = $this->getUserListByWhere();
         }else{
             $userList = $this->getUserListByPlatformWhere();
-            $list = array_slice($userList,($this->page - 1),$this->pagesize);
+            $list = array_slice($userList,($this->page - 1)*$this->pagesize,$this->pagesize);
             $count = count($userList);
         }
 
