@@ -59,8 +59,7 @@ class LdapController extends Controller
                     continue;
                 }
                 $addInfo = [
-                    'uidNumber'=>$v['id'],
-                    'uid'=>$v['username'],
+                    'uid'=>$v['id'],
                     'cn'=>$v['username'],
                     'sn'=>$v['username'],
                     'ou'=>$ou,
@@ -72,6 +71,7 @@ class LdapController extends Controller
                     'employeeNumber'=>$v['work_number'],
                 ];
                 if($needAdd){
+                    $addInfo['objectclass'] = ["inetOrgPerson","organizationalPerson","person"];
                     echo $dn ."-" .json_encode(array_filter($addInfo),JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
                     $ret = ldap_add($ds, $dn, array_filter($addInfo));
                     echo "add {$dn} - " . intval($ret)."\n";
