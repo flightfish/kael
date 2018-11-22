@@ -62,7 +62,7 @@ class LdapController extends Controller
                     continue;
                 }
                 $v['mobile'] = $mobileMatch[0];
-                $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
+                $ou = $v['user_type'] == 0 ? 'Employee' : 'Contractor';
 //                $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
                 $passwd = '{MD5}'.base64_encode(pack("H*",$v['password']));
                 $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
@@ -70,19 +70,11 @@ class LdapController extends Controller
                 var_dump("(!(uid={$v['id']})(mobile={$v['mobile']}))");
                 $sr= ldap_search($ds, "dc=kb,dc=com", "(|(uid={$v['id']})(mobile={$v['mobile']}))", ["ou", "uid"]);
                 $old = ldap_get_entries($ds, $sr);
-                $needAdd = 0;
-                if($old['count'] == 0){
-                    //空的
-                    $needAdd = 1;
-                }else{
+                if($old['count'] > 0){
                     $dnOld = $old[0]['dn'];
-                    if($dnOld != $dn){
-                        $ret = ldap_delete($ds,$dnOld);
-                        echo "delold {$dnOld} - " . intval($ret)."\n";
-                        if($v['status'] == 0){
-                            $needAdd = 1;
-                        }
-                    }
+                    $ret = ldap_delete($ds,$dnOld);
+                    echo "delold {$dnOld} - " . intval($ret)."\n";
+                    $needAdd = 1;
                 }
                 $addInfo = [
                     'uid'=>$v['id'],
@@ -96,17 +88,11 @@ class LdapController extends Controller
                     'departmentNumber'=>$departmentNameIndex[$v['department_id']] ?? "未知部门",
                     'employeeNumber'=>$v['work_number'],
                 ];
-                if($needAdd){
-                    $addInfo['objectclass'] = ["inetOrgPerson","organizationalPerson","person"];
-                    echo $dn ."-" .json_encode(array_filter($addInfo),JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
-                    $ret = ldap_add($ds, $dn, array_filter($addInfo));
-                    echo "add {$dn} - " . intval($ret)."\n";
-                    $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
-                }else{
-                    $ret = ldap_mod_replace($ds, $dn, $addInfo);
-                    echo "mod {$dn} - " . intval($ret)."\n";
-                    $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
-                }
+                $addInfo['objectclass'] = ["inetOrgPerson","organizationalPerson","person"];
+                echo $dn ."-" .json_encode(array_filter($addInfo),JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
+                $ret = ldap_add($ds, $dn, array_filter($addInfo));
+                echo "add {$dn} - " . intval($ret)."\n";
+                $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
             }
         }catch (\Exception $e){
             ldap_close($ds);
