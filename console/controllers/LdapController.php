@@ -17,10 +17,9 @@ class LdapController extends Controller
         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         try{
             ldap_bind($ds, Yii::$app->params['ldap_rdn'], Yii::$app->params['ldap_passwd']);
-            $list = CommonUser::getDb()->createCommand("select * from `user` where ldap_update_time < update_time")->queryAll();
-            if(empty($list)){
-                return false;
-            }
+            //先查看删除的
+            $listOld = CommonUser::getDb()->createCommand("select * from `user` where ldap_update_time < update_time and status!=0")->queryAll();
+            $listUpdate = CommonUser::getDb()->createCommand("select * from `user` where ldap_update_time < update_time and status=0")->queryAll();
 //            $idList = array_column($list,'id');
 //            $filterSub = join('',array_map(function($id){return "(uidNumber={$id})";},$idList));
 //            $sr = "dc=kb,dc=com";
@@ -32,16 +31,30 @@ class LdapController extends Controller
 //            unset($oldList['count']);
 //            $delDnList = array_filter(array_column($oldList,'dn'));
 
-            foreach ($list as $v){
+            foreach ($listOld as $v){
+                $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
+                $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
+                //查询旧的
+                $sr= ldap_search($ds, "dc=kb,dc=com", "(uid={$v['id']})", ["ou", "uidNumber"]);
+                $old = ldap_get_entries($ds, $sr);
+                if($old['count'] > 0){
+                    $dnOld = $old[0]['dn'];
+                    //删除
+                    $ret = ldap_delete($ds,$dnOld);
+                    $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
+                    echo "del {$dnOld} - " . intval($ret)."\n";
+                    continue;
+                }
+            }
+            //更新
+            foreach ($listUpdate as $v){
                 $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
                 $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
                 $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
-//                $dn = "cn=test10,ou=People,dc=kb,dc=com";
                 //查询旧的
-                $sr= ldap_search($ds, "dc=kb,dc=com", "(uidNumber={$v['id']})", ["ou", "uidNumber"]);
+                $sr= ldap_search($ds, "dc=kb,dc=com", "(uid={$v['id']})", ["ou", "uidNumber"]);
                 $old = ldap_get_entries($ds, $sr);
                 $needAdd = 0;
-                $dnOld = "";
                 if($old['count'] == 0){
                     //空的
                     $needAdd = 1;
@@ -53,12 +66,6 @@ class LdapController extends Controller
                         if($v['status'] == 0){
                             $needAdd = 1;
                         }
-                    }elseif($v['status'] !=0){
-                        //删除
-                        $ret = ldap_delete($ds,$dn);
-                        $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
-                        echo "del {$dn} - " . intval($ret)."\n";
-                        continue;
                     }
                 }
                 $addInfo = [
@@ -82,6 +89,7 @@ class LdapController extends Controller
                 }else{
                     $ret = ldap_mod_replace($ds, $dn, $addInfo);
                     echo "mod {$dn} - " . intval($ret)."\n";
+                    $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
                 }
             }
         }catch (\Exception $e){
