@@ -59,17 +59,17 @@ class LdapController extends Controller
                     continue;
                 }
                 $addInfo = [
-//                    'uidNumber'=>$v['id'],
-//                    'uid'=>$v['username'],
-//                    'cn'=>$v['username'],
-//                    'sn'=>$v['username'],
+                    'uidNumber'=>$v['id'],
+                    'uid'=>$v['username'],
+                    'cn'=>$v['username'],
+                    'sn'=>$v['username'],
                     'ou'=>$ou,
-//                    'userPassword'=>$passwd,
-//                    'employeeType'=>$v['user_type'],
-//                    'mobile'=>$v['mobile'],
-//                    'mail'=>$v['email'],
-//                    'departmentNumber'=>$v['department_id'],
-//                    'employeeNumber'=>$v['work_number'],
+                    'userPassword'=>$passwd,
+                    'employeeType'=>$v['user_type'],
+                    'mobile'=>$v['mobile'],
+                    'mail'=>$v['email'],
+                    'departmentNumber'=>$v['department_id'],
+                    'employeeNumber'=>$v['work_number'],
                 ];
                 if($needAdd){
                     echo $dn ."-" .json_encode(array_filter($addInfo),JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
