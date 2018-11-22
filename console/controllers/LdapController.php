@@ -13,10 +13,10 @@ class LdapController extends Controller
      * 初始化用户信息到LDAP
      */
     public function actionInit(){
-        $ds = ldap_connect("10.9.58.21",389) or die("Could not connect to LDAP server.");
+        $ds = ldap_connect(Yii::$app->params['ldap_addr'],389) or die("Could not connect to LDAP server.");
         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         try{
-            ldap_bind($ds, "cn=Manager,dc=kb,dc=com", "ldap123_dc");
+            ldap_bind($ds, Yii::$app->params['ldap_rdn'], Yii::$app->params['ldap_passwd']);
             $list = CommonUser::getDb()->createCommand("select * from `user` where ldap_update_time < update_time")->queryAll();
             if(empty($list)){
                 return false;
@@ -32,11 +32,25 @@ class LdapController extends Controller
 //            unset($oldList['count']);
 //            $delDnList = array_filter(array_column($oldList,'dn'));
 
-
             foreach ($list as $v){
                 $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
                 $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
                 $dn = "uidNumber={$v['id']},ou={$ou},dc=kb,dc=com";
+                //查询旧的
+                $sr= ldap_search($ds, "dc=kb,dc=com", "(uidNumber={$v['id']})", ["ou", "uidNumber"]);
+                $old = ldap_get_entries($ds, $sr);
+                $needAdd = 0;
+                if($old['count'] == 0){
+                    //空的
+                    $needAdd = 1;
+                }else{
+                    $dnOld = $old[0]['dn'];
+                    if($dnOld != $dn){
+                        $ret = ldap_delete($ds,$dnOld);
+                        echo "delold {$dnOld} - " . intval($ret)."\n";
+                        $needAdd = 1;
+                    }
+                }
                 if($v['status'] !=0 ){
                     //删除
                     $ret = ldap_delete($ds,$dn);
@@ -57,7 +71,7 @@ class LdapController extends Controller
 //                    'departmentNumber'=>$v['department_id'],
 //                    'employeeNumber'=>$v['work_number'],
                 ];
-                if($v['ldap_update_time'] == '0000-00-00 00:00:00'){
+                if($needAdd){
                     echo $dn ."-" .json_encode(array_filter($addInfo),JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
                     $ret = ldap_add($ds, $dn, array_filter($addInfo));
                     echo "add {$dn} - " . intval($ret)."\n";
