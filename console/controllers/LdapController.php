@@ -23,11 +23,12 @@ class LdapController extends Controller
             }
 //            $idList = array_column($list,'id');
 //            $filterSub = join('',array_map(function($id){return "(uidNumber={$id})";},$idList));
-//            $sr = "dc=kb,dc=com";
+            $sr = "dc=kb,dc=com";
 //            $filter="(|$filterSub)";
-//            $justthese = [];//array("ou", "uidNumber");
-//            $sr=ldap_search($ds, $sr, $filter, $justthese);
-//            $oldList = ldap_get_entries($ds, $sr);
+            $filter="(|(uidNumber=20006)(uidNumber=20005))";
+            $justthese = array("ou", "uidNumber");
+            $sr=ldap_search($ds, $sr, $filter, $justthese);
+            $oldList = ldap_get_entries($ds, $sr);
 //            unset($oldList['count']);
 //            $delDnList = array_filter(array_column($oldList,'dn'));
 
