@@ -47,7 +47,7 @@ class LdapController extends Controller
                 $addInfo = [
 //                    'uidNumber'=>$v['id'],
 //                    'uid'=>$v['username'],
-                    'cn'=>$v['username'],
+//                    'cn'=>$v['username'],
 //                    'sn'=>$v['username'],
 //                    'ou'=>$ou,
 //                    'userPassword'=>$passwd,
