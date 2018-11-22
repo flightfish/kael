@@ -35,7 +35,7 @@ class LdapController extends Controller
             foreach ($list as $v){
                 $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
                 $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
-                $dn = "uidNumber={$v['id']},ou={$ou},dc=kb,dc=com";
+                $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
 //                $dn = "cn=test10,ou=People,dc=kb,dc=com";
                 //查询旧的
                 $sr= ldap_search($ds, "dc=kb,dc=com", "(uidNumber={$v['id']})", ["ou", "uidNumber"]);
