@@ -23,12 +23,12 @@ class LdapController extends Controller
             }
 //            $idList = array_column($list,'id');
 //            $filterSub = join('',array_map(function($id){return "(uidNumber={$id})";},$idList));
-            $sr = "dc=kb,dc=com";
+//            $sr = "dc=kb,dc=com";
 //            $filter="(|$filterSub)";
-            $filter="(|(uidNumber=20006)(uidNumber=20005))";
-            $justthese = array("ou", "uidNumber");
-            $sr=ldap_search($ds, $sr, $filter, $justthese);
-            $oldList = ldap_get_entries($ds, $sr);
+//            $filter="(|(uidNumber=20006)(uidNumber=20005))";
+//            $justthese = array("ou", "uidNumber");
+//            $sr=ldap_search($ds, $sr, $filter, $justthese);
+//            $oldList = ldap_get_entries($ds, $sr);
 //            unset($oldList['count']);
 //            $delDnList = array_filter(array_column($oldList,'dn'));
 
@@ -58,6 +58,7 @@ class LdapController extends Controller
                     'employeeNumber'=>$v['work_number']
                 ];
                 if($v['ldap_update_time'] == '0000-00-00 00:00:00'){
+                    echo $dn ."-" .json_encode($addInfo,JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
                     $ret = ldap_add($ds, $dn, $addInfo);
                     echo "add {$dn} - " . intval($ret)."\n";
                     $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
