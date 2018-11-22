@@ -52,6 +52,7 @@ class LdapController extends Controller
                 $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
                 $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
                 //查询旧的
+                var_dump("(!(uid={$v['id']})(mobile={$v['mobile']}))");
                 $sr= ldap_search($ds, "dc=kb,dc=com", "(!(uid={$v['id']})(mobile={$v['mobile']}))", ["ou", "uid"]);
                 $old = ldap_get_entries($ds, $sr);
                 $needAdd = 0;
