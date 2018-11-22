@@ -41,24 +41,25 @@ class LdapController extends Controller
                 $sr= ldap_search($ds, "dc=kb,dc=com", "(uidNumber={$v['id']})", ["ou", "uidNumber"]);
                 $old = ldap_get_entries($ds, $sr);
                 $needAdd = 0;
+                $dnOld = "";
                 if($old['count'] == 0){
                     //空的
                     $needAdd = 1;
                 }else{
                     $dnOld = $old[0]['dn'];
-                    var_dump($old);
                     if($dnOld != $dn){
                         $ret = ldap_delete($ds,$dnOld);
                         echo "delold {$dnOld} - " . intval($ret)."\n";
-                        $needAdd = 1;
+                        if($v['status'] == 0){
+                            $needAdd = 1;
+                        }
+                    }elseif($v['status'] !=0){
+                        //删除
+                        $ret = ldap_delete($ds,$dn);
+                        $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
+                        echo "del {$dn} - " . intval($ret)."\n";
+                        continue;
                     }
-                }
-                if($v['status'] !=0 ){
-                    //删除
-                    $ret = ldap_delete($ds,$dn);
-                    $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
-                    echo "del {$dn} - " . intval($ret)."\n";
-                    continue;
                 }
                 $addInfo = [
                     'uid'=>$v['id'],
