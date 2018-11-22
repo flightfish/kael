@@ -46,6 +46,7 @@ class LdapController extends Controller
                     $needAdd = 1;
                 }else{
                     $dnOld = $old[0]['dn'];
+                    var_dump($dnOld);
                     if($dnOld != $dn){
                         $ret = ldap_delete($ds,$dnOld);
                         echo "delold {$dnOld} - " . intval($ret)."\n";
@@ -77,7 +78,6 @@ class LdapController extends Controller
                     $ret = ldap_add($ds, $dn, array_filter($addInfo));
                     echo "add {$dn} - " . intval($ret)."\n";
                     $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
-                    exit();
                 }else{
                     $ret = ldap_mod_replace($ds, $dn, $addInfo);
                     echo "mod {$dn} - " . intval($ret)."\n";
