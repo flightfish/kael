@@ -63,7 +63,8 @@ class LdapController extends Controller
                 }
                 $v['mobile'] = $mobileMatch[0];
                 $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
-                $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
+//                $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
+                $passwd = '{MD5}'.base64_encode(pack("H*",$v['password']));
                 $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
                 //查询旧的
                 var_dump("(!(uid={$v['id']})(mobile={$v['mobile']}))");
