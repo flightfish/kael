@@ -46,7 +46,7 @@ class LdapController extends Controller
                     $needAdd = 1;
                 }else{
                     $dnOld = $old[0]['dn'];
-                    var_dump($dnOld);
+                    var_dump($old);
                     if($dnOld != $dn){
                         $ret = ldap_delete($ds,$dnOld);
                         echo "delold {$dnOld} - " . intval($ret)."\n";
