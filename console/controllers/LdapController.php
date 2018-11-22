@@ -3,6 +3,7 @@ namespace console\controllers;
 
 use common\libs\AppFunc;
 use common\models\CommonUser;
+use common\models\Department;
 use Yii;
 use yii\console\Controller;
 
@@ -20,6 +21,7 @@ class LdapController extends Controller
             //先查看删除的
             $listOld = CommonUser::getDb()->createCommand("select * from `user` where ldap_update_time < update_time and status!=0")->queryAll();
             $listUpdate = CommonUser::getDb()->createCommand("select * from `user` where ldap_update_time < update_time and status=0")->queryAll();
+            $departmentNameIndex = array_column(Department::findAllList(),'department_name','department_id');
 //            $idList = array_column($list,'id');
 //            $filterSub = join('',array_map(function($id){return "(uidNumber={$id})";},$idList));
 //            $sr = "dc=kb,dc=com";
@@ -78,7 +80,7 @@ class LdapController extends Controller
                     'employeeType'=>$v['user_type'],
                     'mobile'=>$v['mobile'],
                     'mail'=>$v['email'],
-                    'departmentNumber'=>$v['department_id'],
+                    'departmentNumber'=>$departmentNameIndex[$v['department_id']] ?? "未知部门",
                     'employeeNumber'=>$v['work_number'],
                 ];
                 if($needAdd){
