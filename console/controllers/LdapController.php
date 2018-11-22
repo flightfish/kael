@@ -35,6 +35,12 @@ class LdapController extends Controller
 
             foreach ($listOld as $v){
                 $v['mobile'] = trim($v['mobile']);
+                $mobileMatch = [];
+                preg_match('/\d{11}/',$v['mobile'],$mobileMatch);
+                if(empty($mobileMatch)){
+                    continue;
+                }
+                $v['mobile'] = $mobileMatch[0];
                 //查询旧的
                 $sr= ldap_search($ds, "dc=kb,dc=com", "(|(uid={$v['id']})(mobile={$v['mobile']}))", ["ou", "uid"]);
                 $old = ldap_get_entries($ds, $sr);
@@ -50,6 +56,12 @@ class LdapController extends Controller
             //更新
             foreach ($listUpdate as $v){
                 $v['mobile'] = trim($v['mobile']);
+                $mobileMatch = [];
+                preg_match('/\d{11}/',$v['mobile'],$mobileMatch);
+                if(empty($mobileMatch)){
+                    continue;
+                }
+                $v['mobile'] = $mobileMatch[0];
                 $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
                 $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
                 $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
