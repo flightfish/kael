@@ -32,8 +32,7 @@ class LdapController extends Controller
 //            $delDnList = array_filter(array_column($oldList,'dn'));
 
             foreach ($listOld as $v){
-                $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
-                $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
+                $v['mobile'] = trim($v['mobile']);
                 //查询旧的
                 $sr= ldap_search($ds, "dc=kb,dc=com", "(|(uid={$v['id']})(mobile={$v['mobile']}))", ["ou", "uid"]);
                 $old = ldap_get_entries($ds, $sr);
@@ -48,6 +47,7 @@ class LdapController extends Controller
             }
             //更新
             foreach ($listUpdate as $v){
+                $v['mobile'] = trim($v['mobile']);
                 $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
                 $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
                 $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
