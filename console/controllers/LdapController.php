@@ -44,7 +44,7 @@ class LdapController extends Controller
                     echo "del {$dn} - " . intval($ret)."\n";
                     continue;
                 }
-                $addInfo = array_filter(array_map('strval',[
+                $addInfo = array_map('strval',[
                     'uidNumber'=>$v['id'],
                     'uid'=>$v['username'],
                     'cn'=>$v['username'],
@@ -56,10 +56,10 @@ class LdapController extends Controller
                     'mail'=>$v['email'],
                     'departmentNumber'=>$v['department_id'],
                     'employeeNumber'=>$v['work_number']
-                ]));
+                ]);
                 if($v['ldap_update_time'] == '0000-00-00 00:00:00'){
-                    echo $dn ."-" .json_encode($addInfo,JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
-                    $ret = ldap_add($ds, $dn, $addInfo);
+                    echo $dn ."-" .json_encode(array_filter($addInfo),JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
+                    $ret = ldap_add($ds, $dn, array_filter($addInfo));
                     echo "add {$dn} - " . intval($ret)."\n";
                     $ret && CommonUser::updateAll(['ldap_update_time'=>date('Y-m-d H:i:s')],['id'=>$v['id']]);
                 }else{
