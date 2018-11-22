@@ -1,0 +1,1 @@
+alter table user add ldap_update_time timestamp not null default '0000-00-00 00:00:00';
