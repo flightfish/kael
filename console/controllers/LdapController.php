@@ -34,6 +34,7 @@ class LdapController extends Controller
             foreach ($listOld as $v){
                 $ou = $v['user_type'] == 0 ? 'employee' : 'contractor';
                 $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
+                var_dump("(!(uid={$v['id']})(mobile={$v['mobile']}))");
                 //查询旧的
                 $sr= ldap_search($ds, "dc=kb,dc=com", "(!(uid={$v['id']})(mobile={$v['mobile']}))", ["ou", "uid"]);
                 $old = ldap_get_entries($ds, $sr);
