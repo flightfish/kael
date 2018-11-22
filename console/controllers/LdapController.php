@@ -55,9 +55,12 @@ class LdapController extends Controller
                     'mobile'=>$v['mobile'],
                     'mail'=>$v['email'],
                     'departmentNumber'=>$v['department_id'],
-                    'employeeNumber'=>$v['work_number']
+                    'employeeNumber'=>$v['work_number'],
                 ];
                 if($v['ldap_update_time'] == '0000-00-00 00:00:00'){
+                    $addInfo['objectclass'][0] = "top";
+                    $addInfo['objectclass'][1] = "person";
+                    $addInfo['objectclass'][2] = "inetOrgPerson";
                     echo $dn ."-" .json_encode(array_filter($addInfo),JSON_UNESCAPED_SLASHES + JSON_UNESCAPED_UNICODE);
                     $ret = ldap_add($ds, $dn, array_filter($addInfo));
                     echo "add {$dn} - " . intval($ret)."\n";
