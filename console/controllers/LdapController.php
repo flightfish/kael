@@ -13,7 +13,7 @@ class LdapController extends Controller
     /**
      * 初始化用户信息到LDAP
      */
-    public function actionInit(){
+    public function actionUpdate(){
         $ds = ldap_connect(Yii::$app->params['ldap_addr'],389) or die("Could not connect to LDAP server.");
         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         try{
