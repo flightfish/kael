@@ -19,6 +19,7 @@ class LdapController extends Controller
         }
         echo $caPath = dirname(dirname(dirname(__FILE__))).'/common/config/ca.crt';
         putenv('LDAPTLS_CACERT='.$caPath);
+        ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
         echo Yii::$app->params['ldap_addr'].':'.Yii::$app->params['ldap_port']."\n";
         $ds = ldap_connect(Yii::$app->params['ldap_addr'],Yii::$app->params['ldap_port']) or die("Could not connect to LDAP server.");
         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
