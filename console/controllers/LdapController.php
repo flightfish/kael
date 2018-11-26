@@ -17,13 +17,13 @@ class LdapController extends Controller
         if(empty(Yii::$app->params['ldap_addr'])){
             echo "未设置ldap地址\n";exit();
         }
-        echo $caPath = dirname(dirname(dirname(__FILE__))).'/common/config/'."\n";
-        echo $caFile = './ca.pem';//dirname(dirname(dirname(__FILE__))).'/common/config/ca.pem'."\n";
+//        echo $caPath = dirname(dirname(dirname(__FILE__))).'/common/config/'."\n";
+//        echo $caFile = './ca.pem';//dirname(dirname(dirname(__FILE__))).'/common/config/ca.pem'."\n";
 
 //        putenv('LDAPTLS_CACERT='.$caPath);
 //        putenv('LDAPTLS_CACERT='.$caFile);
-        putenv('LDAPTLS_CACERTDIR='.$caPath);
-        ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
+//        putenv('LDAPTLS_CACERTDIR='.$caPath);
+//        ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
         echo Yii::$app->params['ldap_addr'].':'.Yii::$app->params['ldap_port']."\n";
         $ds = ldap_connect(Yii::$app->params['ldap_addr'],Yii::$app->params['ldap_port']) or die("Could not connect to LDAP server.");
         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
