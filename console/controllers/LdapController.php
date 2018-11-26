@@ -14,10 +14,14 @@ class LdapController extends Controller
      * 初始化用户信息到LDAP
      */
     public function actionUpdate(){
-
+        if(exec('ps -ef|grep "ldap/update"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
         ///etc/openldap/ldap.conf  TLS_REQCERT allow
         if(empty(Yii::$app->params['ldap_addr'])){
-            echo "未设置ldap地址\n";exit();
+            echo "未设置ldap地址\n";
+            exit();
         }
 //        echo $caPath = dirname(dirname(dirname(__FILE__))).'/common/config/'."\n";
 //        echo $caFile = './ca.pem';//dirname(dirname(dirname(__FILE__))).'/common/config/ca.pem'."\n";
