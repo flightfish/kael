@@ -101,7 +101,7 @@ class LdapController extends Controller
                     'userPassword'=>$passwd,
                     'employeeType'=>$v['user_type'],
                     'mobile'=>$v['mobile'],
-                    'mail'=>$v['email'],
+                    'mail'=>strpos($v['email'],'@') > 0 ? $v['email'] : "",
                     'departmentNumber'=>$departmentNameIndex[$v['department_id']] ?? "未知部门",
                     'employeeNumber'=>$v['work_number'],
                 ];
