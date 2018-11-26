@@ -17,7 +17,7 @@ class LdapController extends Controller
         if(empty(Yii::$app->params['ldap_addr'])){
             echo "未设置ldap地址\n";exit();
         }
-        $ds = ldap_connect(Yii::$app->params['ldap_addr'],389) or die("Could not connect to LDAP server.");
+        $ds = ldap_connect(Yii::$app->params['ldap_addr']) or die("Could not connect to LDAP server.");
         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         try{
             ldap_bind($ds, Yii::$app->params['ldap_rdn'], Yii::$app->params['ldap_passwd']);
