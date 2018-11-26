@@ -14,6 +14,8 @@ class LdapController extends Controller
      * 初始化用户信息到LDAP
      */
     public function actionUpdate(){
+
+        ///etc/openldap/ldap.conf  TLS_REQCERT allow
         if(empty(Yii::$app->params['ldap_addr'])){
             echo "未设置ldap地址\n";exit();
         }
