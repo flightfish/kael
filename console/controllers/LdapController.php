@@ -18,7 +18,7 @@ class LdapController extends Controller
             echo "未设置ldap地址\n";exit();
         }
         echo $caPath = dirname(dirname(dirname(__FILE__))).'/common/config'."\n";
-        echo $caFile = dirname(dirname(dirname(__FILE__))).'/common/config/ca.pem'."\n";
+        echo $caFile = 'ca.pem';//dirname(dirname(dirname(__FILE__))).'/common/config/ca.pem'."\n";
 
 //        putenv('LDAPTLS_CACERT='.$caPath);
         putenv('LDAPTLS_CACERT='.$caFile);
