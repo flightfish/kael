@@ -397,16 +397,16 @@ class CommonApi extends RequestBaseModel
     //发送验证码
     public function SendPasswordCode()
     {
-        $login_ip = UserToken::getRealIP();
-        $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
-        $checkCount = Cache::checkCache($cacheKey);
-        $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
-        if($checkCount && $checkRes >= 10){
-            throw new Exception("每小时只能访问10次", Exception::ERROR_COMMON);
-        }else{
-            $checkRes += 1;
-            Cache::setCache($cacheKey, ['count' => $checkRes]);
-        }
+//        $login_ip = UserToken::getRealIP();
+//        $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
+//        $checkCount = Cache::checkCache($cacheKey);
+//        $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
+//        if($checkCount && $checkRes >= 10){
+//            throw new Exception("每小时只能访问10次", Exception::ERROR_COMMON);
+//        }else{
+//            $checkRes += 1;
+//            Cache::setCache($cacheKey, ['count' => $checkRes]);
+//        }
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_NOT_FIND, Exception::ERROR_COMMON);
