@@ -56,10 +56,8 @@ class UserLock extends RequestBaseModel
             }
         }
         $where = [];
-        if (!empty($this->user_mobile)) {
-            $where = ['or', ['like', 'username', $this->user_mobile], ['like', 'mobile', $this->user_mobile]];
-        }
-        $userList = UserCenter::findUserSearch($this->page,$this->pagesize,"*",$where);
+
+        $userList = UserCenter::findUserSearch($this->page,$this->pagesize,$this->user_mobile,$where);
         $total  = UserCenter::findUserSearchCount("id",$where);
         if (!empty($userList)) {
             foreach ($userList as $k => $v) {
