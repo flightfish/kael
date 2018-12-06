@@ -63,7 +63,7 @@ class UserLock extends RequestBaseModel
         $total  = UserCenter::findUserSearchCount("id",$where);
         if (!empty($userList[0])) {
             foreach ($userList[0] as $k => $v) {
-                $userList[0][$k]['status'] = $status;
+                $userList[$k]['status'] = $status;
             }
 
         }
