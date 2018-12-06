@@ -69,8 +69,8 @@ class UserLock extends RequestBaseModel
         }
 
         $retData = [
-            "total" => $userList,
-            "rows" => $total
+            "total" => $total,
+            "rows" => $userList
         ];
 
         return $retData;
