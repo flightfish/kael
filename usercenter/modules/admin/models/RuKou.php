@@ -59,7 +59,7 @@ class RuKou extends RequestBaseModel
                 'name' => '部门管理',
             ];
             $data[] = [
-                'url'=>'/admin/department/index',
+                'url'=>'/admin/user-lock/index',
                 'name' => '人员解锁',
             ];
         }else{
