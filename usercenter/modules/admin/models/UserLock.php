@@ -60,6 +60,7 @@ class UserLock extends RequestBaseModel
             $where = ['or', ['like', 'username', $this->user_mobile], ['like', 'mobile', $this->user_mobile]];
         }
         $userList = UserCenter::findUserSearch($this->page,$this->pagesize,"*",$where);
+        $total  = UserCenter::findUserSearchCount($search,$where,$leftjoin);
         if (!empty($userList[0])) {
             foreach ($userList[0] as $k => $v) {
                 $userList[0][$k]['status'] = $status;
@@ -68,8 +69,8 @@ class UserLock extends RequestBaseModel
         }
 
         $retData = [
-            "total" => $userList[1],
-            "rows" => $userList[0]
+            "total" => $userList,
+            "rows" => $total
         ];
 
 
