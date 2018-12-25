@@ -404,6 +404,7 @@ class CommonApi extends RequestBaseModel
         $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
         $checkCount = Cache::checkCache($cacheKey);
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
+//        var_dump($checkRes);
         if($checkCount && $checkRes >= 1){
             throw new Exception("还不能发送验证码", Exception::ERROR_COMMON);
         }else{
@@ -420,7 +421,7 @@ class CommonApi extends RequestBaseModel
         $mobileCheckRes = isset($mobileCheckCount['count']) ? $mobileCheckCount['count'] : 0;
 
         if($mobileCheckCount && $mobileCheckRes >= 1){
-            throw new Exception("还不能发送验证码", Exception::ERROR_COMMON);
+            throw new Exception("还不能发送验证码1", Exception::ERROR_COMMON);
         }else{
             $mobileCheckRes += 1;
             Cache::setCache($mobileCacheKey, ['count' => $mobileCheckRes],60);
