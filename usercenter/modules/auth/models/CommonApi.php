@@ -293,7 +293,8 @@ class CommonApi extends RequestBaseModel
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         } else {
             if ($user['user_type'] == 0) {
-                if (empty($user['password']) || $user['password'] == md5('123456')) {
+                $preg = "/^([0-9])|([a-zA-Z])$/";
+                if (empty($user['password']) || $user['password'] == md5('123456')||preg_match($user['password'],$preg)) {
                     throw new Exception("密码过于简单，请点击忘记密码修改密码", Exception::ERROR_COMMON);
                 }
             }
@@ -303,7 +304,7 @@ class CommonApi extends RequestBaseModel
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
                 $this->setPassCount($cacheKey, $cacheKeyTime);
-                throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
+                throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
             }
         }
         CommonUser::updateAll(['login_ip' => UserToken::getRealIP()], ['id' => $user['id']]);
@@ -347,7 +348,8 @@ class CommonApi extends RequestBaseModel
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         }
         if ($this->user['user_type'] == 0) {
-            if ($this->user_pass == '123456') {
+            $preg = '/^[0-9a-zA-z!@#$%\^&*()]{8,}$/';
+            if (!preg_match($preg,$this->user_pass)) {
                 throw new Exception("密码过于简单，请重新设置", Exception::ERROR_COMMON);
             }
         }
@@ -397,16 +399,32 @@ class CommonApi extends RequestBaseModel
     //发送验证码
     public function SendPasswordCode()
     {
-//        $login_ip = UserToken::getRealIP();
-//        $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
-//        $checkCount = Cache::checkCache($cacheKey);
-//        $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
-//        if($checkCount && $checkRes >= 10){
-//            throw new Exception("每小时只能访问10次", Exception::ERROR_COMMON);
-//        }else{
-//            $checkRes += 1;
-//            Cache::setCache($cacheKey, ['count' => $checkRes]);
-//        }
+        //同一ip 内网一秒钟只能发一次 外网1分钟发一次
+        $login_ip = UserToken::getRealIP();
+        $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
+        $checkCount = Cache::checkCache($cacheKey);
+        $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
+        if($checkCount && $checkRes >= 1){
+            throw new Exception("还不能发送验证码", Exception::ERROR_COMMON);
+        }else{
+            $checkRes += 1;
+            if(in_array($login_ip,\Yii::$app->params['ip_list'])){
+                Cache::setCache($cacheKey, ['count' => $checkRes],1);
+            }else{
+                Cache::setCache($cacheKey, ['count' => $checkRes],60);
+            }
+        }
+        //同一手机号一分钟只能发一次
+        $mobileCacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
+        $mobileCheckCount = Cache::checkCache($mobileCacheKey);
+        $mobileCheckRes = isset($mobileCheckCount['count']) ? $mobileCheckCount['count'] : 0;
+
+        if($mobileCheckCount && $mobileCheckRes >= 1){
+            throw new Exception("还不能发送验证码", Exception::ERROR_COMMON);
+        }else{
+            $mobileCheckRes += 1;
+            Cache::setCache($mobileCacheKey, ['count' => $mobileCheckRes],60);
+        }
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_NOT_FIND, Exception::ERROR_COMMON);
