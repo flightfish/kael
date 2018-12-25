@@ -423,14 +423,13 @@ class CommonApi extends RequestBaseModel
         $mobileCacheKey = ['kael_user_mobile', $this->user_mobile];
         $mobileCheckCount = Cache::checkCache($mobileCacheKey);
         $mobileCheckRes = isset($mobileCheckCount['count']) ? $mobileCheckCount['count'] : 0;
-        var_dump($mobileCheckCount);exit;
-//        if($mobileCheckCount && $mobileCheckRes >= 1){
-//            throw new Exception("还不能发送验证码1", Exception::ERROR_COMMON);
-//        }else{
+        if($mobileCheckCount && $mobileCheckRes >= 1){
+            throw new Exception("还不能发送验证码", Exception::ERROR_COMMON);
+        }else{
             $mobileCheckRes += 1;
             Cache::setCache($mobileCacheKey, ['count' => $mobileCheckRes],1);
-//        }
-        exit;
+        }
+
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_NOT_FIND, Exception::ERROR_COMMON);
