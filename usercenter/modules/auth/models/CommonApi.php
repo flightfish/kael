@@ -404,7 +404,7 @@ class CommonApi extends RequestBaseModel
         $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
         $checkCount = Cache::checkCache($cacheKey);
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
-var_dump($checkRes);
+
         if($checkCount && $checkRes >= 1){
             throw new Exception("还不能发送验证码", Exception::ERROR_COMMON);
         }else{
@@ -412,14 +412,13 @@ var_dump($checkRes);
             if(in_array($login_ip,\Yii::$app->params['ip_list'])){
                 Cache::setCache($cacheKey, ['count' => $checkRes],1);
             }else{
-                Cache::setCache($cacheKey, ['count' => $checkRes],60);
+                Cache::setCache($cacheKey, ['count' => $checkRes],1);
             }
         }
         //同一手机号一分钟只能发一次
         $mobileCacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
         $mobileCheckCount = Cache::checkCache($mobileCacheKey);
         $mobileCheckRes = isset($mobileCheckCount['count']) ? $mobileCheckCount['count'] : 0;
-        var_dump($mobileCheckRes);exit;
 //        if($mobileCheckCount && $mobileCheckRes >= 1){
 //            throw new Exception("还不能发送验证码1", Exception::ERROR_COMMON);
 //        }else{
