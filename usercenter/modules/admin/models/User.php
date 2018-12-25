@@ -339,6 +339,9 @@ class User extends RequestBaseModel
         if (empty($this->data['center']) || empty($this->data['center']['mobile'])) {
             throw new Exception('手机号不能为空', Exception::ERROR_COMMON);
         }
+        if(!preg_match('/^1\d{10}$/',$this->data['center']['mobile'])){
+            throw new Exception('手机号格式不正确', Exception::ERROR_COMMON);
+        }
         if (empty($this->data['center']['username'])) {
             throw new Exception('用户名不能为空', Exception::ERROR_COMMON);
         }
