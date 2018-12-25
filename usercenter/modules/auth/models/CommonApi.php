@@ -405,7 +405,7 @@ class CommonApi extends RequestBaseModel
     {
         //同一ip 内网一秒钟只能发一次 外网1分钟发一次
         $login_ip = UserToken::getRealIP();
-        $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
+        $cacheKey = ['kael_user_mobile', $login_ip];
         $checkCount = Cache::checkCache($cacheKey);
         $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
 
@@ -416,20 +416,21 @@ class CommonApi extends RequestBaseModel
             if(in_array($login_ip,\Yii::$app->params['ip_list'])){
                 Cache::setCache($cacheKey, ['count' => $checkRes],1);
             }else{
-                Cache::setCache($cacheKey, ['count' => $checkRes],1);
+                Cache::setCache($cacheKey, ['count' => $checkRes],60);
             }
         }
         //同一手机号一分钟只能发一次
-        $mobileCacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
+        $mobileCacheKey = ['kael_user_mobile', $this->user_mobile];
         $mobileCheckCount = Cache::checkCache($mobileCacheKey);
         $mobileCheckRes = isset($mobileCheckCount['count']) ? $mobileCheckCount['count'] : 0;
-        var_dump($mobileCheckCount);exit;
+//        var_dump($mobileCheckCount);exit;
 //        if($mobileCheckCount && $mobileCheckRes >= 1){
 //            throw new Exception("还不能发送验证码1", Exception::ERROR_COMMON);
 //        }else{
-//            $mobileCheckRes += 1;
-//            Cache::setCache($mobileCacheKey, ['count' => $mobileCheckRes],60);
+            $mobileCheckRes += 1;
+            Cache::setCache($mobileCacheKey, ['count' => $mobileCheckRes],1);
 //        }
+        exit;
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_NOT_FIND, Exception::ERROR_COMMON);
