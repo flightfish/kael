@@ -293,7 +293,8 @@ class CommonApi extends RequestBaseModel
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         } else {
             if ($user['user_type'] == 0) {
-                if (empty($user['password']) || $user['password'] == md5('123456')) {
+                $preg = "/^([0-9])|([a-zA-Z])$/";
+                if (empty($user['password']) || $user['password'] == md5('123456')||preg_match($preg,$this->user_pass)) {
                     throw new Exception("密码过于简单，请点击忘记密码修改密码", Exception::ERROR_COMMON);
                 }
             }
@@ -304,12 +305,6 @@ class CommonApi extends RequestBaseModel
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
                 $this->setPassCount($cacheKey, $cacheKeyTime);
                 throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
-            }
-            if ($user['user_type'] == 0) {
-                $preg = "/^([0-9])|([a-zA-Z])$/";
-                if (preg_match($preg,$this->user_pass)) {
-                    throw new Exception("密码过于简单，请点击忘记密码修改密码", Exception::ERROR_COMMON);
-                }
             }
         }
         CommonUser::updateAll(['login_ip' => UserToken::getRealIP()], ['id' => $user['id']]);
