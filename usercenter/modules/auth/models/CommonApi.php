@@ -416,7 +416,7 @@ class CommonApi extends RequestBaseModel
             if(in_array($login_ip,\Yii::$app->params['ip_list'])){
                 Cache::setCache($cacheKey, ['count' => $checkRes],1);
             }else{
-                Cache::setCache($cacheKey, ['count' => $checkRes],60);
+                Cache::setCache($cacheKey, ['count' => $checkRes],1);
             }
         }
         //同一手机号一分钟只能发一次
