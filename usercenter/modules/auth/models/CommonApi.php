@@ -348,9 +348,13 @@ class CommonApi extends RequestBaseModel
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         }
         if ($this->user['user_type'] == 0) {
+            $pregMatch = "/^([0-9])|([a-zA-Z])$/";
+            if (!preg_match($pregMatch,$this->user_pass)) {
+                throw new Exception("密码过于简单，请重新设置", Exception::ERROR_COMMON);
+            }
             $preg = '/^[0-9a-zA-z!@#$%\^&*()]{8,}$/';
             if (!preg_match($preg,$this->user_pass)) {
-                throw new Exception("密码过于简单，请重新设置", Exception::ERROR_COMMON);
+                throw new Exception("密码不符合规则", Exception::ERROR_COMMON);
             }
         }
         if (!empty($this->token) && empty($this->old_pass)) { //找回密码修改
@@ -419,6 +423,7 @@ class CommonApi extends RequestBaseModel
         $mobileCacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
         $mobileCheckCount = Cache::checkCache($mobileCacheKey);
         $mobileCheckRes = isset($mobileCheckCount['count']) ? $mobileCheckCount['count'] : 0;
+        var_dump($mobileCheckCount);exit;
 //        if($mobileCheckCount && $mobileCheckRes >= 1){
 //            throw new Exception("还不能发送验证码1", Exception::ERROR_COMMON);
 //        }else{
