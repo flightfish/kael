@@ -289,6 +289,7 @@ class CommonApi extends RequestBaseModel
         $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         $this->RedisKeyCheck($cacheKey, $cacheKeyTime);
         $user = CommonUser::findByMobile($this->user_mobile);
+        $message = "";
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         } else {
@@ -296,7 +297,7 @@ class CommonApi extends RequestBaseModel
                 $preg1 = "/^[0-9]+$/";
                 $preg2 = "/^[a-zA-Z]+$/";
                 if (empty($user['password']) || $user['password'] == md5('123456')||preg_match($preg1,$this->user_pass)||preg_match($preg2,$this->user_pass)) {
-                    throw new Exception("密码过于简单，请点击忘记密码修改密码", Exception::ERROR_COMMON);
+                    $message = "密码过于简单，请点击忘记密码修改密码";
                 }
             }
             if (empty($user['password'])) {
@@ -317,7 +318,7 @@ class CommonApi extends RequestBaseModel
         setcookie(Constant::LOGIN_TOKEN_NAME, $token, time() + Constant::LOGIN_TOKEN_TIME, '/', Constant::LOGIN_TOKEN_HOST);
 //        !isset($_COOKIE['token']) && setcookie('token', $token, time() + 7*24*3600, '/', Constant::LOGIN_TOKEN_HOST);
         $this->setCache($cacheKey, -1);
-        return ['token' => $token];
+        return ['token' => $token,'message'=>$message];
     }
 
     //登出
@@ -349,9 +350,9 @@ class CommonApi extends RequestBaseModel
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         }
         if ($this->user['user_type'] == 0) {
-            $preg = '/^[0-9a-zA-Z!@#$%^&*?]*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*?]*$/';
+            $preg = '/^[0-9a-zA-Z!@#$%^&*,.?]*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*?,.])[0-9a-zA-Z!@#$%^&*,.?]*$/';
             if (!preg_match($preg,$this->user_pass)) {
-                throw new Exception("密码不符合规则", Exception::ERROR_COMMON);
+                throw new Exception("密码必须是字母加数字加特殊字符的组合", Exception::ERROR_COMMON);
             }
         }
         if (!empty($this->token) && empty($this->old_pass)) { //找回密码修改
