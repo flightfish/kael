@@ -50,7 +50,7 @@ class RuKou extends RequestBaseModel
         //密码权限设置
         if($this->user['user_type'] == 0){
             if(empty($this->user['password']) || $this->user['password'] == md5('123456')){
-                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
+//                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
             }
         }
 
