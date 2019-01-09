@@ -408,6 +408,10 @@ class User extends RequestBaseModel
             }
             $ret = $model->insert();
             $userId = $model->id;
+            //开通磐石权限
+            $this->id = $userId;
+            $this->data['platform_list'] = [6000];
+            $this->updatePriv();
             LogAuthUser::LogUser($this->user['id'],$userId,LogAuthUser::OP_ADD_USER,$this->data);
             //权限
 //            RelateUserPlatform::batchAdd($userId,$this->data['platform_list']);
