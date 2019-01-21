@@ -80,7 +80,7 @@ class UserLock extends RequestBaseModel
     public function userUnlock()
     {
         $cacheKey = ['kael_deepblue_user_mobile', $this->user_mobile];
-        Cache::setCache($cacheKey, ['count' => 0]);
+        Cache::setCache($cacheKey, ['count' => 0],\Yii::$app->params['redis_cache_time']);
         return true;
     }
 }
