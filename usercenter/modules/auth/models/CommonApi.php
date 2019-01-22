@@ -350,9 +350,9 @@ class CommonApi extends RequestBaseModel
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         }
         if ($this->user['user_type'] == 0) {
-            $preg = '/^[0-9a-zA-Z!@#$%^&*,.?-_]*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*?,.-_])[0-9a-zA-Z!@#$%^&*,.?-_]*$/';
+            $preg = '/^[0-9a-zA-Z!@#$%^&*,.()-=_+;\':"<>?`~]*(?=.{8,})(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&*,.()-=_+;\':"<>?`~])[0-9a-zA-Z!@#$%^&*,.()-=_+;\':"<>?`~]*$/';
             if (!preg_match($preg,$this->user_pass)) {
-                throw new Exception("密码必须是8位以上的字母加数字加特殊字符的组合,特殊字符包括!@#$%^&*-_?,.", Exception::ERROR_COMMON);
+                throw new Exception("密码必须是8位以上的字母加数字加特殊字符的组合,特殊字符包括!@#$%^&*,.()-=_+;':\"<>?`~", Exception::ERROR_COMMON);
             }
         }
         if (!empty($this->token) && empty($this->old_pass)) { //找回密码修改
