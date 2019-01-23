@@ -411,7 +411,9 @@ class CommonApi extends RequestBaseModel
             throw new Exception("还不能发送验证码", Exception::ERROR_COMMON);
         }else{
             $checkRes += 1;
-            if(in_array($login_ip,\Yii::$app->params['ip_list'])){
+            $user = Platform::findOneById(1);
+            $allIpList = explode(',',$user['allow_ips']);
+            if(in_array($login_ip,$allIpList)){
                 Cache::setCache($cacheKey, ['count' => $checkRes],1);
             }else{
                 Cache::setCache($cacheKey, ['count' => $checkRes],60);
