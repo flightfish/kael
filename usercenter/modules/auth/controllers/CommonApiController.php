@@ -202,4 +202,16 @@ class CommonApiController extends BaseController
             return $this->error($exception);
         }
     }
+
+    public function actionCheckAuth(){
+        try{
+            $model = new CommonApi(['scenario'=>CommonApi::SCENARIO_CHECK_PLATFORM_AUTH]);
+            $model->load($this->loadData);
+            $model->validate();
+            $ret = $model->checkAuth();
+            return $this->success($ret);
+        }catch(\Exception $exception){
+            return $this->error($exception);
+        }
+    }
 }

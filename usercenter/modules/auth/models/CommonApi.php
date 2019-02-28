@@ -527,4 +527,14 @@ class CommonApi extends RequestBaseModel
 
         return $this->user;
     }
+
+    //校验权限
+    public function checkAuth()
+    {
+        $token = UserToken::getToken();
+        if(empty($token)){
+            throw new Exception(Exception::NOT_LOGIN_MSG,Exception::NOT_LOGIN_CODE);
+        }
+        return $this->user;
+    }
 }
