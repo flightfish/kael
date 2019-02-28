@@ -35,7 +35,6 @@ class UserToken
         $aes = new AES();
         $token = $aes->decode($token);
         $arrToken = explode('||', $token);
-        var_dump($arrToken);
         if (count($arrToken) != 8) {
             throw new Exception('登录过期，请重新登录',Exception::ERROR_COMMON);
         }
