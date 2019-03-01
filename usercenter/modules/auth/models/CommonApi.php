@@ -297,7 +297,8 @@ class CommonApi extends RequestBaseModel
                 $preg1 = "/^[0-9]+$/";
                 $preg2 = "/^[a-zA-Z]+$/";
                 if (empty($user['password']) || $user['password'] == md5('123456')||preg_match($preg1,$this->user_pass)||preg_match($preg2,$this->user_pass)) {
-                    $message = "密码过于简单，请点击忘记密码修改密码，3月1日后开始强制修改密码";
+                    throw new Exception("密码过于简单，请点击忘记密码修改密码",Exception::ERROR_COMMON);
+//                    $message = "密码过于简单，请点击忘记密码修改密码，3月1日后开始强制修改密码";
                 }
             }
             if (empty($user['password'])) {
