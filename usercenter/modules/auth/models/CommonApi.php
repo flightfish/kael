@@ -295,7 +295,7 @@ class CommonApi extends RequestBaseModel
         } else {
             if ($user['user_type'] == 0) {
                 $preg = '/^(?:(?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[\W_].*))[\W_0-9A-Za-z]{8,}$/';
-                if (!preg_match($preg,$this->user_pass)) {
+                if (!preg_match($preg,$user['password'])) {
                     throw new Exception("密码必须是8位以上的字母加数字加特殊字符的组合",Exception::ERROR_COMMON);
 //                    $message = "密码过于简单，请点击忘记密码修改密码，3月1日后开始强制修改密码";
                 }
