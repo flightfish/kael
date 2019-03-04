@@ -294,10 +294,9 @@ class CommonApi extends RequestBaseModel
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         } else {
             if ($user['user_type'] == 0) {
-                $preg1 = "/^[0-9]+$/";
-                $preg2 = "/^[a-zA-Z]+$/";
-                if (empty($user['password']) || $user['password'] == md5('123456')||preg_match($preg1,$this->user_pass)||preg_match($preg2,$this->user_pass)) {
-                    throw new Exception("密码过于简单，请点击忘记密码修改密码",Exception::ERROR_COMMON);
+                $preg = '/^(?:(?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[\W_].*))[\W_0-9A-Za-z]{8,}$/';
+                if (!preg_match($preg,$this->user_pass)) {
+                    throw new Exception("密码必须是8位以上的字母加数字加特殊字符的组合",Exception::ERROR_COMMON);
 //                    $message = "密码过于简单，请点击忘记密码修改密码，3月1日后开始强制修改密码";
                 }
             }
