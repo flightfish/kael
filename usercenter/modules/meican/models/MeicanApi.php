@@ -50,6 +50,7 @@ class MeicanApi
         if(!empty($data)){
 //            $data['timestamp'] = $timestamp;
 //            $data['signature'] = $sign;
+            var_dump($data);
             $data = http_build_query($data);
             $retStr = AppFunc::curlPost($apiUrl.$urlPath."?timestamp={$timestamp}&signature={$sign}",$data);
         }else{
