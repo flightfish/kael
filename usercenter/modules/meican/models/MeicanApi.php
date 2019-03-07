@@ -52,7 +52,7 @@ class MeicanApi
         $retStr = AppFunc::postJson($apiUrl.$urlPath,$data);
         $retJson = json_decode($retStr,true);
         if(empty($retJson) || $retJson['resultCode'] != 'OK'){
-            throw new Exception("美团请求失败".($retJson['resultDescription'] ?? ""));
+            throw new Exception("美团请求失败".($retJson['resultDescription'] ?? $retStr));
         }
         return $retJson;
     }
