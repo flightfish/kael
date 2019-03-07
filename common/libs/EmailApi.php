@@ -6,6 +6,7 @@ class EmailApi{
     const API_TOKEN = "https://exmail.qq.com/cgi-bin/token";
     const API_GET = "https://exmail.qq.com/openapi/user/get";
     const API_SYNC = "https://exmail.qq.com/openapi/user/sync";
+    const API_USERLIST = "https://exmail.qq.com/openapi/user/list";
 
     public static function getAccessToken(){
         $clientId = 'biz0876xa';

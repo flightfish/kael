@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 use common\libs\AppFunc;
+use common\libs\EmailApi;
 use common\models\CommonUser;
 use common\models\Department;
 use Yii;
@@ -22,6 +23,5 @@ class EmailController extends Controller
         $allEmail = CommonUser::find()->select('email')
             ->where(['status'=>0,'user_type'=>0])->andWhere(['!=','email',''])->asArray(true)->column();
         //所有邮箱的
-
     }
 }
