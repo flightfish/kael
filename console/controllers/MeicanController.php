@@ -28,9 +28,9 @@ class MeicanController extends Controller
             $allMemberUserIds = array_map('intval',array_column($allMembers,'email'));
             //全部有效的
             if(!empty(Yii::$app->params['env']) && Yii::$app->params['env'] == 'dev'){
-                $allValidUserIds = CommonUser::find()->where(['status'=>0,'user_type'=>0,'mobile'=>'13683602952'])->asArray(true)->all();
+                $allValidUserIds = CommonUser::find()->select('id')->where(['status'=>0,'user_type'=>0,'mobile'=>'13683602952'])->asArray(true)->column();
             }else{
-                $allValidUserIds = CommonUser::find()->where(['status'=>0,'user_type'=>0])->asArray(true)->all();
+                $allValidUserIds = CommonUser::find()->select('id')->where(['status'=>0,'user_type'=>0])->asArray(true)->column();
             }
             $allValidUserIds = array_map('intval',$allValidUserIds);
             //删除旧的
