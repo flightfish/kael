@@ -265,4 +265,24 @@ class AppFunc{
             ['mobile' => $mobile, 'content' => $content], $mobile);
         return ['ok'=>$ok ?? 0,'data'=>$data??[]];
     }
+
+
+    public static function postJson($url, $jsonArr) {
+        $post_string = json_encode($jsonArr);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+//        curl_setopt($ch, CURLOPT_TIMEOUT, 15);
+//        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Content-Type: application/json;charset=utf-8'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        // 线下环境不用开启curl证书验证, 未调通情况可尝试添加该代码
+        // curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        // curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        $data = curl_exec($ch);
+        curl_close($ch);
+
+        return $data;
+    }
 }

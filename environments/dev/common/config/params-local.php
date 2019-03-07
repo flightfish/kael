@@ -12,4 +12,11 @@ return [
         '222.129.22.198','222.129.22.199','222.129.22.200','222.129.22.201','222.129.22.202','222.129.22.203','222.129.22.204',
         '222.129.22.205','222.129.22.206','222.129.22.207'
     ],//公司ip
+
+    'env'=>'dev',
+    'meican_email'=>'@mt.knowbox.cn',
+    'meican_crop_token'=>'046837b3-bdb9-4418-9c02-c13ef9346c04',
+    'meican_login'=>'https://meican.com/corps/simpleauth',
+    'meican_api'=>'https://api.meican.com',
+    'meican_corp_prefix'=>'142399',
 ];
