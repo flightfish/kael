@@ -13,6 +13,8 @@ class MeicanApi
     const API_ADDMEMBER = '/v1/corps/:corp_prefix/addmember';
     const API_DELMEMBER = '/v1/corps/:corp_prefix/deletemember';
     const API_LISTMEMBER = '/v1/corps/:corp_prefix/listmember';
+    const API_LISTBILL = '/v1/corps/:corp_prefix/listgrouporderandbill';
+    const API_LISTRULE = '/v1/corps/:corp_prefix/listsubsidy';
 
     public static function genEmailUserId($userId){
         return str_pad(strval($userId),11,'0',STR_PAD_LEFT);
@@ -52,7 +54,7 @@ class MeicanApi
         if(empty($retJson) || $retJson['resultCode'] != 'OK'){
             throw new Exception("美团请求失败".($retJson['resultDescription'] ?? ""));
         }
-        return $retJson['data'];
+        return $retJson;
     }
 
     public static function addMember($userId){
@@ -73,6 +75,18 @@ class MeicanApi
 
     public static function listMember(){
         $ret = self::curlApi(self::API_LISTMEMBER);
-        return $ret['memberList'];
+        return $ret['data']['memberList'];
+    }
+
+    public static function listBill($day){
+        $data = [];
+        !empty($day) && $data['target'] = $day;
+        $ret = self::curlApi(self::API_LISTBILL,$data);
+        return $ret;
+    }
+
+    public static function listRule(){
+        $ret = self::curlApi(self::API_LISTRULE);
+        return $ret;
     }
 }
