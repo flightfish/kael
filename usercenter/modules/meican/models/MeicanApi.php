@@ -47,10 +47,10 @@ class MeicanApi
         $apiUrl = \Yii::$app->params['meican_api'];
         $timestamp = intval(1000 * microtime(true));
         $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp,false);
-//        $data['timestamp'] = $timestamp;
-//        $data['signature'] = $sign;
         if(!empty($data)){
-            $retStr = AppFunc::postJson($apiUrl.$urlPath."?timestamp={$timestamp}&signature={$sign}",$data);
+            $data['timestamp'] = $timestamp;
+            $data['signature'] = $sign;
+            $retStr = AppFunc::postJson($apiUrl.$urlPath,$data);
         }else{
             $retStr = AppFunc::curlGet($apiUrl.$urlPath."?timestamp={$timestamp}&signature={$sign}");
         }
