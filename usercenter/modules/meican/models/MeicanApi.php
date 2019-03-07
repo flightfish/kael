@@ -47,9 +47,9 @@ class MeicanApi
         $apiUrl = \Yii::$app->params['meican_api'];
         $timestamp = intval(1000 * microtime(true));
         $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp,false);
-        $data['timestamp'] = $timestamp;
-        $data['signature'] = $sign;
-        $retStr = AppFunc::postJson($apiUrl.$urlPath,$data);
+//        $data['timestamp'] = $timestamp;
+//        $data['signature'] = $sign;
+        $retStr = AppFunc::postJson($apiUrl.$urlPath."?timestamp={$timestamp}&signature={$sign}",$data);
         $retJson = json_decode($retStr,true);
         if(empty($retJson) || $retJson['resultCode'] != 'OK'){
             throw new Exception("美团请求失败".($retJson['resultDescription'] ?? $retStr));
