@@ -36,7 +36,7 @@ class MeicanApi
         $namespace = \Yii::$app->params['meican_corp_prefix'];
         $email = self::genEmailMt($userId);
         $timestamp = intval(1000 * microtime(true));
-        $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp,false);
+        $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp.$email,false);
         $url = "{$loginUrl}?namespace={$namespace}&email={$email}&version=1.1&timestamp={$timestamp}&signature={$sign}";
         return $url;
     }
