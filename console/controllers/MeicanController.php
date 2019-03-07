@@ -25,7 +25,12 @@ class MeicanController extends Controller
         }
         try {
             $allMembers = MeicanApi::listMember();
-            $allMemberUserIds = array_map('intval',array_column($allMembers,'email'));
+            $allMemberUserIds = [];
+            foreach ($allMembers as $v){
+                if(empty($v['removed'])){
+                    $allMemberUserIds[] = intval($v['email']);
+                }
+            }
             //全部有效的
             if(!empty(Yii::$app->params['env']) && Yii::$app->params['env'] == 'dev'){
                 $allValidUserIds = CommonUser::find()->select('id')->where(['status'=>0,'user_type'=>0,'mobile'=>'13683602952'])->asArray(true)->column();
