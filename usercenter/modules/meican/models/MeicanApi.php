@@ -16,8 +16,11 @@ class MeicanApi
     const API_LISTBILL = '/v1/corps/:corp_prefix/listgrouporderandbill';
     const API_LISTRULE = '/v1/corps/:corp_prefix/listsubsidy';
 
-    public static function genEmailUserId($userId){
-        return str_pad(strval($userId),11,'0',STR_PAD_LEFT);
+    public static function genEmailMt($userId){
+        if(empty(\Yii::$app->params['meican_email'])){
+            throw new Exception("配置参数缺失",Exception::ERROR_COMMON);
+        }
+        return str_pad(strval($userId),11,'0',STR_PAD_LEFT).\Yii::$app->params['meican_email'];
     }
 
     public static function genLoginUrl($userId){
@@ -31,7 +34,7 @@ class MeicanApi
         }
         $loginUrl = \Yii::$app->params['meican_login'];
         $namespace = \Yii::$app->params['meican_corp_prefix'];
-        $email = self::genEmailUserId($userId).\Yii::$app->params['meican_email'];
+        $email = self::genEmailMt($userId);
         $timestamp = intval(1000 * microtime(true));
         $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp.$email,false);
         $url = "{$loginUrl}?namespace={$namespace}&email={$email}&version=1.1&timestamp={$timestamp}&signature={$sign}";
@@ -64,7 +67,7 @@ class MeicanApi
     }
 
     public static function addMember($userId){
-        $email = self::genEmailUserId($userId);
+        $email = self::genEmailMt($userId);
         $ret = self::curlApi(self::API_ADDMEMBER,[
             'email'=>$email
         ]);
@@ -72,7 +75,7 @@ class MeicanApi
     }
 
     public static function delMember($userId){
-        $email = self::genEmailUserId($userId);
+        $email = self::genEmailMt($userId);
         $ret = self::curlApi(self::API_DELMEMBER,[
             'email'=>$email,
         ]);
