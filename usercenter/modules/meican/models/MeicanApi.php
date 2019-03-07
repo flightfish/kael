@@ -23,10 +23,6 @@ class MeicanApi
         return str_pad(strval($userId),11,'0',STR_PAD_LEFT).\Yii::$app->params['meican_email'];
     }
 
-    public static function genEmailId($userId){
-        return str_pad(strval($userId),11,'0',STR_PAD_LEFT);
-    }
-
     public static function genLoginUrl($userId){
         if(
             empty(\Yii::$app->params['meican_login'])
@@ -38,9 +34,9 @@ class MeicanApi
         }
         $loginUrl = \Yii::$app->params['meican_login'];
         $namespace = \Yii::$app->params['meican_corp_prefix'];
-        $email = self::genEmailId($userId);
+        $email = self::genEmailMt($userId);
         $timestamp = intval(1000 * microtime(true));
-        $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp.$email,false);
+        $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp,false);
         $url = "{$loginUrl}?namespace={$namespace}&email={$email}&version=1.1&timestamp={$timestamp}&signature={$sign}";
         return $url;
     }
