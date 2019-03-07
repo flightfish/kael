@@ -23,6 +23,9 @@ return [
         'auth' => [
             'class' => 'usercenter\modules\auth\Module',
         ],
+        'meican' => [
+            'class' => 'usercenter\modules\meican\Module',
+        ],
     ],
     'controllerNamespace' => 'usercenter\controllers',
     'components' => [
