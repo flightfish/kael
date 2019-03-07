@@ -1,55 +1,37 @@
 <?php
 namespace common\libs;
 
+use usercenter\components\exception\Exception;
+
 class EmailApi{
 
-    const API_TOKEN = "https://exmail.qq.com/cgi-bin/token";
-    const API_GET = "https://exmail.qq.com/openapi/user/get";
-    const API_SYNC = "https://exmail.qq.com/openapi/user/sync";
-    const API_USERLIST = "https://exmail.qq.com/openapi/user/list";
+    const API_GETTOKEN = "https://api.exmail.qq.com/cgi-bin/gettoken";
+    const API_USERCREATE = "https://api.exmail.qq.com/cgi-bin/user/create?access_token=ACCESS_TOKEN";
 
-    public static function getAccessToken(){
-        $clientId = 'biz0876xa';
-        $clientSecret = 'yuw_0dfuxUa';
-        $postData = http_build_query([
-            'grant_type'=>'client_credentials',
-            'client_id'=>$clientId,
-            'client_secret'=>$clientSecret
-        ]);
-        $ret = AppFunc::curlPost(self::API_TOKEN,$postData);
-        $ret = json_decode($ret,true);
-        $accessToken = $ret['access_token'];
-        return $accessToken;
+    public static function getAccessToken($id,$secret){
+        $retStr = AppFunc::curlGet(self::API_GETTOKEN."?corpid={$id}&corpsecret={$secret}");
+        $retJson = json_decode($retStr,true);
+        if(empty($retJson) || empty($retJson['access_token'])){
+            throw new Exception("[EXMAIL]".$retJson['errmsg'] ?? $retStr);
+        }
+        return $retJson;
     }
 
-    public static function curlApi($url,$data = []){
-        $accessToken = self::getAccessToken();
-        $postData = http_build_query($data);
-        $ret = AppFunc::curlPost($url,$postData,['Authorization: Bearer '.$accessToken]);
-        $ret = json_decode($ret,true);
-        return $ret;
+    public static function getAccessTokenTXL(){
+        return self::getAccessToken(\Yii::$app->params['qqemail_corpid'],\Yii::$app->params['qqemail_corpsecret_txl']);
     }
 
-    public static function get($email){
-        return self::curlApi(self::API_GET,[
-            'alias'=>$email
-        ]);
+    public static function getAccessTokenSSO(){
+        return self::getAccessToken(\Yii::$app->params['qqemail_corpid'],\Yii::$app->params['qqemail_corpsecret_sso']);
     }
 
-    public static function add($email,$name,$gender,$passwd){
-        return self::curlApi(self::API_SYNC,[
-            'action'=>2, //1删 2加 3改
-            'alias'=>$email,
+    public static function addUser($email,$name,$password){
+        $url = self::API_USERCREATE.'?access_token='.self::getAccessTokenTXL();
+        $data = [
+            'userid'=>$email,
             'name'=>$name,
-            'gender'=>$gender,//1男  2女
-            'password'=>$passwd,
-        ]);
-    }
-
-    public static function del($email){
-        return self::curlApi(self::API_SYNC,[
-            'action'=>1, //1删 2加 3改
-            'alias'=>$email,
-        ]);
+            'department'=>\Yii::$app->params['qqemail_department'],
+            'password'=>$password
+        ];
     }
 }
