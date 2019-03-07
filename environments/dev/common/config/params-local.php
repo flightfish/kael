@@ -14,10 +14,8 @@ return [
     ],//公司ip
 
     'meican_email'=>'@mt.knowbox.cn',
-    'meican_namespace'=>'',
-    'meican_crop_token'=>'',
+    'meican_crop_token'=>'046837b3-bdb9-4418-9c02-c13ef9346c04',
     'meican_login'=>'https://meican.com/corps/simpleauth',
     'meican_api'=>'https://api.meican.com',
-    'meican_corp_prefix'=>'',
-    'meican_key'=>'',
+    'meican_corp_prefix'=>'142399',
 ];

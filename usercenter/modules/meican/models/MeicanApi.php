@@ -23,14 +23,14 @@ class MeicanApi
     public static function genLoginUrl($userId){
         if(
             empty(\Yii::$app->params['meican_login'])
-            || empty(\Yii::$app->params['meican_namespace'])
+            || empty(\Yii::$app->params['meican_corp_prefix'])
             || empty(\Yii::$app->params['meican_email'])
             || empty(\Yii::$app->params['meican_crop_token'])
         ){
             throw new Exception("配置参数错误",Exception::ERROR_COMMON);
         }
         $loginUrl = \Yii::$app->params['meican_login'];
-        $namespace = \Yii::$app->params['meican_namespace'];
+        $namespace = \Yii::$app->params['meican_corp_prefix'];
         $email = self::genEmailUserId($userId).\Yii::$app->params['meican_email'];
         $timestamp = intval(1000 * microtime(true));
         $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp.$email,false);
@@ -46,7 +46,7 @@ class MeicanApi
         $urlPath = str_replace(':corp_prefix',\Yii::$app->params['meican_corp_prefix'],$urlPath);
         $apiUrl = \Yii::$app->params['meican_api'];
         $timestamp = intval(1000 * microtime(true));
-        $sign = sha1(\Yii::$app->params['meican_key'].$timestamp,false);
+        $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp,false);
         $data['timestamp'] = $timestamp;
         $data['signature'] = $sign;
         $retStr = AppFunc::postJson($apiUrl.$urlPath,$data);
