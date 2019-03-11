@@ -105,6 +105,19 @@ class EmailController extends Controller
         //查询成员
         $allUsers = EmailApi::getDepartmentListUser();
         $allUsers = $allUsers['userlist'];
-        echo json_encode($allUsers,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+        $allUsers = array_column($allUsers,'userid');
+        //所有有效的
+        $allUserEmail = CommonUser::find()
+            ->select('email')
+            ->where(['status'=>0,'user_type'=>0])
+            ->andWhere(['like','email','knowbox.cn'])
+            ->asArray()->column();
+        $allUserEmail = array_map('trim',$allUserEmail);
+        //无效成员
+        $inValidList = array_diff($allUsers,$allUserEmail);
+        foreach ($inValidList as $v){
+            echo "invalid email:".$v."\n";
+            EmailApi::deleteUser($v);
+        }
     }
 }
