@@ -33,12 +33,11 @@ class EmailApi{
 
     public static function curlTXL($url,$data,$method='POST'){
         $url .= '?access_token='.self::getAccessTokenTXL();
-        var_dump($url);exit();
         if($method == 'POST'){
             $retStr = AppFunc::postJson($url,$data);
         }else{
             $dataStr = http_build_query($data);
-            $url = $url.'&'.$dataStr;
+            !empty($dataStr) && $url = $url.'&'.$dataStr;
             $retStr = AppFunc::curlGet($url);
         }
         $retJson = json_decode($retStr,true);
@@ -109,6 +108,6 @@ class EmailApi{
     }
 
     public static function getDepartmentList(){
-        return self::curlTXL(self::API_GETDEPARTMENTUSER,[],'GET');
+        return self::curlTXL(self::API_GETDEPARTMENTLIST,[],'GET');
     }
 }
