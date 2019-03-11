@@ -19,18 +19,48 @@ class EmailController extends Controller
             echo "is_running";
             exit();
         }
-        //所有公司员工的
-        $allEmail = CommonUser::find()->select('email')
-            ->where(['status'=>0,'user_type'=>0])->andWhere(['!=','email',''])->asArray(true)->column();
-        if(empty($allEmail)){
-            exit();
+        $listForDel = CommonUser::getDb()->createCommand("select id,username,email from `user` where user_type = 0 and email_created = 1 and email != '' and status!=0")->queryAll();
+        $listUpdate = CommonUser::getDb()->createCommand("select id,username,email from `user` where user_type = 0 and email_created = 0 and email != '' and status=0")->queryAll();
+
+
+        /**
+        {
+        "errcode": 0,
+        "errmsg": "ok",
+        "list": [
+        {"user":"zhangsan@bjdev.com", "type":1}, 帐号类型。-1:帐号号无效; 0:帐号名未被占用; 1:主帐号; 2:别名帐号; 3:邮件群组帐号
+        {"user":"zhangsangroup@shdev.com", "type":3}
+        ]
         }
-        //检查邮箱
-        $checkList = EmailApi::batchCheck($allEmail);
-        $checkList = $checkList['list'];
-        foreach ($checkList as $v){
-            //未被占用 新建
-            echo "";
+         */
+        if(!empty($emailForDel)){
+            $emailForDel = array_column($listForDel,'email');
+            $emailToId = array_column($listUpdate,'id','email');
+            $checkList = EmailApi::batchCheck($emailForDel);
+            if(!empty($checkList['list'])){
+                foreach ($checkList['list'] as $v){
+                    if($v['type'] == 1){
+                        //删除
+                        EmailApi::deleteUser($v['user']);
+                    }
+                    CommonUser::updateAll(['email_created'=>0],['id'=>$emailToId[$v['user']]]);
+                }
+            }
+        }
+        if(!empty($emailForUpdate)){
+            $emailForUpdate = array_column($listUpdate,'email');
+            $emailToName = array_column($listUpdate,'username','email');
+            $emailToId = array_column($listUpdate,'id','email');
+            $checkList = EmailApi::batchCheck($emailForUpdate);
+            if(!empty($checkList['list'])){
+                foreach ($checkList['list'] as $v){
+                    if($v['type'] == 0){
+                        //添加
+                        EmailApi::addUser($v['user'],$emailToName[$v['user']],'Know11');
+                    }
+                    CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
+                }
+            }
         }
 
     }
