@@ -73,6 +73,12 @@ class EmailController extends Controller
                     foreach ($checkList['list'] as $v){
                         if(Yii::$app->params['env'] != 'prod'){
                             if(strpos($v['user'],'emailtest') === false){
+                                try{
+                                    $emailToId[$v['user']];
+                                }catch (\Exception $e){
+                                    var_dump($v['user']);
+                                    throw $e;
+                                }
                                 CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
                                 continue;
                             }
