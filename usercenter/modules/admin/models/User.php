@@ -387,9 +387,13 @@ class User extends RequestBaseModel
                 throw new Exception('手机号已存在', Exception::ERROR_COMMON);
             }
             if(!empty($this->data['center']['email'])){
+                $this->data['center']['email'] = trim($this->data['center']['email']);
                 $old = UserCenter::find()->where(['email'=>$this->data['center']['email'],'status'=>UserCenter::STATUS_VALID])->one();
                 if(!empty($old)){
                     throw new Exception('邮箱已存在', Exception::ERROR_COMMON);
+                }
+                if($this->data['center']['user_type'] == 0 && substr($this->data['center']['email'],-11) != '@knowbox.cn'){
+                    throw new Exception('员工请使用公司邮箱', Exception::ERROR_COMMON);
                 }
             }
             //新增
@@ -529,24 +533,21 @@ class User extends RequestBaseModel
                 array_push($error, '第' . ($k + 1) . '行，部门不存在');
                 continue;
             }
-//            if (!isset($v[10]) || !is_numeric($v[10])) {
-//                array_push($error, '第' . ($k + 1) . '行，请填写学科');
-//                continue;
-//            }
-//            if (!isset($v[11]) || !is_numeric($v[11])) {
-//                array_push($error, '第' . ($k + 1) . '行，请填写学段');
-//                continue;
-//            }
 
             $MobileOnly = UserCenter::findByMobile($v[1]);
             if (!empty($MobileOnly)) {
                 array_push($error, '第' . ($k + 1) . '行，电话号码已存在不能重复添加');
                 continue;
             }
+            isset($v[2]) && $v[2] = trim($v[2]);
             if(!empty($v[2])){
                 $emailOnly = UserCenter::find()->where(['status'=>0,'email'=>$v[2]])->asArray(true)->one();
                 if (!empty($emailOnly)) {
                     array_push($error, '第' . ($k + 1) . '行，邮箱已存在不能重复添加');
+                    continue;
+                }
+                if($allDepartment[intval($v[4])]['is_outer'] == 0 && substr($v[2],-11) != '@knowbox.cn'){
+                    array_push($error, '第' . ($k + 1) . '行，员工请使用公司邮箱');
                     continue;
                 }
             }
@@ -580,9 +581,9 @@ class User extends RequestBaseModel
 
             $paramsUcenter[$k] = [
                 'id'=>$startUserId + $k,
-                'username' => $v[0],
-                'mobile' => $v[1],
-                'email'=>$v[2],
+                'username' => trim($v[0]),
+                'mobile' => trim($v[1]),
+                'email'=>trim($v[2]),
                 'sex' => $v[3],
                 'department_id'=>$v[4],
                 'idcard' => $v[5],
@@ -597,11 +598,22 @@ class User extends RequestBaseModel
                 'work_type'   => $v[11] ?? 0,
                 'work_number' => $v[12],
                 'password'    => empty($v[13]) ? md5('1234567') : md5($v[13]),
-//                'grade_part' => $v[11],
-//                'subject' => $v[10],
             ];
         }
         if(!empty($paramsUcenter)){
+            $allMobile = array_values(array_filter(array_column($paramsUcenter,'mobile')));
+            $allEmail = array_values(array_filter(array_column($paramsUcenter,'email')));
+            $allWorkNumber = array_values(array_filter(array_column($paramsUcenter,'work_number')));
+            if(count($allMobile) != count(array_unique($allMobile))){
+                throw new Exception("表格中手机号存在重复");
+            }
+            if(count($allEmail) != count(array_unique($allEmail))){
+                throw new Exception("表格中非空邮箱存在重复");
+            }
+            if(count($allWorkNumber) != count(array_unique($allWorkNumber))){
+                throw new Exception("表格中非空工号存在重复");
+            }
+
             $columns = array_keys(array_values($paramsUcenter)[0]);
             $rows = [];
             foreach($paramsUcenter as $v){

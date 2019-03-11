@@ -1,10 +1,8 @@
 <?php
 namespace console\controllers;
 
-use common\libs\AppFunc;
 use common\libs\EmailApi;
 use common\models\CommonUser;
-use common\models\Department;
 use Yii;
 use yii\console\Controller;
 
