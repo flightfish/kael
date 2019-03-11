@@ -39,6 +39,9 @@ class EmailController extends Controller
                 $checkList = EmailApi::batchCheck($emailForDel);
                 if(!empty($checkList['list'])){
                     foreach ($checkList['list'] as $v){
+                        if($v['type'] == -1){
+                            continue;
+                        }
                         if($v['type'] == 1){
                             if(Yii::$app->params['env'] != 'prod'){
                                 if(strpos($v['user'],'emailtest') === false){
@@ -71,6 +74,9 @@ class EmailController extends Controller
                 $checkList = EmailApi::batchCheck($emailForUpdate);
                 if(!empty($checkList['list'])){
                     foreach ($checkList['list'] as $v){
+                        if($v['type'] == -1){
+                            continue;
+                        }
                         if($v['type'] == 0){
                             if(Yii::$app->params['env'] != 'prod'){
                                 if(strpos($v['user'],'emailtest') === false){
