@@ -22,6 +22,16 @@ class EmailController extends Controller
         //所有公司员工的
         $allEmail = CommonUser::find()->select('email')
             ->where(['status'=>0,'user_type'=>0])->andWhere(['!=','email',''])->asArray(true)->column();
-        //所有邮箱的
+        if(empty($allEmail)){
+            exit();
+        }
+        //检查邮箱
+        $checkList = EmailApi::batchCheck($allEmail);
+        $checkList = $checkList['list'];
+        foreach ($checkList as $v){
+            //未被占用 新建
+            echo "";
+        }
+
     }
 }
