@@ -54,10 +54,10 @@ class EmailController extends Controller
                                 //没有有效账号则删除
                                 echo 'del - '.$v['user']."\n";
                                 echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
-//                            EmailApi::deleteUser($v['user']);
+                                EmailApi::deleteUser($v['user']);
                             }
                         }
-//                    CommonUser::updateAll(['email_created'=>0],['id'=>$emailToId[$v['user']]]);
+                        CommonUser::updateAll(['email_created'=>0],['id'=>$emailToId[$v['user']]]);
                     }
                 }
             }
