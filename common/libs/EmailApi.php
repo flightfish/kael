@@ -42,7 +42,6 @@ class EmailApi{
         }
         $retJson = json_decode($retStr,true);
         if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
-            var_dump($retJson);exit();
             throw new Exception('[EXMAIL]'.$retJson['errmsg']??"");
         }
         return $retJson;
