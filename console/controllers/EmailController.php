@@ -42,6 +42,7 @@ class EmailController extends Controller
                         if($v['type'] == 1){
                             if(Yii::$app->params['env'] != 'prod'){
                                 if(strpos($v['user'],'emailtest') === false){
+                                    CommonUser::updateAll(['email_created'=>0],['id'=>$emailToId[$v['user']]]);
                                     continue;
                                 }
                             }
@@ -72,6 +73,7 @@ class EmailController extends Controller
                     foreach ($checkList['list'] as $v){
                         if(Yii::$app->params['env'] != 'prod'){
                             if(strpos($v['user'],'emailtest') === false){
+                                CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
                                 continue;
                             }
                         }
