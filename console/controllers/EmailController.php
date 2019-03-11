@@ -90,5 +90,8 @@ class EmailController extends Controller
 
         }
 
+        //查询成员
+        $allUsers = EmailApi::getDepartmentListUser();
+        echo json_encode($allUsers)."\n";
     }
 }
