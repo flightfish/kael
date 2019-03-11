@@ -64,7 +64,7 @@ class EmailApi{
         $data = [
             'userid'=>$email,
             'name'=>$name,
-            'department'=>\Yii::$app->params['qqemail_department'],
+            'department'=>[\Yii::$app->params['qqemail_department']],
             'password'=>$password
         ];
         $ret = self::curlTXL(self::API_USERCREATE,$data);
@@ -74,7 +74,7 @@ class EmailApi{
     public static function updateUserDepartment($email){
         $data = [
             'userid'=>$email,
-            'department'=>\Yii::$app->params['qqemail_department'],
+            'department'=>[\Yii::$app->params['qqemail_department']],
         ];
         $ret = self::curlTXL(self::API_USERUPDATE,$data);
         return $ret;

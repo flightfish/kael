@@ -22,7 +22,7 @@ return [
     'meican_corp_prefix'=>'142399',
 
     'qqemail_corpid'=>'wm3eb44ff1466ebc41',
-    'qqemail_department'=>[4574112202817200852],//测试账号组
+    'qqemail_department'=>'4574112202817200852',//测试账号组
     'qqemail_corpsecret_txl'=>'7eCI-TyawzhY8PSai5SyFX4rxqlU7ajzfPY57Q58fv4K0y07CcpGtzFFr_rq99OG',//通讯录
     'qqemail_corpsecret_sso'=>'96WZ1in_SmKUlFSeNGuXrO0OgkhdAxxLIHYIJH11L_CRxMjjmZR9a6E5gRiBOPmL',//单点登录
 ];
