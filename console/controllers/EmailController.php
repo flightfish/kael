@@ -40,11 +40,17 @@ class EmailController extends Controller
             if(!empty($checkList['list'])){
                 foreach ($checkList['list'] as $v){
                     if($v['type'] == 1){
+                        if(Yii::$app->params['env'] != 'prod'){
+                            if(strpos($v['user'],'emailtest') != false){
+                                continue;
+                            }
+                        }
                         //查询还有没有其他账号在用
                         $others = CommonUser::find()->where(['status'=>0,'email'=>$v['user'],'user_type'=>0])
                             ->asArray(true)->limit(1)->one();
                         if(empty($others)){
                             //没有有效账号则删除
+                            echo 'del - '.$v['user']."\n";
                             EmailApi::deleteUser($v['user']);
                         }
                     }
@@ -59,8 +65,14 @@ class EmailController extends Controller
             $checkList = EmailApi::batchCheck($emailForUpdate);
             if(!empty($checkList['list'])){
                 foreach ($checkList['list'] as $v){
+                    if(Yii::$app->params['env'] != 'prod'){
+                        if(strpos($v['user'],'emailtest') != false){
+                            continue;
+                        }
+                    }
                     if($v['type'] == 0){
                         //添加
+                        echo 'add - '. $v['user']."\n";
                         EmailApi::addUser($v['user'],$emailToName[$v['user']],'Know11');
                     }
                     CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);

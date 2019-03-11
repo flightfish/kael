@@ -18,6 +18,7 @@ return [
     'ldap_rdn'=>'cn=Manager,dc=kb,dc=com',
     'ldap_passwd'=>'ldap123_dc',
 
+    'env'=>'prod',
 
     'qqemail_corpid'=>'wm3eb44ff1466ebc41',
     'qqemail_department'=>[31950503637318000],
