@@ -19,4 +19,7 @@ return [
     'meican_login'=>'https://meican.com/corps/simpleauth',
     'meican_api'=>'https://api.meican.com',
     'meican_corp_prefix'=>'142399',
+
+    'qqemail_corpid'=>'wm3eb44ff1466ebc41',
+    'qqemail_corpsecret_txl'=>'7eCI-TyawzhY8PSai5SyFX4rxqlU7ajzfPY57Q58fv4K0y07CcpGtzFFr_rq99OG',//通讯录
 ];
