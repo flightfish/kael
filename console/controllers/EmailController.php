@@ -36,7 +36,7 @@ class EmailController extends Controller
         if(!empty($listForDel)){
             $emailForDelAll = array_column($listForDel,'email');
             $emailToId = array_column($listUpdate,'id','email');
-            $emailForDelChunk = array_chunk($emailForDelAll,50);
+            $emailForDelChunk = array_chunk($emailForDelAll,10);
             foreach ($emailForDelChunk as $emailForDel){
                 $checkList = EmailApi::batchCheck($emailForDel);
                 if(!empty($checkList['list'])){
@@ -67,7 +67,7 @@ class EmailController extends Controller
             $emailForUpdateAll = array_column($listUpdate,'email');
             $emailToName = array_column($listUpdate,'username','email');
             $emailToId = array_column($listUpdate,'id','email');
-            $emailForUpdateChunk = array_chunk($emailForUpdateAll,50);
+            $emailForUpdateChunk = array_chunk($emailForUpdateAll,10);
             foreach ($emailForUpdateChunk as $emailForUpdate){
                 $checkList = EmailApi::batchCheck($emailForUpdate);
                 if(!empty($checkList['list'])){
