@@ -83,7 +83,7 @@ class EmailController extends Controller
                             echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
                             EmailApi::addUser($v['user'],$emailToName[$v['user']],'Know11');
                         }
-//                    CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
+                        CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
                     }
                 }
             }
