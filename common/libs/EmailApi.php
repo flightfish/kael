@@ -42,7 +42,7 @@ class EmailApi{
         }
         $retJson = json_decode($retStr,true);
         if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
-            throw new Exception('[EXMAIL]'.($retJson['errmsg'])??"");
+            throw new Exception('[EXMAIL]'.$retJson['errmsg']??"");
         }
         return $retJson;
 
@@ -108,6 +108,6 @@ class EmailApi{
     }
 
     public static function getDepartmentList(){
-        return self::curlTXL(self::API_GETDEPARTMENTUSER,[],'GET');
+        return self::curlTXL(self::API_GETDEPARTMENTUSER,['id'=>1],'GET');
     }
 }
