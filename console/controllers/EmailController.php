@@ -76,7 +76,7 @@ class EmailController extends Controller
                                 try{
                                     $emailToId[$v['user']];
                                 }catch (\Exception $e){
-                                    var_dump($v['user']);
+                                    var_dump($v);
                                     throw $e;
                                 }
                                 CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
