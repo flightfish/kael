@@ -51,10 +51,10 @@ class EmailController extends Controller
                         if(empty($others)){
                             //没有有效账号则删除
                             echo 'del - '.$v['user']."\n";
-                            EmailApi::deleteUser($v['user']);
+//                            EmailApi::deleteUser($v['user']);
                         }
                     }
-                    CommonUser::updateAll(['email_created'=>0],['id'=>$emailToId[$v['user']]]);
+//                    CommonUser::updateAll(['email_created'=>0],['id'=>$emailToId[$v['user']]]);
                 }
             }
         }
@@ -73,9 +73,9 @@ class EmailController extends Controller
                     if($v['type'] == 0){
                         //添加
                         echo 'add - '. $v['user']."\n";
-                        EmailApi::addUser($v['user'],$emailToName[$v['user']],'Know11');
+//                        EmailApi::addUser($v['user'],$emailToName[$v['user']],'Know11');
                     }
-                    CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
+//                    CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
                 }
             }
         }
