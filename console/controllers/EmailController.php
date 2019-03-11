@@ -73,7 +73,7 @@ class EmailController extends Controller
                 if(!empty($checkList['list'])){
                     foreach ($checkList['list'] as $v){
                         if(Yii::$app->params['env'] != 'prod'){
-                            if(strpos($v['user'],'emailtest') != false){
+                            if(strpos($v['user'],'emailtest') === false){
                                 continue;
                             }
                         }
