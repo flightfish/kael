@@ -24,11 +24,23 @@ class EmailApi{
     }
 
     public static function getAccessTokenTXL(){
-        return self::getAccessToken(\Yii::$app->params['qqemail_corpid'],\Yii::$app->params['qqemail_corpsecret_txl']);
+        $key = 'EMAIL_ACCESS_TOKEN_TXL_'.\Yii::$app->params['qqemail_corpid'];
+        $accessToken = Cache::getCacheString($key);
+        if(empty($accessToken)){
+            $accessToken = self::getAccessToken(\Yii::$app->params['qqemail_corpid'],\Yii::$app->params['qqemail_corpsecret_txl']);
+            Cache::setCacheString($key,3600,$accessToken);
+        }
+        return $accessToken;
     }
 
     public static function getAccessTokenSSO(){
-        return self::getAccessToken(\Yii::$app->params['qqemail_corpid'],\Yii::$app->params['qqemail_corpsecret_sso']);
+        $key = 'EMAIL_ACCESS_TOKEN_SSO_'.\Yii::$app->params['qqemail_corpid'];
+        $accessToken = Cache::getCacheString($key);
+        if(empty($accessToken)){
+            $accessToken = self::getAccessToken(\Yii::$app->params['qqemail_corpid'],\Yii::$app->params['qqemail_corpsecret_sso']);
+            Cache::setCacheString($key,3600,$accessToken);
+        }
+        return $accessToken;
     }
 
     public static function curlTXL($url,$data,$method='POST'){

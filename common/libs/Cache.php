@@ -43,4 +43,19 @@ class Cache
         }
     }
 
+
+    public static function setCacheString(string $cacheKey,int $exptime,string $value){
+        if (Yii::$app->params['redis_cache']) {
+            return Yii::$app->redis->setex($cacheKey,$exptime, $value);
+        }
+        return null;
+    }
+
+
+    public static function getCacheString(string $cacheKey){
+        if (Yii::$app->params['redis_cache']) {
+            return Yii::$app->redis->get($cacheKey);
+        }
+        return null;
+    }
 }
