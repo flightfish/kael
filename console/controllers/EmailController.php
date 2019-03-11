@@ -40,8 +40,13 @@ class EmailController extends Controller
             if(!empty($checkList['list'])){
                 foreach ($checkList['list'] as $v){
                     if($v['type'] == 1){
-                        //删除
-                        EmailApi::deleteUser($v['user']);
+                        //查询还有没有其他账号在用
+                        $others = CommonUser::find()->where(['status'=>0,'email'=>$v['user'],'user_type'=>0])
+                            ->asArray(true)->limit(1)->one();
+                        if(empty($others)){
+                            //没有有效账号则删除
+                            EmailApi::deleteUser($v['user']);
+                        }
                     }
                     CommonUser::updateAll(['email_created'=>0],['id'=>$emailToId[$v['user']]]);
                 }
