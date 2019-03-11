@@ -62,7 +62,7 @@ class MeicanApi
         if(empty($retJson) || $retJson['resultCode'] != 'OK'){
             var_dump($apiUrl.$urlPath);
             var_dump($data);
-            throw new Exception("美团请求失败".($retJson['resultDescription'] ?? $retStr));
+            throw new Exception("美餐请求失败".($retJson['resultDescription'] ?? $retStr));
         }
         return $retJson;
     }

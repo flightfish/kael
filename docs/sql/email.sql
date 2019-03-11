@@ -1,0 +1,1 @@
+alter table user add email_created tinyint not null default '0';
