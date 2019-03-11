@@ -20,7 +20,7 @@ class EmailApi{
         if(empty($retJson) || empty($retJson['access_token'])){
             throw new Exception("[EXMAIL]".$retJson['errmsg'] ?? $retStr);
         }
-        return $retJson;
+        return $retJson['access_token'];
     }
 
     public static function getAccessTokenTXL(){
