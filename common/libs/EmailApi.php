@@ -116,7 +116,6 @@ class EmailApi{
 
     public static function getDepartmentListUser(){
         $data = ['department_id'=>\Yii::$app->params['qqemail_department'],'fetch_child'=>0];
-        var_dump($data);
         return self::curlTXL(self::API_GETDEPARTMENTUSER,$data,'GET');
     }
 
