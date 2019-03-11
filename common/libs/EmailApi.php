@@ -33,6 +33,7 @@ class EmailApi{
 
     public static function curlTXL($url,$data,$method='POST'){
         $url .= '?access_token='.self::getAccessTokenTXL();
+        var_dump($url);
         if($method == 'POST'){
             $retStr = AppFunc::postJson($url,$data);
         }else{
@@ -108,6 +109,6 @@ class EmailApi{
     }
 
     public static function getDepartmentList(){
-        return self::curlTXL(self::API_GETDEPARTMENTUSER,['id'=>1],'GET');
+        return self::curlTXL(self::API_GETDEPARTMENTUSER,[],'GET');
     }
 }
