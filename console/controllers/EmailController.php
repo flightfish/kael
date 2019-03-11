@@ -35,7 +35,7 @@ class EmailController extends Controller
          */
         if(!empty($listForDel)){
             $emailForDelAll = array_column($listForDel,'email');
-            $emailToId = array_column($listUpdate,'id','email');
+            $emailToId = array_column($listForDel,'id','email');
             $emailForDelChunk = array_chunk($emailForDelAll,10);
             foreach ($emailForDelChunk as $emailForDel){
                 $checkList = EmailApi::batchCheck($emailForDel);
@@ -57,7 +57,6 @@ class EmailController extends Controller
                                 EmailApi::deleteUser($v['user']);
                             }
                         }
-                        var_dump($emailToId);
                         CommonUser::updateAll(['email_created'=>0],['id'=>$emailToId[$v['user']]]);
                     }
                 }
