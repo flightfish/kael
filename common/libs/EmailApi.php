@@ -20,7 +20,6 @@ class EmailApi{
         if(empty($retJson) || empty($retJson['access_token'])){
             throw new Exception("[EXMAIL]".$retJson['errmsg'] ?? $retStr);
         }
-        var_dump($retJson);exit();
         return $retJson['access_token'];
     }
 
