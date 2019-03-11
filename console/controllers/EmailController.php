@@ -57,6 +57,7 @@ class EmailController extends Controller
                                 EmailApi::deleteUser($v['user']);
                             }
                         }
+                        var_dump($emailToId);
                         CommonUser::updateAll(['email_created'=>0],['id'=>$emailToId[$v['user']]]);
                     }
                 }
