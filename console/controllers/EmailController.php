@@ -39,9 +39,6 @@ class EmailController extends Controller
                 $checkList = EmailApi::batchCheck($emailForDel);
                 if(!empty($checkList['list'])){
                     foreach ($checkList['list'] as $v){
-                        if($v['type'] == -1){
-                            continue;
-                        }
                         if($v['type'] == 1){
                             if(Yii::$app->params['env'] != 'prod'){
                                 if(strpos($v['user'],'emailtest') === false){
@@ -74,22 +71,19 @@ class EmailController extends Controller
                 $checkList = EmailApi::batchCheck($emailForUpdate);
                 if(!empty($checkList['list'])){
                     foreach ($checkList['list'] as $v){
-                        if($v['type'] == -1){
-                            continue;
-                        }
-                        if(Yii::$app->params['env'] != 'prod'){
-                            if(strpos($v['user'],'emailtest') === false){
-                                try{
-                                    $emailToId[$v['user']];
-                                }catch (\Exception $e){
-                                    var_dump($v);
-                                    throw $e;
-                                }
-                                CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
-                                continue;
-                            }
-                        }
                         if($v['type'] == 0){
+                            if(Yii::$app->params['env'] != 'prod'){
+                                if(strpos($v['user'],'emailtest') === false){
+                                    try{
+                                        $emailToId[$v['user']];
+                                    }catch (\Exception $e){
+                                        var_dump($v);
+                                        throw $e;
+                                    }
+                                    CommonUser::updateAll(['email_created'=>1],['id'=>$emailToId[$v['user']]]);
+                                    continue;
+                                }
+                            }
                             //添加
                             echo 'add - '. $v['user']."\n";
                             echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
