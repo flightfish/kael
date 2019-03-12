@@ -2,8 +2,6 @@
 namespace console\controllers;
 
 use common\libs\DingTalkApi;
-use common\libs\EmailApi;
-use common\models\CommonUser;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use Yii;
@@ -22,6 +20,14 @@ class DingController extends Controller
         }
         $this->updateDingDepartment();
         $this->updateDingUser();
+    }
+
+    /**
+     * 查询回调
+     */
+    public function actionQueryCallback(){
+        $ret = DingTalkApi::callBackQuery();
+        echo json_encode($ret,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
     }
 
     private function updateDingDepartment(){

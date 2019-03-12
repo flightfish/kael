@@ -13,7 +13,13 @@ class DingTalkApi {
     const API_USER_GET = 'https://oapi.dingtalk.com/user/get';//获取用户信息
     const API_USER_GETDEPTMEMBER = 'https://oapi.dingtalk.com/user/getDeptMember';//获取部门用户
     const API_DEPARTMENT_PARENTLIST = 'https://oapi.dingtalk.com/department/list_parent_depts_by_dept';//获取父级IDList
+    const API_CALLBACK_QUERY = 'https://oapi.dingtalk.com/call_back/get_call_back';//查询回调
 
+
+    public static function callBackQuery(){
+        $retJson = self::curlGet(self::API_CALLBACK_QUERY);
+        return $retJson;
+    }
 
     public static function getDepartmentUserIds($departmentId){
         $retJson = self::curlGet(self::API_USER_GETDEPTMEMBER,['deptId'=>$departmentId]);
