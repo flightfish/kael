@@ -395,6 +395,9 @@ class User extends RequestBaseModel
                 if($this->data['center']['user_type'] == 0 && substr($this->data['center']['email'],-11) != '@knowbox.cn'){
                     throw new Exception('员工请使用公司邮箱', Exception::ERROR_COMMON);
                 }
+                if($this->data['center']['user_type'] == 0 && empty($this->data['center']['work_number'])){
+                    throw new Exception('员工请填写工号', Exception::ERROR_COMMON);
+                }
             }
             //新增
             $this->mobile = $this->data['center']['mobile'];
@@ -552,6 +555,10 @@ class User extends RequestBaseModel
                 }
             }
 
+            if($allDepartment[intval($v[4])]['is_outer'] == 0 && empty($v[12])){
+                array_push($error, '第' . ($k + 1) . '行，员工请填写工号');
+                continue;
+            }
             if (!empty($v[12])) {
                 $work_number = UserCenter::find()->where(['status'=>0, 'work_number'=>$v[12]])->asArray(true)->one();
                 if (!empty($work_number)) {
