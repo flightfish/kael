@@ -74,11 +74,11 @@ class DingController extends Controller
                                 'mobile'=>$userInfo['mobile'],
                                 'avatar'=>$userInfo['avatar'],
                                 'job_number'=>$userInfo['jobnumber'],
-                                'union_id'=>$userInfo['union_id'],
-                                'open_id'=>$userInfo['open_id'],
+                                'union_id'=>$userInfo['unionid'],
+                                'open_id'=>$userInfo['openId'],
                                 'departments'=>join(',',$userInfo['department']),
                                 'department_id'=>$userInfo['department'][0],
-                                'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]],
+                                'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                             ],
                             ['user_id'=>$v['userid']]);
                     }else{
