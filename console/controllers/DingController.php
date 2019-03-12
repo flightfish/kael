@@ -87,7 +87,7 @@ class DingController extends Controller
                             'user_id'=>$userInfo['userid'],
                             'name'=>$userInfo['name'],
                             'email'=>$userInfo['email'],
-                            'mobile'=>$userInfo['mobile'],
+                            'mobile'=>$userInfo['mobile'] ??"",
                             'avatar'=>$userInfo['avatar'],
                             'job_number'=>$userInfo['jobnumber'],
                             'union_id'=>$userInfo['unionid'],
