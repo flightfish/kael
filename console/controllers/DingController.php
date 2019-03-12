@@ -80,7 +80,7 @@ class DingController extends Controller
                                 'department_id'=>$userInfo['department'][0],
                                 'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                             ],
-                            ['user_id'=>$v['userid']]);
+                            ['user_id'=>$userInfo['userid']]);
                     }else{
                         //新增
                         DingtalkUser::add([
