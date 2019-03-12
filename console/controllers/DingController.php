@@ -94,7 +94,7 @@ class DingController extends Controller
                             'open_id'=>$userInfo['openId'],
                             'departments'=>join(',',$userInfo['department']),
                             'department_id'=>$userInfo['department'][0],
-                            'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]],
+                            'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                         ]);
                     }
                 }
