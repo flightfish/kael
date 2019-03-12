@@ -71,7 +71,7 @@ class DingController extends Controller
                         DingtalkUser::updateAll(
                             [
                                 'name'=>$userInfo['name'],
-                                'email'=>$userInfo['email'],
+                                'email'=>$userInfo['email'] ?? "",
                                 'mobile'=>$userInfo['mobile'],
                                 'avatar'=>$userInfo['avatar'],
                                 'job_number'=>$userInfo['jobnumber'],
@@ -87,7 +87,7 @@ class DingController extends Controller
                         DingtalkUser::add([
                             'user_id'=>$userInfo['userid'],
                             'name'=>$userInfo['name'],
-                            'email'=>$userInfo['email'],
+                            'email'=>$userInfo['email'] ?? "",
                             'mobile'=>$userInfo['mobile'],
                             'avatar'=>$userInfo['avatar'],
                             'job_number'=>$userInfo['jobnumber'],
