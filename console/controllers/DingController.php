@@ -63,6 +63,9 @@ class DingController extends Controller
             foreach ($departmentList as $v) {
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 foreach ($userIdList as $userId){
+                    if(in_array($userId,$currentUserIds)){
+                        continue;
+                    }
                     $currentUserIds[] = $userId;
                     $userInfo = DingTalkApi::getUserInfo($userId);
                     echo json_encode($userInfo)."\n";
