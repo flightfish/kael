@@ -26,7 +26,7 @@ class MeicanController extends Controller
         $allowDepartment = Yii::$app->params['meican_department'];
         try {
             $allMembers = MeicanApi::listMember();
-            echo date('Y-m-d H:i:s ').json_encode($allMembers,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+//            echo date('Y-m-d H:i:s ').json_encode($allMembers,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
             $allMemberUserIds = [];
             $userIdToDepartment = [];
             foreach ($allMembers as $v){
@@ -42,6 +42,7 @@ class MeicanController extends Controller
                 ->leftJoin('dingtalk_user b','a.work_number = b.job_number')
                 ->leftJoin('dingtalk_department c','b.department_subroot = c.id')
                 ->where(['a.user_type'=>0,'a.status'=>0,'b.status'=>0,'c.status'=>0])
+                ->andWhere(['!=','a.work_number',''])
                 ->createCommand()
                 ->queryAll();
             $allValidUserIds = array_column($allValidUserInfoList,'id');
