@@ -26,7 +26,7 @@ class MeicanController extends Controller
         $allowDepartment = Yii::$app->params['meican_department'];
         try {
             $allMembers = MeicanApi::listMember();
-            echo json_encode($allMembers,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+            echo date('Y-m-d H:i:s ').json_encode($allMembers,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
             $allMemberUserIds = [];
             $userIdToDepartment = [];
             foreach ($allMembers as $v){
