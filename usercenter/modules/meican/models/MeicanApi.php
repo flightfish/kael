@@ -67,10 +67,11 @@ class MeicanApi
         return $retJson;
     }
 
-    public static function addMember($userId){
+    public static function addMember($userId,$department){
         $email = self::genEmailMt($userId);
         $ret = self::curlApi(self::API_ADDMEMBER,[
-            'email'=>$email
+            'email'=>$email,
+            'department'=>$department,
         ]);
         return $ret;
     }

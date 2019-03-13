@@ -23,26 +23,63 @@ class MeicanController extends Controller
             echo "未设置美餐信息\n";
             exit();
         }
+        $allowDepartment = [
+            '作业盒子',
+            '未知部门',
+            'BD',
+            '布克学堂',
+            '运营部',
+            '人事部',
+            '设计部',
+            '产品部',
+            '研发部',
+            '市场部',
+            '财务部',
+            '教研部',
+            '行政部',
+            '香蕉学堂',
+            '采购部',
+            '战略综合部',
+            '创意部',
+            '内审部',
+            '小象编程',
+            'GR部',
+        ];
         try {
             $allMembers = MeicanApi::listMember();
+            echo json_encode($allMembers,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
             $allMemberUserIds = [];
+            $userIdToDepartment = [];
             foreach ($allMembers as $v){
                 if(empty($v['removed'])){
                     $allMemberUserIds[] = intval($v['email']);
+                    $userIdToDepartment[intval($v['email'])] = in_array($v['department'],$allowDepartment) ? $v['department'] : $allowDepartment[1];
                 }
             }
             //全部有效的
-            if(!empty(Yii::$app->params['env']) && Yii::$app->params['env'] == 'dev'){
-                $allValidUserIds = CommonUser::find()->select('id')->where(['status'=>0,'user_type'=>0,'mobile'=>'13683602952'])->asArray(true)->column();
-            }else{
-                $allValidUserIds = CommonUser::find()->select('id')->where(['status'=>0,'user_type'=>0])->asArray(true)->column();
-            }
+            $allValidUserInfoList = CommonUser::find()
+                ->select('a.id,b.department_subroot,c.`name` as department_name')
+                ->from('user a')
+                ->leftJoin('dingtalk_user b','a.work_number = b.job_number')
+                ->leftJoin('dingtalk_department c','b.department_subroot = c.id')
+                ->where(['a.user_type'=>0,'a.status'=>0,'b.status'=>0,'c.status'=>0])
+                ->createCommand()
+                ->queryAll();
+            $allValidUserIds = array_column($allValidUserInfoList,'id');
             $allValidUserIds = array_map('intval',$allValidUserIds);
             //删除旧的
             $delUserIds = array_diff($allMemberUserIds,$allValidUserIds);
-            $addUserIds = array_diff($allValidUserIds,$allMemberUserIds);
-            foreach ($addUserIds as $v){
-                MeicanApi::addMember($v);
+            foreach ($allValidUserInfoList as $v){
+                if($v['department_subroot'] == 1){
+                    $vDept = $allowDepartment[0];
+                }elseif(in_array($v['department_name'],$allowDepartment)){
+                    $vDept = $v['department_name'];
+                }else{
+                    $vDept = $allowDepartment[1];
+                }
+                if(empty($userIdToDepartment[$v['id']]) || $userIdToDepartment[$v['id']] != $vDept){
+                    MeicanApi::addMember($v['id'],$vDept);
+                }
             }
             foreach ($delUserIds as $v){
                 MeicanApi::delMember($v);

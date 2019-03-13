@@ -22,13 +22,6 @@ class DingController extends Controller
         $this->updateDingUser();
     }
 
-    /**
-     * 查询回调
-     */
-    public function actionQueryCallback(){
-        $ret = DingTalkApi::callBackQuery();
-        echo json_encode($ret,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-    }
 
     private function updateDingDepartment(){
         $allDepartmentList = DingTalkApi::getDepartmentAllList();
