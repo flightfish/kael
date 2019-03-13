@@ -20,6 +20,11 @@ return [
     'meican_login'=>'https://meican.com/corps/simpleauth',
     'meican_api'=>'https://api.meican.com',
     'meican_corp_prefix'=>'142399',
+    'meican_department'=>[
+        '部门1',
+        '部门2',
+        '部门3',
+    ],
 
     'qqemail_corpid'=>'wm3eb44ff1466ebc41',
     'qqemail_department'=>'4574112202817200852',//测试账号组

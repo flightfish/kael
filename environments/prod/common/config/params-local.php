@@ -20,6 +20,34 @@ return [
 
     'env'=>'prod',
 
+    'meican_email'=>'@mt.knowbox.cn',
+    'meican_crop_token'=>'046837b3-bdb9-4418-9c02-c13ef9346c04',
+    'meican_login'=>'https://meican.com/corps/simpleauth',
+    'meican_api'=>'https://api.meican.com',
+    'meican_corp_prefix'=>'142399',
+    'meican_department'=>[
+        '作业盒子',
+        '未知部门',
+        'BD',
+        '布克学堂',
+        '运营部',
+        '人事部',
+        '设计部',
+        '产品部',
+        '研发部',
+        '市场部',
+        '财务部',
+        '教研部',
+        '行政部',
+        '香蕉学堂',
+        '采购部',
+        '战略综合部',
+        '创意部',
+        '内审部',
+        '小象编程',
+        'GR部',
+    ],
+
     'qqemail_corpid'=>'wm3eb44ff1466ebc41',
     'qqemail_department'=>'4574112202817200851',//公司员工
     'qqemail_corpsecret_txl'=>'7eCI-TyawzhY8PSai5SyFX4rxqlU7ajzfPY57Q58fv4K0y07CcpGtzFFr_rq99OG',//通讯录
