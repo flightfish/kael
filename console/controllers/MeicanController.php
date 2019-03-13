@@ -43,6 +43,7 @@ class MeicanController extends Controller
                 ->leftJoin('dingtalk_department c','b.department_subroot = c.id')
                 ->where(['a.user_type'=>0,'a.status'=>0,'b.status'=>0,'c.status'=>0])
                 ->andWhere(['!=','a.work_number',''])
+                ->orderBy('a.work_number asc')
                 ->createCommand()
                 ->queryAll();
             $allValidUserIds = array_column($allValidUserInfoList,'id');
