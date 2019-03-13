@@ -23,28 +23,7 @@ class MeicanController extends Controller
             echo "未设置美餐信息\n";
             exit();
         }
-        $allowDepartment = [
-            '作业盒子',
-            '未知部门',
-            'BD',
-            '布克学堂',
-            '运营部',
-            '人事部',
-            '设计部',
-            '产品部',
-            '研发部',
-            '市场部',
-            '财务部',
-            '教研部',
-            '行政部',
-            '香蕉学堂',
-            '采购部',
-            '战略综合部',
-            '创意部',
-            '内审部',
-            '小象编程',
-            'GR部',
-        ];
+        $allowDepartment = Yii::$app->params['meican_department'];
         try {
             $allMembers = MeicanApi::listMember();
             echo json_encode($allMembers,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
