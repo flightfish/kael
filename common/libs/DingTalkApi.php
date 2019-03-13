@@ -15,6 +15,12 @@ class DingTalkApi {
     const API_DEPARTMENT_PARENTLIST = 'https://oapi.dingtalk.com/department/list_parent_depts_by_dept';//获取父级IDList
     const API_CALLBACK_QUERY = 'https://oapi.dingtalk.com/call_back/get_call_back';//查询回调
 
+    const API_GETUSERINFO_BYCODE = 'https://oapi.dingtalk.com/user/getuserinfo?access_token=access_token&code=code';//code换取userinfo
+
+    public static function getUserIdByCode($code){
+        $retJson = self::curlGet(self::API_GETUSERINFO_BYCODE,['code'=>$code]);
+        return $retJson['userid'];
+    }
 
     public static function callBackQuery(){
         $retJson = self::curlGet(self::API_CALLBACK_QUERY);
