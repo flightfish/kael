@@ -51,7 +51,7 @@ class MeicanController extends Controller
             //删除旧的
             $delUserIds = array_diff($allMemberUserIds,$allValidUserIds);
             foreach ($allValidUserInfoList as $v){
-                echo $v['id']."\n";
+//                echo $v['id']."\n";
                 if($v['department_subroot'] == 1){
                     $vDept = $allowDepartment[0];
                 }elseif(in_array($v['department_name'],$allowDepartment)){
