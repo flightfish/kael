@@ -19,7 +19,7 @@ class DingTalkApi {
     const API_DEPARTMENT_PARENTLIST = 'https://oapi.dingtalk.com/department/list_parent_depts_by_dept';//获取父级IDList
     const API_CALLBACK_QUERY = 'https://oapi.dingtalk.com/call_back/get_call_back';//查询回调
 
-    const API_GETUSERINFO_BYCODE = 'https://oapi.dingtalk.com/user/getuserinfo?access_token=access_token&code=code';//code换取userinfo
+    const API_GETUSERINFO_BYCODE = 'https://oapi.dingtalk.com/user/getuserinfo';//code换取userinfo
 
 
 
