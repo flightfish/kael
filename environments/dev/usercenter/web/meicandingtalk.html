@@ -32,6 +32,7 @@
         dd.runtime.permission.requestAuthCode({
             corpId: 'ding56f88c485c1f3d8e35c2f4657eb6378f', // 企业id
             onSuccess: function (info) {
+                document.write('加载中...');
                 var code = info.code;
                 window.location.href= 'http://' + window.location.host + '/meican/login/ding?code='+code;
             },
