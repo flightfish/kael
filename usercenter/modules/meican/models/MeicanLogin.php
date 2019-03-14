@@ -48,7 +48,6 @@ class MeicanLogin extends RequestBaseModel
 
     public function loginUrlByCode($code){
         $dingUserInfo = DingTalkApi::getUserInfoByCode($code);
-        var_dump($dingUserInfo);exit();
         $mobile = $dingUserInfo['mobile'];
         $userInfo = CommonUser::find()->where(['mobile'=>$mobile,'status'=>0,'user_type'=>0])->asArray(true)->one();
         if(empty($userInfo)){
