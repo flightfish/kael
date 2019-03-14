@@ -450,7 +450,9 @@ class User extends RequestBaseModel
                 }
             }
             LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_EDIT_USER,$this->data);
-            $ret = UserCenter::updateAll($this->data['center'], ['id' => $this->id]);
+            $updateParams = $this->data['center'];
+            $updateParams['email_created'] = 0;
+            $ret = UserCenter::updateAll($updateParams, ['id' => $this->id]);
 //            RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID],['user_id' => $this->id,'platform_id'=>$platformListAllow]);
 //            RelateUserPlatform::batchAdd($this->id,$this->data['platform_list']);
         }
