@@ -3,8 +3,10 @@
 namespace usercenter\modules\meican\models;
 
 use common\libs\Constant;
+use common\libs\DingTalkApi;
 use common\libs\UserToken;
 use common\models\CommonModulesUser;
+use common\models\CommonUser;
 use common\models\Department;
 use common\models\LogAuthUser;
 use common\models\Platform;
@@ -41,6 +43,24 @@ class MeicanLogin extends RequestBaseModel
             throw new Exception("非正式员工，权限不足",Exception::ERROR_COMMON);
         }
         $url = MeicanApi::genLoginUrl($this->user['user_id']);
+        return $url;
+    }
+
+    public function loginUrlByCode($code){
+        if($this->user['user_type'] != 0){
+            throw new Exception("非正式员工，权限不足",Exception::ERROR_COMMON);
+        }
+        $dingUserId = DingTalkApi::getUserIdByCode($code);
+        $dingUserInfo = DingTalkApi::getUserInfo($dingUserId);
+        $mobile = $dingUserInfo['mobile'];
+        $userInfo = CommonUser::find()->where(['mobile'=>$mobile,'status'=>0,'user_type'=>0])->asArray(true)->one();
+        if(empty($userInfo)){
+            $userInfo = CommonUser::find()->where(['work_number'=>$dingUserInfo['jobnumber'],'status'=>0,'user_type'=>0])->asArray(true)->one();
+        }
+        if(empty($userInfo)){
+            throw new Exception("KAEL用户不存在",Exception::ERROR_COMMON);
+        }
+        $url = MeicanApi::genLoginUrl($userInfo['id']);
         return $url;
     }
 

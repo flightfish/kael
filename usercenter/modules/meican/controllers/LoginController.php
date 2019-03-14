@@ -21,4 +21,15 @@ class LoginController extends BaseController{
             return $this->error($e);
         }
     }
+
+    public function actionDing(){
+        try{
+            $code = \Yii::$app->request->get('code','');
+            $model = new MeicanLogin(['scenario'=>MeicanLogin::SCENARIO_LOGIN]);
+            $url = $model->loginUrlByCode($code);
+            $this->redirect($url);
+        }catch(\Exception $e){
+            return $this->error($e);
+        }
+    }
 }
