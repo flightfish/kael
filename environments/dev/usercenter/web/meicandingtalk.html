@@ -59,7 +59,12 @@
             },
             onFail : function(err) {
                 document.write('err1');
-                document.write(err.errorCode);
+                var s = '';
+                for(var i in err){
+                    document.write(i);
+                }
+//                alert(s);
+//                document.write(s);
             }});
     });
 </script>
