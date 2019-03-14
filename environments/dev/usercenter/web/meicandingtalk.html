@@ -30,11 +30,11 @@
     dd.ready(function() {
         document.write('ready1');
         dd.runtime.permission.requestAuthCode({
-            corpId: '242747112', // 企业id
+            corpId: 'ding56f88c485c1f3d8e35c2f4657eb6378f', // 企业id
             onSuccess: function (info) {
                 document.write('success');
                 var code = info.code;
-                document.write(code);
+//                document.write(code);
 
 //                var url = 'http://' + window.location.host + '/meican/login/url-by-code?code='+code;
 //                xmlHttp = createXMLHttpRequest();
@@ -55,7 +55,7 @@
 //                    },
 //                    onFail : function(err) {}
 //                });
-//                window.location.href= 'http://' + window.location.host + '/meican/login/ding?code='+code;
+                window.location.href= 'http://' + window.location.host + '/meican/login/ding?code='+code;
             },
             onFail : function(err) {
                 document.write(err.errorMessage);
