@@ -31,7 +31,7 @@ class DingTalkApi {
             throw new Exception('[DING]'.$retJson['errmsg']??"");
         }
         $userId = $retJson['userid'];
-        $retJson = self::curlGet(self::API_USER_GET,['userid'=>$userId]);
+        $retJson = self::curlGetMeican(self::API_USER_GET,['userid'=>$userId]);
         return $retJson;
     }
 
