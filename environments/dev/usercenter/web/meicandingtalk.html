@@ -28,6 +28,7 @@
     }
 
     dd.ready(function() {
+        document.write('ready');
         dd.runtime.permission.requestAuthCode({
             corpId: 242747112, // 企业id
             onSuccess: function (info) {
