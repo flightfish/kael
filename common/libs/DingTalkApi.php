@@ -28,7 +28,7 @@ class DingTalkApi {
         $retStr = AppFunc::curlGet($url);
         $retJson = json_decode($retStr,true);
         if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
-            throw new Exception('[DING]'.$retJson['errmsg']??"");
+            throw new Exception('[DINGMM]'.$retJson['errmsg']??"");
         }
         $userId = $retJson['userid'];
         $retJson = self::curlGetMeican(self::API_USER_GET,['userid'=>$userId]);
