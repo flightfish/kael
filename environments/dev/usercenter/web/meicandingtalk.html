@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KAEL</title>
+    <script src="//g.alicdn.com/dingding/dingtalk-jsapi/2.0.57/dingtalk.open.js"></script>
+</head>
+<body>
+<script>
+
+    dd.ready(function() {
+        dd.runtime.permission.requestAuthCode({
+            corpId: 242747112, // 企业id
+            onSuccess: function (info) {
+                code = info.code;
+                window.location.href= 'http://' + window.location.host + '/meican/login/ding?code='+code;
+            }});
+    });
+</script>
+</body>
+</html>
