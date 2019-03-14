@@ -59,13 +59,7 @@
             },
             onFail : function(err) {
                 document.write('err1');
-                var s = '';
-                for(var i in err){
-                    document.write(i);
-                    s += i + ':' + obj[i] + ';';
-                }
-//                alert(s);
-                document.write(s);
+                document.write(err.errorCode);
             }});
     });
 </script>
