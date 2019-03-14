@@ -8,8 +8,8 @@ class DingTalkApi {
     const APPSECRET='9YdKgU0RDEBznfl3KJHY_DXcLmXVgH8o6XFJusBL8Hn_7sMVjqmucu6yOIxKG5cD';
     const APPKEY='ding4isajaqgcgop8uuw';
 
-    const APPSECRET_MEICAN='9YdKgU0RDEBznfl3KJHY_DXcLmXVgH8o6XFJusBL8Hn_7sMVjqmucu6yOIxKG5cD';
-    const APPKEY_MEICAN='ding4isajaqgcgop8uuw';
+    const APPSECRET_MEICAN='PK4CNsCl0lby7JiztCiEDIcRlzM3R0KnQ5yrtsUa4u59fmCQS7Pejgh1TVwgM5gJ';
+    const APPKEY_MEICAN='dingtnt2colo1xdamw1h';
 
 
     const API_GETTOKEN = 'https://oapi.dingtalk.com/gettoken';//获取token
