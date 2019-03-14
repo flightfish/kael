@@ -29,15 +29,17 @@ class MeicanController extends Controller
 //            echo date('Y-m-d H:i:s ').json_encode($allMembers,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
             $allMemberUserIds = [];
             $userIdToDepartment = [];
+            $userIdToRealName = [];
             foreach ($allMembers as $v){
                 if(empty($v['removed'])){
                     $allMemberUserIds[] = intval($v['email']);
                     $userIdToDepartment[intval($v['email'])] = in_array($v['department'],$allowDepartment) ? $v['department'] : $allowDepartment[1];
+                    $userIdToRealName[intval($v['email'])] = $v['realName'];
                 }
             }
             //全部有效的
             $allValidUserInfoList = CommonUser::find()
-                ->select('a.id,b.department_subroot,c.`name` as department_name')
+                ->select('a.id,a.username,b.department_subroot,c.`name` as department_name')
                 ->from('user a')
                 ->leftJoin('dingtalk_user b','a.work_number = b.job_number')
                 ->leftJoin('dingtalk_department c','b.department_subroot = c.id')
@@ -59,8 +61,11 @@ class MeicanController extends Controller
                 }else{
                     $vDept = $allowDepartment[1];
                 }
-                if(empty($userIdToDepartment[$v['id']]) || $userIdToDepartment[$v['id']] != $vDept){
-                    MeicanApi::addMember($v['id'],$vDept);
+                if(
+                    empty($userIdToDepartment[$v['id']]) || $userIdToDepartment[$v['id']] != $vDept
+                    || empty($userIdToRealName[$v['id']]) || $userIdToRealName[$v['id']] != $v['username']
+                ){
+                    MeicanApi::addMember($v['id'],$v['username'],$vDept);
                 }
             }
             foreach ($delUserIds as $v){
