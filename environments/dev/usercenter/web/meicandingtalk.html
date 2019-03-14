@@ -34,27 +34,6 @@
             onSuccess: function (info) {
                 document.write('success');
                 var code = info.code;
-//                document.write(code);
-
-//                var url = 'http://' + window.location.host + '/meican/login/url-by-code?code='+code;
-//                xmlHttp = createXMLHttpRequest();
-//                xmlHttp.open("GET", url, true);// 异步处理返回
-//                xmlHttp.onreadystatechange = function () {
-//
-//                };
-//                xmlHttp.setRequestHeader("Content-Type",
-//                    "application/x-www-form-urlencoded;");
-//                xmlHttp.send();
-
-//                alert(code);
-//                var url = 'http://' + window.location.host + '/meican/login/ding?code='+code;
-//                dd.biz.util.openLink({
-//                    url:url,//要打开链接的地址
-//                    onSuccess : function(result) {
-//                        /**/
-//                    },
-//                    onFail : function(err) {}
-//                });
                 window.location.href= 'http://' + window.location.host + '/meican/login/ding?code='+code;
             },
             onFail : function(err) {

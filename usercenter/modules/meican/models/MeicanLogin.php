@@ -47,9 +47,6 @@ class MeicanLogin extends RequestBaseModel
     }
 
     public function loginUrlByCode($code){
-        if($this->user['user_type'] != 0){
-            throw new Exception("非正式员工，权限不足",Exception::ERROR_COMMON);
-        }
         $dingUserId = DingTalkApi::getUserIdByCode($code);
         $dingUserInfo = DingTalkApi::getUserInfo($dingUserId);
         $mobile = $dingUserInfo['mobile'];
