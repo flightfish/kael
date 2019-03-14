@@ -23,14 +23,16 @@ class DingTalkApi {
 
 
 
-    public static function getUserIdByCode($code){
+    public static function getUserInfoByCode($code){
         $url = self::API_GETUSERINFO_BYCODE.'?access_token='.self::getAccessTokenMeican().'&code='.$code;
         $retStr = AppFunc::curlGet($url);
         $retJson = json_decode($retStr,true);
         if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
             throw new Exception('[DING]'.$retJson['errmsg']??"");
         }
-        return $retJson['userid'];
+        $userId = $retJson['userid'];
+        $retJson = self::curlGet(self::API_USER_GET,['userid'=>$userId]);
+        return $retJson;
     }
 
     public static function callBackQuery(){
@@ -95,6 +97,18 @@ class DingTalkApi {
 
     private static function curlGet($url,$data=[]){
         $url .= '?access_token='.self::getAccessToken();
+        $dataStr = http_build_query($data);
+        !empty($dataStr) && $url = $url.'&'.$dataStr;
+        $retStr = AppFunc::curlGet($url);
+        $retJson = json_decode($retStr,true);
+        if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
+            throw new Exception('[DING]'.$retJson['errmsg']??"");
+        }
+        return $retJson;
+    }
+
+    private static function curlGetMeican($url,$data=[]){
+        $url .= '?access_token='.self::getAccessTokenMeican();
         $dataStr = http_build_query($data);
         !empty($dataStr) && $url = $url.'&'.$dataStr;
         $retStr = AppFunc::curlGet($url);
