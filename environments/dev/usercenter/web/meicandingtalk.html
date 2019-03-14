@@ -12,8 +12,11 @@
         dd.runtime.permission.requestAuthCode({
             corpId: 242747112, // 企业id
             onSuccess: function (info) {
-                code = info.code;
+                var code = info.code;
                 window.location.href= 'http://' + window.location.host + '/meican/login/ding?code='+code;
+            },
+            onFail : function(err) {
+                alert(err);
             }});
     });
 </script>
