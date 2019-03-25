@@ -8,6 +8,13 @@ return [
             'password' => 'lyj123',
             'charset' => 'utf8',
         ],
+        'db_ehr' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=10.10.48.120;port=3309;dbname=ehr',
+            'username' => 'test',
+            'password' => 'test',
+            'charset' => 'utf8',
+        ],
         'redis' => [
             'class' => 'usercenter\components\cache\Redis',
             'hostname' => '10.10.213.219',

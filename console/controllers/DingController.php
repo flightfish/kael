@@ -4,6 +4,9 @@ namespace console\controllers;
 use common\libs\DingTalkApi;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
+use common\models\ehr\DepartmentRelateToKael;
+use common\models\ehr\DepartmentUser;
+use common\models\UserCenter;
 use Yii;
 use yii\console\Controller;
 
@@ -52,6 +55,7 @@ class DingController extends Controller
 
     private function updateDingUser(){
         $allUserIds = DingtalkUser::find()->select('user_id')->where(['status'=>0])->column();
+        $newAllUserIds = [];
         $currentUserIds = [];
         $departmentToSubRoot = DingtalkDepartment::find()->select('id,subroot_id')
             ->where(['status'=>0])->asArray(true)->all();
@@ -64,6 +68,9 @@ class DingController extends Controller
                 foreach ($userIdList as $userId){
                     if(in_array($userId,$currentUserIds)){
                         continue;
+                    }
+                    if(!in_array($userId,$newAllUserIds)){
+                        $newAllUserIds[] = $userId;
                     }
                     $currentUserIds[] = $userId;
                     $userInfo = DingTalkApi::getUserInfo($userId);
@@ -84,6 +91,58 @@ class DingController extends Controller
                                 'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                             ],
                             ['user_id'=>$userInfo['userid']]);
+
+                        //更新kael
+                        $kaelId = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id');
+                        $uid = $kaelId = $kaelId['kael_id'];
+                        $user = UserCenter::findOne($kaelId);
+                        if($user['username'] != $userInfo['name'] || $user['work_number'] != $userInfo['jobnumber']){
+                            UserCenter::updateAll(['name'=>$userInfo['name'],'work_number'=>$userInfo['jobnumber']],['id'=>$uid]);
+                        }
+
+                        //更新实际部门相关
+                        $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department']):$userInfo['department'];
+                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts']);
+                        $orderInDepts = json_decode($userInfo['orderInDepts']);
+                        $oldDepartments = DepartmentUser::findList(['user_id'=>$uid],'depart_id');
+                        $oldDepartmentIds = array_keys($oldDepartments);
+                        $addDepartmentIds = array_diff($departmentIds,$oldDepartmentIds);
+                        $deleteDepartmentIds = array_diff($oldDepartmentIds,$departmentIds);
+                        if(!empty($addDepartmentIds)){
+                            $cloumns = ['user_id','depart_id','is_leader','disp'];
+                            $rows = [];
+                            foreach ($addDepartmentIds as $did){
+                                $rows[] = [$uid,$did,$isLeaderInDepts[$did]?1:0,$orderInDepts[$did]];
+                            }
+                            DepartmentUser::addAllWithColumnRow($cloumns,$rows);
+                        }
+                        if(!empty($deleteDepartmentIds)){
+                            DepartmentUser::updateAll(['status'=>1],['user_id'=>$uid,'depart_id'=>$deleteDepartmentIds]);
+                        }
+                        foreach ($departmentIds as $did){
+                            if(!in_array($did,$addDepartmentIds) && !in_array($did,$deleteDepartmentIds)){
+                                $isLeader = $isLeaderInDepts[$did]?1:0;
+                                if($isLeader != $oldDepartments[$did]['is_leader'] || $orderInDepts[$did] != $oldDepartments[$did]['disp']){
+                                    DepartmentUser::updateAll(['is_leader'=>$isLeader,'disp'=>$orderInDepts[$did]],['id'=>$oldDepartments[$did]['id']]);
+                                }
+                            }
+                        }
+
+                        //更新员工关联kael部门
+                        $relateKaelDepartments = DepartmentRelateToKael::findList(['department_id'=>$departmentIds]);
+                        $relateKaelDepartmentsIndexById = array_column($relateKaelDepartments,'department_id');
+                        if(!empty($relateKaelDepartments)){
+                            $departmentId = max($relateKaelDepartmentsIndexById); //合适的实际部门
+                            $kaelDepartmentId = DepartmentRelateToKael::findOneByWhere(['department_id'=>$departmentId],'kael_department_id');
+                            $kaelDepartmentId = $kaelDepartmentId['kael_department_id'];
+                            if($user['department_id'] != $kaelDepartmentId){
+                                UserCenter::updateAll(['department_id'=>$kaelDepartmentId],['id'=>$uid]);
+                                DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$uid,'depart_id'=>$departmentId]);
+                            }
+                        }else{
+                            UserCenter::updateAll(['department_id'=>0],['id'=>$uid]);
+                        }
+
                     }else{
                         //新增
                         DingtalkUser::add([
@@ -99,9 +158,51 @@ class DingController extends Controller
                             'department_id'=>$userInfo['department'][0],
                             'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                         ]);
+
+                        //新增kael
+                        $params = [
+                            'username'=>$userInfo['name'],
+                            'password'=>md5('1!Aaaaaaa'),
+                            'sex'=>1,
+                            'work_number'=>$userInfo['jobnumber']
+                        ];
+                        $uid = UserCenter::addUser($params);
+
+                        //更新钉钉员工关联kael编号
+                        DingtalkUser::updateAll(['kael_id'=>$uid],['user_id'=>$userInfo['userid']]);
+
+                        //更新实际部门相关
+                        $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department']):$userInfo['department'];
+                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts']);
+                        $orderInDepts = json_decode($userInfo['orderInDepts']);
+                        $cloumns = ['user_id','depart_id','is_leader','disp'];
+                        $rows = [];
+                        foreach ($departmentIds as $did){
+                            $rows[] = [$uid,$did,$isLeaderInDepts[$did]?1:0,$orderInDepts[$did]];
+                        }
+                        DepartmentUser::addAllWithColumnRow($cloumns,$rows);
+
+                        //更新员工关联kael部门
+                        $relateKaelDepartments = DepartmentRelateToKael::findList(['department_id'=>$departmentIds]);
+                        $relateKaelDepartmentsIndexById = array_column($relateKaelDepartments,'department_id');
+                        if(!empty($relateKaelDepartments)){
+                            $departmentId = max($relateKaelDepartmentsIndexById); //合适的实际部门
+                            $kaelDepartmentId = DepartmentRelateToKael::findOneByWhere(['department_id'=>$departmentId],'kael_department_id');
+                            $kaelDepartmentId = $kaelDepartmentId['kael_department_id'];
+                            UserCenter::updateAll(['department_id'=>$kaelDepartmentId],['id'=>$uid]);
+                            DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$uid,'depart_id'=>$departmentId]);
+                        }
                     }
                 }
             }
+        }
+        //同步删除员工
+        $deleteUserIds = array_diff($newAllUserIds,$allUserIds);
+        $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
+        if(!empty($deleteUids)){
+            DingtalkUser::updateAll(['status'=>1],['user_id'=>$deleteUserIds]);
+            UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
+            DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
         }
     }
 }
