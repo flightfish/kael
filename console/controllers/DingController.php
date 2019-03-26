@@ -123,7 +123,8 @@ class DingController extends Controller
                             $cloumns = ['user_id','depart_id','is_leader','disp'];
                             $rows = [];
                             foreach ($addDepartmentIds as $did){
-                                $rows[] = [$uid,$did,$isLeaderInDepts[$did]?1:0,$orderInDepts[$did]];
+                                $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
+                                $rows[] = [$uid,$did,$isLeaderInDepts[$did]?1:0,$order];
                             }
                             DepartmentUser::addAllWithColumnRow($cloumns,$rows);
                         }
@@ -190,7 +191,8 @@ class DingController extends Controller
                         $cloumns = ['user_id','depart_id','is_leader','disp'];
                         $rows = [];
                         foreach ($departmentIds as $did){
-                            $rows[] = [$uid,$did,$isLeaderInDepts[$did]?1:0,$orderInDepts[$did]];
+                            $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
+                            $rows[] = [$uid,$did,$isLeaderInDepts[$did]?1:0,$order];
                         }
                         DepartmentUser::addAllWithColumnRow($cloumns,$rows);
 
