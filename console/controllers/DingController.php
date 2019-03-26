@@ -106,7 +106,7 @@ class DingController extends Controller
                         $uid = $kaelId = $kaelId['kael_id'];
                         $user = UserCenter::findOne($kaelId);
                         if($user['username'] != $userInfo['name'] || $user['work_number'] != $userInfo['jobnumber']){
-                            UserCenter::updateAll(['name'=>$userInfo['name'],'work_number'=>$userInfo['jobnumber']],['id'=>$uid]);
+                            UserCenter::updateAll(['username'=>$userInfo['name'],'work_number'=>$userInfo['jobnumber']],['id'=>$uid]);
                         }
 
                         //更新实际部门相关
