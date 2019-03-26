@@ -226,6 +226,9 @@ class DingController extends Controller
         $list = [];
         $string = substr($string,1);
         $string = substr($string,0,strlen($string)-1);
+        if(empty($string)){
+            return $list;
+        }
         $departmentSplit = explode(',',$string);
         foreach ($departmentSplit as $v){
             $tmp = explode(':',$v);
