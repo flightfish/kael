@@ -1,8 +1,6 @@
 <?php
-namespace kbox\base\models\db;
+namespace common\models;
 
-
-use common\models\BaseActiveRecord;
 
 class DBCommon extends BaseActiveRecord {
 

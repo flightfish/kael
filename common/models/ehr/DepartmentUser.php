@@ -1,7 +1,7 @@
 <?php
 namespace common\models\ehr;
 
-use kbox\base\models\db\DBCommon;
+use common\models\DBCommon;
 use Yii;
 
 class DepartmentUser extends \common\models\BaseActiveRecord
