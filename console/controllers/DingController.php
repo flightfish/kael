@@ -116,10 +116,10 @@ class DingController extends Controller
                         if($user['work_number'] != $userInfo['jobnumber']){
                             $where['work_number'] = $userInfo['jobnumber'];
                         }
-                        if($user['mobile'] != $userInfo['mobile']){
+                        if(isset($userInfo['mobile']) && $user['mobile'] != $userInfo['mobile']){
                             $where['mobile'] = $userInfo['mobile'];
                         }
-                        if($user['email'] != $userInfo['email']){
+                        if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
                             $where['email'] = $userInfo['email'];
                         }
                         if(!empty($where)){
@@ -192,8 +192,8 @@ class DingController extends Controller
                             'password'=>md5('1!Aaaaaaa'),
                             'sex'=>1,
                             'work_number'=>$userInfo['jobnumber'],
-                            'mobile'=>$userInfo['mobile'],
-                            'email'=>$userInfo['email'],
+                            'mobile'=>isset($userInfo['mobile'])?$userInfo['mobile']:'',
+                            'email'=>isset($userInfo['email'])?$userInfo['email']:'',
                         ];
 
                         $uid = UserCenter::addUser($params);
