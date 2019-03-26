@@ -111,8 +111,8 @@ class DingController extends Controller
 
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
-                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts'],JSON_BIGINT_AS_STRING);
-                        $orderInDepts = json_decode($userInfo['orderInDepts'],JSON_BIGINT_AS_STRING);
+                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts'],true);
+                        $orderInDepts = json_decode(json_encode($userInfo['orderInDepts']),true);
                         print_r($orderInDepts);
                         exit('ssss');
                         $oldDepartments = DepartmentUser::findList(['user_id'=>$uid],'depart_id');
