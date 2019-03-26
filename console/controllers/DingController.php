@@ -110,9 +110,9 @@ class DingController extends Controller
                         }
 
                         //更新实际部门相关
-                        $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department']):$userInfo['department'];
-                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts']);
-                        $orderInDepts = json_decode($userInfo['orderInDepts']);
+                        $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
+                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts'],true);
+                        $orderInDepts = json_decode($userInfo['orderInDepts'],true);
                         $oldDepartments = DepartmentUser::findList(['user_id'=>$uid],'depart_id');
                         $oldDepartmentIds = array_keys($oldDepartments);
                         $addDepartmentIds = array_diff($departmentIds,$oldDepartmentIds);
@@ -182,9 +182,9 @@ class DingController extends Controller
                         DingtalkUser::updateAll(['kael_id'=>$uid],['user_id'=>$userInfo['userid']]);
 
                         //更新实际部门相关
-                        $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department']):$userInfo['department'];
-                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts']);
-                        $orderInDepts = json_decode($userInfo['orderInDepts']);
+                        $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
+                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts'],true);
+                        $orderInDepts = json_decode($userInfo['orderInDepts'],true);
                         $cloumns = ['user_id','depart_id','is_leader','disp'];
                         $rows = [];
                         foreach ($departmentIds as $did){
