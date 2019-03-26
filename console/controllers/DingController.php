@@ -64,7 +64,7 @@ class DingController extends Controller
     }
 
     private function updateDingUser(){
-        $allUserIds = DingtalkUser::find()->select('user_id')->where(['status'=>0])->column();
+        $allUserIds = array_column(DingtalkUser::findList([],'','user_id'),'user_id');
         $newAllUserIds = [];
         $currentUserIds = [];
         $departmentToSubRoot = DingtalkDepartment::find()->select('id,subroot_id')
