@@ -84,6 +84,7 @@ class DingController extends Controller
                     $currentUserIds[] = $userId;
                     $userInfo = DingTalkApi::getUserInfo($userId);
                     echo json_encode($userInfo)."\n";
+                    print_r($userInfo);
                     if(in_array($userId,$allUserIds)){
                         //更新
                         DingtalkUser::updateAll(
