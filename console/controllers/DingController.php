@@ -21,8 +21,13 @@ class DingController extends Controller
             echo "is_running";
             exit();
         }
+        echo date('Y-m-d H:i:s')."\t开始同步钉钉部门到kael\n";
         $this->updateDingDepartment();
+        echo date('Y-m-d H:i:s')."\t部门同步结束\n";
+        echo date('Y-m-d H:i:s')."\t开始同步钉钉人员到kael\n";
         $this->updateDingUser();
+        echo date('Y-m-d H:i:s')."\t员工同步结束\n";
+
     }
 
 
@@ -33,6 +38,10 @@ class DingController extends Controller
         $oldDepartmentIds = array_map('intval',$oldDepartmentIds);
         $delIds = array_diff($oldDepartmentIds,$allIds);
         $insertIds  = array_diff($allIds,$oldDepartmentIds);
+        echo date('Y-m-d H:i:s')."\t新增部门如下:\n";
+        echo json_encode($insertIds)."\n";
+        echo date('Y-m-d H:i:s')."\t需要删除部门如下:\n";
+        echo json_encode($delIds)."\n";
         $columns = ['id','name','parentid'];
         $rows = [];
         foreach ($allDepartmentList as $v){
@@ -127,7 +136,6 @@ class DingController extends Controller
                                 }
                             }
                         }
-
                         //更新员工关联kael部门
                         $relateKaelDepartments = DepartmentRelateToKael::findList(['department_id'=>$departmentIds]);
                         $relateKaelDepartmentsIndexById = array_column($relateKaelDepartments,'department_id');
@@ -144,6 +152,8 @@ class DingController extends Controller
                         }
 
                     }else{
+                        echo date('Y-m-d H:i:s')."\t新增员工:\n";
+                        echo json_encode($userInfo,true)."\n";
                         //新增
                         DingtalkUser::add([
                             'user_id'=>$userInfo['userid'],
@@ -167,7 +177,7 @@ class DingController extends Controller
                             'work_number'=>$userInfo['jobnumber']
                         ];
                         $uid = UserCenter::addUser($params);
-
+                        echo "新增kael账号:".$uid."\n";
                         //更新钉钉员工关联kael编号
                         DingtalkUser::updateAll(['kael_id'=>$uid],['user_id'=>$userInfo['userid']]);
 
@@ -199,6 +209,8 @@ class DingController extends Controller
         //同步删除员工
         $deleteUserIds = array_diff($newAllUserIds,$allUserIds);
         $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
+        echo date('Y-m-d H:i:s')."\t需要删除员工如下:\n";
+        echo json_encode($deleteUids)."\n";
         if(!empty($deleteUids)){
             DingtalkUser::updateAll(['status'=>1],['user_id'=>$deleteUserIds]);
             UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
