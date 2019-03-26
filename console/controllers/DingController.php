@@ -235,7 +235,7 @@ class DingController extends Controller
             }
         }
         //同步删除员工
-        $deleteUserIds = array_diff($newAllUserIds,$allUserIds);
+        $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
         $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
         echo date('Y-m-d H:i:s')."\t需要删除员工如下:\n";
         echo json_encode($deleteUids)."\n";
