@@ -87,6 +87,8 @@ class DingController extends Controller
                     echo "***************************************************************\n";
                     echo json_encode($userInfo)."\n";
                     if(in_array($userId,$allUserIds)){
+                        echo date('Y-m-d H:i:s')."\t更新员工:\n";
+                        echo $userInfo['userid']."\n";
                         //更新
                         DingtalkUser::updateAll(
                             [
