@@ -87,7 +87,7 @@ class DingController extends Controller
                     echo "***************************************************************\n";
                     echo json_encode($userInfo)."\n";
                     if(in_array($userId,$allUserIds)){
-                        echo date('Y-m-d H:i:s')."\t更新员工:\n";
+                        echo date('Y-m-d H:i:s')."\t更新员工:\t";
                         echo $userInfo['userid']."\n";
                         //更新
                         DingtalkUser::updateAll(
@@ -109,10 +109,22 @@ class DingController extends Controller
                         $kaelId = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id');
                         $uid = $kaelId = $kaelId['kael_id'];
                         $user = UserCenter::findOne($kaelId);
-                        if($user['username'] != $userInfo['name'] || $user['work_number'] != $userInfo['jobnumber']){
-                            UserCenter::updateAll(['username'=>$userInfo['name'],'work_number'=>$userInfo['jobnumber']],['id'=>$uid]);
+                        $where = [];
+                        if($user['username'] != $userInfo['name']){
+                            $where['username'] = $userInfo['name'];
                         }
-
+                        if($user['work_number'] != $userInfo['jobnumber']){
+                            $where['work_number'] = $userInfo['jobnumber'];
+                        }
+                        if($user['mobile'] != $userInfo['mobile']){
+                            $where['mobile'] = $userInfo['mobile'];
+                        }
+                        if($user['email'] != $userInfo['email']){
+                            $where['email'] = $userInfo['email'];
+                        }
+                        if(!empty($where)){
+                            UserCenter::updateAll($where,['id'=>$uid]);
+                        }
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
                         $isLeaderInDepts = self::convertJsonMapToArray($userInfo['isLeaderInDepts']);
@@ -179,10 +191,13 @@ class DingController extends Controller
                             'username'=>$userInfo['name'],
                             'password'=>md5('1!Aaaaaaa'),
                             'sex'=>1,
-                            'work_number'=>$userInfo['jobnumber']
+                            'work_number'=>$userInfo['jobnumber'],
+                            'mobile'=>$userInfo['mobile'],
+                            'email'=>$userInfo['email'],
                         ];
+
                         $uid = UserCenter::addUser($params);
-                        echo "新增kael账号:".$uid."\n";
+                        echo "新增kael账号:\t".$uid."\n";
                         //更新钉钉员工关联kael编号
                         DingtalkUser::updateAll(['kael_id'=>$uid],['user_id'=>$userInfo['userid']]);
 
