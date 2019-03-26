@@ -113,6 +113,8 @@ class DingController extends Controller
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
                         $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts'],true);
                         $orderInDepts = json_decode($userInfo['orderInDepts'],true);
+                        print_r($orderInDepts);
+                        exit('ssss');
                         $oldDepartments = DepartmentUser::findList(['user_id'=>$uid],'depart_id');
                         $oldDepartmentIds = array_keys($oldDepartments);
                         $addDepartmentIds = array_diff($departmentIds,$oldDepartmentIds);
