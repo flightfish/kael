@@ -9,6 +9,7 @@ use common\models\ehr\DepartmentUser;
 use common\models\UserCenter;
 use Yii;
 use yii\console\Controller;
+use yii\helpers\Json;
 
 
 class DingController extends Controller
@@ -83,7 +84,9 @@ class DingController extends Controller
                     }
                     $currentUserIds[] = $userId;
                     $userInfo = DingTalkApi::getUserInfo($userId);
+                    echo "***************************************************************\n";
                     echo json_encode($userInfo)."\n";
+                    echo "***************************************************************\n";
                     if(in_array($userId,$allUserIds)){
                         //更新
                         DingtalkUser::updateAll(
@@ -111,10 +114,8 @@ class DingController extends Controller
 
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
-                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts'],true);
-                        $orderInDepts = json_decode(json_encode($userInfo['orderInDepts']),true);
-                        print_r($orderInDepts);
-                        exit('ssss');
+                        $isLeaderInDepts = self::convertJsonMapToArray($userInfo['isLeaderInDepts']);
+                        $orderInDepts = self::convertJsonMapToArray($userInfo['orderInDepts']);
                         $oldDepartments = DepartmentUser::findList(['user_id'=>$uid],'depart_id');
                         $oldDepartmentIds = array_keys($oldDepartments);
                         $addDepartmentIds = array_diff($departmentIds,$oldDepartmentIds);
@@ -185,8 +186,8 @@ class DingController extends Controller
 
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
-                        $isLeaderInDepts = json_decode($userInfo['isLeaderInDepts'],true);
-                        $orderInDepts = json_decode($userInfo['orderInDepts'],true);
+                        $isLeaderInDepts = self::convertJsonMapToArray($userInfo['isLeaderInDepts']);
+                        $orderInDepts = self::convertJsonMapToArray($userInfo['orderInDepts']);
                         $cloumns = ['user_id','depart_id','is_leader','disp'];
                         $rows = [];
                         foreach ($departmentIds as $did){
@@ -218,5 +219,17 @@ class DingController extends Controller
             UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
             DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
         }
+    }
+
+    private function convertJsonMapToArray($string){
+        $list = [];
+        $string = substr($string,1);
+        $string = substr($string,0,strlen($string)-1);
+        $departmentSplit = explode(',',$string);
+        foreach ($departmentSplit as $v){
+            $tmp = explode(':',$v);
+            $list[$tmp[0]] = $tmp[1];
+        }
+        return $list;
     }
 }
