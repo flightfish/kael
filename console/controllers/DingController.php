@@ -147,9 +147,16 @@ class DingController extends Controller
                         }
                         foreach ($departmentIds as $did){
                             if(!in_array($did,$addDepartmentIds) && !in_array($did,$deleteDepartmentIds)){
+                                $where = [];
                                 $isLeader = $isLeaderInDepts[$did]?1:0;
-                                if($isLeader != $oldDepartments[$did]['is_leader'] || $orderInDepts[$did] != $oldDepartments[$did]['disp']){
-                                    DepartmentUser::updateAll(['is_leader'=>$isLeader,'disp'=>$orderInDepts[$did]],['id'=>$oldDepartments[$did]['id']]);
+                                if($isLeader != $oldDepartments[$did]['is_leader']){
+                                    $where['is_leader'] = $isLeader;
+                                }
+                                if(isset($orderInDepts[$did]) && isset($oldDepartments[$did]) && $orderInDepts[$did] != $oldDepartments[$did]['disp']){
+                                    $where['disp'] = $orderInDepts[$did];
+                                }
+                                if(!empty($where)){
+                                    DepartmentUser::updateAll($where,['id'=>$oldDepartments[$did]['id']]);
                                 }
                             }
                         }
