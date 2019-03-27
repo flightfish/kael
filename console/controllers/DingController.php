@@ -4,6 +4,7 @@ namespace console\controllers;
 use common\libs\DingTalkApi;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
+use common\models\ehr\BusinessDepartment;
 use common\models\ehr\DepartmentRelateToKael;
 use common\models\ehr\DepartmentUser;
 use common\models\UserCenter;
@@ -141,9 +142,11 @@ class DingController extends Controller
                                 $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
                                 if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$uid,'depart_id'=>$did])){
                                     $rows[] = [$uid,$did,$leader,$order];
+                                    BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                 }else{
                                     if($record['is_leader'] != $leader){
                                         DepartmentUser::updateAll(['is_leader'=>$leader],['id'=>$record['id']]);
+                                        BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                     }
                                     if($record['disp'] != $order){
                                         DepartmentUser::updateAll(['disp'=>$order],['id'=>$record['id']]);
@@ -160,6 +163,7 @@ class DingController extends Controller
                                 $where = [];
                                 $isLeader = $isLeaderInDepts[$did]?1:0;
                                 if($isLeader != $oldDepartments[$did]['is_leader']){
+                                    BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                     $where['is_leader'] = $isLeader;
                                 }
                                 if(isset($orderInDepts[$did]) && isset($oldDepartments[$did]) && $orderInDepts[$did] != $oldDepartments[$did]['disp']){
@@ -229,9 +233,11 @@ class DingController extends Controller
                             $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
                             if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$uid,'depart_id'=>$did])){
                                 $rows[] = [$uid,$did,$leader,$order];
+                                BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                             }else{
                                 if($record['is_leader'] != $leader){
                                     DepartmentUser::updateAll(['is_leader'=>$leader],['id'=>$record['id']]);
+                                    BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                 }
                                 if($record['disp'] != $order){
                                     DepartmentUser::updateAll(['disp'=>$order],['id'=>$record['id']]);
