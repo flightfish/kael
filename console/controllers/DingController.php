@@ -138,7 +138,7 @@ class DingController extends Controller
                             $cloumns = ['user_id','depart_id','is_leader','disp'];
                             $rows = [];
                             foreach ($addDepartmentIds as $did){
-                                $leader = $isLeaderInDepts[$did]?1:0;
+                                $leader = $isLeaderInDepts[$did]==="true"?1:0;
                                 $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
                                 if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$uid,'depart_id'=>$did])){
                                     $rows[] = [$uid,$did,$leader,$order];
@@ -229,7 +229,7 @@ class DingController extends Controller
                         $cloumns = ['user_id','depart_id','is_leader','disp'];
                         $rows = [];
                         foreach ($departmentIds as $did){
-                            $leader = $isLeaderInDepts[$did]?1:0;
+                            $leader = $isLeaderInDepts[$did]==="true"?1:0;
                             $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
                             if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$uid,'depart_id'=>$did])){
                                 $rows[] = [$uid,$did,$leader,$order];
