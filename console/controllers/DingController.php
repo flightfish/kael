@@ -303,6 +303,8 @@ class DingController extends Controller
         return $list;
     }
 
+    //钉钉同步功能初始化
+    //第一步
     public function actionDingDepartment(){
         $allDepartmentList = DingTalkApi::getDepartmentAllList();
         $allIds = array_column($allDepartmentList,'id');
@@ -334,7 +336,7 @@ class DingController extends Controller
         }
         echo "部门同步成功\n";
     }
-
+    //第二步
     public function actionDingUser(){
         $allUserIds = array_column(DingtalkUser::findList([],'','user_id'),'user_id');
         $newAllUserIds = [];
@@ -400,7 +402,9 @@ class DingController extends Controller
             }
         }
     }
-
+    //第三步
+    //**  [ehr] kael部门关联钉钉部门
+    //第四步
     public function actionOldKaelAccountRelateToDingAccount(){
         echo "开始绑定kael账号到钉钉账号\n";
         $kaelAccounts = UserCenter::findList();
