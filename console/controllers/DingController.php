@@ -129,6 +129,17 @@ class DingController extends Controller
                             }
                         }else{
                             echo date('Y-m-d H:i:s')."\t 钉钉账号:".$userInfo['userid']."\t没有关联kael账号\n";
+                            //新增kael
+                            $params = [
+                                'username'=>$userInfo['name'],
+                                'password'=>md5('1!Aaaaaaa'),
+                                'sex'=>1,
+                                'work_number'=>$userInfo['jobnumber'],
+                                'mobile'=>isset($userInfo['mobile'])?$userInfo['mobile']:'',
+                                'email'=>isset($userInfo['email'])?$userInfo['email']:'',
+                            ];
+
+                            $uid = UserCenter::addUser($params);
                         }
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
