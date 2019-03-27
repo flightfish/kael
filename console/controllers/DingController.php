@@ -303,7 +303,7 @@ class DingController extends Controller
         return $list;
     }
 
-    //钉钉同步功能初始化
+    //钉钉同步功能初始化[准备好数据库更新]
     //第一步
     public function actionDingDepartment(){
         $allDepartmentList = DingTalkApi::getDepartmentAllList();
