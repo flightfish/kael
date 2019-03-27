@@ -317,4 +317,21 @@ class UserCenter extends \common\models\BaseActiveRecord
     public static function findListByRole($roleId){
         return self::find()->where(['admin'=>$roleId,'status'=>self::STATUS_VALID])->asArray(true)->all();
     }
+
+    public static function findList($where=[],$indexKey="",$select='*',$status=0){
+        !isset($where['status']) && $status != -1 && $where['status'] = $status;
+        if(!empty($indexKey)){
+            return static::find()
+                ->select($select)
+                ->where($where)
+                ->indexBy($indexKey)
+                ->asArray(true)
+                ->all();
+        }
+        return static::find()
+            ->select($select)
+            ->where($where)
+            ->asArray(true)
+            ->all();
+    }
 }

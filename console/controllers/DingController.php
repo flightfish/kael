@@ -137,8 +137,18 @@ class DingController extends Controller
                             $cloumns = ['user_id','depart_id','is_leader','disp'];
                             $rows = [];
                             foreach ($addDepartmentIds as $did){
+                                $leader = $isLeaderInDepts[$did]?1:0;
                                 $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
-                                $rows[] = [$uid,$did,$isLeaderInDepts[$did]?1:0,$order];
+                                if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$uid,'depart_id'=>$did])){
+                                    $rows[] = [$uid,$did,$leader,$order];
+                                }else{
+                                    if($record['is_leader'] != $leader){
+                                        DepartmentUser::updateAll(['is_leader'=>$leader],['id'=>$record['id']]);
+                                    }
+                                    if($record['disp'] != $order){
+                                        DepartmentUser::updateAll(['disp'=>$order],['id'=>$record['id']]);
+                                    }
+                                }
                             }
                             DepartmentUser::addAllWithColumnRow($cloumns,$rows);
                         }
@@ -215,8 +225,18 @@ class DingController extends Controller
                         $cloumns = ['user_id','depart_id','is_leader','disp'];
                         $rows = [];
                         foreach ($departmentIds as $did){
+                            $leader = $isLeaderInDepts[$did]?1:0;
                             $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
-                            $rows[] = [$uid,$did,$isLeaderInDepts[$did]?1:0,$order];
+                            if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$uid,'depart_id'=>$did])){
+                                $rows[] = [$uid,$did,$leader,$order];
+                            }else{
+                                if($record['is_leader'] != $leader){
+                                    DepartmentUser::updateAll(['is_leader'=>$leader],['id'=>$record['id']]);
+                                }
+                                if($record['disp'] != $order){
+                                    DepartmentUser::updateAll(['disp'=>$order],['id'=>$record['id']]);
+                                }
+                            }
                         }
                         DepartmentUser::addAllWithColumnRow($cloumns,$rows);
 
@@ -259,5 +279,114 @@ class DingController extends Controller
             $list[$tmp[0]] = $tmp[1];
         }
         return $list;
+    }
+
+    public function actionDingDepartment(){
+        $allDepartmentList = DingTalkApi::getDepartmentAllList();
+        $allIds = array_column($allDepartmentList,'id');
+        $oldDepartmentIds = DingtalkDepartment::find()->select('id')->where(['status'=>0])->asArray(true)->column();
+        $oldDepartmentIds = array_map('intval',$oldDepartmentIds);
+        $delIds = array_diff($oldDepartmentIds,$allIds);
+        $insertIds  = array_diff($allIds,$oldDepartmentIds);
+        echo date('Y-m-d H:i:s')."\t新增部门如下:\n";
+        echo json_encode($insertIds)."\n";
+        echo date('Y-m-d H:i:s')."\t需要删除部门如下:\n";
+        echo json_encode($delIds)."\n";
+        $columns = ['id','name','parentid'];
+        $rows = [];
+        foreach ($allDepartmentList as $v){
+            if(in_array($v['id'],$oldDepartmentIds)){
+                DingtalkDepartment::updateAll(['name'=>$v['name'],'parentid'=>$v['parentid']],['id'=>$v['id']]);
+            }elseif(in_array($v['id'],$insertIds)){
+                $rows[] = [$v['id'],$v['name'],$v['parentid']];
+            }
+        }
+        !empty($rows) && DingtalkDepartment::batchInsertAll(DingtalkDepartment::tableName(),$columns,$rows,DingtalkDepartment::getDb(),'INSERT IGNORE');
+        !empty($delIds) && DingtalkDepartment::updateAll(['status'=>0]);
+        //更新level
+        $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id where status = 0 and parentid = 1";
+        DingtalkDepartment::getDb()->createCommand($sql)->execute();
+        for($level =1 ; $level <= 10; $level++){
+            $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id where a.status = 0 and b.status = 0 and b.`level`={$level}";
+            DingtalkDepartment::getDb()->createCommand($sql)->execute();
+        }
+        echo "部门同步成功\n";
+    }
+
+    public function actionDingUser(){
+        $allUserIds = array_column(DingtalkUser::findList([],'','user_id'),'user_id');
+        $newAllUserIds = [];
+        $currentUserIds = [];
+        $departmentToSubRoot = DingtalkDepartment::find()->select('id,subroot_id')
+            ->where(['status'=>0])->asArray(true)->all();
+        $departmentToSubRoot = array_column($departmentToSubRoot,'subroot_id','id');
+        for($level = 1; $level <= 10 ;$level ++){
+            $departmentList = DingtalkDepartment::find()->where(['status'=>0,'level'=>$level])
+                ->asArray(true)->all();
+            foreach ($departmentList as $v) {
+                $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
+                foreach ($userIdList as $userId){
+                    if(in_array($userId,$currentUserIds)){
+                        continue;
+                    }
+                    if(!in_array($userId,$newAllUserIds)){
+                        $newAllUserIds[] = $userId;
+                    }
+                    $currentUserIds[] = $userId;
+                    $userInfo = DingTalkApi::getUserInfo($userId);
+                    echo "***************************************************************\n";
+                    echo json_encode($userInfo)."\n";
+                    if(in_array($userId,$allUserIds)){
+                        echo date('Y-m-d H:i:s')."\t更新员工:\t";
+                        echo $userInfo['userid']."\n";
+                        //更新
+                        DingtalkUser::updateAll(
+                            [
+                                'name'=>$userInfo['name'],
+                                'email'=>$userInfo['email'] ?? "",
+                                'mobile'=>$userInfo['mobile'],
+                                'avatar'=>$userInfo['avatar'],
+                                'job_number'=>$userInfo['jobnumber'],
+                                'union_id'=>$userInfo['unionid'],
+                                'open_id'=>$userInfo['openId'],
+                                'departments'=>join(',',$userInfo['department']),
+                                'department_id'=>$userInfo['department'][0],
+                                'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                            ],
+                            ['user_id'=>$userInfo['userid']]);
+
+                    }else{
+                        echo date('Y-m-d H:i:s')."\t新增员工:\n";
+                        echo json_encode($userInfo,true)."\n";
+                        //新增
+                        DingtalkUser::add([
+                            'user_id'=>$userInfo['userid'],
+                            'name'=>$userInfo['name'],
+                            'email'=>$userInfo['email'] ?? "",
+                            'mobile'=>$userInfo['mobile'],
+                            'avatar'=>$userInfo['avatar'],
+                            'job_number'=>$userInfo['jobnumber'],
+                            'union_id'=>$userInfo['unionid'],
+                            'open_id'=>$userInfo['openId'],
+                            'departments'=>join(',',$userInfo['department']),
+                            'department_id'=>$userInfo['department'][0],
+                            'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                        ]);
+                    }
+                }
+            }
+        }
+    }
+
+    public function actionOldKaelAccountRelateToDingAccount(){
+        echo "开始绑定kael账号到钉钉账号\n";
+        $kaelAccounts = UserCenter::findList();
+        foreach ($kaelAccounts as $v){
+            if(!empty($v['mobile']) && $dingUser = DingtalkUser::findOneByWhere(['mobile'=>$v['mobile']])){
+                DingtalkUser::updateAll(['kael_id'=>$v['id']],['user_id'=>$dingUser['user_id']]);
+                echo "钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$v['id']."\n";
+            }
+        }
+        echo "绑定任务结束\n";
     }
 }
