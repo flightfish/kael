@@ -138,8 +138,9 @@ class DingController extends Controller
                                 'mobile'=>isset($userInfo['mobile'])?$userInfo['mobile']:'',
                                 'email'=>isset($userInfo['email'])?$userInfo['email']:'',
                             ];
-
                             $uid = UserCenter::addUser($params);
+                            //更新钉钉员工关联kael编号
+                            DingtalkUser::updateAll(['kael_id'=>$uid],['user_id'=>$userInfo['userid']]);
                         }
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
