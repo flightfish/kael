@@ -110,21 +110,25 @@ class DingController extends Controller
                         $kaelId = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id');
                         $uid = $kaelId = $kaelId['kael_id'];
                         $user = UserCenter::findOne($kaelId);
-                        $where = [];
-                        if($user['username'] != $userInfo['name']){
-                            $where['username'] = $userInfo['name'];
-                        }
-                        if($user['work_number'] != $userInfo['jobnumber']){
-                            $where['work_number'] = $userInfo['jobnumber'];
-                        }
-                        if(isset($userInfo['mobile']) && $user['mobile'] != $userInfo['mobile']){
-                            $where['mobile'] = $userInfo['mobile'];
-                        }
-                        if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
-                            $where['email'] = $userInfo['email'];
-                        }
-                        if(!empty($where)){
-                            UserCenter::updateAll($where,['id'=>$uid]);
+                        if(!empty($user)){
+                            $where = [];
+                            if($user['username'] != $userInfo['name']){
+                                $where['username'] = $userInfo['name'];
+                            }
+                            if($user['work_number'] != $userInfo['jobnumber']){
+                                $where['work_number'] = $userInfo['jobnumber'];
+                            }
+                            if(isset($userInfo['mobile']) && $user['mobile'] != $userInfo['mobile']){
+                                $where['mobile'] = $userInfo['mobile'];
+                            }
+                            if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
+                                $where['email'] = $userInfo['email'];
+                            }
+                            if(!empty($where)){
+                                UserCenter::updateAll($where,['id'=>$uid]);
+                            }
+                        }else{
+                            echo date('Y-m-d H:i:s')."\t 钉钉账号:".$userInfo['userid']."\t没有关联kael账号\n";
                         }
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
@@ -391,7 +395,10 @@ class DingController extends Controller
         foreach ($kaelAccounts as $v){
             if(!empty($v['mobile']) && $dingUser = DingtalkUser::findOneByWhere(['mobile'=>$v['mobile']])){
                 DingtalkUser::updateAll(['kael_id'=>$v['id']],['user_id'=>$dingUser['user_id']]);
-                echo "钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$v['id']."\n";
+                echo "[手机号]钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$v['id']."\n";
+            }elseif(!empty($v['username']) && !empty($v['work_number']) && $dingUser = DingtalkUser::findOneByWhere(['name'=>$v['username'],'job_number'=>$v['work_number']])){
+                DingtalkUser::updateAll(['kael_id'=>$v['id']],['user_id'=>$dingUser['user_id']]);
+                echo "[用户名+工号]钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$v['id']."\n";
             }
         }
         echo "绑定任务结束\n";
