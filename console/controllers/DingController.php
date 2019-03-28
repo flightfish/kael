@@ -206,6 +206,7 @@ class DingController extends Controller
                         }
 
                     }else{
+                        // 新增
                         echo date('Y-m-d H:i:s')."\t新增员工:\n";
                         echo json_encode($userInfo,true)."\n";
                         //新增
@@ -405,6 +406,7 @@ class DingController extends Controller
     //第三步
     //**  [ehr] kael部门关联钉钉部门
     //第四步
+    //sql执行（超哥执行）
     public function actionOldKaelAccountRelateToDingAccount(){
         echo "开始绑定kael账号到钉钉账号\n";
         $kaelAccounts = UserCenter::findList();
