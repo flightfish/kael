@@ -1,9 +1,7 @@
 <?php
-namespace common\models\ehr;
+namespace common\models;
 
 use Yii;
-
-use common\models\BaseActiveRecord;
 
 class DepartmentRelateToKael extends BaseActiveRecord
 {
@@ -16,7 +14,7 @@ class DepartmentRelateToKael extends BaseActiveRecord
 
     public static function getDb()
     {
-        return Yii::$app->get('db_ehr');
+        return Yii::$app->get('db');
     }
 
     public static function findListByWhereAndWhereArr($where,$whereArr,$select='*'){

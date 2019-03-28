@@ -5,16 +5,21 @@ use common\libs\DingTalkApi;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use common\models\ehr\BusinessDepartment;
-use common\models\ehr\DepartmentRelateToKael;
+use common\models\DepartmentRelateToKael;
 use common\models\ehr\DepartmentUser;
 use common\models\UserCenter;
 use Yii;
 use yii\console\Controller;
-use yii\helpers\Json;
-
 
 class DingController extends Controller
 {
+    //钉钉同步功能初始化流程
+
+    //第一步 准备好数据库更新
+    //第二步 [ehr] kael部门关联钉钉部门
+    //第三步 sql执行（超哥执行）
+    //第四步 手动开启 ding/update 定时任务
+
     /**
      * 初始化钉钉信息
      */
@@ -101,31 +106,32 @@ class DingController extends Controller
                                 'union_id'=>$userInfo['unionid'],
                                 'open_id'=>$userInfo['openId'],
                                 'departments'=>join(',',$userInfo['department']),
-                                'department_id'=>$userInfo['department'][0],
+                                'department_id'=>$userInfo['department'][0], //@todo modify main-department
                                 'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                             ],
                             ['user_id'=>$userInfo['userid']]);
 
-                        //更新kael
-                        $kaelId = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id');
-                        $uid = $kaelId = $kaelId['kael_id'];
+                        //更新kael @todo rename
+                        $kaelInfo = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id');
+                        $kaelId = $kaelInfo['kael_id'];
                         $user = UserCenter::findOne($kaelId);
                         if(!empty($user)){
-                            $where = [];
+                            //@todo rename
+                            $params = [];
                             if($user['username'] != $userInfo['name']){
-                                $where['username'] = $userInfo['name'];
+                                $params['username'] = $userInfo['name'];
                             }
                             if($user['work_number'] != $userInfo['jobnumber']){
-                                $where['work_number'] = $userInfo['jobnumber'];
+                                $params['work_number'] = $userInfo['jobnumber'];
                             }
                             if(isset($userInfo['mobile']) && $user['mobile'] != $userInfo['mobile']){
-                                $where['mobile'] = $userInfo['mobile'];
+                                $params['mobile'] = $userInfo['mobile'];
                             }
-                            if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
-                                $where['email'] = $userInfo['email'];
-                            }
-                            if(!empty($where)){
-                                UserCenter::updateAll($where,['id'=>$uid]);
+//                            if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
+//                                $where['email'] = $userInfo['email'];
+//                            }
+                            if(!empty($params)){
+                                UserCenter::updateAll($params,['id'=>$kaelId]);
                             }
                         }else{
                             echo date('Y-m-d H:i:s')."\t 钉钉账号:".$userInfo['userid']."\t没有关联kael账号\n";
@@ -135,74 +141,89 @@ class DingController extends Controller
                                 'password'=>md5('1!Aaaaaaa'),
                                 'sex'=>1,
                                 'work_number'=>$userInfo['jobnumber'],
-                                'mobile'=>isset($userInfo['mobile'])?$userInfo['mobile']:'',
-                                'email'=>isset($userInfo['email'])?$userInfo['email']:'',
+                                'mobile'=>$userInfo['mobile']??'',
+                                'email'=>$userInfo['email']??'',
                             ];
-                            $uid = UserCenter::addUser($params);
+                            $kaelId = UserCenter::addUser($params);
                             //更新钉钉员工关联kael编号
-                            DingtalkUser::updateAll(['kael_id'=>$uid],['user_id'=>$userInfo['userid']]);
+                            DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
+                            $user = UserCenter::findOne($kaelId);
                         }
-                        //更新实际部门相关
+                        //更新实际部门相关  @todo main-department upupup
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
+                        //update #todo update dinktalk_department-----  lead
                         $isLeaderInDepts = self::convertJsonMapToArray($userInfo['isLeaderInDepts']);
                         $orderInDepts = self::convertJsonMapToArray($userInfo['orderInDepts']);
-                        $oldDepartments = DepartmentUser::findList(['user_id'=>$uid],'depart_id');
+                        //@todo userinfo->department_id
+
+                        $oldDepartments = DepartmentUser::findList(['user_id'=>$kaelId],'depart_id');
                         $oldDepartmentIds = array_keys($oldDepartments);
                         $addDepartmentIds = array_diff($departmentIds,$oldDepartmentIds);
                         $deleteDepartmentIds = array_diff($oldDepartmentIds,$departmentIds);
+                        //新增用户关联部门
                         if(!empty($addDepartmentIds)){
                             $cloumns = ['user_id','depart_id','is_leader','disp'];
                             $rows = [];
                             foreach ($addDepartmentIds as $did){
                                 $leader = $isLeaderInDepts[$did]==="true"?1:0;
                                 $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
-                                if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$uid,'depart_id'=>$did])){
-                                    $rows[] = [$uid,$did,$leader,$order];
-                                    BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
+
+                                //更新部门用户关系表
+                                if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$kaelId,'depart_id'=>$did])){
+                                    $rows[] = [$kaelId,$did,$leader,$order];
+                                    BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                 }else{
                                     if($record['is_leader'] != $leader){
                                         DepartmentUser::updateAll(['is_leader'=>$leader],['id'=>$record['id']]);
-                                        BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
+                                        BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                     }
                                     if($record['disp'] != $order){
                                         DepartmentUser::updateAll(['disp'=>$order],['id'=>$record['id']]);
                                     }
                                 }
+
+                                //更新钉钉部门表 部门领导人
+                                if($leader){
+                                    $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
+                                    if($dingDepartment['main_leader_id'] != $kaelId){
+                                        DingtalkDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['id'=>$did]);
+                                    }
+                                }
                             }
                             DepartmentUser::addAllWithColumnRow($cloumns,$rows);
                         }
+                        //删除旧关联部门
                         if(!empty($deleteDepartmentIds)){
-                            DepartmentUser::updateAll(['status'=>1],['user_id'=>$uid,'depart_id'=>$deleteDepartmentIds]);
+                            DepartmentUser::updateAll(['status'=>1],['user_id'=>$kaelId,'depart_id'=>$deleteDepartmentIds]);
                         }
+                        //更新员工加入的部门
                         foreach ($departmentIds as $did){
                             if(!in_array($did,$addDepartmentIds) && !in_array($did,$deleteDepartmentIds)){
-                                $where = [];
+                                $params = [];
                                 $isLeader = $isLeaderInDepts[$did]?1:0;
                                 if($isLeader != $oldDepartments[$did]['is_leader']){
-                                    BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
-                                    $where['is_leader'] = $isLeader;
+                                    BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
+                                    $params['is_leader'] = $isLeader;
                                 }
                                 if(isset($orderInDepts[$did]) && isset($oldDepartments[$did]) && $orderInDepts[$did] != $oldDepartments[$did]['disp']){
-                                    $where['disp'] = $orderInDepts[$did];
+                                    $params['disp'] = $orderInDepts[$did];
                                 }
-                                if(!empty($where)){
-                                    DepartmentUser::updateAll($where,['id'=>$oldDepartments[$did]['id']]);
+                                if(!empty($params)){
+                                    DepartmentUser::updateAll($params,['id'=>$oldDepartments[$did]['id']]);
                                 }
                             }
                         }
-                        //更新员工关联kael部门
-                        $relateKaelDepartments = DepartmentRelateToKael::findList(['department_id'=>$departmentIds]);
-                        $relateKaelDepartmentsIndexById = array_column($relateKaelDepartments,'department_id');
-                        if(!empty($relateKaelDepartments)){
-                            $departmentId = max($relateKaelDepartmentsIndexById); //合适的实际部门
-                            $kaelDepartmentId = DepartmentRelateToKael::findOneByWhere(['department_id'=>$departmentId],'kael_department_id');
-                            $kaelDepartmentId = $kaelDepartmentId['kael_department_id'];
-                            if($user['department_id'] != $kaelDepartmentId){
-                                UserCenter::updateAll(['department_id'=>$kaelDepartmentId],['id'=>$uid]);
-                                DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$uid,'depart_id'=>$departmentId]);
-                            }
+                        //更新员工关联kael部门  @todo 从主department_id开始向父级依次匹配
+                        $mainDingDepartmentForUser = DepartmentUser::find()->select(['department_id'])->where(['is_main'=>1,'department_id'=>$departmentIds])->scalar();
+                        if(!$mainDingDepartmentForUser && !empty($departmentIds)){
+                            $mainDingDepartmentForUser = $departmentIds[0];
+                            DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
+                        }
+                        $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
+                        if($relateKaelDepartmentId){
+                            UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
                         }else{
-                            UserCenter::updateAll(['department_id'=>0],['id'=>$uid]);
+                            UserCenter::updateAll(['department_id'=>151],['id'=>$kaelId]);
                         }
 
                     }else{
@@ -234,10 +255,10 @@ class DingController extends Controller
                             'email'=>isset($userInfo['email'])?$userInfo['email']:'',
                         ];
 
-                        $uid = UserCenter::addUser($params);
-                        echo "新增kael账号:\t".$uid."\n";
+                        $kaelId = UserCenter::addUser($params);
+                        echo "新增kael账号:\t".$kaelId."\n";
                         //更新钉钉员工关联kael编号
-                        DingtalkUser::updateAll(['kael_id'=>$uid],['user_id'=>$userInfo['userid']]);
+                        DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
 
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
@@ -248,30 +269,39 @@ class DingController extends Controller
                         foreach ($departmentIds as $did){
                             $leader = $isLeaderInDepts[$did]==="true"?1:0;
                             $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
-                            if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$uid,'depart_id'=>$did])){
-                                $rows[] = [$uid,$did,$leader,$order];
-                                BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
+                            if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$kaelId,'depart_id'=>$did])){
+                                $rows[] = [$kaelId,$did,$leader,$order];
+                                BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                             }else{
                                 if($record['is_leader'] != $leader){
                                     DepartmentUser::updateAll(['is_leader'=>$leader],['id'=>$record['id']]);
-                                    BusinessDepartment::updateAll(['main_leader_id'=>$uid,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
+                                    BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                 }
                                 if($record['disp'] != $order){
                                     DepartmentUser::updateAll(['disp'=>$order],['id'=>$record['id']]);
+                                }
+                            }
+                            //更新钉钉部门表 部门领导人
+                            if($leader){
+                                $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
+                                if($dingDepartment['main_leader_id'] != $kaelId){
+                                    DingtalkDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['id'=>$did]);
                                 }
                             }
                         }
                         DepartmentUser::addAllWithColumnRow($cloumns,$rows);
 
                         //更新员工关联kael部门
-                        $relateKaelDepartments = DepartmentRelateToKael::findList(['department_id'=>$departmentIds]);
-                        $relateKaelDepartmentsIndexById = array_column($relateKaelDepartments,'department_id');
-                        if(!empty($relateKaelDepartments)){
-                            $departmentId = max($relateKaelDepartmentsIndexById); //合适的实际部门
-                            $kaelDepartmentId = DepartmentRelateToKael::findOneByWhere(['department_id'=>$departmentId],'kael_department_id');
-                            $kaelDepartmentId = $kaelDepartmentId['kael_department_id'];
-                            UserCenter::updateAll(['department_id'=>$kaelDepartmentId],['id'=>$uid]);
-                            DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$uid,'depart_id'=>$departmentId]);
+                        $mainDingDepartmentForUser = DepartmentUser::find()->select(['department_id'])->where(['is_main'=>1,'department_id'=>$departmentIds])->scalar();
+                        if(!$mainDingDepartmentForUser && !empty($departmentIds)){
+                            $mainDingDepartmentForUser = $departmentIds[0];
+                            DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
+                        }
+                        $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
+                        if($relateKaelDepartmentId){
+                            UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
+                        }else{
+                            UserCenter::updateAll(['department_id'=>151],['id'=>$kaelId]);
                         }
                     }
                 }
@@ -289,8 +319,18 @@ class DingController extends Controller
         }
     }
 
+    private function getRelateKaelDepartment($dingDepartmentId){
+        $relateKaelDepartment = DepartmentRelateToKael::findOneByWhere(['department_id'=>$dingDepartmentId],'kael_department_id,parentid');
+        if(!empty($relateKaelDepartment)){
+           return $relateKaelDepartment['kael_department_id'];
+        }elseif($relateKaelDepartment['parentid'] && $relateKaelDepartment['parentid'] != 1){
+            self::getRelateKaelDepartment($relateKaelDepartment['parentid']);
+        }
+        return 0;
+    }
     private function convertJsonMapToArray($string){
         $list = [];
+
         $string = substr($string,1);
         $string = substr($string,0,strlen($string)-1);
         if(empty($string)){
@@ -301,16 +341,11 @@ class DingController extends Controller
             $tmp = explode(':',$v);
             $list[$tmp[0]] = $tmp[1];
         }
+
         return $list;
     }
 
-    //钉钉同步功能初始化[准备好数据库更新]
-    //第一步
-    //第二步
-    //第三步
-    //**  [ehr] kael部门关联钉钉部门
-    //第四步
-    //sql执行（超哥执行）
+
     public function actionOldKaelAccountRelateToDingAccount(){
         echo "开始绑定kael账号到钉钉账号\n";
         $kaelAccounts = UserCenter::findList();

@@ -6,6 +6,7 @@ use common\libs\Constant;
 use common\libs\UserToken;
 use common\models\CommonModulesUser;
 use common\models\Department;
+use common\models\DepartmentRelateToKael;
 use common\models\LogAuthUser;
 use common\models\Platform;
 use common\models\RelateAdminDepartment;
@@ -233,6 +234,10 @@ class Departments extends RequestBaseModel
         if(!empty($sub)){
             throw new Exception('该分组下存在用户，不可删除', Exception::ERROR_COMMON);
         }
+        $relate = DepartmentRelateToKael::findListByWhereAndWhereArr(['kael_department_id'=>$this->id],[['<>','department_id',0]]);
+        if(!empty($relate)){
+            throw new Exception('该部门存在关联钉钉部门，不可删除', Exception::ERROR_COMMON);
+        }
         Department::updateAll(['status'=>Department::STATUS_INVALID],['department_id' => $this->id]);
         LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_DEL_GROUP,'del');
         return [];
@@ -280,7 +285,6 @@ class Departments extends RequestBaseModel
             }
             RelateAdminDepartment::batchInsertAll(RelateAdminDepartment::tableName(),$column,$rows,RelateAdminDepartment::getDb());
         }
-
     }
 
     public function editDepartment()
