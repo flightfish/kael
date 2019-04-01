@@ -320,11 +320,13 @@ class DingController extends Controller
     }
 
     private function getRelateKaelDepartment($dingDepartmentId){
-        $relateKaelDepartment = DepartmentRelateToKael::findOneByWhere(['department_id'=>$dingDepartmentId],'kael_department_id,parentid');
+        $relateKaelDepartment = DepartmentRelateToKael::findOneByWhere(['department_id'=>$dingDepartmentId],'kael_department_id');
         if(!empty($relateKaelDepartment)){
            return $relateKaelDepartment['kael_department_id'];
-        }elseif($relateKaelDepartment['parentid'] && $relateKaelDepartment['parentid'] != 1){
-            self::getRelateKaelDepartment($relateKaelDepartment['parentid']);
+        }elseif($parentDepartment = DingtalkDepartment::findOneByWhere(['id'=>$dingDepartmentId],'parentid')){
+            if($parentDepartment['parentid'] && $parentDepartment['parentid'] != 1){
+                self::getRelateKaelDepartment($parentDepartment['parentid']);
+            }
         }
         return 0;
     }
