@@ -91,7 +91,7 @@ class DingController extends Controller
                     }
                     $currentUserIds[] = $userId;
                     $userInfo = DingTalkApi::getUserInfo($userId);
-                    echo "***************************************************************\n";
+                    echo "\n\n\n\n\n***************************************************************\n\n\n";
                     echo json_encode($userInfo)."\n";
                     if(in_array($userId,$allUserIds)){
                         echo date('Y-m-d H:i:s')."\t更新员工:\t";
