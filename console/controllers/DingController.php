@@ -20,6 +20,7 @@ class DingController extends Controller
     //第三步 sql执行（超哥执行）
     //第四步 手动开启 ding/update 定时任务
 
+
     /**
      * 初始化钉钉信息
      */
@@ -116,6 +117,7 @@ class DingController extends Controller
                         $kaelId = $kaelInfo['kael_id'];
                         $user = UserCenter::findOne($kaelId);
                         if(!empty($user)){
+                            
                             //@todo rename
                             $params = [];
                             if($user['username'] != $userInfo['name']){
