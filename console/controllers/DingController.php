@@ -117,7 +117,7 @@ class DingController extends Controller
                         $kaelId = $kaelInfo['kael_id'];
                         $user = UserCenter::findOne($kaelId);
                         if(!empty($user)){
-                            
+
                             //@todo rename
                             $params = [];
                             if($user['username'] != $userInfo['name']){
