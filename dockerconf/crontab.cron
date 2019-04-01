@@ -1,5 +1,5 @@
 # * * * * * php /data/wwwroot/kael/yii ldap/update >> /data/wwwroot/kael/ldap.log 2>&1
-# * * * * * php /data/wwwroot/kael/yii ding/update >> /data/wwwroot/kael/ding.log 2>&1
+* * * * * php /data/wwwroot/kael/yii ding/update >> /data/wwwroot/kael/ding.log 2>&1
 
 
 
