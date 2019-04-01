@@ -77,6 +77,7 @@ class DingController extends Controller
         $departmentToSubRoot = DingtalkDepartment::find()->select('id,subroot_id')
             ->where(['status'=>0])->asArray(true)->all();
         $departmentToSubRoot = array_column($departmentToSubRoot,'subroot_id','id');
+        $i = 0;
         for($level = 1; $level <= 10 ;$level ++){
             $departmentList = DingtalkDepartment::find()->where(['status'=>0,'level'=>$level])
                 ->asArray(true)->all();
@@ -86,6 +87,8 @@ class DingController extends Controller
                     if(in_array($userId,$currentUserIds)){
                         continue;
                     }
+                    echo "\n****\t第".$i."次执行\t****\n";
+                    $i++;
                     if(!in_array($userId,$newAllUserIds)){
                         $newAllUserIds[] = $userId;
                     }
