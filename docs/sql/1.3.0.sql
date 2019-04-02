@@ -1,3 +1,7 @@
+ALTER TABLE `dingtalk_department`
+ADD COLUMN `main_leader_id` int(11) NOT NULL DEFAULT '0' COMMENT '部门领导人编号(kael)',
+ADD COLUMN `main_leader_name` varchar(255) NOT NULL COMMENT '部门领导人名称';
+
 ALTER TABLE `dingtalk_user`
 ADD COLUMN `kael_id` int(11) NOT NULL DEFAULT '0' COMMENT 'kael账号' after `user_id`;
 
