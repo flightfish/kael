@@ -103,5 +103,7 @@ class DingController extends Controller
                 }
             }
         }
+        $delUserIds = array_diff($allUserIds,$currentUserIds);
+        DingtalkUser::updateAll(['status'=>DingtalkUser::STATUS_INVALID],['user_id'=>$delUserIds]);
     }
 }
