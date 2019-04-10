@@ -200,8 +200,10 @@ class DingController extends Controller
                         if(!empty($deleteDepartmentIds)){
                             DepartmentUser::updateAll(['status'=>1],['user_id'=>$kaelId,'depart_id'=>$deleteDepartmentIds]);
                         }
+                        $founder = false;
                         //更新员工加入的部门
                         foreach ($departmentIds as $did){
+                            if($did == 1) $founder = true;
                             if(!in_array($did,$addDepartmentIds) && !in_array($did,$deleteDepartmentIds)){
                                 $params = [];
                                 $isLeader = $isLeaderInDepts[$did]?1:0;
@@ -224,9 +226,9 @@ class DingController extends Controller
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                         }
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
-                        if($relateKaelDepartmentId){
+                        if($relateKaelDepartmentId && !$founder){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
-                        }else{
+                        }elseif(!$founder){
                             UserCenter::updateAll(['department_id'=>151],['id'=>$kaelId]);
                         }
 
@@ -264,6 +266,7 @@ class DingController extends Controller
                         //更新钉钉员工关联kael编号
                         DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
 
+                        $founder = false;
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
                         $isLeaderInDepts = self::convertJsonMapToArray($userInfo['isLeaderInDepts']);
@@ -271,6 +274,7 @@ class DingController extends Controller
                         $cloumns = ['user_id','depart_id','is_leader','disp'];
                         $rows = [];
                         foreach ($departmentIds as $did){
+                            if($did==1) $founder = true;
                             $leader = $isLeaderInDepts[$did]==="true"?1:0;
                             $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
                             if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$kaelId,'depart_id'=>$did])){
@@ -302,9 +306,9 @@ class DingController extends Controller
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                         }
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
-                        if($relateKaelDepartmentId){
+                        if($relateKaelDepartmentId && !$founder){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
-                        }else{
+                        }elseif(!$founder){
                             UserCenter::updateAll(['department_id'=>151],['id'=>$kaelId]);
                         }
                     }
