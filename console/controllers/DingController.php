@@ -82,6 +82,7 @@ class DingController extends Controller
                                 'departments'=>join(',',$userInfo['department']),
                                 'department_id'=>$userInfo['department'][0],
                                 'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                                'status'=>0
                             ],
                             ['user_id'=>$userInfo['userid']]);
                     }else{
