@@ -84,9 +84,9 @@ class DingController extends Controller
             foreach ($departmentList as $v) {
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 foreach ($userIdList as $userId){
-                    if($userId != '00036'){    //测试～
-                        continue;
-                    }
+//                    if($userId != '00036'){    //测试 王超账号
+//                        continue;
+//                    }
                     if(in_array($userId,$currentUserIds)){
                         continue;
                     }
@@ -248,10 +248,7 @@ class DingController extends Controller
                             $mainDingDepartmentForUser = $departmentIds[0];
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                         }
-                        echo $mainDingDepartmentForUser."\n";
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
-                        echo $relateKaelDepartmentId."\n";
-                        exit("\n###\n");
                         if($relateKaelDepartmentId && !$founder){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
                         }elseif(!$founder){
