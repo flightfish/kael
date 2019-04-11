@@ -248,9 +248,10 @@ class DingController extends Controller
                             $mainDingDepartmentForUser = $departmentIds[0];
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                         }
+                        echo $mainDingDepartmentForUser."\n";
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
-                        print_r($relateKaelDepartmentId);
-                        exit('sss');
+                        echo $relateKaelDepartmentId."\n";
+                        exit("\n###\n");
                         if($relateKaelDepartmentId && !$founder){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
                         }elseif(!$founder){
