@@ -60,7 +60,7 @@ class DingController extends Controller
             }
         }
         !empty($rows) && DingtalkDepartment::batchInsertAll(DingtalkDepartment::tableName(),$columns,$rows,DingtalkDepartment::getDb(),'INSERT IGNORE');
-        !empty($delIds) && DingtalkDepartment::updateAll(['status'=>0]);
+        !empty($delIds) && DingtalkDepartment::updateAll(['status'=>1],['id'=>$delIds]);
         //更新level
         $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id where status = 0 and parentid = 1";
         DingtalkDepartment::getDb()->createCommand($sql)->execute();
@@ -112,6 +112,7 @@ class DingController extends Controller
                                 'departments'=>join(',',$userInfo['department']),
                                 'department_id'=>$userInfo['department'][0], //@todo modify main-department
                                 'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                                'status'=>0
                             ],
                             ['user_id'=>$userInfo['userid']]);
 
@@ -315,6 +316,7 @@ class DingController extends Controller
                 }
             }
         }
+
         //同步删除员工
         $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
         $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
