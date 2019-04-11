@@ -359,7 +359,7 @@ class DingController extends Controller
             }
         }
 
-        //同步删除员工
+        //根据钉钉变动同步删除钉钉用户及kael用户
         $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
         $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
         echo date('Y-m-d H:i:s')."\t需要删除员工如下:\n";
@@ -369,6 +369,7 @@ class DingController extends Controller
             UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
             DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
         }
+        //全局更新后根据钉钉全局结果同步删除掉kael用户(可能由于历史原因造成kael用户冗余,所以执行该部分)
         $kaelIds = array_keys(DingtalkUser::findList([],'kael_id','kael_id'));
         $deleteKaelIds = array_column(UserCenter::findListByWhereAndWhereArr([],[['not in','id',$kaelIds]],'id'),'id');
         if(!empty($deleteKaelIds)){
