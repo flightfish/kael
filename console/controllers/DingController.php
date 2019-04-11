@@ -251,7 +251,7 @@ class DingController extends Controller
 
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
                         $departId = 0;
-                        if($relateKaelDepartmentId && !$founder){
+                        if($relateKaelDepartmentId && !$founder && $relateKaelDepartmentId != $user['department_id']){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
                         }elseif(!$founder){
                             UserCenter::updateAll(['department_id'=>151],['id'=>$kaelId]);
@@ -351,7 +351,7 @@ class DingController extends Controller
                         }
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
                         $departId = 0;
-                        if($relateKaelDepartmentId && !$founder){
+                        if($relateKaelDepartmentId && !$founder && $relateKaelDepartmentId != $user['department_id']){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
                         }elseif(!$founder){
                             UserCenter::updateAll(['department_id'=>151],['id'=>$kaelId]);
