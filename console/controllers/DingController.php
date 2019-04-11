@@ -374,15 +374,16 @@ class DingController extends Controller
     }
 
     private function getRelateKaelDepartment($dingDepartmentId){
+        static $departId;
         $relateKaelDepartment = DepartmentRelateToKael::findOneByWhere(['department_id'=>$dingDepartmentId],'kael_department_id');
         if(!empty($relateKaelDepartment)){
-           return $relateKaelDepartment['kael_department_id'];
+            $departId = $relateKaelDepartment['kael_department_id'];
         }elseif($parentDepartment = DingtalkDepartment::findOneByWhere(['id'=>$dingDepartmentId],'parentid')){
             if($parentDepartment['parentid'] && $parentDepartment['parentid'] != 1){
                 self::getRelateKaelDepartment($parentDepartment['parentid']);
             }
         }
-        return 0;
+        return $departId;
     }
     private function convertJsonMapToArray($string){
         $list = [];
