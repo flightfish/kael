@@ -249,7 +249,7 @@ class DingController extends Controller
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                         }
                         print_r($departmentIds);
-                        echo $mainDingDepartmentForUser."#\n";
+                        echo $mainDingDepartmentForUser."#\n";s
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
                         echo $relateKaelDepartmentId."#\n";
                         exit('@@@@');
@@ -363,15 +363,15 @@ class DingController extends Controller
         }
 
         //同步删除员工
-        $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
-        $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
-        echo date('Y-m-d H:i:s')."\t需要删除员工如下:\n";
-        echo json_encode($deleteUids)."\n";
-        if(!empty($deleteUids)){
-            DingtalkUser::updateAll(['status'=>1],['user_id'=>$deleteUserIds]);
-            UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
-            DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-        }
+//        $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
+//        $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
+//        echo date('Y-m-d H:i:s')."\t需要删除员工如下:\n";
+//        echo json_encode($deleteUids)."\n";
+//        if(!empty($deleteUids)){
+//            DingtalkUser::updateAll(['status'=>1],['user_id'=>$deleteUserIds]);
+//            UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
+//            DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+//        }
     }
 
     private function getRelateKaelDepartment($dingDepartmentId){
