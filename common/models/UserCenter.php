@@ -340,4 +340,12 @@ class UserCenter extends \common\models\BaseActiveRecord
             ->asArray(true)
             ->all();
     }
+    public static function findListByWhereAndWhereArr($where,$whereArr,$select='*',$status=0){
+        !isset($where['status']) &&  $status != -1 && $where['status']=0;
+        $query =  self::find()->select($select)->where($where);
+        foreach ($whereArr as $v){
+            $query = $query->andWhere($v);
+        }
+        return $query->asArray(true)->all();
+    }
 }

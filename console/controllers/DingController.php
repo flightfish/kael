@@ -369,6 +369,12 @@ class DingController extends Controller
             UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
             DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
         }
+        $kaelIds = array_keys(DingtalkUser::findList([],'kael_id','kael_id'));
+        $deleteKaelIds = array_column(UserCenter::findListByWhereAndWhereArr([],[['not in','id',$kaelIds]],'id'),'id');
+        if(!empty($deleteKaelIds)){
+            UserCenter::updateAll(['status'=>1],['id'=>$deleteKaelIds]);
+            DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteKaelIds]);
+        }
     }
 
     private function getRelateKaelDepartment($dingDepartmentId,$i=0){
