@@ -18,4 +18,4 @@ CREATE TABLE `department_relate_to_kael` (
   PRIMARY KEY (`id`),
   INDEX kael_id_index(`kael_department_id`),
   INDEX in_index(`department_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
