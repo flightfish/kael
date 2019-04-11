@@ -250,7 +250,7 @@ class DingController extends Controller
                         }
 
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
-                        $departId = 0;
+                        $departId = null;
                         if($relateKaelDepartmentId && !$founder && $relateKaelDepartmentId != $user['department_id']){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
                         }elseif(!$founder){
@@ -342,6 +342,7 @@ class DingController extends Controller
                             }
                         }
                         DepartmentUser::addAllWithColumnRow($cloumns,$rows);
+                        $userAdd = UserCenter::findOne($kaelId);
 
                         //更新员工关联kael部门
                         $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'depart_id'=>$departmentIds])->scalar();
@@ -350,8 +351,8 @@ class DingController extends Controller
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                         }
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
-                        $departId = 0;
-                        if($relateKaelDepartmentId && !$founder && $relateKaelDepartmentId != $user['department_id']){
+                        $departId = null;
+                        if($relateKaelDepartmentId && !$founder && $relateKaelDepartmentId != $userAdd['department_id']){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
                         }elseif(!$founder){
                             UserCenter::updateAll(['department_id'=>151],['id'=>$kaelId]);
