@@ -358,6 +358,7 @@ class DingController extends Controller
                             UserCenter::updateAll(['department_id'=>151],['id'=>$kaelId]);
                         }
                     }
+                    $departId = 0;
                 }
             }
         }
