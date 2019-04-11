@@ -232,6 +232,12 @@ class UserCenter extends \common\models\BaseActiveRecord
         return $query->asArray()->one();
     }
 
+    public static function findOneByWhere($where=[],$select='*',$status=0){
+        !isset($where['status']) && $where['status'] != -1 && $where['status'] = $status;
+        $query = self::find()->select($select)->where($where)->asArray()->one();
+        return $query;
+    }
+
     //根据电话号码查询所有人员
     public static function findByMobileStatus($mobile)
     {
