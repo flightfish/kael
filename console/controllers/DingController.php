@@ -140,13 +140,21 @@ class DingController extends Controller
                             }
                         }else{
                             if(!empty($userInfo['mobile'])){
-                                $user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile']]);
-                                echo "[手机号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                                if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile']])){
+                                    $kaelId = $user['id'];
+                                    //更新钉钉员工关联kael编号
+                                    DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
+                                    echo "[手机号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                                }
 
                             }
                             if(!$user && !empty($userInfo['work_number'])){
-                                $user = UserCenter::findOneByWhere(['work_number'=>$userInfo['jobnumber']]);
-                                echo "[工号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                                if($user = UserCenter::findOneByWhere(['work_number'=>$userInfo['jobnumber']])){
+                                    $kaelId = $user['id'];
+                                    //更新钉钉员工关联kael编号
+                                    DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
+                                    echo "[工号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                                }
                             }
                             if(!$user){
                                 echo date('Y-m-d H:i:s')."\t 钉钉账号:".$userInfo['userid']."\t没有关联kael账号\n";
@@ -264,15 +272,22 @@ class DingController extends Controller
                         ]);
 
                         if(!empty($userInfo['mobile'])){
-                            $user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile']]);
-                            echo "[手机号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                            if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile']])){
+                                $kaelId = $user['id'];
+                                //更新钉钉员工关联kael编号
+                                DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
+                                echo "[手机号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                            }
 
                         }
                         if(!$user && !empty($userInfo['work_number'])){
-                            $user = UserCenter::findOneByWhere(['work_number'=>$userInfo['jobnumber']]);
-                            echo "[工号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                            if($user = UserCenter::findOneByWhere(['work_number'=>$userInfo['jobnumber']])){
+                                $kaelId = $user['id'];
+                                //更新钉钉员工关联kael编号
+                                DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
+                                echo "[工号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                            }
                         }
-                        $kaelId = $user['id'];
                         if(!$user){
                             //新增kael
                             $params = [
@@ -381,18 +396,18 @@ class DingController extends Controller
     }
 
 
-    public function actionOldKaelAccountRelateToDingAccount(){
-        echo "开始绑定kael账号到钉钉账号\n";
-        $kaelAccounts = UserCenter::findList();
-        foreach ($kaelAccounts as $v){
-            if(!empty($v['mobile']) && $dingUser = DingtalkUser::findOneByWhere(['mobile'=>$v['mobile']])){
-                DingtalkUser::updateAll(['kael_id'=>$v['id']],['user_id'=>$dingUser['user_id']]);
-                echo "[手机号]钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$v['id']."\n";
-            }elseif(!empty($v['username']) && !empty($v['work_number']) && $dingUser = DingtalkUser::findOneByWhere(['name'=>$v['username'],'job_number'=>$v['work_number']])){
-                DingtalkUser::updateAll(['kael_id'=>$v['id']],['user_id'=>$dingUser['user_id']]);
-                echo "[用户名+工号]钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$v['id']."\n";
-            }
-        }
-        echo "绑定任务结束\n";
-    }
+//    public function actionOldKaelAccountRelateToDingAccount(){
+//        echo "开始绑定kael账号到钉钉账号\n";
+//        $kaelAccounts = UserCenter::findList();
+//        foreach ($kaelAccounts as $v){
+//            if(!empty($v['mobile']) && $dingUser = DingtalkUser::findOneByWhere(['mobile'=>$v['mobile']])){
+//                DingtalkUser::updateAll(['kael_id'=>$v['id']],['user_id'=>$dingUser['user_id']]);
+//                echo "[手机号]钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$v['id']."\n";
+//            }elseif(!empty($v['username']) && !empty($v['work_number']) && $dingUser = DingtalkUser::findOneByWhere(['name'=>$v['username'],'job_number'=>$v['work_number']])){
+//                DingtalkUser::updateAll(['kael_id'=>$v['id']],['user_id'=>$dingUser['user_id']]);
+//                echo "[用户名+工号]钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$v['id']."\n";
+//            }
+//        }
+//        echo "绑定任务结束\n";
+//    }
 }
