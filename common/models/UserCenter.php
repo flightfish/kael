@@ -233,7 +233,7 @@ class UserCenter extends \common\models\BaseActiveRecord
     }
 
     public static function findOneByWhere($where=[],$select='*',$status=0){
-        !isset($where['status']) && $where['status'] != -1 && $where['status'] = $status;
+        !isset($where['status']) && $status != -1 && $where['status'] = $status;
         $query = self::find()->select($select)->where($where)->asArray()->one();
         return $query;
     }
