@@ -250,7 +250,6 @@ class DingController extends Controller
                         }
 
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
-                        $departId = null;
                         if($relateKaelDepartmentId && !$founder){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
                         }elseif(!$founder){
@@ -350,7 +349,6 @@ class DingController extends Controller
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                         }
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
-                        $departId = null;
                         if($relateKaelDepartmentId && !$founder){
                             UserCenter::updateAll(['department_id'=>$relateKaelDepartmentId],['id'=>$kaelId]);
                         }elseif(!$founder){
@@ -373,14 +371,18 @@ class DingController extends Controller
         }
     }
 
-    private function getRelateKaelDepartment($dingDepartmentId){
+    private function getRelateKaelDepartment($dingDepartmentId,$i=0){
         static $departId;
+        if(!$i){
+            $departId = null;
+        }
         $relateKaelDepartment = DepartmentRelateToKael::findOneByWhere(['department_id'=>$dingDepartmentId],'kael_department_id');
         if(!empty($relateKaelDepartment)){
             $departId = $relateKaelDepartment['kael_department_id'];
         }elseif($parentDepartment = DingtalkDepartment::findOneByWhere(['id'=>$dingDepartmentId],'parentid')){
             if($parentDepartment['parentid'] && $parentDepartment['parentid'] != 1){
-                self::getRelateKaelDepartment($parentDepartment['parentid']);
+                $i++;
+                self::getRelateKaelDepartment($parentDepartment['parentid'],$i);
             }
         }
         return $departId;
