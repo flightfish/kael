@@ -370,12 +370,12 @@ class DingController extends Controller
             DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
         }
         //全局更新后根据钉钉全局结果同步删除掉kael用户(可能由于历史原因造成kael用户冗余,所以执行该部分)
-        $kaelIds = array_keys(DingtalkUser::findList([],'kael_id','kael_id'));
-        $deleteKaelIds = array_column(UserCenter::findListByWhereAndWhereArr([],[['not in','id',$kaelIds]],'id'),'id');
-        if(!empty($deleteKaelIds)){
-            UserCenter::updateAll(['status'=>1],['id'=>$deleteKaelIds]);
-            DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteKaelIds]);
-        }
+//        $kaelIds = array_keys(DingtalkUser::findList([],'kael_id','kael_id'));
+//        $deleteKaelIds = array_column(UserCenter::findListByWhereAndWhereArr([],[['not in','id',$kaelIds]],'id'),'id');
+//        if(!empty($deleteKaelIds)){
+//            UserCenter::updateAll(['status'=>1],['id'=>$deleteKaelIds]);
+//            DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteKaelIds]);
+//        }
     }
 
     private function getRelateKaelDepartment($dingDepartmentId,$i=0){
