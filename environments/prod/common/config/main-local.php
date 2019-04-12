@@ -14,6 +14,13 @@ return [
             'port' => 6379,
             'database' => 0,
             'password' => 'KBRedispt'
-        ]
+        ],
+        'db_ehr' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=10.19.141.31;port=3321;dbname=ehr',
+            'username' => 'ehrRoot',
+            'password' => 'ehrPassword',
+            'charset' => 'utf8',
+        ],
     ],
 ];

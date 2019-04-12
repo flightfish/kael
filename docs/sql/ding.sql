@@ -1,3 +1,27 @@
+ALTER TABLE `dingtalk_department`
+ADD COLUMN `main_leader_id` int(11) NOT NULL DEFAULT '0' COMMENT '部门领导人编号(kael)' after `subroot_id`,
+ADD COLUMN `main_leader_name` varchar(255) NOT NULL DEFAULT '' COMMENT '部门领导人名称' after `main_leader_id`;
+
+ALTER TABLE `dingtalk_user`
+ADD COLUMN `kael_id` int(11) NOT NULL DEFAULT '0' COMMENT 'kael账号' after `user_id`;
+
+CREATE TABLE `department_relate_to_kael` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '自增编号',
+  `kael_department_id` int(11) NOT NULL DEFAULT '0' COMMENT 'kael部门编号',
+  `kael_department_name` varchar(255) NOT NULL COMMENT 'kael部门名称',
+  `department_id` int(11) NOT NULL DEFAULT '0' COMMENT '实际部门编号',
+  `department_name` varchar(255) NOT NULL COMMENT '实际部门名称',
+  `depart_no` varchar(60) NOT NULL,
+  `status` tinyint(1) NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX kael_id_index(`kael_department_id`),
+  INDEX in_index(`department_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+
 INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(104,'BD-张文翼',55052601,'BD1组');
 INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(104,'BD-张文翼',104422706,'GR部');
 INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(105,'BD-唐君',55128736,'BD2组');
@@ -34,9 +58,9 @@ INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_na
 INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(119,'运营-汤立',55039598,'运营1组');
 
 INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(145,'战略综合部',66503511,'战略综合部');
-INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(145,'战略综合部',69852311,'战略综合部1组');
-INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(145,'战略综合部',110054183,'战略综合部2组');
-INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(145,'战略综合部',78587108,'战略综合部3组');
+-- INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(145,'战略综合部',69852311,'战略综合部1组');
+-- INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(145,'战略综合部',110054183,'战略综合部2组');
+-- INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(145,'战略综合部',78587108,'战略综合部3组');
 
 INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(134,'总裁办',55440532,'战略综合部4组');
 

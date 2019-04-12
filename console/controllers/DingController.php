@@ -151,7 +151,7 @@ class DingController extends Controller
                                 }
 
                             }
-                            if(!$user && !empty($userInfo['work_number'])){
+                            if(!$user && !empty($userInfo['jobnumber'])){
                                 if($user = UserCenter::findOneByWhere(['work_number'=>$userInfo['jobnumber']])){
                                     $kaelId = $user['id'];
                                     //更新钉钉员工关联kael编号
