@@ -17,6 +17,16 @@ class DepartmentUser extends \common\models\BaseActiveRecord
         return Yii::$app->get('db_ehr');
     }
 
+    public static function add($data)
+    {
+        $user = new self();
+        foreach ($data as $key => $value) {
+            $user[$key] = $value;
+        }
+        $user->insert();
+        return $user->id;
+    }
+
     public static function addAllWithColumnRow($columns,$rows,$split=100){
         $rowsList = array_chunk($rows,$split);
         foreach ($rowsList as $rowChunk){
