@@ -169,6 +169,7 @@ class DingController extends Controller
                                     'work_number'=>$userInfo['jobnumber'],
                                     'mobile'=>$userInfo['mobile']??'',
                                     'email'=>$userInfo['email']??'',
+                                    'user_type'=>0
                                 ];
                                 $kaelId = UserCenter::addUser($params);
                                 //更新钉钉员工关联kael编号
@@ -307,6 +308,7 @@ class DingController extends Controller
                                 'work_number'=>$userInfo['jobnumber'],
                                 'mobile'=>isset($userInfo['mobile'])?$userInfo['mobile']:'',
                                 'email'=>isset($userInfo['email'])?$userInfo['email']:'',
+                                'user_type'=>0
                             ];
 
                             $kaelId = UserCenter::addUser($params);
