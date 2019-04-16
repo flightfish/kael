@@ -122,15 +122,17 @@ class DingController extends Controller
                         //更新kael @todo rename
                         $kaelInfo = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id');
                         $kaelId = $kaelInfo['kael_id'];
-                        $user = UserCenter::findOne($kaelId);
+                        $user = UserCenter::findOneByWhere(['id'=>$kaelId]);
                         if(!empty($user)){
-                            //@todo rename
                             $params = [];
                             if($user['username'] != $userInfo['name']){
                                 $params['username'] = $userInfo['name'];
                             }
                             if($user['work_number'] != $userInfo['jobnumber']){
                                 $params['work_number'] = $userInfo['jobnumber'];
+                            }
+                            if($user['user_type']){
+                                $params['user_type'] = 0;
                             }
                             if(isset($userInfo['mobile']) && $user['mobile'] != $userInfo['mobile']){
                                 $params['mobile'] = $userInfo['mobile'];
@@ -143,7 +145,10 @@ class DingController extends Controller
                             }
                         }else{
                             if(!empty($userInfo['mobile'])){
-                                if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile'],'user_type'=>0])){
+                                if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile']])){
+                                    if($user['user_type']){
+                                        UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
+                                    }
                                     $kaelId = $user['id'];
                                     //更新钉钉员工关联kael编号
                                     DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
@@ -152,7 +157,10 @@ class DingController extends Controller
 
                             }
                             if(!$user && !empty($userInfo['jobnumber'])){
-                                if($user = UserCenter::findOneByWhere(['work_number'=>$userInfo['jobnumber'],'user_type'=>0])){
+                                if($user = UserCenter::findOneByWhere(['work_number'=>$userInfo['jobnumber']])){
+                                    if($user['user_type']){
+                                        UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
+                                    }
                                     $kaelId = $user['id'];
                                     //更新钉钉员工关联kael编号
                                     DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
@@ -284,6 +292,9 @@ class DingController extends Controller
 
                         if(!empty($userInfo['mobile'])){
                             if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile'],'user_type'=>0])){
+                                if($user['user_type']){
+                                    UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
+                                }
                                 $kaelId = $user['id'];
                                 //更新钉钉员工关联kael编号
                                 DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
@@ -293,6 +304,9 @@ class DingController extends Controller
                         }
                         if(!$user && !empty($userInfo['jobnumber'])){
                             if($user = UserCenter::findOneByWhere(['work_number'=>$userInfo['jobnumber'],'user_type'=>0])){
+                                if($user['user_type']){
+                                    UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
+                                }
                                 $kaelId = $user['id'];
                                 //更新钉钉员工关联kael编号
                                 DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
