@@ -104,12 +104,14 @@ class DingController extends Controller
                     echo "\n\n\n\n\n***************************************************************\n\n\n";
 //                    echo json_encode($userInfo)."\n";
 
-                    $dingUser = DingtalkUser::findOne($userId);
-                    if($dingUser['status']){
-                        $allUserIds[] = $userId;
-                    }
-                    if($dingUser['status'] && $dingUser['kael_id']){
-                        UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
+                    if(!in_array($userId,$allUserIds)){
+                        $dingUser = DingtalkUser::findOne($userId);
+                        if($dingUser['status']){
+                            $allUserIds[] = $userId;
+                        }
+                        if($dingUser['status'] && $dingUser['kael_id']){
+                            UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
+                        }
                     }
                     if(in_array($userId,$allUserIds)){
                         echo date('Y-m-d H:i:s')."\t更新员工:\t";
