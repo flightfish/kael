@@ -106,11 +106,11 @@ class DingController extends Controller
 
                     if(!in_array($userId,$allUserIds)){
                         $dingUser = DingtalkUser::findOne($userId);
-                        if($dingUser['status']){
+                        if(isset($dingUser['status']) && $dingUser['status']){
                             $allUserIds[] = $userId;
-                        }
-                        if($dingUser['status'] && $dingUser['kael_id']){
-                            UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
+                            if($dingUser['kael_id']){
+                                UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
+                            }
                         }
                     }
                     if(in_array($userId,$allUserIds)){
