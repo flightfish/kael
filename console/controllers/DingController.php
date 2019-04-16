@@ -123,7 +123,6 @@ class DingController extends Controller
                         $kaelInfo = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id');
                         $kaelId = $kaelInfo['kael_id'];
                         $user = UserCenter::findOne($kaelId);
-                        if($user['user_type']) $user = [];
                         if(!empty($user)){
                             //@todo rename
                             $params = [];
