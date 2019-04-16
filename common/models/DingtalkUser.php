@@ -26,8 +26,8 @@ class DingtalkUser extends \common\models\BaseActiveRecord
         return $model->auto_id;
     }
 
-    public static function findOneByWhere($where,$select='*',$order=""){
-        !isset($where['status']) && $where['status'] = 0;
+    public static function findOneByWhere($where,$select='*',$order="",$status=0){
+        !isset($where['status']) && $status != -1 && $where['status'] = 0;
         $query = static::find()
             ->select($select)
             ->where($where);

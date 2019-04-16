@@ -82,9 +82,6 @@ class DingController extends Controller
             $departmentList = DingtalkDepartment::find()->where(['status'=>0,'level'=>$level])
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
-                if($v['id'] != '111705883'){
-                       continue;
-                }
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 echo "#####################################\t开始部门用户同步任务\n";
                 echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
@@ -108,14 +105,11 @@ class DingController extends Controller
 //                    echo json_encode($userInfo)."\n";
 
                     if(!in_array($userId,$allUserIds)){
-                        echo "###\n";
-                        $dingUser = DingtalkUser::findOne($userId);
+                        $dingUser = DingtalkUser::findOneByWhere(['user_id'=>$userId]);
                         var_dump($dingUser);
                         if(isset($dingUser['status']) && $dingUser['status']){
-                            echo "***\n";
                             $allUserIds[] = $userId;
                             if($dingUser['kael_id']){
-                                echo "$$$\n";
                                 UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
                             }
                         }
