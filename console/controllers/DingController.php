@@ -108,10 +108,13 @@ class DingController extends Controller
 //                    echo json_encode($userInfo)."\n";
 
                     if(!in_array($userId,$allUserIds)){
+                        echo "###\n";
                         $dingUser = DingtalkUser::findOne($userId);
                         if(isset($dingUser['status']) && $dingUser['status']){
+                            echo "***\n";
                             $allUserIds[] = $userId;
                             if($dingUser['kael_id']){
+                                echo "$$$\n";
                                 UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
                             }
                         }
