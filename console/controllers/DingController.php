@@ -136,9 +136,9 @@ class DingController extends Controller
                             if(isset($userInfo['mobile']) && $user['mobile'] != $userInfo['mobile']){
                                 $params['mobile'] = $userInfo['mobile'];
                             }
-//                            if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
-//                                $where['email'] = $userInfo['email'];
-//                            }
+                            if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
+                                $where['email'] = $userInfo['email'];
+                            }
                             if(!empty($params)){
                                 UserCenter::updateAll($params,['id'=>$kaelId]);
                             }
