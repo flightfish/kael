@@ -71,7 +71,7 @@ class DingController extends Controller
     }
 
     private function updateDingUser(){
-        $allUserIds = array_column(DingtalkUser::findList([],'','user_id'),'user_id');
+        $allUserIds = array_column(DingtalkUser::findList([],'','user_id',-1),'user_id');
         $newAllUserIds = [];
         $currentUserIds = [];
         $departmentToSubRoot = DingtalkDepartment::find()->select('id,subroot_id')
@@ -104,15 +104,11 @@ class DingController extends Controller
                     $currentUserIds[] = $userId;
                     $userInfo = DingTalkApi::getUserInfo($userId);
                     echo "\n\n\n\n\n***************************************************************\n\n\n";
-                    echo json_encode($userInfo)."\n";
-                    if(in_array($userId,$allUserIds ) || $dingUser = DingtalkUser::findOne($userId)){
-                        if(isset($dingUser)){
-                            if($dingUser['status']){
-                                DingtalkUser::updateAll(['status'=>0],['user_id'=>$userId]);
-                                if($dingUser['kael_id']){
-                                    UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
-                                }
-                            }
+//                    echo json_encode($userInfo)."\n";
+                    if(in_array($userId,$allUserIds)){
+                        $dingUser = DingtalkUser::findOne($userId);
+                        if($dingUser['status'] && $dingUser['kael_id']){
+                            UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
                         }
                         echo date('Y-m-d H:i:s')."\t更新员工:\t";
                         echo $userInfo['userid']."\n";
