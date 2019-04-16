@@ -86,6 +86,8 @@ class DingController extends Controller
                 if($v['id']=='111705883'){
                     print_r($userIdList);
                     exit('ssss');
+                }else{
+                    continue;
                 }
                 foreach ($userIdList as $userId){
 //                    if($userId != '00153'){    //测试 账号
