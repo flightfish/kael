@@ -108,7 +108,7 @@ class DingController extends Controller
 //                    echo json_encode($userInfo)."\n";
 
                     if(!in_array($userId,$allUserIds)){
-                        $dingUser = DingtalkUser::findOneByWhere(['user_id'=>$userId]);
+                        $dingUser = DingtalkUser::findOneByWhere(['user_id'=>$userId],'','',-1);
                         var_dump($dingUser);
                         if(isset($dingUser['status']) && $dingUser['status']){
                             $allUserIds[] = $userId;
