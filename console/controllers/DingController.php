@@ -82,9 +82,9 @@ class DingController extends Controller
             $departmentList = DingtalkDepartment::find()->where(['status'=>0,'level'=>$level])
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
-                if($v['id'] != '111705883'){
-                    continue;
-                }
+//                if($v['id'] != '111705883'){   //测试
+//                    continue;
+//                }
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 echo "#####################################\t开始部门用户同步任务\n";
                 echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
