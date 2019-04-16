@@ -83,12 +83,10 @@ class DingController extends Controller
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
-//                if($v['id']=='111705883'){
-//                    print_r($userIdList);
-//                    exit('ssss');
-//                }else{
-//                    continue;
-//                }x
+                echo "#####################################\n";
+                echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
+                echo "#####\t".json_encode($userIdList)."\n";
+                echo "#####################################\n";
                 foreach ($userIdList as $userId){
 //                    if($userId != '00153'){    //测试 账号
 //                        continue;
