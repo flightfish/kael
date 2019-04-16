@@ -83,7 +83,7 @@ class DingController extends Controller
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
-                echo "#####################################\n";
+                echo "#####################################\t开始部门用户同步任务\n";
                 echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
                 echo "#####\t".json_encode($userIdList)."\n";
                 echo "#####################################\n";
