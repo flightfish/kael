@@ -110,6 +110,7 @@ class DingController extends Controller
                     if(!in_array($userId,$allUserIds)){
                         echo "###\n";
                         $dingUser = DingtalkUser::findOne($userId);
+                        var_dump($dingUser);
                         if(isset($dingUser['status']) && $dingUser['status']){
                             echo "***\n";
                             $allUserIds[] = $userId;
