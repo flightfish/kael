@@ -113,22 +113,23 @@ class DingController extends Controller
                         echo date('Y-m-d H:i:s')."\t更新员工:\t";
                         echo $userInfo['userid']."\n";
                         //更新
-                        DingtalkUser::updateAll(
-                            [
-                                'name'=>$userInfo['name'],
-                                'email'=>$userInfo['email'] ?? "",
-                                'mobile'=>$userInfo['mobile'],
-                                'avatar'=>$userInfo['avatar'],
-                                'job_number'=>$userInfo['jobnumber'],
-                                'union_id'=>$userInfo['unionid'],
-                                'open_id'=>$userInfo['openId'],
-                                'departments'=>join(',',$userInfo['department']),
-                                'department_id'=>$userInfo['department'][0], //@todo modify main-department
-                                'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
-                                'hired_date'=>isset($userInfo['hiredDate'])?$userInfo['hiredDate']/1000:'',
-                                'status'=>0
-                            ],
-                            ['user_id'=>$userInfo['userid']]);
+                        $updateParams = [
+                            'name'=>$userInfo['name'],
+                            'email'=>$userInfo['email'] ?? "",
+                            'mobile'=>$userInfo['mobile'],
+                            'avatar'=>$userInfo['avatar'],
+                            'job_number'=>$userInfo['jobnumber'],
+                            'union_id'=>$userInfo['unionid'],
+                            'open_id'=>$userInfo['openId'],
+                            'departments'=>join(',',$userInfo['department']),
+                            'department_id'=>$userInfo['department'][0], //@todo modify main-department
+                            'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                            'status'=>0
+                        ];
+                        if(isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate'])){
+                            $updateParams['hired_date'] = $userInfo['hiredDate']/1000;
+                        }
+                        DingtalkUser::updateAll($updateParams,['user_id'=>$userInfo['userid']]);
 
                         //更新kael @todo rename
                         $kaelInfo = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id');
@@ -469,9 +470,9 @@ class DingController extends Controller
             foreach ($dingUserList as $v){
                 if(isset($dingUserInfos[$v['user_id']])){
                     $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'field_code');
-                    if(isset($fieldList['sys02-birthTime']) && isset($fieldList['sys02-birthTime']['value'])){
+                    if(isset($fieldList['sys02-birthTime']) && isset($fieldList['sys02-birthTime']['value']) && !empty($fieldList['sys02-birthTime']['value'])){
                         $birthday = $fieldList['sys02-birthTime']['value'];
-                        $birthday && DingtalkUser::updateAll(['birthday'=>$birthday],['user_id'=>$v['user_id']]);
+                        DingtalkUser::updateAll(['birthday'=>$birthday],['user_id'=>$v['user_id']]);
                         echo "\n更新钉钉用户:".$v['name']."[".$v['user_id']."]"."\t"."出生日期为:".$birthday."\n\n";
                     }
                 }
