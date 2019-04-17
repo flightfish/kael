@@ -6,6 +6,7 @@ use common\libs\Constant;
 use common\libs\UserToken;
 use common\models\CommonModulesUser;
 use common\models\Department;
+use common\models\DingtalkUser;
 use common\models\LogAuthUser;
 use common\models\Platform;
 use common\models\RelateAdminDepartment;
@@ -310,21 +311,22 @@ class User extends RequestBaseModel
 
     public function del()
     {
-        throw new Exception('无法删除用户,用户已从钉钉被动同步', Exception::ERROR_COMMON);
-
-//        $this->checkUserAuth();
-//        $oldOne = UserCenter::findOneById($this->id);
-//        if(empty($oldOne)){
-//            throw new Exception('用户不存在', Exception::ERROR_COMMON);
-//        }
-//        if($oldOne['admin'] == Role::ROLE_ADMIN){
-//            throw new Exception('无权限删除超级管理员', Exception::ERROR_COMMON);
-//        }
-//        LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_DEL_USER,'del');
-//        UserCenter::updateAll(['status'=>UserCenter::STATUS_INVALID],['id' => $this->id]);
-//        RelateAdminDepartment::updateAll(['status'=>2],['user_id'=>$this->id,'status'=>0]);
-//        RelateUserPlatform::updateAll(['status'=>2],['user_id'=>$this->id,'status'=>0]);
-//        return [];
+        if($ding = DingtalkUser::findOneByWhere(['kael_id'=>$this->id])){
+            throw new Exception('无法删除用户,该用户已从钉钉被动同步', Exception::ERROR_COMMON);
+        }
+        $this->checkUserAuth();
+        $oldOne = UserCenter::findOneById($this->id);
+        if(empty($oldOne)){
+            throw new Exception('用户不存在', Exception::ERROR_COMMON);
+        }
+        if($oldOne['admin'] == Role::ROLE_ADMIN){
+            throw new Exception('无权限删除超级管理员', Exception::ERROR_COMMON);
+        }
+        LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_DEL_USER,'del');
+        UserCenter::updateAll(['status'=>UserCenter::STATUS_INVALID],['id' => $this->id]);
+        RelateAdminDepartment::updateAll(['status'=>2],['user_id'=>$this->id,'status'=>0]);
+        RelateUserPlatform::updateAll(['status'=>2],['user_id'=>$this->id,'status'=>0]);
+        return [];
     }
 
 
@@ -379,53 +381,53 @@ class User extends RequestBaseModel
             $this->data['platform_list'] = array_intersect($this->data['platform_list'],$platformListAllow);
         }
 
-        if (0 == $this->id) {
-            throw new Exception('无法手动新增员工,已被动同步钉钉', Exception::ERROR_COMMON);
-//            if($this->data['center']['admin'] == Role::ROLE_ADMIN && $this->user['admin'] !== Role::ROLE_ADMIN){
-//                throw new Exception('无权限新增超级管理员', Exception::ERROR_COMMON);
-//            }
+        if (0 == $this->id) {            //新增用户
+
+            if($this->data['center']['admin'] == Role::ROLE_ADMIN && $this->user['admin'] !== Role::ROLE_ADMIN){
+                throw new Exception('无权限新增超级管理员', Exception::ERROR_COMMON);
+            }
 //            //唯一性
-//            $old = UserCenter::find()->where(['mobile'=>$this->data['center']['mobile'],'status'=>UserCenter::STATUS_VALID])->one();
-//            if(!empty($old)){
-//                throw new Exception('手机号已存在', Exception::ERROR_COMMON);
-//            }
-//            if(!empty($this->data['center']['email'])){
-//                $this->data['center']['email'] = trim($this->data['center']['email']);
-//                $old = UserCenter::find()->where(['email'=>$this->data['center']['email'],'status'=>UserCenter::STATUS_VALID])->one();
-//                if(!empty($old)){
-//                    throw new Exception('邮箱已存在', Exception::ERROR_COMMON);
-//                }
-//                if($this->data['center']['user_type'] == 0 && substr($this->data['center']['email'],-11) != '@knowbox.cn'){
-//                    throw new Exception('员工请使用公司邮箱', Exception::ERROR_COMMON);
-//                }
-//                if($this->data['center']['user_type'] == 0 && empty($this->data['center']['work_number'])){
-//                    throw new Exception('员工请填写工号', Exception::ERROR_COMMON);
-//                }
-//            }
+            $old = UserCenter::find()->where(['mobile'=>$this->data['center']['mobile'],'status'=>UserCenter::STATUS_VALID])->one();
+            if(!empty($old)){
+                throw new Exception('手机号已存在', Exception::ERROR_COMMON);
+            }
+            if(!empty($this->data['center']['email'])){
+                $this->data['center']['email'] = trim($this->data['center']['email']);
+                $old = UserCenter::find()->where(['email'=>$this->data['center']['email'],'status'=>UserCenter::STATUS_VALID])->one();
+                if(!empty($old)){
+                    throw new Exception('邮箱已存在', Exception::ERROR_COMMON);
+                }
+                if($this->data['center']['user_type'] == 0 && substr($this->data['center']['email'],-11) != '@knowbox.cn'){
+                    throw new Exception('员工请使用公司邮箱', Exception::ERROR_COMMON);
+                }
+                if($this->data['center']['user_type'] == 0 && empty($this->data['center']['work_number'])){
+                    throw new Exception('员工请填写工号', Exception::ERROR_COMMON);
+                }
+            }
 //            //新增
-//            $this->mobile = $this->data['center']['mobile'];
-//            $userInfo = $this->checkUserMobile();
-//            if(!empty($userInfo)){
-//                throw new Exception('用户已存在',Exception::ERROR_COMMON);
-//            }
-//            if (empty($this->data['center']['password'])) {
-//                $this->data['center']['password'] = md5("123456");
-//            }
+            $this->mobile = $this->data['center']['mobile'];
+            $userInfo = $this->checkUserMobile();
+            if(!empty($userInfo)){
+                throw new Exception('用户已存在',Exception::ERROR_COMMON);
+            }
+            if (empty($this->data['center']['password'])) {
+                $this->data['center']['password'] = md5("123456");
+            }
 //            //新增
-//            $model = new UserCenter();
-//            foreach ($this->data['center'] as $k => $v) {
-//                $model->$k = $v;
-//            }
-//            $ret = $model->insert();
-//            $userId = $model->id;
+            $model = new UserCenter();
+            foreach ($this->data['center'] as $k => $v) {
+                $model->$k = $v;
+            }
+            $ret = $model->insert();
+            $userId = $model->id;
 //            //开通磐石权限
-//            $this->id = $userId;
-//            $this->data['platform_list'] = [6000];
-//            $this->updatePriv();
-//            LogAuthUser::LogUser($this->user['id'],$userId,LogAuthUser::OP_ADD_USER,$this->data);
+            $this->id = $userId;
+            $this->data['platform_list'] = [6000];
+            $this->updatePriv();
+            LogAuthUser::LogUser($this->user['id'],$userId,LogAuthUser::OP_ADD_USER,$this->data);
             //权限
-//            RelateUserPlatform::batchAdd($userId,$this->data['platform_list']);
-        } else {
+            RelateUserPlatform::batchAdd($userId,$this->data['platform_list']);
+        } else {            //编辑用户
             //编辑
             $oldOne = UserCenter::findOneById($this->id);
             if (empty($oldOne)) {
@@ -453,13 +455,13 @@ class User extends RequestBaseModel
                 }
             }
             if($oldOne['username'] != $this->data['center']['username']){
-                throw new Exception('无法修改用户名,用户名从钉钉被动同步', Exception::ERROR_COMMON);
+                $updateParams['username'] = $this->data['center']['username'];
             }
             if($oldOne['mobile'] != $this->data['center']['mobile']){
-                throw new Exception('无法修改用户手机号,手机号从钉钉被动同步', Exception::ERROR_COMMON);
+                $updateParams['mobile'] = $this->data['center']['mobile'];
             }
             if($oldOne['work_number'] != $this->data['center']['work_number']){
-                throw new Exception('无法修改用户工号,工号从钉钉被动同步', Exception::ERROR_COMMON);
+                $updateParams['work_number'] = $this->data['center']['work_number'];
             }
             LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_EDIT_USER,$this->data);
             $updateParams = $this->data['center'];
