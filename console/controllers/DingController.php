@@ -469,7 +469,7 @@ class DingController extends Controller
             foreach ($dingUserList as $v){
                 if(isset($dingUserInfos[$v['user_id']])){
                     $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'fieldCode');
-                    if(isset($fieldList['sys02-birthTime'])){
+                    if(isset($fieldList['sys02-birthTime']) && isset($fieldList['sys02-birthTime']['value'])){
                         $birthday = $fieldList['sys02-birthTime']['value'];
                         $birthday && DingtalkUser::updateAll(['birthday'=>$birthday],['user_id'=>$v['user_id']]);
                         echo "更新钉钉用户:".$v['name']."[".$v['user_id']."]"."\t"."出生日期为:".$birthday;
