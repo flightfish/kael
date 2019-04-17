@@ -475,7 +475,7 @@ class DingController extends Controller
                         echo "\n更新钉钉用户:".$v['name']."[".$v['user_id']."]"."\t"."出生日期为:".$birthday."\n\n";
                     }
                 }
-                $id = $v['user_id'];
+                $id = $v['auto_id'];
             }
         }
         echo date('Y-m-d H:i:s')."\t*********************更新结束\n";
