@@ -460,8 +460,8 @@ class DingController extends Controller
             exit();
         }
         echo date('Y-m-d H:i:s')."\t*********************开始更新出生日期\n";
+        $id = 0 ;
         while (1){
-            $id = 0 ;
             if(! $dingUserList = DingtalkUser::findListByWhereWithWhereArr([],[['>','auto_id',$id]],'user_id,name,birthday','auto_id asc','10')){
                 break;
             }
