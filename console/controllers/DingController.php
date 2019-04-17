@@ -470,8 +470,10 @@ class DingController extends Controller
             print_r($dingUserInfos);
             foreach ($dingUserList as $v){
                 if(isset($dingUserInfos[$v['user_id']])){
+                    echo "###\n";
                     $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'fieldCode');
                     if(isset($fieldList['sys02-birthTime']) && isset($fieldList['sys02-birthTime']['value'])){
+                        echo "@@@\n";
                         $birthday = $fieldList['sys02-birthTime']['value'];
                         $birthday && DingtalkUser::updateAll(['birthday'=>$birthday],['user_id'=>$v['user_id']]);
                         echo "更新钉钉用户:".$v['name']."[".$v['user_id']."]"."\t"."出生日期为:".$birthday;
@@ -479,6 +481,7 @@ class DingController extends Controller
                 }
                 $id = $v['user_id'];
             }
+            exit('$$$');
         }
         echo date('Y-m-d H:i:s')."\t*********************更新结束\n";
     }
