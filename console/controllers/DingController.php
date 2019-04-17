@@ -300,7 +300,7 @@ class DingController extends Controller
                             'departments'=>join(',',$userInfo['department']),
                             'department_id'=>$userInfo['department'][0],
                             'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
-                            'hired_date'=>isset($userInfo['hiredDate'])?$userInfo['hiredDate']/1000:'',
+                            'hired_date'=>(isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate']))?$userInfo['hiredDate']/1000:'',
                         ]);
                         if(!empty($userInfo['mobile'])){
                             if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile'],'user_type'=>0])){
