@@ -469,7 +469,6 @@ class DingController extends Controller
             foreach ($dingUserList as $v){
                 if(isset($dingUserInfos[$v['user_id']])){
                     $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'field_code');
-                    print_r($fieldList);
                     if(isset($fieldList['sys02-birthTime']) && isset($fieldList['sys02-birthTime']['value'])){
                         $birthday = $fieldList['sys02-birthTime']['value'];
                         $birthday && DingtalkUser::updateAll(['birthday'=>$birthday],['user_id'=>$v['user_id']]);
