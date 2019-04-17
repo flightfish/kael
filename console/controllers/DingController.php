@@ -472,7 +472,7 @@ class DingController extends Controller
                     if(isset($fieldList['sys02-birthTime']) && isset($fieldList['sys02-birthTime']['value'])){
                         $birthday = $fieldList['sys02-birthTime']['value'];
                         $birthday && DingtalkUser::updateAll(['birthday'=>$birthday],['user_id'=>$v['user_id']]);
-                        echo "更新钉钉用户:".$v['name']."[".$v['user_id']."]"."\t"."出生日期为:".$birthday;
+                        echo "\n更新钉钉用户:".$v['name']."[".$v['user_id']."]"."\t"."出生日期为:".$birthday."\n\n";
                     }
                 }
                 $id = $v['user_id'];
