@@ -472,6 +472,8 @@ class DingController extends Controller
                 if(isset($dingUserInfos[$v['user_id']])){
                     echo "###\n";
                     $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'fieldCode');
+                    print_r($fieldList);
+                    exit('&&&');
                     if(isset($fieldList['sys02-birthTime']) && isset($fieldList['sys02-birthTime']['value'])){
                         echo "@@@\n";
                         $birthday = $fieldList['sys02-birthTime']['value'];
