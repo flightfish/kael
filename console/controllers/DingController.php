@@ -465,7 +465,9 @@ class DingController extends Controller
             if(! $dingUserList = DingtalkUser::findListByWhereWithWhereArr([],[['>','auto_id',$id]],'user_id,name,birthday','auto_id asc','10')){
                 break;
             }
+            print_r($dingUserList);
             $dingUserInfos = array_column(DingTalkApi::getUserInfoForFieldsByUids(array_column($dingUserList,'user_id'),'sys02-birthTime'),null,'userid');
+            print_r($dingUserInfos);
             foreach ($dingUserList as $v){
                 if(isset($dingUserInfos[$v['user_id']])){
                     $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'fieldCode');
