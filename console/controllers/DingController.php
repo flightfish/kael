@@ -471,7 +471,7 @@ class DingController extends Controller
             foreach ($dingUserList as $v){
                 if(isset($dingUserInfos[$v['user_id']])){
                     echo "###\n";
-                    $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'fieldCode');
+                    $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'field_code');
                     print_r($fieldList);
                     exit('&&&');
                     if(isset($fieldList['sys02-birthTime']) && isset($fieldList['sys02-birthTime']['value'])){
