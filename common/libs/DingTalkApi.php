@@ -21,7 +21,7 @@ class DingTalkApi {
 
     const API_GETUSERINFO_BYCODE = 'https://oapi.dingtalk.com/user/getuserinfo';//code换取userinfo
 
-
+    const API_GET_USERINFO_BY_UIDS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/list';
 
     public static function getUserInfoByCode($code){
         $url = self::API_GETUSERINFO_BYCODE.'?access_token='.self::getAccessTokenMeican().'&code='.$code;
@@ -43,6 +43,17 @@ class DingTalkApi {
         $retJson = self::curlGet(self::API_USER_GETDEPTMEMBER,['deptId'=>$departmentId]);
         return $retJson['userIds'];
     }
+
+    //通过智能人事的接口获取用户的详细信息
+    public static function getUserInfoForFieldsByUids($uids,$fields){
+        $params = [
+            'userid_list'=>is_array($uids)?implode(',',$uids):$uids,
+            'field_filter_list'=>is_array($fields)?implode(',',$fields):$fields
+        ];
+        $response = self::curlGet(self::API_GET_USERINFO_BY_UIDS,$params);
+        return $response['result'];
+    }
+
     public static function getUserInfo($userId){
         $retJson = self::curlGet(self::API_USER_GET,['userid'=>$userId]);
         return $retJson;

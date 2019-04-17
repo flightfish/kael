@@ -13,13 +13,6 @@ use yii\console\Controller;
 
 class DingController extends Controller
 {
-    //钉钉同步功能初始化流程
-
-    //第一步 准备好数据库更新
-    //第二步 [ehr] kael部门关联钉钉部门
-    //第三步 sql执行（超哥执行）
-    //第四步 手动开启 ding/update 定时任务
-
 
     /**
      * 初始化钉钉信息
@@ -132,6 +125,7 @@ class DingController extends Controller
                                 'departments'=>join(',',$userInfo['department']),
                                 'department_id'=>$userInfo['department'][0], //@todo modify main-department
                                 'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                                'hired_date'=>$userInfo['hiredDate']/1000,
                                 'status'=>0
                             ],
                             ['user_id'=>$userInfo['userid']]);
@@ -305,8 +299,8 @@ class DingController extends Controller
                             'departments'=>join(',',$userInfo['department']),
                             'department_id'=>$userInfo['department'][0],
                             'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                            'hired_date'=>$userInfo['hiredDate']/1000,
                         ]);
-
                         if(!empty($userInfo['mobile'])){
                             if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile'],'user_type'=>0])){
                                 if($user['user_type']){
@@ -456,7 +450,36 @@ class DingController extends Controller
         return $list;
     }
 
-
+    /**
+     * 钉钉同步
+     * 出生日期
+     */
+    public function actionBirthday(){
+        if(exec('ps -ef|grep "ding/birthday"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
+        echo date('Y-m-d H:i:s')."\t*********************开始更新出生日期\n";
+        while (1){
+            $id = 0 ;
+            if(! $dingUserList = DingtalkUser::findListByWhereWithWhereArr([],[['>','auto_id',$id]],'user_id,name,birthday','auto_id asc','10')){
+                break;
+            }
+            $dingUserInfos = array_column(DingTalkApi::getUserInfoForFieldsByUids(array_column($dingUserList,'user_id'),'sys02-birthTime'),null,'userid');
+            foreach ($dingUserList as $v){
+                if(isset($dingUserInfos[$v['user_id']])){
+                    $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'fieldCode');
+                    if(isset($fieldList['sys02-birthTime'])){
+                        $birthday = $fieldList['sys02-birthTime']['value'];
+                        $birthday && DingtalkUser::updateAll(['birthday'=>$birthday],['user_id'=>$v['user_id']]);
+                        echo "更新钉钉用户:".$v['name']."[".$v['user_id']."]"."\t"."出生日期为:".$birthday;
+                    }
+                }
+                $id = $v['user_id'];
+            }
+        }
+        echo date('Y-m-d H:i:s')."\t*********************更新结束\n";
+    }
 //    public function actionOldKaelAccountRelateToDingAccount(){
 //        echo "开始绑定kael账号到钉钉账号\n";
 //        $kaelAccounts = UserCenter::findList();
