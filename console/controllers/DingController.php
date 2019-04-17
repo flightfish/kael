@@ -288,7 +288,7 @@ class DingController extends Controller
                         echo date('Y-m-d H:i:s')."\t新增员工:\n";
                         echo json_encode($userInfo,true)."\n";
                         //新增
-                        DingtalkUser::add([
+                        $addParams = [
                             'user_id'=>$userInfo['userid'],
                             'name'=>$userInfo['name'],
                             'email'=>$userInfo['email'] ?? "",
@@ -300,8 +300,11 @@ class DingController extends Controller
                             'departments'=>join(',',$userInfo['department']),
                             'department_id'=>$userInfo['department'][0],
                             'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
-                            'hired_date'=>(isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate']))?$userInfo['hiredDate']/1000:'',
-                        ]);
+                        ];
+                        if(isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate'])){
+                            $addParams['hired_date'] = $userInfo['hiredDate']/1000;
+                        }
+                        DingtalkUser::add($addParams);
                         if(!empty($userInfo['mobile'])){
                             if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile'],'user_type'=>0])){
                                 if($user['user_type']){
