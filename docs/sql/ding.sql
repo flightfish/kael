@@ -65,6 +65,5 @@ INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_na
 INSERT INTO `department_relate_to_kael`(`kael_department_id`,`kael_department_name`,`department_id`,`department_name`) VALUES(134,'总裁办',55440532,'战略综合部4组');
 
 ALTER  TABLE `dingtalk_user`
-ADD COLUMN `hired_date` varchar(60) NOT NULL DEFAULT '' COMMENT '入职日期' after `department_subroot`;
-ALTER  TABLE `dingtalk_user`
+ADD COLUMN `hired_date` varchar(60) NOT NULL DEFAULT '' COMMENT '入职日期' after `department_subroot`,
 ADD COLUMN `birthday` varchar(60) NOT NULL DEFAULT '' COMMENT '出生日期' after `hired_date`;

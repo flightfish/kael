@@ -492,7 +492,8 @@ class DingController extends Controller
                     $fieldList = array_column($dingUserInfos[$v['user_id']]['field_list'],null,'field_code');
                     if(isset($fieldList['sys02-birthTime']) && isset($fieldList['sys02-birthTime']['value']) && !empty($fieldList['sys02-birthTime']['value'])){
                         $birthday = $fieldList['sys02-birthTime']['value'];
-                        DingtalkUser::updateAll(['birthday'=>$birthday],['user_id'=>$v['user_id']]);
+                        $birthday = date('m-d',strtotime($birthday));
+                        $birthday && DingtalkUser::updateAll(['birthday'=>$birthday],['user_id'=>$v['user_id']]);
                         echo "\n更新钉钉用户:".$v['name']."[".$v['user_id']."]"."\t"."出生日期为:".$birthday."\n\n";
                     }
                 }
