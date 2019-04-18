@@ -127,7 +127,7 @@ class DingController extends Controller
                             'status'=>0
                         ];
                         if(isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate'])){
-                            $updateParams['hired_date'] = $userInfo['hiredDate']/1000;
+                            $updateParams['hired_date'] = date('Y-m-d',$userInfo['hiredDate']/1000);
                         }
                         DingtalkUser::updateAll($updateParams,['user_id'=>$userInfo['userid']]);
 
@@ -309,7 +309,7 @@ class DingController extends Controller
                             'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                         ];
                         if(isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate'])){
-                            $addParams['hired_date'] = $userInfo['hiredDate']/1000;
+                            $addParams['hired_date'] = date('Y-m-d',$userInfo['hiredDate']/1000);
                         }
                         DingtalkUser::add($addParams);
                         if(!empty($userInfo['mobile'])){
