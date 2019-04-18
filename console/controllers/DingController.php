@@ -217,16 +217,23 @@ class DingController extends Controller
                                 $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
 
                                 //更新部门用户关系表
-                                if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$kaelId,'depart_id'=>$did])){
+                                if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$kaelId,'depart_id'=>$did],'','',-1)){
                                     $rows[] = [$kaelId,$did,$leader,$order];
                                     BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                 }else{
+                                    $relateUpdateParams = [];
+                                    if($record['status']){
+                                        $relateUpdateParams['status'] = 0;
+                                    }
                                     if($record['is_leader'] != $leader){
-                                        DepartmentUser::updateAll(['is_leader'=>$leader],['id'=>$record['id']]);
+                                        $relateUpdateParams['is_leader'] = $leader;
                                         BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                     }
                                     if($record['disp'] != $order){
-                                        DepartmentUser::updateAll(['disp'=>$order],['id'=>$record['id']]);
+                                        $relateUpdateParams['disp'] = $order;
+                                    }
+                                    if(!empty($relateUpdateParams)){
+                                        DepartmentUser::updateAll($relateUpdateParams,['id'=>$record['id']]);
                                     }
                                 }
 
@@ -357,18 +364,28 @@ class DingController extends Controller
                             if($did==1) $founder = true;
                             $leader = $isLeaderInDepts[$did]==="true"?1:0;
                             $order = isset($orderInDepts[$did])?$orderInDepts[$did]:'';
-                            if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$kaelId,'depart_id'=>$did])){
+
+                            //更新实际部门关系
+                            if(!$record = DepartmentUser::findOneByWhere(['user_id'=>$kaelId,'depart_id'=>$did],'','',-1)){
                                 $rows[] = [$kaelId,$did,$leader,$order];
                                 BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                             }else{
+                                $relateUpdateParams = [];
+                                if($record['status']){
+                                    $relateUpdateParams['status'] = 0;
+                                }
                                 if($record['is_leader'] != $leader){
-                                    DepartmentUser::updateAll(['is_leader'=>$leader],['id'=>$record['id']]);
+                                    $relateUpdateParams['is_leader'] = $leader;
                                     BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                 }
                                 if($record['disp'] != $order){
-                                    DepartmentUser::updateAll(['disp'=>$order],['id'=>$record['id']]);
+                                    $relateUpdateParams['disp'] = $order;
+                                }
+                                if(!empty($relateUpdateParams)){
+                                    DepartmentUser::updateAll($relateUpdateParams,['id'=>$record['id']]);
                                 }
                             }
+
                             //更新钉钉部门表 部门领导人
                             if($leader){
                                 $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
