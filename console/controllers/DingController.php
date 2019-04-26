@@ -536,8 +536,6 @@ class DingController extends Controller
                 'email_status'=>
             ];
         }
-
-
     }
 
     /*
