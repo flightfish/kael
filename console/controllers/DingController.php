@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 use common\libs\DingTalkApi;
+use common\models\db\EmailRecord;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use common\models\ehr\BusinessDepartment;
@@ -149,9 +150,9 @@ class DingController extends Controller
                             if(isset($userInfo['mobile']) && $user['mobile'] != $userInfo['mobile']){
                                 $params['mobile'] = $userInfo['mobile'];
                             }
-                            if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
-                                $params['email'] = $userInfo['email'];
-                            }
+//                            if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
+//                                $params['email'] = $userInfo['email'];
+//                            }
                             if(!empty($params)){
                                 UserCenter::updateAll($params,['id'=>$kaelId]);
                             }
@@ -188,7 +189,7 @@ class DingController extends Controller
                                     'sex'=>1,
                                     'work_number'=>$userInfo['jobnumber'],
                                     'mobile'=>$userInfo['mobile']??'',
-                                    'email'=>$userInfo['email']??'',
+//                                    'email'=>$userInfo['email']??'',
                                     'user_type'=>0
                                 ];
                                 $kaelId = UserCenter::addUser($params);
@@ -343,7 +344,7 @@ class DingController extends Controller
                                 'sex'=>1,
                                 'work_number'=>$userInfo['jobnumber'],
                                 'mobile'=>isset($userInfo['mobile'])?$userInfo['mobile']:'',
-                                'email'=>isset($userInfo['email'])?$userInfo['email']:'',
+//                                'email'=>isset($userInfo['email'])?$userInfo['email']:'',
                                 'user_type'=>0
                             ];
 
@@ -516,4 +517,59 @@ class DingController extends Controller
 //        }
 //        echo "绑定任务结束\n";
 //    }
+
+
+    private function  actionCreateEmailForNewUser($kaelId){
+        if(!$user = UserCenter::findOneById($kaelId)){
+            return ;
+        }
+        $name = $user['username'];
+        $nameType = self::getNameTypeByName($name);
+        if($nameType){
+            $params = [
+                'kael_id'=>$kaelId,
+                'name'=>$user['name'],
+                'work_number'=>$user['work_number'],
+                'department_id'=>,
+                'department_name'=>,
+                'email_prefix'=>'',
+                'email_status'=>
+            ];
+        }
+
+
+    }
+
+    /*
+     * 名称异常判断
+     *
+     * 0 名字正常
+     * 1 空
+     * 2 只有一个汉字
+     * 3 多于十个汉字
+     * 4 英汉混合
+     * 5 纯英文
+     *
+     */
+    private static function getNameTypeByName($name){
+        $name = trim($name);
+        $length = strlen($name);
+        if(!$length){    //空
+            return 1;
+        }
+        $mbLength = mb_strlen($name);
+        if($length == $mbLength){ //纯英文
+            return 5;
+        }
+        if(($length % $mbLength)){ //英汉混合
+            return 4;
+        }elseif($mbLength == 1){  // 纯汉字  只有一个汉字
+            return 2;
+        }elseif($mbLength > 10){  //纯汉字 多于十个汉字
+            return 3;
+        }
+        return 0;
+    }
+
+
 }
