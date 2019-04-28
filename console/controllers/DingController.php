@@ -515,27 +515,43 @@ class DingController extends Controller
 //                echo "[用户名+工号]钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$v['id']."\n";
 //            }
 //        }
-//        echo "绑定任务结束\n";
+//        echo "绑定任务结束\n  ";
 //    }
 
 
+
+    /*
+     *
+     * 邮箱状态
+     * 0正常
+     * 1创建异常
+     * 2注销中
+     * 3已注销
+    */
     private function  actionCreateEmailForNewUser($kaelId){
         if(!$user = UserCenter::findOneById($kaelId)){
             return ;
         }
         $name = $user['username'];
         $nameType = self::getNameTypeByName($name);
+        $dingUserInfo = DingtalkUser::findOneByWhere(['kael_id'=>$kaelId]);
+        $departmentId = $dingUserInfo['department_id'];
+        $departmentName = DingtalkDepartment::find()->select('name')->where(['id'=>$departmentId])->scalar();
+        $params = [
+            'kael_id'=>$kaelId,
+            'name'=>$user['name'],
+            'work_number'=>$user['work_number'],
+            'department_id'=>$departmentId,
+            'department_name'=>$departmentName
+        ];
         if($nameType){
-            $params = [
-                'kael_id'=>$kaelId,
-                'name'=>$user['name'],
-                'work_number'=>$user['work_number'],
-                'department_id'=>,
-                'department_name'=>,
-                'email_prefix'=>'',
-                'email_status'=>
-            ];
+            $params['email_prefix'] = '';
+            $params['email_status'] = 1;
+            EmailRecord::add($params);
+            return;
         }
+        
+
     }
 
     /*
