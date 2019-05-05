@@ -67,6 +67,7 @@ class EmailApi{
             'department'=>[\Yii::$app->params['qqemail_department']],
             'password'=>$password
         ];
+        echo json_encode($data,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
         $ret = self::curlTXL(self::API_USERCREATE,$data);
         return $ret;
     }
