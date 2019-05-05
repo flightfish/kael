@@ -23,6 +23,7 @@ class DingTalkApi {
 
     const API_GET_USERINFO_BY_UIDS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/list';
 
+    const API_POST_UPDATE_EMAIL_BY_UID = "https://oapi.dingtalk.com/user/update";
     public static function getUserInfoByCode($code){
         $url = self::API_GETUSERINFO_BYCODE.'?access_token='.self::getAccessTokenMeican().'&code='.$code;
         $retStr = AppFunc::curlGet($url);
@@ -73,7 +74,14 @@ class DingTalkApi {
         return $retJson['parentIds'];
     }
 
-
+    public static function updateEmailForUser($userId,$email){
+        $params = [
+            'userid'=>$userId,
+            'email'=>$email
+        ];
+        $retJson = self::curlPost(self::API_POST_UPDATE_EMAIL_BY_UID,$params);
+        return $retJson['parentIds'];
+    }
 
     private static function getAccessToken(){
         $key = 'DINGTALK_ACCESS_TOKEN_'.self::APPKEY;
@@ -116,6 +124,15 @@ class DingTalkApi {
         }
         return $retJson;
     }
+    private static function curlPost($url,$data=[],$header=[]){
+        $url .= '?access_token='.self::getAccessToken();
+        $retStr = AppFunc::curlPost($url,$data,$header);
+        $retJson = json_decode($retStr,true);
+        if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
+            throw new Exception('[DING]'.$retJson['errmsg']??"");
+        }
+        return $retJson;
+    }
 
     private static function curlGetMeican($url,$data=[]){
         $url .= '?access_token='.self::getAccessTokenMeican();
@@ -128,6 +145,8 @@ class DingTalkApi {
         }
         return $retJson;
     }
+
+
 
 
 }

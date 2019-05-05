@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 use common\libs\DingTalkApi;
+use common\libs\EmailApi;
 use common\models\db\EmailRecord;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
@@ -524,11 +525,11 @@ class DingController extends Controller
      *
      * 邮箱状态
      * 0正常
-     * 1创建异常
+     * 1异常 (创建异常、修改异常)
      * 2注销中
      * 3已注销
     */
-    private function  actionCreateEmailForNewUser($kaelId){
+    private function  actionCreateEmailForNewUser($kaelId,$dingId){
         if(!$user = UserCenter::findOneById($kaelId)){
             return ;
         }
@@ -544,14 +545,33 @@ class DingController extends Controller
             'department_id'=>$departmentId,
             'department_name'=>$departmentName
         ];
-        if($nameType){
+        if($nameType){   // 姓名不符合要求  加入创建异常
             $params['email_prefix'] = '';
             $params['email_status'] = 1;
+            $params['description'] = "创建类型:员工入职\n异常原因:".self::$descriptions[$nameType];
             EmailRecord::add($params);
             return;
         }
-        
-
+        $workNumber = $user['work_number'];
+        $userType = strstr($workNumber,'SX')?'-intern':'';
+        $emailPrefixs = [];
+        $emailPrefix = $emailPrefixs[0];
+        if(isset($emailPrefixs[1])){
+            $params['email_prefix'] = $emailPrefix;
+            $params['email_status'] = 1;
+            $params['description'] = "创建类型:员工入职\n异常原因:多音字";
+            EmailRecord::add($params);
+            return;
+        }
+        $emailPrefix = self::checkEmailPrefix($emailPrefix,$userType);
+        $params['email_prefix'] = $emailPrefix;
+        $email = $emailPrefix."@knowbox.cn";
+        $emailStatus = EmailApi::addUser($email,$user['name'],'1Knowbox!');
+        if(!$emailStatus['errcode']){
+            $params['email_status'] = 0;
+            UserCenter::updateAll(['email'=>$email],['id'=>$kaelId]);
+            DingTalkApi::updateEmailForUser($dingId,$email);
+        }
     }
 
     /*
@@ -565,6 +585,7 @@ class DingController extends Controller
      * 5 纯英文
      *
      */
+    private static $descriptions =[1=>'名字为空',2=>'只有一个汉字',3=>'多于十个汉字',4=>'英汉混合',5=>'纯英文'];
     private static function getNameTypeByName($name){
         $name = trim($name);
         $length = strlen($name);
@@ -585,5 +606,84 @@ class DingController extends Controller
         return 0;
     }
 
+    /*
+    * 前缀的后缀检查和配置
+    *
+    */
+    private static function checkEmailPrefix($emailPrefix,$userType){
+        $wheres = [];
+        $wheres[] = ['like','email',$emailPrefix];
+        if($userType){
+            $wheres[] = ['like','email','-intern'];
+        }else{
+            $wheres[] = ['not like','email','-intern'];
+        }
+        $emailPrefixList = UserCenter::findListByWhereAndWhereArr([],$wheres,'email');
+        if(empty($emailPrefixList)){
+            return $emailPrefix;
+        }
+        $emailPrefixList = array_multisort(array_column($emailPrefixList,'email'),SORT_DESC,$emailPrefixList);
+        $maxNumberEmail = $emailPrefixList[0]['email'];
+        if(preg_match('/\d+/',$maxNumberEmail,$strArr)){
+            $max = $strArr+1;
+        }else{
+            $max = 1;
+        }
+        return $emailPrefix.$max.$userType;
+    }
+
+
+    /*
+     *
+     * 邮箱状态
+     * 0正常
+     * 1异常 (创建异常、修改异常)
+     * 2注销中
+     * 3已注销
+    */
+    private function  actionUpdateEmailForNewUser($kaelId,$dingId){
+        if(!$user = UserCenter::findOneById($kaelId)){
+            return ;
+        }
+        $name = $user['username'];
+        $nameType = self::getNameTypeByName($name);
+        $dingUserInfo = DingtalkUser::findOneByWhere(['kael_id'=>$kaelId]);
+        $departmentId = $dingUserInfo['department_id'];
+        $departmentName = DingtalkDepartment::find()->select('name')->where(['id'=>$departmentId])->scalar();
+        $params = [
+            'kael_id'=>$kaelId,
+            'name'=>$user['name'],
+            'work_number'=>$user['work_number'],
+            'department_id'=>$departmentId,
+            'department_name'=>$departmentName
+        ];
+        if($nameType){   // 姓名不符合要求  加入创建异常
+            $params['email_prefix'] = '';
+            $params['email_status'] = 1;
+            $params['description'] = "创建类型:员工入职\n异常原因:".self::$descriptions[$nameType];
+            EmailRecord::add($params);
+            return;
+        }
+        $workNumber = $user['work_number'];
+        $userType = strstr($workNumber,'SX')?'-intern':'';
+        $emailPrefixs = [];
+        $emailPrefix = $emailPrefixs[0];
+        if(isset($emailPrefixs[1])){
+            $params['email_prefix'] = $emailPrefix;
+            $params['email_status'] = 1;
+            $params['description'] = "创建类型:员工入职\n异常原因:多音字";
+            EmailRecord::add($params);
+            return;
+        }
+        $emailPrefix = self::checkEmailPrefix($emailPrefix,$userType);
+        $params['email_prefix'] = $emailPrefix;
+        $email = $emailPrefix."@knowbox.cn";
+        $emailStatus = EmailApi::addUser($email,$user['name'],'1Knowbox!');
+        if(!$emailStatus['errcode']){
+            $params['email_status'] = 0;
+            UserCenter::updateAll(['email'=>$email],['id'=>$kaelId]);
+            DingTalkApi::updateEmailForUser($dingId,$email);
+        }
+    }
 
 }
