@@ -24,6 +24,8 @@ class DingTalkApi {
     const API_GET_USERINFO_BY_UIDS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/list';
 
     const API_POST_UPDATE_EMAIL_BY_UID = "https://oapi.dingtalk.com/user/update";
+
+
     public static function getUserInfoByCode($code){
         $url = self::API_GETUSERINFO_BYCODE.'?access_token='.self::getAccessTokenMeican().'&code='.$code;
         $retStr = AppFunc::curlGet($url);
@@ -80,7 +82,7 @@ class DingTalkApi {
             'email'=>$email
         ];
         $retJson = self::curlPost(self::API_POST_UPDATE_EMAIL_BY_UID,$params);
-        return $retJson['parentIds'];
+        return $retJson;
     }
 
     private static function getAccessToken(){

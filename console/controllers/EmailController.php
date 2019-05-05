@@ -2,13 +2,184 @@
 namespace console\controllers;
 
 use common\libs\EmailApi;
+use common\libs\PinYin;
 use common\models\CommonUser;
+use common\models\DingtalkUser;
 use Yii;
 use yii\console\Controller;
 
 
 class EmailController extends Controller
 {
+
+    public function actionInit(){
+        /**
+        alter table `dingtalk_user`
+        add `email_pinyin` varchar(255) NOT NULL DEFAULT '' COMMENT '邮箱拼音' AFTER `email`,
+        add `email_suffix` varchar(255) NOT NULL DEFAULT '' COMMENT '后缀，用于邮箱创建' after `email_pinyin`,
+        add `email_number` int(11) NOT NULL DEFAULT '0' COMMENT '序号，用于邮箱创建' AFTER `email_suffix`,
+        add `email_errno` int(11) NOT NULL DEFAULT '-1' COMMENT '错误类型 0正常 1多音字 2姓名中包含非汉字字符 3名字长度过长(大于10位) 4名字长度过短(小于2位)'  AFTER `email_number`,
+        add `email_errmsg` varchar(255) NOT NULL DEFAULT '' COMMENT '错误详情' AFTER `email_errno`,
+        add `email_created` tinyint(4) NOT NULL DEFAULT '0' COMMENT '邮箱创建状态 0创建中 1已创建 2创建异常 3注销中 4已注销' AFTER `email_errmsg`,
+        add INDEX idx_pinyin_emailsuffix_emailnumber(`email_pinyin`,`email_suffix`,`email_number`);
+         */
+        $allList = DingtalkUser::find()->where(['!=','email',''])->andWhere(['email_pinyin'=>''])
+            ->asArray(true)->all();
+        foreach ($allList as $v){
+            $match = [];
+            preg_match_all('/^([a-zA-z]+)([0-9]*)(-intern)*@knowbox.cn$/',$v['email'],$match);
+            if(empty($match[1])){
+                DingtalkUser::updateAll(
+                    [
+                        'email_errno'=>5,
+                        'email_errmsg'=>'钉钉邮箱格式错误'
+                    ],
+                    ['user_id'=>$v['user_id']]);
+                continue;
+            }
+            $pinyin = $match[1][0];
+            $number = $match[2][0];
+            $suffix = $match[3][0];
+            DingtalkUser::updateAll(
+                [
+                    'email_pinyin'=>$pinyin,
+                    'email_suffix'=>$suffix,
+                    'email_number'=>intval($number),
+                    'email_errno'=>0
+                ],
+                ['user_id'=>$v['user_id']]);
+        }
+    }
+
+    public function actionGenPinyin(){
+        if(exec('ps -ef|grep "email/gen-pinyin"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo date("Y-m-d H:i:s")." is_running\n";
+            exit();
+        }
+        $list = DingtalkUser::find()
+            ->where([
+                'status'=>0,
+                'email_errno'=>0,
+                'email'=>'',
+                'email_pinyin'=>''
+            ])
+            ->asArray(true)
+            ->all();
+        foreach ($list as $v){
+            $v['name'] = trim($v['name']);
+            if (preg_match( "/^[\u4e00-\u9fa5]+$/", $v['name'])) {
+                //全中文
+                $len = mb_strlen($v['name']);
+                if($len > 10){
+                    DingtalkUser::updateAll(
+                        ['email_errno'=>3, 'email_errmsg'=>"姓名长度过长{$len}"],
+                        ['user_id'=>$v['user_id']]);
+                    continue;
+                }
+                if($len < 2){
+                    DingtalkUser::updateAll(
+                        ['email_errno'=>4, 'email_errmsg'=>"姓名长度过短{$len}"],
+                        ['user_id'=>$v['user_id']]);
+                    continue;
+                }
+
+                $error = 0;
+                $pinyinArr = PinYin::getDuoyin($v['name']);
+                $pinyin = '';
+                $i = 0;
+                foreach ($pinyinArr as $zi=>$pinyinOne){
+                    if(empty($pinyinOne)){
+                        DingtalkUser::updateAll(
+                            [
+                                'email_errno'=>5,
+                                'email_errmsg'=>"存在生僻字-{$zi}"
+                            ],
+                            ['user_id'=>$v['user_id']]);
+                        $error = 1;
+                        break;
+                    }
+                    if(count($pinyinOne) > 1 && ($i==0 || $len = 2)){
+                        DingtalkUser::updateAll(
+                            [
+                                'email_errno'=>1,
+                                'email_errmsg'=>"存在多音字-{$zi}-".join(',',$pinyinOne)
+                            ],
+                            ['user_id'=>$v['user_id']]);
+                        $error = 1;
+                        break;
+                    }elseif(count($pinyinOne) > 1){
+                        $pinyinOne = array_values(array_unique(array_map(function($v){return $v[0];},$pinyinOne)));
+                        if(count($pinyinOne) > 1){
+                            DingtalkUser::updateAll(
+                                [
+                                    'email_errno'=>1,
+                                    'email_errmsg'=>"存在多音字-{$zi}-".join(',',$pinyinOne)
+                                ],
+                                ['user_id'=>$v['user_id']]);
+                            $error = 1;
+                            break;
+                        }
+                    }
+
+                    $pinyin .= $pinyinOne[0];
+                    $i++;
+                }
+                if($error){
+                    continue;
+                }
+                $maxNumOne = DingtalkUser::find()
+                    ->where(['email_pinyin'=>$pinyin,'email_suffix'=>$v['email_suffix']])
+                    ->orderBy('email_number desc')->limit(1)->asArray(true)->one();
+                if(empty($maxNumOne)){
+                    $number = 0;
+                }else{
+                    $number = $maxNumOne['email_number'] + 1;
+                }
+                DingtalkUser::updateAll(
+                    [
+                        'email_pinyin'=>$pinyin,
+                        'email_number'=>intval($number),
+                        'email_errno'=>0
+                    ],
+                    ['user_id'=>$v['user_id']]);
+            }else{
+                DingtalkUser::updateAll(
+                    [
+                        'email_errno'=>2,
+                        'email_errmsg'=>'姓名中包含非汉字字符'
+                    ],
+                    ['user_id'=>$v['user_id']]);
+                continue;
+            }
+        }
+    }
+
+    public function actionGenEmail(){
+        //生成email
+        if(exec('ps -ef|grep "email/gen-email"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo date("Y-m-d H:i:s")." is_running\n";
+            exit();
+        }
+        $list = DingtalkUser::find()
+            ->where([
+                'status'=>0,
+                'email_errno'=>0,
+                'email'=>''
+            ])
+            ->andWhere(['!=','email_pinyin',''])
+            ->asArray(true)
+            ->all();
+        foreach ($list as $v){
+            if(empty($v['email_number'])){
+                $email = $v['email_pinyin'].$v['email_suffix'].'@knowbox.cn';
+            }else{
+                $email = $v['email_pinyin'].$v['email_number'].$v['email_suffix'].'@knowbox.cn';
+            }
+            DingtalkUser::updateAll(['email'=>$email],['user_id'=>$v['user_id']]);
+        }
+    }
+
+
     /**
      * 初始化用户信息到EMAIL
      */
