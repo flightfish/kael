@@ -72,13 +72,13 @@ class EmailController extends Controller
                 $len = mb_strlen($v['name']);
                 if($len > 10){
                     DingtalkUser::updateAll(
-                        ['email_errno'=>3, 'email_errmsg'=>"姓名长度过长{$len}"],
+                        ['email_errno'=>3, 'email_errmsg'=>"姓名长度过长{$len}",'email_created'=>2],
                         ['user_id'=>$v['user_id']]);
                     continue;
                 }
                 if($len < 2){
                     DingtalkUser::updateAll(
-                        ['email_errno'=>4, 'email_errmsg'=>"姓名长度过短{$len}"],
+                        ['email_errno'=>4, 'email_errmsg'=>"姓名长度过短{$len}","email_created"=>2],
                         ['user_id'=>$v['user_id']]);
                     continue;
                 }
@@ -92,7 +92,8 @@ class EmailController extends Controller
                         DingtalkUser::updateAll(
                             [
                                 'email_errno'=>5,
-                                'email_errmsg'=>"存在生僻字-{$zi}"
+                                'email_errmsg'=>"存在生僻字-{$zi}",
+                                'email_created'=>2
                             ],
                             ['user_id'=>$v['user_id']]);
                         $error = 1;
@@ -102,7 +103,8 @@ class EmailController extends Controller
                         DingtalkUser::updateAll(
                             [
                                 'email_errno'=>1,
-                                'email_errmsg'=>"存在多音字-{$zi}-".join(',',$pinyinOne)
+                                'email_errmsg'=>"存在多音字-{$zi}-".join(',',$pinyinOne),
+                                'email_created'=>2
                             ],
                             ['user_id'=>$v['user_id']]);
                         $error = 1;
@@ -113,7 +115,9 @@ class EmailController extends Controller
                             DingtalkUser::updateAll(
                                 [
                                     'email_errno'=>1,
-                                    'email_errmsg'=>"存在多音字-{$zi}-".join(',',$pinyinOne)
+                                    'email_errmsg'=>"存在多音字-{$zi}-".join(',',$pinyinOne),
+                                    'email_created'=>2
+
                                 ],
                                 ['user_id'=>$v['user_id']]);
                             $error = 1;
@@ -135,18 +139,26 @@ class EmailController extends Controller
                 }else{
                     $number = $maxNumOne['email_number'] + 1;
                 }
+                if(empty($number)){
+                    $email = $pinyin.$number.'@knowbox.cn';
+                }else{
+                    $email = $pinyin.$number.$v['email_suffix'].'@knowbox.cn';
+                }
                 DingtalkUser::updateAll(
                     [
+                        'email'=>$email,
                         'email_pinyin'=>$pinyin,
                         'email_number'=>intval($number),
-                        'email_errno'=>0
+                        'email_errno'=>0,
+                        'email_created'=>0
                     ],
                     ['user_id'=>$v['user_id']]);
             }else{
                 DingtalkUser::updateAll(
                     [
                         'email_errno'=>2,
-                        'email_errmsg'=>'姓名中包含非汉字字符'
+                        'email_errmsg'=>'姓名中包含非汉字字符',
+                        'email_created'=>2
                     ],
                     ['user_id'=>$v['user_id']]);
                 continue;

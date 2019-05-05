@@ -61,6 +61,7 @@ class MeicanController extends Controller
                 }else{
                     $vDept = $allowDepartment[1];
                 }
+              //  echo "{$v['id']}-{$v['username']}-{$vDept}-{$v['department_name']}\n";
                 if(
                     empty($userIdToDepartment[$v['id']]) || $userIdToDepartment[$v['id']] != $vDept
                     || empty($userIdToRealName[$v['id']]) || $userIdToRealName[$v['id']] != $v['username']
