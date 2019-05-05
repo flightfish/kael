@@ -134,8 +134,8 @@ class DingController extends Controller
                         DingtalkUser::updateAll($updateParams,['user_id'=>$userInfo['userid']]);
 
                         //更新kael @todo rename
-                        $kaelInfo = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id');
-                        $kaelId = $kaelInfo['kael_id'];
+                        $dingTalkUser = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id,email');
+                        $kaelId = $dingTalkUser['kael_id'];
                         $user = UserCenter::findOneByWhere(['id'=>$kaelId]);
                         if(!empty($user)){
                             $params = [];
@@ -151,9 +151,13 @@ class DingController extends Controller
                             if(isset($userInfo['mobile']) && $user['mobile'] != $userInfo['mobile']){
                                 $params['mobile'] = $userInfo['mobile'];
                             }
-//                            if(isset($userInfo['email']) && $user['email'] != $userInfo['email']){
+                            if($dingTalkUser['email'] != $user['email']){
+                                $params['email'] = $dingTalkUser['email'];
+                            }
+                            if($dingTalkUser['email'] != $userInfo['email']){
+                                DingTalkApi::updateEmailForUser($userInfo['userid'],$dingTalkUser['email']);
 //                                $params['email'] = $userInfo['email'];
-//                            }
+                            }
                             if(!empty($params)){
                                 UserCenter::updateAll($params,['id'=>$kaelId]);
                             }
