@@ -67,7 +67,7 @@ class EmailController extends Controller
             ->all();
         foreach ($list as $v){
             $v['name'] = trim($v['name']);
-            if (preg_match( "/^[\u4e00-\u9fa5]+$/", $v['name'])) {
+            if (preg_match( "/^[\x{4e00}-\x{9fa5}]+$/u", $v['name'])) {
                 //全中文
                 $len = mb_strlen($v['name']);
                 if($len > 10){
