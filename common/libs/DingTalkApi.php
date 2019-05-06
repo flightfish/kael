@@ -7,7 +7,7 @@ class DingTalkApi {
 
     const APPSECRET='9YdKgU0RDEBznfl3KJHY_DXcLmXVgH8o6XFJusBL8Hn_7sMVjqmucu6yOIxKG5cD';
     const APPKEY='ding4isajaqgcgop8uuw';
-
+    const APP_AGENT_ID = "";
     const APPSECRET_MEICAN = 'PK4CNsCl0lby7JiztCiEDIcRlzM3R0KnQ5yrtsUa4u59fmCQS7Pejgh1TVwgM5gJ';
     const APPKEY_MEICAN = 'dingtnt2colo1xdamw1h';
 
@@ -24,7 +24,7 @@ class DingTalkApi {
     const API_GET_USERINFO_BY_UIDS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/list';
 
     const API_POST_UPDATE_EMAIL_BY_UID = "https://oapi.dingtalk.com/user/update";
-
+    const API_SEND_WORK_MESSAGE = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
 
     public static function getUserInfoByCode($code){
         $url = self::API_GETUSERINFO_BYCODE.'?access_token='.self::getAccessTokenMeican().'&code='.$code;
@@ -147,6 +147,64 @@ class DingTalkApi {
         }
         return $retJson;
     }
+
+    public static function sendWorkMessage($msgType='text',$data=[],$userIds='',$departIds='',$allUser=false){
+        $params = [];
+        $params['agent_id'] = self::APP_AGENT_ID;
+        !empty($userIds) && $params['userid_list'] = $userIds;
+        !empty($departIds) && $params['dept_id_list'] = $departIds;
+        $allUser && $params['to_all_user'] = $allUser;
+        $message = [];
+        $message['msgtype'] = $msgType;
+        switch ($msgType){
+            case "text":
+                $message[$msgType]['content'] = $data['content']??'';
+                break;
+            case "image":
+            case "file":
+                $message[$msgType]['media_id'] = $data['media_id']??'';
+                break;
+            case "voice":
+                $message[$msgType]['media_id'] = $data['media_id']??'';
+                $message[$msgType]['duration'] = $data['duration']??'';
+                break;
+            case "link":
+                $message[$msgType]['messageUrl'] = $data['messageUrl']??'';
+                $message[$msgType]['picUrl'] = $data['picUrl']??'';
+                $message[$msgType]['title'] = $data['title']??'';
+                $message[$msgType]['text'] = $data['text']??'';
+                break;
+            case "oa":
+                $message[$msgType]['message_url'] = $data['message_url']??'';
+                $message[$msgType]['head'] = $data['head']??'';
+                $message[$msgType]['body'] = $data['body']??'';
+                break;
+            case "markdown":
+                $message[$msgType]['title'] = $data['title']??'';
+                $message[$msgType]['text'] = $data['text']??'';
+                break;
+            case "action_card":
+                $message[$msgType]['title'] = $data['title']??'';
+                $message[$msgType]['markdown'] = $data['markdown']??'';
+                $message[$msgType]['single_title'] = $data['single_title']??'';
+                $message[$msgType]['single_url'] = $data['single_url']??'';
+                break;
+            default :
+                throw new Exception("消息错误,无此类型消息",Exception::ERROR_COMMON);
+        }
+        is_array($message) && $message = json_encode($message,true);
+        $params['msg'] = $message;
+        $info = self::curlPost(self::API_SEND_WORK_MESSAGE,$params);
+        try{
+            if($info['errcode']){
+                throw new Exception($info['errmsg'],Exception::ERROR_COMMON);
+            }
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+        return $info;
+    }
+
 
 
 
