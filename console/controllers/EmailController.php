@@ -327,12 +327,6 @@ class EmailController extends Controller
                             try{
                                 EmailApi::addUser($v['user'],$emailToName[$v['user']],'1Knowbox!');
                                 $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"欢迎亲爱的盒子:\n公司邮箱已经为您开通啦,请尽快登陆并修改密码\n登陆地址:https://exmail.qq.com\n账号:{$v['user']}\n密码:1Knowbox!"],$emailToId[$v['user']]);
-                                $emailNotice && \Yii::$app->mailer->compose()
-                                    ->setFrom(\Yii::$app->params['sendFrom'])
-                                    ->setTo($v['user'])
-                                    ->setSubject('邮件创建成功')
-                                    ->setHtmlBody("欢迎亲爱的盒子:\n公司邮箱已经为您开通啦,请尽快登陆并修改密码\n登陆地址:https://exmail.qq.com\n账号:{$v['user']}\n密码:1Knowbox!")
-                                    ->send();
                             }catch (\Exception $e){
                                 echo $e->getMessage()."\n";
                                 continue;
