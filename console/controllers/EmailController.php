@@ -140,7 +140,7 @@ class EmailController extends Controller
                     $number = $maxNumOne['email_number'] + 1;
                 }
                 if(empty($number)){
-                    $email = $pinyin.$number.'@knowbox.cn';
+                    $email = $pinyin.$v['email_suffix'].'@knowbox.cn';
                 }else{
                     $email = $pinyin.$number.$v['email_suffix'].'@knowbox.cn';
                 }
