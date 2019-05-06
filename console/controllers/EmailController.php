@@ -82,12 +82,12 @@ class EmailController extends Controller
                     DingtalkUser::updateAll(
                         ['email_errno'=>3, 'email_errmsg'=>"姓名长度过长({$len})",'email_created'=>2],
                         ['user_id'=>$v['user_id']]);
-                    $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:姓名长度过长({$len})"],$userId);
+                    $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:姓名长度过长({$len})"],$userId);
                     $emailNotice && \Yii::$app->mailer->compose()
                             ->setFrom(\Yii::$app->params['sendFrom'])
                             ->setTo($managerEmail)
                             ->setSubject('员工邮箱异常')
-                            ->setHtmlBody("员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:姓名长度过长({$len})")
+                            ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:姓名长度过长({$len})")
                             ->send();
 
                     continue;
@@ -96,12 +96,12 @@ class EmailController extends Controller
                     DingtalkUser::updateAll(
                         ['email_errno'=>4, 'email_errmsg'=>"姓名长度过短{$len}","email_created"=>2],
                         ['user_id'=>$v['user_id']]);
-                    $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:姓名长度过短({$len})"],$userId);
+                    $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:姓名长度过短({$len})"],$userId);
                     $emailNotice && \Yii::$app->mailer->compose()
                             ->setFrom(\Yii::$app->params['sendFrom'])
                             ->setTo($managerEmail)
                             ->setSubject('员工邮箱异常')
-                            ->setHtmlBody("员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:姓名长度过短({$len})")
+                            ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:姓名长度过短({$len})")
                             ->send();
                     continue;
                 }
@@ -120,12 +120,12 @@ class EmailController extends Controller
                             ],
                             ['user_id'=>$v['user_id']]);
                         $error = 1;
-                        $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:存在生僻字(第{$zi}个字)"],$userId);
+                        $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在生僻字(第{$zi}个字)"],$userId);
                         $emailNotice && \Yii::$app->mailer->compose()
                             ->setFrom(\Yii::$app->params['sendFrom'])
                             ->setTo($managerEmail)
                             ->setSubject('员工邮箱异常')
-                            ->setHtmlBody("员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:存在生僻字(第{$zi}个字)")
+                            ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在生僻字(第{$zi}个字)")
                             ->send();
                         break;
                     }
@@ -138,12 +138,12 @@ class EmailController extends Controller
                             ],
                             ['user_id'=>$v['user_id']]);
                         $error = 1;
-                        $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")"],$userId);
+                        $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")"],$userId);
                         $emailNotice && \Yii::$app->mailer->compose()
                             ->setFrom(\Yii::$app->params['sendFrom'])
                             ->setTo($managerEmail)
                             ->setSubject('员工邮箱异常')
-                            ->setHtmlBody("员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")")
+                            ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")")
                             ->send();
                         break;
                     }elseif(count($pinyinOne) > 1){
@@ -158,12 +158,12 @@ class EmailController extends Controller
                                 ],
                                 ['user_id'=>$v['user_id']]);
                             $error = 1;
-                            $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")"],$userId);
+                            $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")"],$userId);
                             $emailNotice && \Yii::$app->mailer->compose()
                                 ->setFrom(\Yii::$app->params['sendFrom'])
                                 ->setTo($managerEmail)
                                 ->setSubject('员工邮箱异常')
-                                ->setHtmlBody("员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")")
+                                ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")")
                                 ->send();
                             break;
                         }
@@ -205,12 +205,12 @@ class EmailController extends Controller
                         'email_created'=>2
                     ],
                     ['user_id'=>$v['user_id']]);
-                $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:姓名中包含非汉字字符"],$userId);
+                $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:姓名中包含非汉字字符"],$userId);
                 $emailNotice && \Yii::$app->mailer->compose()
                     ->setFrom(\Yii::$app->params['sendFrom'])
                     ->setTo($managerEmail)
                     ->setSubject('员工邮箱异常')
-                    ->setHtmlBody("员工邮箱创建异常:\n员工:".$v['name']."\n工号:".$v['job_number']."\n创建类型:员工入职\n异常原因:姓名中包含非汉字字符")
+                    ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:姓名中包含非汉字字符")
                     ->send();
                 continue;
             }
@@ -326,7 +326,7 @@ class EmailController extends Controller
                             echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
                             try{
                                 EmailApi::addUser($v['user'],$emailToName[$v['user']],'1Knowbox!');
-                                $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"欢迎亲爱的盒子:\n公司邮箱已经为您开通啦,请尽快登陆并修改密码\n登陆地址:https://exmail.qq.com\n账号:{$v['user']}\n密码:1Knowbox!"],$emailToId[$v['user']]);
+                                $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://exmail.qq.com\n\t账号:{$v['user']}\n\t密码:1Knowbox!"],$emailToId[$v['user']]);
                             }catch (\Exception $e){
                                 echo $e->getMessage()."\n";
                                 continue;
