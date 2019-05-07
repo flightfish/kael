@@ -304,7 +304,7 @@ class DingController extends Controller
                         $addParams = [
                             'user_id'=>$userInfo['userid'],
                             'name'=>$userInfo['name'],
-                            'email'=>$userInfo['email'] ?? "",
+//                            'email'=>$userInfo['email'] ?? "",
                             'mobile'=>$userInfo['mobile'],
                             'avatar'=>$userInfo['avatar'],
                             'job_number'=>$userInfo['jobnumber'],
