@@ -175,8 +175,12 @@ class EmailController extends Controller
                 if($error){
                     continue;
                 }
+                $suffix = '';
+                if(strtolower(substr($v['job_number'],0,2)) == 'sx'){
+                    $suffix = '-intern';
+                }
                 $maxNumOne = DingtalkUser::find()
-                    ->where(['email_pinyin'=>$pinyin,'email_suffix'=>$v['email_suffix']])
+                    ->where(['email_pinyin'=>$pinyin,'email_suffix'=>$suffix])
                     ->orderBy('email_number desc')->limit(1)->asArray(true)->one();
                 if(empty($maxNumOne)){
                     $number = 0;
@@ -184,15 +188,16 @@ class EmailController extends Controller
                     $number = $maxNumOne['email_number'] + 1;
                 }
                 if(empty($number)){
-                    $email = $pinyin.$v['email_suffix'].'@knowbox.cn';
+                    $email = $pinyin.$suffix.'@knowbox.cn';
                 }else{
-                    $email = $pinyin.$number.$v['email_suffix'].'@knowbox.cn';
+                    $email = $pinyin.$number.$suffix.'@knowbox.cn';
                 }
                 DingtalkUser::updateAll(
                     [
                         'email'=>$email,
                         'email_pinyin'=>$pinyin,
                         'email_number'=>intval($number),
+                        'email_suffix'=>$suffix,
                         'email_errno'=>0,
                         'email_created'=>0
                     ],
