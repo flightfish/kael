@@ -325,11 +325,11 @@ class EmailController extends Controller
                             echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
                             try{
                                 EmailApi::addUser($v['user'],$emailToName[$v['user']],'1Knowbox!');
-                                DingTalkApi::sendWorkMessage('text',['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://exmail.qq.com\n\t账号:{$v['user']}\n\t密码:1Knowbox!"],$emailToId[$v['user']]);
                             }catch (\Exception $e){
                                 echo $e->getMessage()."\n";
                                 continue;
                             }
+                            DingTalkApi::sendWorkMessage('text',['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://exmail.qq.com\n\t账号:{$v['user']}\n\t密码:1Knowbox!"],$emailToId[$v['user']]);
                         }
                         DingtalkUser::updateAll(['email_created'=>1],['user_id'=>$emailToId[$v['user']]]);
                     }
