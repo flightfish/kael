@@ -129,24 +129,26 @@ class EmailController extends Controller
                             ->send();
                         break;
                     }
-                    if(count($pinyinOne) > 1 && ($i==0 || $len = 2)){
-                        DingtalkUser::updateAll(
-                            [
-                                'email_errno'=>1,
-                                'email_errmsg'=>"存在多音字-{$zi}-".join(',',$pinyinOne),
-                                'email_created'=>2
-                            ],
-                            ['user_id'=>$v['user_id']]);
-                        $error = 1;
-                        $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")"],$userId);
-                        $emailNotice && \Yii::$app->mailer->compose()
-                            ->setFrom('mail_service@knowbox.cn')
-                            ->setTo($managerEmail)
-                            ->setSubject('员工邮箱异常')
-                            ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")")
-                            ->send();
-                        break;
-                    }elseif(count($pinyinOne) > 1){
+                    if($i==0 || $len == 2){
+                        if(count($pinyinOne) > 1){
+                            DingtalkUser::updateAll(
+                                [
+                                    'email_errno'=>1,
+                                    'email_errmsg'=>"存在多音字-{$zi}-".join(',',$pinyinOne),
+                                    'email_created'=>2
+                                ],
+                                ['user_id'=>$v['user_id']]);
+                            $error = 1;
+                            $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")"],$userId);
+                            $emailNotice && \Yii::$app->mailer->compose()
+                                ->setFrom('mail_service@knowbox.cn')
+                                ->setTo($managerEmail)
+                                ->setSubject('员工邮箱异常')
+                                ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")")
+                                ->send();
+                            break;
+                        }
+                    }elseif($len > 2){
                         $pinyinOne = array_values(array_unique(array_map(function($v){return $v[0];},$pinyinOne)));
                         if(count($pinyinOne) > 1){
                             DingtalkUser::updateAll(
@@ -175,8 +177,12 @@ class EmailController extends Controller
                 if($error){
                     continue;
                 }
+                $suffix = '';
+                if(strtolower(substr($v['job_number'],0,2)) == 'sx'){
+                    $suffix = '-intern';
+                }
                 $maxNumOne = DingtalkUser::find()
-                    ->where(['email_pinyin'=>$pinyin,'email_suffix'=>$v['email_suffix']])
+                    ->where(['email_pinyin'=>$pinyin,'email_suffix'=>$suffix])
                     ->orderBy('email_number desc')->limit(1)->asArray(true)->one();
                 if(empty($maxNumOne)){
                     $number = 0;
@@ -184,15 +190,16 @@ class EmailController extends Controller
                     $number = $maxNumOne['email_number'] + 1;
                 }
                 if(empty($number)){
-                    $email = $pinyin.$v['email_suffix'].'@knowbox.cn';
+                    $email = $pinyin.$suffix.'@knowbox.cn';
                 }else{
-                    $email = $pinyin.$number.$v['email_suffix'].'@knowbox.cn';
+                    $email = $pinyin.$number.$suffix.'@knowbox.cn';
                 }
                 DingtalkUser::updateAll(
                     [
                         'email'=>$email,
                         'email_pinyin'=>$pinyin,
                         'email_number'=>intval($number),
+                        'email_suffix'=>$suffix,
                         'email_errno'=>0,
                         'email_created'=>0
                     ],

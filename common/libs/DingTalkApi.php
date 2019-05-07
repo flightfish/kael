@@ -127,7 +127,7 @@ class DingTalkApi {
     }
     private static function curlPost($url,$data=[],$header=[]){
         $url .= '?access_token='.self::getAccessToken();
-        $retStr = AppFunc::curlPost($url,$data,$header);
+        $retStr = AppFunc::postJson($url,$data);
         $retJson = json_decode($retStr,true);
         if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
             throw new Exception('[DING]'.$retJson['errmsg']??"");
