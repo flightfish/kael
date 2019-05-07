@@ -146,8 +146,8 @@ class EmailController extends Controller
                                 ->setSubject('员工邮箱异常')
                                 ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在多音字(第{$zi}个字,".join(',',$pinyinOne).")")
                                 ->send();
+                            break;
                         }
-                        break;
                     }elseif($len > 2){
                         $pinyinOne = array_values(array_unique(array_map(function($v){return $v[0];},$pinyinOne)));
                         if(count($pinyinOne) > 1){
