@@ -243,6 +243,10 @@ class EmailController extends Controller
     }
 
     public function actionCreateDetailEmail(){
+        if(exec('ps -ef|grep "email/create-detail-email"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
         //删除
         $listForDel = DingtalkUser::find()
             ->select('user_id,email')

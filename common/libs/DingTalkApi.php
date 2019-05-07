@@ -11,7 +11,6 @@ class DingTalkApi {
     const APPSECRET_MEICAN = 'PK4CNsCl0lby7JiztCiEDIcRlzM3R0KnQ5yrtsUa4u59fmCQS7Pejgh1TVwgM5gJ';
     const APPKEY_MEICAN = 'dingtnt2colo1xdamw1h';
 
-
     const API_GETTOKEN = 'https://oapi.dingtalk.com/gettoken';//获取token
     const API_DEPARTMENT_LIST = 'https://oapi.dingtalk.com/department/list';//获取子部门ID列表
     const API_USER_GET = 'https://oapi.dingtalk.com/user/get';//获取用户信息
