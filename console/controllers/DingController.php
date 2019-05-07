@@ -117,7 +117,7 @@ class DingController extends Controller
                         //更新
                         $updateParams = [
                             'name'=>$userInfo['name'],
-                            'email'=>$userInfo['email'] ?? "",
+//                            'email'=>$userInfo['email'] ?? "",
                             'mobile'=>$userInfo['mobile'],
                             'avatar'=>$userInfo['avatar'],
                             'job_number'=>$userInfo['jobnumber'],
@@ -156,7 +156,7 @@ class DingController extends Controller
                             }
                             if($dingTalkUser['email'] != $userInfo['email']){
                                 DingTalkApi::updateEmailForUser($userInfo['userid'],$dingTalkUser['email']);
-//                                $params['email'] = $userInfo['email'];
+                                $params['email'] = $userInfo['email'];
                             }
                             if(!empty($params)){
                                 UserCenter::updateAll($params,['id'=>$kaelId]);

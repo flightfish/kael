@@ -23,7 +23,7 @@ class DingTalkApi {
 
     const API_GET_USERINFO_BY_UIDS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/list';
 
-    const API_POST_UPDATE_EMAIL_BY_UID = "https://oapi.dingtalk.com/user/update";
+    const API_POST_UPDATE_EMAIL_BY_UID = "https://oapi.dingtalk.com/user/update"; //更新用户email信息
     const API_SEND_WORK_MESSAGE = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
 
     public static function getUserInfoByCode($code){
