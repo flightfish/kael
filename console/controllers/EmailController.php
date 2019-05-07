@@ -129,7 +129,7 @@ class EmailController extends Controller
                             ->send();
                         break;
                     }
-                    if(count($pinyinOne) > 1 && ($i==0 || $len = 2)){
+                    if(count($pinyinOne) > 1 && ($i==0 || $len == 2)){
                         DingtalkUser::updateAll(
                             [
                                 'email_errno'=>1,
