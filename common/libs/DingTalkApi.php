@@ -191,7 +191,7 @@ class DingTalkApi {
             default :
                 throw new Exception("消息错误,无此类型消息",Exception::ERROR_COMMON);
         }
-        is_array($message) && $message = json_encode($message,true);
+//        is_array($message) && $message = json_encode($message,true);
         $params['msg'] = $message;
         $info = self::curlPost(self::API_SEND_WORK_MESSAGE,$params);
         try{
