@@ -80,6 +80,14 @@ class EmailApi{
         $ret = self::curlTXL(self::API_USERUPDATE,$data);
         return $ret;
     }
+    public static function updateUserPassword($email,$password){
+        $data = [
+            'userid'=>$email,
+            'password'=>$password
+        ];
+        $ret = self::curlTXL(self::API_USERUPDATE,$data);
+        return $ret;
+    }
 
     public static function deleteUser($email){
         $data = [
