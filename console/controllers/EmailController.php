@@ -58,8 +58,12 @@ class EmailController extends Controller
             echo date("Y-m-d H:i:s")." is_running\n";
             exit();
         }
-        $userId = Setting::find()->select('value')->where(['key'=>'EMAIL_MANAGE_USER','status'=>0])->scalar();
-        $userId = $userId??39603;
+        $kaelId = Setting::find()->select('value')->where(['key'=>'EMAIL_MANAGE_USER','status'=>0])->scalar();
+        $kaelId = $kaelId??39603;
+        $userId = DingtalkUser::find()->select('user_id')->where(['kael_id'=>$kaelId,'status'=>0])->scalar();
+        if(!$userId){
+            echo date('Y-m-d H:m:s')."\t邮箱异常处理人存在异常\n";
+        }
         $dingNotice = Setting::find()->select('value')->where(['key'=>'DING_NOTICE','status'=>0])->scalar();
         $emailNotice = Setting::find()->select('value')->where(['key'=>'EMAIL_NOTICE','status'=>0])->scalar();
         $emailNotice && $managerEmail = DingtalkUser::find()->select('email')->where(['kael_id'=>$userId,'status'=>0])->scalar();
@@ -483,40 +487,4 @@ class EmailController extends Controller
         }
     }
 
-    public function actionMessageSendPatch(){
-        $users = [
-            15568041521334784,
-            15567997302363715,
-            15568032013214797,
-            15567955229809261,
-            15571091896825254,
-            15567946597689715,
-            15565251011546756,
-            15567987078445828,
-            1556881062293591,
-            15567953632474670,
-            15556441781817674,
-            15568021308083607,
-            15567974678479996,
-            15571127822328525,
-            15567981987609219,
-            15567986596654796,
-            15569475780772451,
-            15567958571656937,
-            15568604348886930,
-            15567952399715684,
-            15570694845776899,
-            1557113135474794,
-            1556801082535652,
-            15568012798793485,
-            15569400809464737,
-            155686676910923,
-            15567964245313792,
-            15567975671372359,
-        ];
-        $userInfos = DingtalkUser::findList(['user_id'=>$users],'user_id','email');
-        foreach ($users as $v){
-            DingTalkApi::sendWorkMessage('text',['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://exmail.qq.com\n\t账号:{$userInfos[$v]['email']}\n\t密码:1Knowbox!"],$v);
-        }
-    }
 }
