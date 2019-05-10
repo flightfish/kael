@@ -86,9 +86,9 @@ class DingController extends Controller
                 echo "#####\t".json_encode($userIdList)."\n";
                 echo "#####################################\n";
                 foreach ($userIdList as $userId){
-//                    if($userId != '00153'){    //测试 账号
-//                        continue;
-//                    }
+                    if($userId != '042669104538927512'){    //测试 账号
+                        continue;
+                    }
                     if(in_array($userId,$currentUserIds)){
                         continue;
                     }
