@@ -86,9 +86,7 @@ class DingController extends Controller
 //                echo "#####\t".json_encode($userIdList)."\n";
 //                echo "#####################################\n";
                 foreach ($userIdList as $userId){
-                    if($userId != '042669104538927512'){    //测试 账号
-                        continue;
-                    }
+
                     if(in_array($userId,$currentUserIds)){
                         continue;
                     }
@@ -98,6 +96,9 @@ class DingController extends Controller
                         $newAllUserIds[] = $userId;
                     }
                     $currentUserIds[] = $userId;
+                    if($userId != '042669104538927512'){    //测试 账号
+                        continue;
+                    }
                     $userInfo = DingTalkApi::getUserInfo($userId);
                     echo "\n\n\n\n\n***************************************************************\n\n\n";
 //                    echo json_encode($userInfo)."\n";
