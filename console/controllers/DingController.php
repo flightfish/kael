@@ -274,7 +274,7 @@ class DingController extends Controller
                                 if(!empty($params)){
                                     DepartmentUser::updateAll($params,['id'=>$oldDepartments[$did]['id']]);
                                 }
-                                if($leader){
+                                if($isLeader){
                                     $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
                                     if($dingDepartment['main_leader_id'] != $kaelId || $dingDepartment['main_leader_name'] != $userInfo['name']){
                                         DingtalkDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['id'=>$did]);
