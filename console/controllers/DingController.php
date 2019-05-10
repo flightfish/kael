@@ -243,6 +243,11 @@ class DingController extends Controller
                                     }
                                 }
 
+                                if($userId == '042669104538927512'){
+                                    print_r($userInfo);
+                                    print_r($isLeaderInDepts);
+                                    exit($leader."@#$@#$@");
+                                }
                                 //更新钉钉部门表 部门领导人
                                 if($leader){
                                     $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
