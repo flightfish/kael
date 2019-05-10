@@ -124,12 +124,12 @@ class EmailController extends Controller
                             ],
                             ['user_id'=>$v['user_id']]);
                         $error = 1;
-                        $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在生僻字(第{$zi}个字)"],$userId);
+                        $dingNotice && DingTalkApi::sendWorkMessage('text',['content'=>"员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在生僻字({$zi})"],$userId);
                         $emailNotice && \Yii::$app->mailer->compose()
                             ->setFrom('mail_service@knowbox.cn')
                             ->setTo($managerEmail)
                             ->setSubject('员工邮箱异常')
-                            ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在生僻字(第{$zi}个字)")
+                            ->setHtmlBody("员工邮箱创建异常:\n\t员工:".$v['name']."\n\t工号:".$v['job_number']."\n\t创建类型:员工入职\n\t异常原因:存在生僻字({$zi})")
                             ->send();
                         break;
                     }
