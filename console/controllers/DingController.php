@@ -81,12 +81,14 @@ class DingController extends Controller
 //                    continue;
 //                }
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
-//                echo "#####################################\t开始部门用户同步任务\n";
-//                echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
-//                echo "#####\t".json_encode($userIdList)."\n";
-//                echo "#####################################\n";
+                echo "#####################################\t开始部门用户同步任务\n";
+                echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
+                echo "#####\t".json_encode($userIdList)."\n";
+                echo "#####################################\n";
                 foreach ($userIdList as $userId){
-
+//                    if($userId != '00153'){    //测试 账号
+//                        continue;
+//                    }
                     if(in_array($userId,$currentUserIds)){
                         continue;
                     }
@@ -96,7 +98,6 @@ class DingController extends Controller
                         $newAllUserIds[] = $userId;
                     }
                     $currentUserIds[] = $userId;
-
                     $userInfo = DingTalkApi::getUserInfo($userId);
                     echo "\n\n\n\n\n***************************************************************\n\n\n";
 //                    echo json_encode($userInfo)."\n";
@@ -109,9 +110,6 @@ class DingController extends Controller
                                 UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
                             }
                         }
-                    }
-                    if($userId != '042669104538927512'){    //测试 账号
-                        continue;
                     }
                     if(in_array($userId,$allUserIds)){
                         echo date('Y-m-d H:i:s')."\t更新员工:\t";
@@ -156,7 +154,7 @@ class DingController extends Controller
                             if($dingTalkUser['email'] != $user['email']){
                                 $params['email'] = $dingTalkUser['email'];
                             }
-                            if(empty($userInfo['email']) || $dingTalkUser['email'] != $userInfo['email']){
+                            if($dingTalkUser['email'] != $userInfo['email']){
                                 DingTalkApi::updateEmailForUser($userInfo['userid'],$dingTalkUser['email']);
                                 $params['email'] = $dingTalkUser['email'];
                             }
@@ -245,11 +243,6 @@ class DingController extends Controller
                                     }
                                 }
 
-                                if($userId == '042669104538927512'){
-                                    print_r($userInfo);
-                                    print_r($isLeaderInDepts);
-                                    exit($leader."@#$@#$@");
-                                }
                                 //更新钉钉部门表 部门领导人
                                 if($leader){
                                     $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
@@ -270,7 +263,7 @@ class DingController extends Controller
                             if($did == 1) $founder = true;
                             if(!in_array($did,$addDepartmentIds) && !in_array($did,$deleteDepartmentIds)){
                                 $params = [];
-                                $isLeader = $isLeaderInDepts[$did]?1:0;
+                                $isLeader = $isLeaderInDepts[$did]==='true'?1:0;
                                 if($isLeader != $oldDepartments[$did]['is_leader']){
                                     BusinessDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['depart_id'=>$did]);
                                     $params['is_leader'] = $isLeader;
@@ -280,6 +273,12 @@ class DingController extends Controller
                                 }
                                 if(!empty($params)){
                                     DepartmentUser::updateAll($params,['id'=>$oldDepartments[$did]['id']]);
+                                }
+                                if($leader){
+                                    $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
+                                    if($dingDepartment['main_leader_id'] != $kaelId){
+                                        DingtalkDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['id'=>$did]);
+                                    }
                                 }
                             }
                         }
