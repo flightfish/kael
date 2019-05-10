@@ -96,9 +96,7 @@ class DingController extends Controller
                         $newAllUserIds[] = $userId;
                     }
                     $currentUserIds[] = $userId;
-                    if($userId != '042669104538927512'){    //测试 账号
-                        continue;
-                    }
+
                     $userInfo = DingTalkApi::getUserInfo($userId);
                     echo "\n\n\n\n\n***************************************************************\n\n\n";
 //                    echo json_encode($userInfo)."\n";
@@ -111,6 +109,9 @@ class DingController extends Controller
                                 UserCenter::updateAll(['status'=>0],['id'=>$dingUser['kael_id']]);
                             }
                         }
+                    }
+                    if($userId != '042669104538927512'){    //测试 账号
+                        continue;
                     }
                     if(in_array($userId,$allUserIds)){
                         echo date('Y-m-d H:i:s')."\t更新员工:\t";
