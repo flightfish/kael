@@ -201,7 +201,6 @@ class DingTalkApi {
         }catch (\Exception $e){
             return $e->getMessage();
         }
-        
         return $info;
     }
 
