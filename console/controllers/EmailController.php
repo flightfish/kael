@@ -54,6 +54,7 @@ class EmailController extends Controller
     }
 
     public function actionGenPinyin(){
+        if(\Yii::$app->params['env'] == 'prod'){
         if(exec('ps -ef|grep "email/gen-pinyin"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
             echo date("Y-m-d H:i:s")." is_running\n";
             exit();
@@ -227,10 +228,13 @@ class EmailController extends Controller
                 continue;
             }
         }
+        }
     }
 
     public function actionGenEmail(){
-        //生成email
+        if(\Yii::$app->params['env'] == 'prod'){
+
+            //生成email
         if(exec('ps -ef|grep "email/gen-email"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
             echo date("Y-m-d H:i:s")." is_running\n";
             exit();
@@ -252,10 +256,13 @@ class EmailController extends Controller
             }
             DingtalkUser::updateAll(['email'=>$email],['user_id'=>$v['user_id']]);
         }
+        }
     }
 
     public function actionCreateDetailEmail(){
-        if(exec('ps -ef|grep "email/create-detail-email"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+        if(\Yii::$app->params['env'] == 'prod'){
+
+            if(exec('ps -ef|grep "email/create-detail-email"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
             echo "is_running";
             exit();
         }
@@ -375,6 +382,7 @@ class EmailController extends Controller
                 continue;
             }
         }
+    }
     }
 
 

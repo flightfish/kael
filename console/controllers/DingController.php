@@ -154,9 +154,11 @@ class DingController extends Controller
                             if($dingTalkUser['email'] != $user['email']){
                                 $params['email'] = $dingTalkUser['email'];
                             }
-                            if(empty($userInfo['email']) || $dingTalkUser['email'] != $userInfo['email']){
-                                DingTalkApi::updateEmailForUser($userInfo['userid'],$dingTalkUser['email']);
-                                $params['email'] = $dingTalkUser['email'];
+                            if(\Yii::$app->params['env'] == 'prod') {
+                                if (empty($userInfo['email']) || $dingTalkUser['email'] != $userInfo['email']) {
+                                    DingTalkApi::updateEmailForUser($userInfo['userid'], $dingTalkUser['email']);
+                                    $params['email'] = $dingTalkUser['email'];
+                                }
                             }
                             if(!empty($params)){
                                 UserCenter::updateAll($params,['id'=>$kaelId]);
