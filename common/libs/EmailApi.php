@@ -53,9 +53,9 @@ class EmailApi{
             $retStr = AppFunc::curlGet($url);
         }
         $retJson = json_decode($retStr,true);
-        if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
-            throw new Exception('[EXMAIL]'.$retJson['errmsg']??"");
-        }
+//        if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
+//            throw new Exception('[EXMAIL]'.$retJson['errmsg']."[".$retJson['errcode']."]"??"");
+//        }
         return $retJson;
 
     }

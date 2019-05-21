@@ -114,7 +114,8 @@ class EmailController extends Controller
                 $pinyinArr = PinYin::getDuoyin($v['name']);
                 $pinyin = '';
                 $i = 0;
-                foreach ($pinyinArr as $zi=>$pinyinOne){
+                foreach ($pinyinArr['ZI'] as $zi){
+                    $pinyinOne = $pinyinArr['duoyin'][$zi];
                     if(empty($pinyinOne)){
                         DingtalkUser::updateAll(
                             [
@@ -290,10 +291,14 @@ class EmailController extends Controller
                                 //没有有效账号则删除
                                 echo 'del - '.$v['user']."\n";
                                 echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
-                                EmailApi::deleteUser($v['user']);
+                                $ret = EmailApi::deleteUser($v['user']);
+                                if(!isset($ret['errcode']) || 0 != $ret['errcode']){
+                                    echo date('Y-m-d H:i:s')."\n[EXMAIL]".$ret['errmsg']."[".$ret['errcode']."]\n";
+                                }else{
+                                    DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
+                                }
                             }
                         }
-                        DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
                     }
                 }
             }
@@ -334,10 +339,9 @@ class EmailController extends Controller
                             //添加
                             echo 'add - '. $v['user']."\n";
                             echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
-                            try{
-                                EmailApi::addUser($v['user'],$emailToName[$v['user']],'1Knowbox!');
-                            }catch (\Exception $e){
-                                echo $e->getMessage()."\n";
+                            $ret = EmailApi::addUser($v['user'],$emailToName[$v['user']],'1Knowbox!');
+                            if(!isset($ret['errcode']) || 0 != $ret['errcode']){
+                                echo date('Y-m-d H:i:s')."\n[EXMAIL]".$ret['errmsg']."[".$ret['errcode']."]\n";
                                 continue;
                             }
                             DingTalkApi::sendWorkMessage('text',['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://exmail.qq.com\n\t账号:{$v['user']}\n\t密码:1Knowbox!"],$emailToId[$v['user']]);
@@ -365,7 +369,11 @@ class EmailController extends Controller
         $inValidList = array_diff($allUsers,$allUserEmail);
         foreach ($inValidList as $v){
             echo "invalid email:".$v."\n";
-            EmailApi::deleteUser($v);
+            $ret = EmailApi::deleteUser($v);
+            if(!isset($ret['errcode']) || 0 != $ret['errcode']){
+                echo date('Y-m-d H:i:s')."\n[EXMAIL]".$ret['errmsg']."[".$ret['errcode']."]\n";
+                continue;
+            }
         }
     }
 
