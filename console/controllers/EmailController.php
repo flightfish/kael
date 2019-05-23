@@ -263,7 +263,7 @@ class EmailController extends Controller
     }
 
     public function actionCreateDetailEmail(){
-        if(\Yii::$app->params['env'] == 'prod'){
+        if(\Yii::$app->params['env'] != 'prod'){
             return false;
         }
         if(exec('ps -ef|grep "email/create-detail-email"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
@@ -308,8 +308,8 @@ class EmailController extends Controller
                                     echo date('Y-m-d H:i:s').$e->getMessage()."\n";
                                     continue;
                                 }
-                                DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
                             }
+                            DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
                         }
                     }
                 }
