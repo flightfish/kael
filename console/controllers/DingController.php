@@ -262,6 +262,7 @@ class DingController extends Controller
                         //删除旧关联部门
                         if(!empty($deleteDepartmentIds)){
                             DepartmentUser::updateAll(['status'=>1],['user_id'=>$kaelId,'depart_id'=>$deleteDepartmentIds]);
+                            DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId,'id'=>$deleteDepartmentIds]);
                         }
                         $founder = false;
                         //更新员工加入的部门
