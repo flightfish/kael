@@ -66,11 +66,21 @@ class MeicanController extends Controller
                     empty($userIdToDepartment[$v['id']]) || $userIdToDepartment[$v['id']] != $vDept
                     || empty($userIdToRealName[$v['id']]) || $userIdToRealName[$v['id']] != $v['username']
                 ){
-                    MeicanApi::addMember($v['id'],$v['username'],$vDept);
+                    try{
+                        MeicanApi::addMember($v['id'],$v['username'],$vDept);
+                    }catch (\Exception $e){
+                        echo date("Y-m-d H:i:s")."-addmember-{$v["id"]}-{$v['username']}-".strval($e->getMessage());
+                        continue;
+                    }
                 }
             }
             foreach ($delUserIds as $v){
-                MeicanApi::delMember($v);
+                try{
+                    MeicanApi::delMember($v);
+                }catch (\Exception $e){
+                    echo date("Y-m-d H:i:s")."-delmember-{$v["id"]}-{$v['username']}-".strval($e->getMessage());
+                    continue;
+                }
             }
         }catch (\Exception $e){
             throw $e;
