@@ -1,6 +1,7 @@
 <?php
 
 namespace usercenter\modules\auth\models;
+use common\libs\AppFunc;
 use common\libs\Constant;
 use common\libs\UserToken;
 use common\models\Department;
@@ -24,8 +25,13 @@ class Api extends RequestBaseModel {
     public $page;
     public $pagesize;
 
+    public $user_id;
+    public $sms_content;
+    public $check_token;
+
     const SCENARIO_WHERE = "SCENARIO_WHERE";
     const SCENARIO_WHERE_PAGE = "SCENARIO_WHERE_PAGE";
+    const SCENARIO_SENDSMS = "SCENARIO_SENDSMS";
 
     public $platform_id = 0;
 
@@ -35,6 +41,7 @@ class Api extends RequestBaseModel {
         $scenarios =  parent::scenarios();
         $scenarios[self::SCENARIO_WHERE] = ['token','where','where2','platform_id'];
         $scenarios[self::SCENARIO_WHERE_PAGE] = ['token','where','page','pagesize','where2','platform_id'];
+        $scenarios[self::SCENARIO_SENDSMS] = ['user_id','sms_content','check_token'];
         return $scenarios;
     }
 
@@ -64,10 +71,24 @@ class Api extends RequestBaseModel {
     {
         return array_merge([
             [['where','where2'], 'safe'],
-            [['page','pagesize','platform_id'], 'integer'],
+            [['sms_content','check_token'], 'string'],
+            [['page','pagesize','platform_id','user_id'], 'integer'],
             [['where'], 'required','on'=>self::SCENARIO_WHERE],
-            [['page','pagesize'],'required','on'=>self::SCENARIO_WHERE_PAGE]
+            [['page','pagesize'],'required','on'=>self::SCENARIO_WHERE_PAGE],
+            [['user_id','sms_content'],'required','on'=>self::SCENARIO_SENDSMS]
         ],parent::rules());
+    }
+
+    public function sendSms(){
+        if($this->check_token != date('Ymd').md5($this->user_id)){
+            throw new Exception("参数校验失败");
+        }
+        $user = CommonUser::find()->where(['id'=>$this->user_id])->asArray(true)->one();
+        if (empty($user)) {
+            throw new Exception("发送用户不存在", Exception::ERROR_COMMON);
+        }
+        $res = AppFunc::smsSend($user['mobile'], $this->sms_content);
+        return $res;
     }
 
 
