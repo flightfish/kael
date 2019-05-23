@@ -48,7 +48,12 @@ class DingController extends Controller
         $rows = [];
         foreach ($allDepartmentList as $v){
             if(in_array($v['id'],$oldDepartmentIds)){
-                DingtalkDepartment::updateAll(['name'=>$v['name'],'parentid'=>$v['parentid']],['id'=>$v['id']]);
+                $where = ['name'=>$v['name'],'parentid'=>$v['parentid']];
+                if($v['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$v['main_leader_id']])){
+                    $where['main_leader_id'] = 0;
+                    $where['main_leader_name'] = '';
+                }
+                DingtalkDepartment::updateAll($where,['id'=>$v['id']]);
             }elseif(in_array($v['id'],$insertIds)){
                 $rows[] = [$v['id'],$v['name'],$v['parentid']];
             }
