@@ -281,11 +281,13 @@ class DingController extends Controller
                                 if(!empty($params)){
                                     DepartmentUser::updateAll($params,['id'=>$oldDepartments[$did]['id']]);
                                 }
+                                $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
                                 if($isLeader){
-                                    $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
                                     if($dingDepartment['main_leader_id'] != $kaelId || $dingDepartment['main_leader_name'] != $userInfo['name']){
                                         DingtalkDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['id'=>$did]);
                                     }
+                                }elseif($dingDepartment['main_leader_id'] == $kaelId){
+                                    DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId,'id'=>$did]);
                                 }
                             }
                         }
