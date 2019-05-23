@@ -29,4 +29,13 @@ class DingtalkDepartment extends \common\models\BaseActiveRecord
             ->one();
     }
 
+    public static function findListByWhereAndWhereArr($where,$whereArr,$select='*'){
+        !isset($where['status']) && $where['status'] = 0;
+        $query =  self::find()->select($select)->where($where);
+        foreach ($whereArr as $v){
+            $query = $query->andWhere($v);
+        }
+        return $query->asArray(true)->all();
+    }
+
 }

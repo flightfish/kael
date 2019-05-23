@@ -212,6 +212,9 @@ class DingController extends Controller
                         }
                         //更新实际部门相关  @todo main-department upupup
                         $departmentIds = !is_array($userInfo['department'])?json_decode($userInfo['department'],true):$userInfo['department'];
+                        if($dids = array_column(DingtalkDepartment::findListByWhereAndWhereArr(['main_leader_id'=>$kaelId],[['not in','id',$departmentIds]],'id'),'id')){
+                            DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['id'=>$dids]);
+                        }
                         //update #todo update dinktalk_department-----  lead
                         $isLeaderInDepts = self::convertJsonMapToArray($userInfo['isLeaderInDepts']);
                         $orderInDepts = self::convertJsonMapToArray($userInfo['orderInDepts']);
