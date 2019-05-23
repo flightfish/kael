@@ -3,7 +3,6 @@ namespace console\controllers;
 
 use common\libs\DingTalkApi;
 use common\libs\EmailApi;
-use common\models\db\EmailRecord;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use common\models\ehr\BusinessDepartment;
@@ -442,6 +441,7 @@ class DingController extends Controller
             DingtalkUser::updateAll(['status'=>1],['user_id'=>$deleteUserIds]);
             UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
             DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+            DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$deleteUids]);
         }
         //全局更新后根据钉钉全局结果同步删除掉kael用户(可能由于历史原因造成kael用户冗余,所以执行该部分)
 //        $kaelIds = array_keys(DingtalkUser::findList([],'kael_id','kael_id'));
