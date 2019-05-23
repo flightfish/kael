@@ -50,7 +50,7 @@ class DingController extends Controller
         foreach ($allDepartmentList as $v){
             if(in_array($v['id'],$oldDepartmentIds)){
                 $params = ['name'=>$v['name'],'parentid'=>$v['parentid']];
-                if($oldDepartments[$v['id']]['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$v['main_leader_id']])){
+                if($oldDepartments[$v['id']]['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$oldDepartments[$v['id']]['main_leader_id']])){
                     $params['main_leader_id'] = 0;
                     $params['main_leader_name'] = '';
                 }
