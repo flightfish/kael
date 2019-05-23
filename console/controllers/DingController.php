@@ -36,7 +36,8 @@ class DingController extends Controller
     private function updateDingDepartment(){
         $allDepartmentList = DingTalkApi::getDepartmentAllList();
         $allIds = array_column($allDepartmentList,'id');
-        $oldDepartmentIds = DingtalkDepartment::find()->select('id')->where(['status'=>0])->asArray(true)->column();
+        $oldDepartments = array_column(DingtalkDepartment::find()->select('*')->where(['status'=>0])->asArray(true)->all(),null,'id');
+        $oldDepartmentIds = array_keys($oldDepartments);
         $oldDepartmentIds = array_map('intval',$oldDepartmentIds);
         $delIds = array_diff($oldDepartmentIds,$allIds);
         $insertIds  = array_diff($allIds,$oldDepartmentIds);
@@ -49,7 +50,7 @@ class DingController extends Controller
         foreach ($allDepartmentList as $v){
             if(in_array($v['id'],$oldDepartmentIds)){
                 $params = ['name'=>$v['name'],'parentid'=>$v['parentid']];
-                if($v['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$v['main_leader_id']])){
+                if($oldDepartments[$v['id']]['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$v['main_leader_id']])){
                     $params['main_leader_id'] = 0;
                     $params['main_leader_name'] = '';
                 }
