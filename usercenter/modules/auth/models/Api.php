@@ -80,7 +80,7 @@ class Api extends RequestBaseModel {
     }
 
     public function sendSms(){
-        if($this->check_token != date('Ymd').md5($this->user_id)){
+        if($this->check_token != md5($this->user_id.'|'.$this->sms_content.'|'.date("Ymd"))){
             throw new Exception("参数校验失败");
         }
         $user = CommonUser::find()->where(['id'=>$this->user_id])->asArray(true)->one();
