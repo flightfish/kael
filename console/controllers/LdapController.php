@@ -28,7 +28,7 @@ class LdapController extends Controller
         try{
             ldap_bind($ds, Yii::$app->params['ldap_rdn'], Yii::$app->params['ldap_passwd']);
             //先查看删除的
-            $listOld = CommonUser::getDb()->createCommand("select * from `user` a left join `user` b on a.mobile = b.mobile and a.id != b.id and b.`status` = 0 where a.ldap_update_time < a.update_time and a.status!=0 and b.id is null")->queryAll();
+            $listOld = CommonUser::getDb()->createCommand("select a.* from `user` a left join `user` b on a.mobile = b.mobile and a.id != b.id and b.`status` = 0 where a.ldap_update_time < a.update_time and a.status!=0 and b.id is null")->queryAll();
             $listUpdate = CommonUser::getDb()->createCommand("select * from `user` where ldap_update_time < update_time and status=0")->queryAll();
             $departmentNameIndex = array_column(Department::findAllList(),'department_name','department_id');
 
