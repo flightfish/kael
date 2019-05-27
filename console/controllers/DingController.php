@@ -234,7 +234,6 @@ class DingController extends Controller
                             print_r($addDepartmentIds);
                             print_r($deleteDepartmentIds);
                             print_r($departmentIds);
-                            exit('@#$%$^%');
                         }
                         //新增用户关联部门
                         if(!empty($addDepartmentIds)){
@@ -269,9 +268,11 @@ class DingController extends Controller
                                 if($leader){
                                     $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
                                     if($dingDepartment['main_leader_id'] != $kaelId){
+                                        echo "$$$$$";
                                         DingtalkDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['id'=>$did]);
                                     }
                                 }
+                                exit('#$%$%^&%^&');
                             }
                             DepartmentUser::addAllWithColumnRow($cloumns,$rows);
                         }
