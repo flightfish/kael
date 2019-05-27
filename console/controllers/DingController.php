@@ -124,7 +124,7 @@ class DingController extends Controller
                         $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
                         $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
                         $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
-
+                        $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
                         $updateParams = [
                             'name'=>$userInfo['name'],
 //                            'email'=>$userInfo['email'] ?? "",
@@ -135,7 +135,7 @@ class DingController extends Controller
                             'open_id'=>$userInfo['openId'],
                             'departments'=>join(',',$userInfo['department']),
 //                            'department_id'=>$userInfo['department'][0], //@todo modify main-department
-                            'department_id'=>$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'],
+                            'department_id'=>,
                             'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                             'status'=>0
                         ];
