@@ -122,7 +122,7 @@ class DingController extends Controller
                         //更新
 
                         $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
-                        $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo['result'],null,'user_id');
+                        $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'user_id');
                         $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'fieldCode');
 
                         $updateParams = [
