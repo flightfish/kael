@@ -135,7 +135,7 @@ class DingController extends Controller
                             'open_id'=>$userInfo['openId'],
                             'departments'=>join(',',$userInfo['department']),
 //                            'department_id'=>$userInfo['department'][0], //@todo modify main-department
-                            'department_id'=>,
+                            'department_id'=>$mainDepartId,
                             'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                             'status'=>0
                         ];
