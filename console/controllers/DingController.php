@@ -82,9 +82,9 @@ class DingController extends Controller
             $departmentList = DingtalkDepartment::find()->where(['status'=>0,'level'=>$level])
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
-//                if($v['id'] != '111705883'){   //测试
-//                    continue;
-//                }
+                if($v['id'] != '90848933'){   //测试
+                    continue;
+                }
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 echo "#####################################\t开始部门用户同步任务\n";
                 echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
@@ -230,6 +230,12 @@ class DingController extends Controller
                         $oldDepartmentIds = array_keys($oldDepartments);
                         $addDepartmentIds = array_diff($departmentIds,$oldDepartmentIds);
                         $deleteDepartmentIds = array_diff($oldDepartmentIds,$departmentIds);
+                        if($userInfo['userid'] == '00508'){
+                            print_r($addDepartmentIds);
+                            print_r($deleteDepartmentIds);
+                            print_r($departmentIds);
+                            exit('@#$%$^%');
+                        }
                         //新增用户关联部门
                         if(!empty($addDepartmentIds)){
                             $cloumns = ['user_id','depart_id','is_leader','disp'];
