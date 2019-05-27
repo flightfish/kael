@@ -136,7 +136,7 @@ class DingController extends Controller
                             'departments'=>join(',',$userInfo['department']),
 //                            'department_id'=>$userInfo['department'][0], //@todo modify main-department
                             'department_id'=>$mainDepartId,
-                            'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]]??$userInfo['department'][0],
+                            'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                             'status'=>0
                         ];
                         if(isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate'])){
@@ -230,11 +230,6 @@ class DingController extends Controller
                         $oldDepartmentIds = array_keys($oldDepartments);
                         $addDepartmentIds = array_diff($departmentIds,$oldDepartmentIds);
                         $deleteDepartmentIds = array_diff($oldDepartmentIds,$departmentIds);
-//                        if($userInfo['userid'] == '00508'){
-//                            print_r($addDepartmentIds);
-//                            print_r($deleteDepartmentIds);
-//                            print_r($departmentIds);
-//                        }
                         //新增用户关联部门
                         if(!empty($addDepartmentIds)){
                             $cloumns = ['user_id','depart_id','is_leader','disp'];
@@ -268,11 +263,9 @@ class DingController extends Controller
                                 if($leader){
                                     $dingDepartment = DingtalkDepartment::findOneByWhere(['id'=>$did]);
                                     if($dingDepartment['main_leader_id'] != $kaelId){
-                                        echo "$$$$$";
                                         DingtalkDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['id'=>$did]);
                                     }
                                 }
-                                exit('#$%$%^&%^&');
                             }
                             DepartmentUser::addAllWithColumnRow($cloumns,$rows);
                         }
@@ -314,12 +307,11 @@ class DingController extends Controller
                             $mainDingDepartmentForUser = $departmentIds[0];
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                              DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
-                         }elseif($mainDingDepartmentForUser && !in_array($mainDingDepartmentForUser,$departmentIds) && !empty($departmentIds)){
+                         }elseif($mainDingDepartmentForUser && !in_array($mainDingDepartmentForUser,$departmentIds) && !empty($departmentIds) && in_array($mainDepartId,$departmentIds)){
                             DepartmentUser::updateAll(['is_main'=>0],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
-//                             $mainDingDepartmentForUser = $departmentIds[0];
-                               $mainDingDepartmentForUser = $mainDepartId;
+                            $mainDingDepartmentForUser = $mainDepartId;
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
-                             DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
+                            DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
                          }
 
                         $relateKaelDepartmentId = self::getRelateKaelDepartment($mainDingDepartmentForUser);
@@ -345,7 +337,7 @@ class DingController extends Controller
                             'open_id'=>$userInfo['openId'],
                             'departments'=>join(',',$userInfo['department']),
                             'department_id'=>$userInfo['department'][0],
-                            'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]]??$userInfo['department'][0],
+                            'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                         ];
                         if(isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate'])){
                             $addParams['hired_date'] = date('Y-m-d',$userInfo['hiredDate']/1000);
