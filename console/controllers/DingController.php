@@ -120,6 +120,11 @@ class DingController extends Controller
                         echo date('Y-m-d H:i:s')."\t更新员工:\t";
                         echo $userInfo['userid']."\n";
                         //更新
+
+                        $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
+                        $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo['result'],null,'user_id');
+                        $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'fieldCode');
+
                         $updateParams = [
                             'name'=>$userInfo['name'],
 //                            'email'=>$userInfo['email'] ?? "",
@@ -129,7 +134,8 @@ class DingController extends Controller
                             'union_id'=>$userInfo['unionid'],
                             'open_id'=>$userInfo['openId'],
                             'departments'=>join(',',$userInfo['department']),
-                            'department_id'=>$userInfo['department'][0], //@todo modify main-department
+//                            'department_id'=>$userInfo['department'][0], //@todo modify main-department
+                            'department_id'=>$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDept']['value'],
                             'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
                             'status'=>0
                         ];
