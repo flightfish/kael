@@ -84,9 +84,9 @@ class DingController extends Controller
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
 
-                if($v['id'] != 111447306){
-                    continue;
-                }
+//                if($v['id'] != 111447306){ //测试 部门
+//                    continue;
+//                }
 
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 echo "#####################################\t开始部门用户同步任务\n";
@@ -121,16 +121,17 @@ class DingController extends Controller
                             }
                         }
                     }
+
+                    //获取员工的主部门
+                    $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
+                    $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
+                    $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
+                    $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
+
                     if(in_array($userId,$allUserIds)){
                         echo date('Y-m-d H:i:s')."\t更新员工:\t";
                         echo $userInfo['userid']."\n";
                         //更新
-
-                        //获取员工的主部门
-                        $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
-                        $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
-                        $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
-                        $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
 
                         $updateParams = [
                             'name'=>$userInfo['name'],
@@ -311,7 +312,8 @@ class DingController extends Controller
                         //更新员工关联kael部门  @todo 从主department_id开始向父级依次匹配
                         $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'user_id'=>$kaelId])->scalar();
                          if(!$mainDingDepartmentForUser && !empty($departmentIds)){ //如果没有并且钉钉部门不为空 则默认设置第一个钉钉部门为主部门
-                            $mainDingDepartmentForUser = $departmentIds[0];
+//                            $mainDingDepartmentForUser = $departmentIds[0];
+                              $mainDingDepartmentForUser = $mainDepartId;
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                              DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
                          }elseif($mainDingDepartmentForUser && !in_array($mainDingDepartmentForUser,$departmentIds) && !empty($departmentIds) && in_array($mainDepartId,$departmentIds)){
@@ -437,12 +439,14 @@ class DingController extends Controller
                         //更新员工关联kael部门
                         $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'user_id'=>$kaelId])->scalar();
                         if(!$mainDingDepartmentForUser && !empty($departmentIds)){ //如果没有并且钉钉部门不为空 则默认设置第一个钉钉部门为主部门
-                            $mainDingDepartmentForUser = $departmentIds[0];
+//                            $mainDingDepartmentForUser = $departmentIds[0];
+                              $mainDingDepartmentForUser = $mainDepartId;
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                             DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
                         }elseif($mainDingDepartmentForUser && !in_array($mainDingDepartmentForUser,$departmentIds) && !empty($departmentIds)){
                             DepartmentUser::updateAll(['is_main'=>0],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
-                            $mainDingDepartmentForUser = $departmentIds[0];
+//                            $mainDingDepartmentForUser = $departmentIds[0];
+                              $mainDingDepartmentForUser = $mainDepartId;
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                             DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
                         }
