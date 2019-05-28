@@ -83,9 +83,9 @@ class DingController extends Controller
             $departmentList = DingtalkDepartment::find()->where(['status'=>0,'level'=>$level])->orderBy('id')
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
-
-                if($v['id'] != 90848933){ //测试 部门
-                    continue;
+//
+//                if($v['id'] != 90848933){ //测试 部门
+//                    continue;
                 }
 
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
@@ -317,12 +317,13 @@ class DingController extends Controller
                                         DingtalkDepartment::updateAll(['main_leader_id'=>$kaelId,'main_leader_name'=>$userInfo['name']],['id'=>$did]);
                                     }
                                 }elseif($dingDepartment['main_leader_id'] == $kaelId){
+                                    echo $kaelId."\t 不再是部门".$did."的负责人";
                                     DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId,'id'=>$did]);
                                 }
                             }
                         }
                         //更新员工关联kael部门  @todo 从主department_id开始向父级依次匹配
-                        $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'user_id'=>$kaelId])->scalar();
+                        $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'user_id'=>$kaelId,'status'=>0])->scalar();
                          if(!$mainDingDepartmentForUser && !empty($departmentIds)){ //如果没有并且钉钉部门不为空 则默认设置第一个钉钉部门为主部门
 //                            $mainDingDepartmentForUser = $departmentIds[0];
                               $mainDingDepartmentForUser = $mainDepartId;
@@ -449,7 +450,7 @@ class DingController extends Controller
                         DepartmentUser::addAllWithColumnRow($cloumns,$rows);
 
                         //更新员工关联kael部门
-                        $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'user_id'=>$kaelId])->scalar();
+                        $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'user_id'=>$kaelId,'status'=>0])->scalar();
                         if(!$mainDingDepartmentForUser && !empty($departmentIds)){ //如果没有并且钉钉部门不为空 则默认设置第一个钉钉部门为主部门
 //                            $mainDingDepartmentForUser = $departmentIds[0];
                               $mainDingDepartmentForUser = $mainDepartId;
@@ -472,7 +473,6 @@ class DingController extends Controller
                 }
             }
         }
-        exit('#$%^%&^$#');
         //根据钉钉变动同步删除钉钉用户及kael用户
         $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
         $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
