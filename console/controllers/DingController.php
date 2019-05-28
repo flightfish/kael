@@ -108,7 +108,14 @@ class DingController extends Controller
                         $newAllUserIds[] = $userId;
                     }
                     $currentUserIds[] = $userId;
-                    $userInfo = DingTalkApi::getUserInfo($userId);
+
+                    try{
+                        $userInfo = DingTalkApi::getUserInfo($userId);
+                    }catch (\Exception $e){
+                        echo date('Y-m-d H:i:s')."\t钉钉账号:".$userId."\t 接口错误[获取用户信息]:".$e->getMessage()."\n";
+                        continue;
+                    }
+
                     echo "\n\n\n\n\n***************************************************************\n\n\n";
 //                    echo json_encode($userInfo)."\n";
 
@@ -126,7 +133,7 @@ class DingController extends Controller
                     try{
                         $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
                     }catch (\Exception $e){
-                        echo date('Y-m-d H:i:s')."\t钉钉账号:".$userId."\t 接口错误:".$e->getMessage()."\n";
+                        echo date('Y-m-d H:i:s')."\t钉钉账号:".$userId."\t 接口错误[智能人事获取花名册用户信息]:".$e->getMessage()."\n";
                         continue;
                     }
                     $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
@@ -465,7 +472,7 @@ class DingController extends Controller
                 }
             }
         }
-        
+
         //根据钉钉变动同步删除钉钉用户及kael用户
         $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
         $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
