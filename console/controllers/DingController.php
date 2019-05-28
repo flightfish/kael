@@ -123,7 +123,11 @@ class DingController extends Controller
                     }
 
                     //获取员工的主部门
-                    $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
+                    try{
+                        $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
+                    }catch (\Exception $e){
+                        echo date('Y-m-d H:i:s')."\t钉钉账号:".$userId."\t 接口错误:".$e->getMessage()."\n";
+                    }
                     $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
                     $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
                     $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
