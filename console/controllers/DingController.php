@@ -95,9 +95,9 @@ class DingController extends Controller
                 echo "#####################################\n";
                 foreach ($userIdList as $userId){
 
-                    if($userId != 175537583426265180){    //测试 账号
-                        continue;
-                    }
+//                    if($userId != 175537583426265180){    //测试 账号
+//                        continue;
+//                    }
 
                     if(in_array($userId,$currentUserIds)){
                         continue;
