@@ -84,9 +84,9 @@ class DingController extends Controller
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
 
-//                if($v['id'] != 111447306){ //测试 部门
-//                    continue;
-//                }
+                if($v['id'] != 111498491){ //测试 部门
+                    continue;
+                }
 
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 echo "#####################################\t开始部门用户同步任务\n";
@@ -95,9 +95,9 @@ class DingController extends Controller
                 echo "#####################################\n";
                 foreach ($userIdList as $userId){
 
-//                    if($userId != 175537583426265180){    //测试 账号
-//                        continue;
-//                    }
+                    if($userId != 175537583426265180){    //测试 账号
+                        continue;
+                    }
 
                     if(in_array($userId,$currentUserIds)){
                         continue;
