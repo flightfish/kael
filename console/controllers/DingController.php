@@ -84,7 +84,7 @@ class DingController extends Controller
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
 
-                if($v['id'] != 111498491){
+                if($v['id'] != 111447306){
                     continue;
                 }
 
