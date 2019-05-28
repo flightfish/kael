@@ -51,6 +51,7 @@ class DingController extends Controller
             if(in_array($v['id'],$oldDepartmentIds)){
                 $params = ['name'=>$v['name'],'parentid'=>$v['parentid']];
                 if($oldDepartments[$v['id']]['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$oldDepartments[$v['id']]['main_leader_id']])){
+                    echo date('Y-m-d H:i:s')."\t部门负责人离职,重置为空,部门编号:".$v['id']."\t原部门负责人编号:".$oldDepartments[$v['id']]['main_leader_id']."\t";
                     $params['main_leader_id'] = 0;
                     $params['main_leader_name'] = '';
                 }
@@ -82,9 +83,9 @@ class DingController extends Controller
             $departmentList = DingtalkDepartment::find()->where(['status'=>0,'level'=>$level])
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
-//                if($v['id'] != '90848933'){   //测试
-//                    continue;
-//                }
+                if($v['id'] != '111498491'){   //测试
+                    continue;
+                }
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 echo "#####################################\t开始部门用户同步任务\n";
                 echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
@@ -121,10 +122,12 @@ class DingController extends Controller
                         echo $userInfo['userid']."\n";
                         //更新
 
+                        //获取员工的主部门
                         $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
                         $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
                         $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
                         $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
+
                         $updateParams = [
                             'name'=>$userInfo['name'],
 //                            'email'=>$userInfo['email'] ?? "",
