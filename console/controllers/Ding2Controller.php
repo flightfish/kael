@@ -16,7 +16,8 @@ class DingController extends Controller
 {
 
     /**
-     * 初始化钉钉信息
+     * 同步部门
+     * 同步部门内部员工
      */
     public function actionUpdate(){
         if(exec('ps -ef|grep "ding/update"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
@@ -26,12 +27,11 @@ class DingController extends Controller
         echo date('Y-m-d H:i:s')."\t开始同步钉钉部门到kael\n";
         $this->updateDingDepartment();
         echo date('Y-m-d H:i:s')."\t部门同步结束\n";
+
         echo date('Y-m-d H:i:s')."\t开始同步钉钉人员到kael\n";
         $this->updateDingUser();
         echo date('Y-m-d H:i:s')."\t员工同步结束\n";
-
     }
-
 
     private function updateDingDepartment(){
         $allDepartmentList = DingTalkApi::getDepartmentAllList();
@@ -93,6 +93,15 @@ class DingController extends Controller
                 echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
                 echo "#####\t".json_encode($userIdList)."\n";
                 echo "#####################################\n";
+
+                //获取该部门员工的主部门
+                try{
+                    $mainDingDepartmentForUserInfos = DingTalkApi::getUserInfoForFieldsByUids($userIdList,'sys00-mainDept');
+                }catch (\Exception $e){
+                    echo date('Y-m-d H:i:s')."\t部门:".$v['name']."[".$v['id']."]"."\t 接口错误[智能人事获取花名册用户信息]:".$e->getMessage()."\n";
+                    continue;
+                }
+
                 foreach ($userIdList as $userId){
 
 //                    if($userId != 175537583426265180){    //测试 账号
@@ -112,7 +121,7 @@ class DingController extends Controller
                     try{
                         $userInfo = DingTalkApi::getUserInfo($userId);
                     }catch (\Exception $e){
-                        echo date('Y-m-d H:i:s')."api_error\t钉钉账号:".$userId."\t 接口错误[获取用户信息]:".$e->getMessage()."\n";
+                        echo date('Y-m-d H:i:s')."\t钉钉账号:".$userId."\t 接口错误[获取用户信息]:".$e->getMessage()."\n";
                         continue;
                     }
 
@@ -129,14 +138,7 @@ class DingController extends Controller
                         }
                     }
 
-                    //获取员工的主部门
-                    try{
-                        $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
-                    }catch (\Exception $e){
-                        echo date('Y-m-d H:i:s')."api_error\t钉钉账号:".$userId."\t 接口错误[智能人事获取花名册用户信息]:".$e->getMessage()."\n";
-                        continue;
-                    }
-                    $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
+                    $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfos,null,'userid');
                     $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
                     $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
 
