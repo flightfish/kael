@@ -83,15 +83,22 @@ class DingController extends Controller
             $departmentList = DingtalkDepartment::find()->where(['status'=>0,'level'=>$level])
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
+
+                if($v['id'] != 111498491){
+                    continue;
+                }
+
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 echo "#####################################\t开始部门用户同步任务\n";
                 echo "#####\t".date('Y-m-d H:i:s')."\t钉钉部门：".$v['name']."[".$v['id']."]"."\n";
                 echo "#####\t".json_encode($userIdList)."\n";
                 echo "#####################################\n";
                 foreach ($userIdList as $userId){
-//                    if($userId != '00153'){    //测试 账号
-//                        continue;
-//                    }
+
+                    if($userId != 175537583426265180){    //测试 账号
+                        continue;
+                    }
+
                     if(in_array($userId,$currentUserIds)){
                         continue;
                     }
@@ -450,6 +457,7 @@ class DingController extends Controller
             }
         }
 
+        exit('#$%$^%@#');
         //根据钉钉变动同步删除钉钉用户及kael用户
         $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
         $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
