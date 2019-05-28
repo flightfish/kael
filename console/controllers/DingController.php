@@ -127,6 +127,7 @@ class DingController extends Controller
                         $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
                     }catch (\Exception $e){
                         echo date('Y-m-d H:i:s')."\t钉钉账号:".$userId."\t 接口错误:".$e->getMessage()."\n";
+                        continue;
                     }
                     $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
                     $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
