@@ -465,8 +465,7 @@ class DingController extends Controller
                 }
             }
         }
-
-        exit('#$%$^%@#');
+        
         //根据钉钉变动同步删除钉钉用户及kael用户
         $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
         $deleteUids = array_keys(DingtalkUser::findList(['user_id'=>$deleteUserIds],'kael_id','kael_id'));
