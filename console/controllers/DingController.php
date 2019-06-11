@@ -568,7 +568,7 @@ class DingController extends Controller
         $dingUsers = DingtalkUser::findList(['status'=>1,['kael_id'=>0]]);
         foreach ($dingUsers as $dingUser){
             if(!empty($dingUser['mobile'])){
-                if($user = UserCenter::findOneByWhere(['mobile'=>$dingUser['mobile']])){
+                if($user = UserCenter::findOneByWhere(['mobile'=>$dingUser['mobile']],'',1)){
                     if($user['user_type']){
                         UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
                     }
@@ -580,7 +580,7 @@ class DingController extends Controller
 
             }
             if(!$user && !empty($dingUser['job_number'])){
-                if($user = UserCenter::findOneByWhere(['work_number'=>$dingUser['job_number']])){
+                if($user = UserCenter::findOneByWhere(['work_number'=>$dingUser['job_number']],'',1)){
                     if($user['user_type']){
                         UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
                     }
