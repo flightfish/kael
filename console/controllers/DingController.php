@@ -169,7 +169,7 @@ class DingController extends Controller
                         //更新kael @todo rename
                         $dingTalkUser = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id,email');
                         $kaelId = $dingTalkUser['kael_id'];
-                        $user = UserCenter::findOneByWhere(['id'=>$kaelId]);
+                        $user = UserCenter::findOneByWhere(['id'=>$kaelId],'',-1);
                         if(!empty($user)){
                             echo "*更新kael账号*\t[".$kaelId."]\n";
                             $params = [];
@@ -181,6 +181,9 @@ class DingController extends Controller
                             }
                             if($user['user_type']){
                                 $params['user_type'] = 0;
+                            }
+                            if($user['status']){
+                                $params['status'] = 0;
                             }
                             if(isset($userInfo['mobile']) && $user['mobile'] != $userInfo['mobile']){
                                 $params['mobile'] = $userInfo['mobile'];
@@ -199,10 +202,15 @@ class DingController extends Controller
                             }
                         }else{
                             if(!empty($userInfo['mobile'])){
-                                if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile']])){
+                                if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile']],'',-1)){
+                                    $params = [];
                                     if($user['user_type']){
-                                        UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
+                                        $params['user_type'] = 0;
                                     }
+                                    if($user['status']){
+                                        $params['status'] = 0;
+                                    }
+                                    !empty($params) &&  UserCenter::updateAll($params,['id'=>$user['id']]);
                                     $kaelId = $user['id'];
                                     //更新钉钉员工关联kael编号
                                     DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
@@ -370,16 +378,20 @@ class DingController extends Controller
                         }
                         DingtalkUser::add($addParams);
                         if(!empty($userInfo['mobile'])){
-                            if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile'],'user_type'=>0])){
+                            if($user = UserCenter::findOneByWhere(['mobile'=>$userInfo['mobile'],'user_type'=>0],'',-1)){
+                                $params = [];
                                 if($user['user_type']){
-                                    UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
+                                    $params['user_type'] = 0;
                                 }
+                                if($user['status']){
+                                    $params['status'] = 0;
+                                }
+                                !empty($params) &&  UserCenter::updateAll($params,['id'=>$user['id']]);
                                 $kaelId = $user['id'];
                                 //更新钉钉员工关联kael编号
                                 DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
                                 echo "[手机号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
                             }
-
                         }
 //                        if(!$user && !empty($userInfo['jobnumber'])){
 //                            if($user = UserCenter::findOneByWhere(['work_number'=>$userInfo['jobnumber'],'user_type'=>0])){
@@ -570,12 +582,14 @@ class DingController extends Controller
             if(!$dingUser['kael_id']){
                 if(!empty($dingUser['mobile'])){
                     if($user = UserCenter::findOneByWhere(['mobile'=>$dingUser['mobile']],'',-1)){
+                        $params = [];
                         if($user['user_type']){
-                            UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
+                            $params['user_type'] = 0;
                         }
-                        if(!$user['status']){
-                            UserCenter::updateAll(['status'=>1],['id'=>$user['id']]);
+                        if($user['status'] && DingtalkUser::find()->select('user_id')->where(['mobile'=>$dingUser['mobile'],'status'=>0])->scalar()){
+                            $params['status'] = 0;
                         }
+                        !empty($params) &&  UserCenter::updateAll($params,['id'=>$user['id']]);
                         $kaelId = $user['id'];
                         //更新钉钉员工关联kael编号
                         DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$dingUser['user_id']]);
@@ -607,6 +621,7 @@ class DingController extends Controller
     //                                'email'=>isset($userInfo['email'])?$userInfo['email']:'',
                         'user_type'=>0
                     ];
+                    if(!DingtalkUser::findOneByWhere(['status'=>0,'']))
                     $kaelId = UserCenter::addUser($params);
                     DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$dingUser['user_id']]);
                     echo "新增kael账号:\t".$kaelId."\n";
@@ -614,7 +629,10 @@ class DingController extends Controller
             }else{
                 $user = UserCenter::findOneByWhere(['id'=>$dingUser['kael_id']],'',-1);
                 if($user){
-                    if($user['work_number'] != $dingUser['job_number']){
+                    if($dingVoildUser = DingtalkUser::findOneByWhere(['kael_id'=>$dingUser['kael_id']])){
+                        $dingVoildUser['job_number'] != $user['work_number'] &&
+                        UserCenter::updateAll(['work_number'=>$dingVoildUser['job_number']],['id'=>$dingUser['kael_id']]);
+                    }elseif($user['work_number'] != $dingUser['job_number']){
                         UserCenter::updateAll(['work_number'=>$dingUser['job_number']],['id'=>$dingUser['kael_id']]);
                     }
                 }
