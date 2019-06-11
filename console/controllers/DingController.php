@@ -635,6 +635,10 @@ class DingController extends Controller
                     }elseif($user['work_number'] != $dingUser['job_number']){
                         UserCenter::updateAll(['work_number'=>$dingUser['job_number']],['id'=>$dingUser['kael_id']]);
                     }
+
+                    if(!$user['status'] && !DingtalkUser::find()->select('user_id')->where(['mobile'=>$dingUser['mobile'],'status'=>0])->scalar()){
+                        UserCenter::updateAll(['status'=>1],['id'=>$dingUser['kael_id']]);
+                    }
                 }else{
                     //新增kael
                     $params = [
