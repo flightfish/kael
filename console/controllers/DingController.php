@@ -628,7 +628,7 @@ class DingController extends Controller
                 }
             }else{
                 $user = UserCenter::findOneByWhere(['id'=>$dingUser['kael_id']],'',-1);
-                if($user){
+                if($user && $user['mobile'] == $dingUser['mobile']){
                     if($dingVoildUser = DingtalkUser::findOneByWhere(['kael_id'=>$dingUser['kael_id']])){
                         $dingVoildUser['job_number'] != $user['work_number'] &&
                         UserCenter::updateAll(['work_number'=>$dingVoildUser['job_number']],['id'=>$dingUser['kael_id']]);
