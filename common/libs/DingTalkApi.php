@@ -25,6 +25,60 @@ class DingTalkApi {
     const API_POST_UPDATE_EMAIL_BY_UID = "https://oapi.dingtalk.com/user/update"; //更新用户email信息
     const API_SEND_WORK_MESSAGE = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
 
+    //获取企业员工人数
+    const API_GET_ORG_USER_COUNT = "https://oapi.dingtalk.com/user/get_org_user_count";
+    //获取子部门ID列表
+    const API_DEPARTMENT_LIST_IDS = "https://oapi.dingtalk.com/department/list_ids";
+    //获取部门详情
+    const API_GET_DEPARTMENT_INFO = "https://oapi.dingtalk.com/department/get";
+
+
+
+    /**
+     * onlyActive
+     * 0：包含未激活钉钉的人员数量
+     * 1：不包含未激活钉钉的人员数量
+     */
+    public static function getOrgUserCount($onlyActive=1){
+        $params = [
+            'onlyActive'=>$onlyActive
+        ];
+        $retJson = self::curlGet(self::API_GET_ORG_USER_COUNT,$params);
+        return $retJson['count'];
+    }
+
+
+    /**
+     * id
+     * 父部门id。根部门的话传1
+     */
+    public static function departmentListIds($parentDepartmentId=1){
+        $params = [
+            'id'=>$parentDepartmentId
+        ];
+        $retJson = self::curlGet(self::API_DEPARTMENT_LIST_IDS,$params);
+        return $retJson['sub_dept_id_list'];
+    }
+
+
+    /**
+     * id
+     * 部门id
+     */
+    public static function getDepartmentInfo($departmentId=1){
+        $params = [
+            'id'=>$departmentId
+        ];
+        $retJson = self::curlGet(self::API_GET_DEPARTMENT_INFO,$params);
+        return $retJson;
+    }
+
+
+
+
+
+
+
     public static function getUserInfoByCode($code){
         $url = self::API_GETUSERINFO_BYCODE.'?access_token='.self::getAccessTokenMeican().'&code='.$code;
         $retStr = AppFunc::curlGet($url);

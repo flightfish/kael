@@ -17,6 +17,16 @@ class DingtalkDepartment extends \common\models\BaseActiveRecord
         return Yii::$app->get('db');
     }
 
+
+    public static function add($params){
+        $model = new self;
+        foreach($params as $k=>$v){
+            $model->$k = $v;
+        }
+        $model->insert();
+        return $model->id;
+    }
+
     public static function findOneByWhere($where,$select='*',$order=""){
         !isset($where['status']) && $where['status'] = 0;
         $query = static::find()
@@ -36,6 +46,23 @@ class DingtalkDepartment extends \common\models\BaseActiveRecord
             $query = $query->andWhere($v);
         }
         return $query->asArray(true)->all();
+    }
+
+    public static function findList($where=[],$indexKey="",$select='*',$status=0){
+        !isset($where['status']) && $status != -1 && $where['status'] = $status;
+        if(!empty($indexKey)){
+            return static::find()
+                ->select($select)
+                ->where($where)
+                ->indexBy($indexKey)
+                ->asArray(true)
+                ->all();
+        }
+        return static::find()
+            ->select($select)
+            ->where($where)
+            ->asArray(true)
+            ->all();
     }
 
 }

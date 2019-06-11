@@ -9,6 +9,7 @@ use common\models\ehr\BusinessDepartment;
 use common\models\DepartmentRelateToKael;
 use common\models\ehr\DepartmentUser;
 use common\models\UserCenter;
+use common\models\UserInfo;
 use Yii;
 use yii\console\Controller;
 
@@ -69,6 +70,7 @@ class DingController extends Controller
             $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id where a.status = 0 and b.status = 0 and b.`level`={$level}";
             DingtalkDepartment::getDb()->createCommand($sql)->execute();
         }
+
     }
 
     private function updateDingUser(){
@@ -483,6 +485,7 @@ class DingController extends Controller
             UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
             DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
             DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$deleteUids]);
+            UserInfo::updateAll(['status'=>1],['user_id'=>$deleteUids]);
         }
         //全局更新后根据钉钉全局结果同步删除掉kael用户(可能由于历史原因造成kael用户冗余,所以执行该部分)
 //        $kaelIds = array_keys(DingtalkUser::findList([],'kael_id','kael_id'));
