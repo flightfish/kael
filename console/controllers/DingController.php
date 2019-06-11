@@ -635,6 +635,21 @@ class DingController extends Controller
                     }elseif($user['work_number'] != $dingUser['job_number']){
                         UserCenter::updateAll(['work_number'=>$dingUser['job_number']],['id'=>$dingUser['kael_id']]);
                     }
+                }else{
+                    //新增kael
+                    $params = [
+                        'username'=>$dingUser['name'],
+                        'password'=>md5('1!Aaaaaaa'),
+                        'sex'=>1,
+                        'work_number'=>$dingUser['job_number'],
+                        'mobile'=>isset($dingUser['mobile'])?$dingUser['mobile']:'',
+                        //                                'email'=>isset($userInfo['email'])?$userInfo['email']:'',
+                        'user_type'=>0,
+                        'status'=>1
+                    ];
+                    $kaelId = UserCenter::addUser($params);
+                    DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$dingUser['user_id']]);
+                    echo "新增kael账号:\t".$kaelId."\n";
                 }
             }
         }
