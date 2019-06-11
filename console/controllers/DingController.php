@@ -565,7 +565,7 @@ class DingController extends Controller
 
 
     public function actionUpdate2(){
-        $dingUsers = DingtalkUser::findList(['status'=>1,['kael_id'=>0]]);
+        $dingUsers = DingtalkUser::findList(['status'=>1,'kael_id'=>0]);
         foreach ($dingUsers as $dingUser){
             if(!empty($dingUser['mobile'])){
                 if($user = UserCenter::findOneByWhere(['mobile'=>$dingUser['mobile']],'',1)){
