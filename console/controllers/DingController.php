@@ -143,7 +143,7 @@ class DingController extends Controller
                     $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
 
                     if(in_array($userId,$allUserIds)){
-                        echo date('Y-m-d H:i:s')."\t更新员工:\t";
+                        echo date('Y-m-d H:i:s')."\t更新钉钉员工:\t";
                         echo $userInfo['userid']."\n";
                         //更新
 
@@ -171,6 +171,7 @@ class DingController extends Controller
                         $kaelId = $dingTalkUser['kael_id'];
                         $user = UserCenter::findOneByWhere(['id'=>$kaelId]);
                         if(!empty($user)){
+                            echo "*更新kael账号*\t[".$kaelId."]\n";
                             $params = [];
                             if($user['username'] != $userInfo['name']){
                                 $params['username'] = $userInfo['name'];
@@ -236,6 +237,7 @@ class DingController extends Controller
                                 //更新钉钉员工关联kael编号
                                 DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
                                 $user = UserCenter::findOne($kaelId);
+                                echo "*新增kael账号*\t[".$kaelId."]\n";
                             }
                         }
                         //更新实际部门相关  @todo main-department upupup
@@ -559,5 +561,35 @@ class DingController extends Controller
             }
         }
         echo date('Y-m-d H:i:s')."\t*********************更新结束\n";
+    }
+
+
+    public function actionUpdate2(){
+        $dingUsers = DingtalkUser::findList(['status'=>1,['kael_id'=>0]]);
+        foreach ($dingUsers as $dingUser){
+            if(!empty($dingUser['mobile'])){
+                if($user = UserCenter::findOneByWhere(['mobile'=>$dingUser['mobile']])){
+                    if($user['user_type']){
+                        UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
+                    }
+                    $kaelId = $user['id'];
+                    //更新钉钉员工关联kael编号
+                    DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$dingUser['user_id']]);
+                    echo "[手机号]钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$user['id']."\n";
+                }
+
+            }
+            if(!$user && !empty($dingUser['job_number'])){
+                if($user = UserCenter::findOneByWhere(['work_number'=>$dingUser['job_number']])){
+                    if($user['user_type']){
+                        UserCenter::updateAll(['user_type'=>0],['id'=>$user['id']]);
+                    }
+                    $kaelId = $user['id'];
+                    //更新钉钉员工关联kael编号
+                    DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$dingUser['user_id']]);
+                    echo "[工号]钉钉账号:".$dingUser['user_id']."\t->绑定->\tkael账号:".$user['id']."\n";
+                }
+            }
+        }
     }
 }
