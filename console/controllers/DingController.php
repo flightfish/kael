@@ -81,7 +81,7 @@ class DingController extends Controller
             ->where(['status'=>0])->asArray(true)->all();
         $departmentToSubRoot = array_column($departmentToSubRoot,'subroot_id','id');
         $i = 0;
-        for($level = 10; $level >0 ;$level --){
+        for($level = 1; $level <10 ;$level ++){
             $departmentList = DingtalkDepartment::find()->where(['status'=>0,'level'=>$level])->orderBy('id')
                 ->asArray(true)->all();
             foreach ($departmentList as $v) {
