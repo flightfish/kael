@@ -70,7 +70,6 @@ class DingController extends Controller
             $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id where a.status = 0 and b.status = 0 and b.`level`={$level}";
             DingtalkDepartment::getDb()->createCommand($sql)->execute();
         }
-
     }
 
     private function updateDingUser(){
