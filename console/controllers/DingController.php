@@ -494,11 +494,18 @@ class DingController extends Controller
         echo date('Y-m-d H:i:s')."\t需要删除员工如下:\n";
         echo json_encode($deleteUids)."\n";
         if(!empty($deleteUids)){
-            DingtalkUser::updateAll(['status'=>1],['user_id'=>$deleteUserIds]);
-            UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
-            DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-            DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$deleteUids]);
-            UserInfo::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+            $trans = DingtalkUser::getDb()->beginTransaction();
+            try {
+                DingtalkUser::updateAll(['status'=>1],['user_id'=>$deleteUserIds]);
+                UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
+                DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$deleteUids]);
+                UserInfo::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                $trans->commit();
+            } catch (\Exception $e){
+                $trans->rollBack();
+                throw $e;
+            }
         }
         //全局更新后根据钉钉全局结果同步删除掉kael用户(可能由于历史原因造成kael用户冗余,所以执行该部分)
 //        $kaelIds = array_keys(DingtalkUser::findList([],'kael_id','kael_id'));
