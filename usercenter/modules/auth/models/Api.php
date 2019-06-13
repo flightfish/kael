@@ -29,9 +29,12 @@ class Api extends RequestBaseModel {
     public $sms_content;
     public $check_token;
 
+    public $mobile;
+
     const SCENARIO_WHERE = "SCENARIO_WHERE";
     const SCENARIO_WHERE_PAGE = "SCENARIO_WHERE_PAGE";
     const SCENARIO_SENDSMS = "SCENARIO_SENDSMS";
+    const SCENARIO_SENDSMSTTOMOBILE = "SCENARIO_SENDSMSTTOMOBILE";
 
     public $platform_id = 0;
 
@@ -42,6 +45,7 @@ class Api extends RequestBaseModel {
         $scenarios[self::SCENARIO_WHERE] = ['token','where','where2','platform_id'];
         $scenarios[self::SCENARIO_WHERE_PAGE] = ['token','where','page','pagesize','where2','platform_id'];
         $scenarios[self::SCENARIO_SENDSMS] = ['user_id','sms_content','check_token'];
+        $scenarios[self::SCENARIO_SENDSMSTTOMOBILE] = ['mobile','sms_content','check_token'];
         return $scenarios;
     }
 
@@ -71,13 +75,32 @@ class Api extends RequestBaseModel {
     {
         return array_merge([
             [['where','where2'], 'safe'],
-            [['sms_content','check_token'], 'string'],
+            [['sms_content','check_token','mobile'], 'string'],
             [['page','pagesize','platform_id','user_id'], 'integer'],
             [['where'], 'required','on'=>self::SCENARIO_WHERE],
             [['page','pagesize'],'required','on'=>self::SCENARIO_WHERE_PAGE],
-            [['user_id','sms_content'],'required','on'=>self::SCENARIO_SENDSMS]
+            [['user_id','sms_content'],'required','on'=>self::SCENARIO_SENDSMS],
+            [['mobile','sms_content'],'required','on'=>self::SCENARIO_SENDSMSTTOMOBILE],
         ],parent::rules());
     }
+
+    public function sendSmsToMobile(){
+        if(empty($this->check_token) || strlen($this->check_token) != 42){
+            throw new Exception("参数校验失败");
+        }
+        $checkMd5 = substr($this->check_token,0,32);
+        $timestamp = substr($this->check_token,32);
+        if(abs(time() - $timestamp) > 60){
+            //60s延迟
+            throw new Exception("参数校验失败");
+        }
+        if($checkMd5 != md5($this->mobile.'|'.$this->sms_content.'|'.date("Ymd",$timestamp) .'|'.$timestamp . '|knowbox')){
+            throw new Exception("参数校验失败");
+        }
+        $res = AppFunc::smsSend($this->mobile, $this->sms_content);
+        return $res;
+    }
+
 
     public function sendSms(){
         if($this->check_token != md5($this->user_id.'|'.$this->sms_content.'|'.date("Ymd") . '|knowbox')){
