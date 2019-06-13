@@ -10,7 +10,7 @@ namespace common\libs\kmsclient;
 
 class Config {
     public static $configServices = [
-        '172.16.0.99:8001',
+        '172.16.0.99:8000',
     ];
     public static $kmsSource = "kael_inner_platform";
 }
