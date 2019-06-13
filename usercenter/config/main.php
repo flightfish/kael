@@ -39,7 +39,7 @@ return [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error'],
-                    'categories' => ['usercenter'],
+//                    'categories' => ['usercenter'],
                     'logFile' => '@runtime/logs/error.log.'.date('Ymd'),
                     'logVars' => [],
                     'enableRotation'=> false,
