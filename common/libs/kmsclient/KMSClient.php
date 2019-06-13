@@ -44,7 +44,7 @@ class KMSClient {
                 KMSConfig::getInstance()->deleteKMSConfig();
                 return $this->getResult($msServiceName, $uriName, $data, $hashKey, true);
             }
-            return [false, [2]];
+            return [false, [2,$url]];
         }
         $result = json_decode($result, true);
         return [true, $result];
