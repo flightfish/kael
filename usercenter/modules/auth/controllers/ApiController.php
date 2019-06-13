@@ -17,6 +17,19 @@ require_once (__DIR__ . '/../config/constant.php');
 class ApiController extends BaseController
 {
 
+    public function actionSendSmsToMobile()
+    {
+        try{
+            $model = new Api(['scenario'=>Api::SCENARIO_SENDSMSTTOMOBILE]);
+            $model->load($this->loadData);
+            $model->validate();
+            $ret = $model->sendSmsToMobile();
+            return $this->success($ret);
+        }catch(\Exception $exception){
+            return $this->error($exception);
+        }
+    }
+
 
     public function actionSendSms()
     {

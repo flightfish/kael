@@ -3,6 +3,7 @@ namespace common\libs;
 
 
 use common\libs\kmsclient\KMSClient;
+use usercenter\components\exception\Exception;
 
 class AppFunc{
 
