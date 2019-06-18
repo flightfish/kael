@@ -2,6 +2,7 @@
 
 namespace usercenter\modules\auth\models;
 use common\libs\Constant;
+use common\libs\Qiniu;
 use common\libs\UserToken;
 use common\models\Department;
 use common\models\Platform;
@@ -13,9 +14,12 @@ use common\models\LogAuthUser;
 use common\models\UserCenter;
 use common\models\WorkLevel;
 use common\models\WorkType;
+use dosamigos\qrcode\QrCode;
 use usercenter\components\exception\Exception;
 use usercenter\models\RequestBaseModel;
 use Yii;
+use yii\helpers\FileHelper;
+
 class Api extends RequestBaseModel {
 
 
@@ -24,8 +28,15 @@ class Api extends RequestBaseModel {
     public $page;
     public $pagesize;
 
+    public $url;
+    public $dirname;
+    public $logo = false;
+    public $matrix_point_size = 10;
+    public $margin = 1;
+
     const SCENARIO_WHERE = "SCENARIO_WHERE";
     const SCENARIO_WHERE_PAGE = "SCENARIO_WHERE_PAGE";
+    const SCENARIO_QR = "SCENARIO_QR";
 
     public $platform_id = 0;
 
@@ -35,6 +46,7 @@ class Api extends RequestBaseModel {
         $scenarios =  parent::scenarios();
         $scenarios[self::SCENARIO_WHERE] = ['token','where','where2','platform_id'];
         $scenarios[self::SCENARIO_WHERE_PAGE] = ['token','where','page','pagesize','where2','platform_id'];
+        $scenarios[self::SCENARIO_QR] = ['token','url','dirname','logo','matrix_point_size','margin'];
         return $scenarios;
     }
 
@@ -66,7 +78,8 @@ class Api extends RequestBaseModel {
             [['where','where2'], 'safe'],
             [['page','pagesize','platform_id'], 'integer'],
             [['where'], 'required','on'=>self::SCENARIO_WHERE],
-            [['page','pagesize'],'required','on'=>self::SCENARIO_WHERE_PAGE]
+            [['page','pagesize'],'required','on'=>self::SCENARIO_WHERE_PAGE],
+            [['url','dirname'],'required','on'=>self::SCENARIO_QR]
         ],parent::rules());
     }
 
@@ -137,5 +150,35 @@ class Api extends RequestBaseModel {
             'list'=>$list,
             'total'=>$count,
         ];
+    }
+
+
+    public function getImage(){
+        $qrcodePath = \Yii::getAlias('@runtime/qrcode');
+        if (!is_dir($qrcodePath)) {
+            FileHelper::createDirectory($qrcodePath, '0755', true);
+        }
+        $qrname = strval(microtime(true)).'.png';
+        $qrpath = $qrcodePath.DIRECTORY_SEPARATOR.$qrname;
+        //生成二维码图片
+        QrCode::png($this->url, $qrpath, "H", $this->matrix_point_size, $this->margin);
+
+        if ($this->logo !== false) {
+            $QR = imagecreatefromstring(file_get_contents($qrpath));
+            $logo = imagecreatefromstring(file_get_contents($this->logo));
+            $QR_width = imagesx($QR);//二维码图片宽度
+            $QR_height = imagesy($QR);//二维码图片高度
+            $logo_width = imagesx($logo);//logo图片宽度
+            $logo_height = imagesy($logo);//logo图片高度
+            $logo_qr_width = $QR_width / 5;
+            $scale = $logo_width/$logo_qr_width;
+            $logo_qr_height = $logo_height/$scale;
+            $from_width = ($QR_width - $logo_qr_width) / 2;
+            //重新组合图片并调整大小
+            imagecopyresampled($QR, $logo, $from_width, $from_width, 0, 0, $logo_qr_width,
+                $logo_qr_height, $logo_width, $logo_height);
+            imagepng($QR,$qrpath);
+        }
+        return Qiniu::uploadFile($qrpath,$this->dirname.'/'.$qrname);
     }
 }
