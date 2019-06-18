@@ -27,11 +27,11 @@ class Cache
         return null;
     }
 
-    public static function setCache($cacheKey, $ret)
+    public static function setCache($cacheKey, $ret,$exptime)
     {
         $cacheKey = $cacheKey[0] . '_' . md5(join($cacheKey, '-'));
         if (Yii::$app->params['redis_cache'] and !empty($ret)) {
-            Yii::$app->redis->setex($cacheKey, Yii::$app->params['redis_cache_time'], json_encode($ret));
+            Yii::$app->redis->setex($cacheKey, $exptime, json_encode($ret));
         }
     }
 
@@ -43,4 +43,19 @@ class Cache
         }
     }
 
+
+    public static function setCacheString(string $cacheKey,int $exptime,string $value){
+        if (Yii::$app->params['redis_cache']) {
+            return Yii::$app->redis->setex($cacheKey,$exptime, $value);
+        }
+        return null;
+    }
+
+
+    public static function getCacheString(string $cacheKey){
+        if (Yii::$app->params['redis_cache']) {
+            return Yii::$app->redis->get($cacheKey);
+        }
+        return null;
+    }
 }

@@ -14,6 +14,25 @@ return [
             'port' => 6379,
             'database' => 0,
             'password' => 'KBRedispt'
-        ]
+        ],
+        'db_ehr' => [
+            'class' => 'yii\db\Connection',
+            'dsn' => 'mysql:host=10.19.141.31;port=3321;dbname=ehr',
+            'username' => 'ehrRoot',
+            'password' => 'ehrPassword',
+            'charset' => 'utf8',
+        ],
+        'mailer' => [
+            'class' => 'yii\swiftmailer\Mailer',
+            'useFileTransport' =>false,//这句一定有，false发送邮件，true只是生成邮件在runtime文件夹下，不发邮件
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.exmail.qq.com',  //每种邮箱的host配置不一样
+                'username' => 'mail_service@knowbox.cn',
+                'password' => 'Know11',
+                'port' => '465',
+                'encryption' => 'ssl', //加密
+            ]
+        ],
     ],
 ];

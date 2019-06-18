@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>KAEL</title>
+    <script src="//g.alicdn.com/dingding/dingtalk-jsapi/2.0.57/dingtalk.open.js"></script>
+</head>
+<body>
+<script>
+
+    function createXMLHttpRequest() {
+        var xmlHttp;
+        if (window.XMLHttpRequest) {
+            xmlHttp = new XMLHttpRequest();
+            if (xmlHttp.overrideMimeType)
+                xmlHttp.overrideMimeType('text/xml');
+        } else if (window.ActiveXObject) {
+            try {
+                xmlHttp = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                try {
+                    xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+                } catch (e) {
+                }
+            }
+        }
+        return xmlHttp;
+    }
+
+    dd.ready(function() {
+        document.write('ready1');
+        dd.runtime.permission.requestAuthCode({
+            corpId: 'ding56f88c485c1f3d8e35c2f4657eb6378f', // 企业id
+            onSuccess: function (info) {
+                document.write('加载中...');
+                var code = info.code;
+                window.location.href= 'http://' + window.location.host + '/meican/login/ding?code='+code;
+            },
+            onFail : function(err) {
+                document.write(err.errorMessage);
+            }});
+    });
+</script>
+</body>
+</html>

@@ -23,7 +23,7 @@ class KMSClient {
     public function getResult($msServiceName, $uriName, $data, $hashKey = false, $isLast = false) {
         $KMSServiceIPList = KMSConfig::getInstance()->getKMSConfig($msServiceName);
         if (empty($KMSServiceIPList) && isset(KMSServicesList::${$msServiceName}[$uriName])) {
-            return [false, []];
+            return [false, [1]];
         }
         $KMSService = KMSServicesList::${$msServiceName}[$uriName];
         if ($hashKey != false && $isLast == false) {
@@ -44,7 +44,7 @@ class KMSClient {
                 KMSConfig::getInstance()->deleteKMSConfig();
                 return $this->getResult($msServiceName, $uriName, $data, $hashKey, true);
             }
-            return [false, []];
+            return [false, [2]];
         }
         $result = json_decode($result, true);
         return [true, $result];

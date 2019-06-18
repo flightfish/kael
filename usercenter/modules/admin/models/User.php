@@ -6,6 +6,7 @@ use common\libs\Constant;
 use common\libs\UserToken;
 use common\models\CommonModulesUser;
 use common\models\Department;
+use common\models\DingtalkUser;
 use common\models\LogAuthUser;
 use common\models\Platform;
 use common\models\RelateAdminDepartment;
@@ -310,6 +311,9 @@ class User extends RequestBaseModel
 
     public function del()
     {
+        if($ding = DingtalkUser::findOneByWhere(['kael_id'=>$this->id])){
+            throw new Exception('无法删除用户,该用户已从钉钉被动同步', Exception::ERROR_COMMON);
+        }
         $this->checkUserAuth();
         $oldOne = UserCenter::findOneById($this->id);
         if(empty($oldOne)){
@@ -336,12 +340,15 @@ class User extends RequestBaseModel
     {
         $this->checkSuperAuth();
 
-        if (empty($this->data['center']) || empty($this->data['center']['mobile'])) {
-            throw new Exception('手机号不能为空', Exception::ERROR_COMMON);
-        }
-        if (empty($this->data['center']['username'])) {
-            throw new Exception('用户名不能为空', Exception::ERROR_COMMON);
-        }
+//        if (empty($this->data['center']) || empty($this->data['center']['mobile'])) {
+//            throw new Exception('手机号不能为空', Exception::ERROR_COMMON);
+//        }
+//        if(!preg_match('/^1\d{10}$/',$this->data['center']['mobile'])){
+//            throw new Exception('手机号格式不正确', Exception::ERROR_COMMON);
+//        }
+//        if (empty($this->data['center']['username'])) {
+//            throw new Exception('用户名不能为空', Exception::ERROR_COMMON);
+//        }
         if(!isset($this->data['center']['admin']) || $this->data['center']['admin'] == -1){
             throw new Exception('请选择权限', Exception::ERROR_COMMON);
         }
@@ -351,9 +358,9 @@ class User extends RequestBaseModel
         if(!isset($this->data['center']['user_type']) || $this->data['center']['user_type'] == -1){
             throw new Exception('请选择用户类型', Exception::ERROR_COMMON);
         }
-        if(!isset($this->data['center']['department_id']) || $this->data['center']['department_id'] <= 0){
-            throw new Exception('请选择部门', Exception::ERROR_COMMON);
-        }
+//        if(!isset($this->data['center']['department_id']) || $this->data['center']['department_id'] <= 0){
+//            throw new Exception('请选择部门', Exception::ERROR_COMMON);
+//        }
         if(!isset($this->data['center']['work_type']) || $this->data['center']['work_type'] < 0 || $this->data['center']['work_type'] > 10){
             throw new Exception('工种类型错误', Exception::ERROR_COMMON);
         }
@@ -374,22 +381,30 @@ class User extends RequestBaseModel
             $this->data['platform_list'] = array_intersect($this->data['platform_list'],$platformListAllow);
         }
 
-        if (0 == $this->id) {
+        if (0 == $this->id) {            //新增用户
+
             if($this->data['center']['admin'] == Role::ROLE_ADMIN && $this->user['admin'] !== Role::ROLE_ADMIN){
                 throw new Exception('无权限新增超级管理员', Exception::ERROR_COMMON);
             }
-            //唯一性
+//            //唯一性
             $old = UserCenter::find()->where(['mobile'=>$this->data['center']['mobile'],'status'=>UserCenter::STATUS_VALID])->one();
             if(!empty($old)){
                 throw new Exception('手机号已存在', Exception::ERROR_COMMON);
             }
             if(!empty($this->data['center']['email'])){
+                $this->data['center']['email'] = trim($this->data['center']['email']);
                 $old = UserCenter::find()->where(['email'=>$this->data['center']['email'],'status'=>UserCenter::STATUS_VALID])->one();
                 if(!empty($old)){
                     throw new Exception('邮箱已存在', Exception::ERROR_COMMON);
                 }
+                if($this->data['center']['user_type'] == 0 && substr($this->data['center']['email'],-11) != '@knowbox.cn'){
+                    throw new Exception('员工请使用公司邮箱', Exception::ERROR_COMMON);
+                }
+                if($this->data['center']['user_type'] == 0 && empty($this->data['center']['work_number'])){
+                    throw new Exception('员工请填写工号', Exception::ERROR_COMMON);
+                }
             }
-            //新增
+//            //新增
             $this->mobile = $this->data['center']['mobile'];
             $userInfo = $this->checkUserMobile();
             if(!empty($userInfo)){
@@ -398,17 +413,21 @@ class User extends RequestBaseModel
             if (empty($this->data['center']['password'])) {
                 $this->data['center']['password'] = md5("123456");
             }
-            //新增
+//            //新增
             $model = new UserCenter();
             foreach ($this->data['center'] as $k => $v) {
                 $model->$k = $v;
             }
             $ret = $model->insert();
             $userId = $model->id;
+//            //开通磐石权限
+            $this->id = $userId;
+            $this->data['platform_list'] = [6000];
+            $this->updatePriv();
             LogAuthUser::LogUser($this->user['id'],$userId,LogAuthUser::OP_ADD_USER,$this->data);
             //权限
-//            RelateUserPlatform::batchAdd($userId,$this->data['platform_list']);
-        } else {
+            RelateUserPlatform::batchAdd($userId,$this->data['platform_list']);
+        } else {            //编辑用户
             //编辑
             $oldOne = UserCenter::findOneById($this->id);
             if (empty($oldOne)) {
@@ -435,8 +454,19 @@ class User extends RequestBaseModel
                     }
                 }
             }
+            if($oldOne['username'] != $this->data['center']['username']){
+                $updateParams['username'] = $this->data['center']['username'];
+            }
+            if($oldOne['mobile'] != $this->data['center']['mobile']){
+                $updateParams['mobile'] = $this->data['center']['mobile'];
+            }
+            if($oldOne['work_number'] != $this->data['center']['work_number']){
+                $updateParams['work_number'] = $this->data['center']['work_number'];
+            }
             LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_EDIT_USER,$this->data);
-            $ret = UserCenter::updateAll($this->data['center'], ['id' => $this->id]);
+            $updateParams = $this->data['center'];
+            $updateParams['email_created'] = 0;
+            $ret = UserCenter::updateAll($updateParams, ['id' => $this->id]);
 //            RelateUserPlatform::updateAll(['status'=>RelateUserPlatform::STATUS_INVALID],['user_id' => $this->id,'platform_id'=>$platformListAllow]);
 //            RelateUserPlatform::batchAdd($this->id,$this->data['platform_list']);
         }
@@ -522,28 +552,29 @@ class User extends RequestBaseModel
                 array_push($error, '第' . ($k + 1) . '行，部门不存在');
                 continue;
             }
-//            if (!isset($v[10]) || !is_numeric($v[10])) {
-//                array_push($error, '第' . ($k + 1) . '行，请填写学科');
-//                continue;
-//            }
-//            if (!isset($v[11]) || !is_numeric($v[11])) {
-//                array_push($error, '第' . ($k + 1) . '行，请填写学段');
-//                continue;
-//            }
 
             $MobileOnly = UserCenter::findByMobile($v[1]);
             if (!empty($MobileOnly)) {
                 array_push($error, '第' . ($k + 1) . '行，电话号码已存在不能重复添加');
                 continue;
             }
+            isset($v[2]) && $v[2] = trim($v[2]);
             if(!empty($v[2])){
                 $emailOnly = UserCenter::find()->where(['status'=>0,'email'=>$v[2]])->asArray(true)->one();
                 if (!empty($emailOnly)) {
                     array_push($error, '第' . ($k + 1) . '行，邮箱已存在不能重复添加');
                     continue;
                 }
+                if($allDepartment[intval($v[4])]['is_outer'] == 0 && substr($v[2],-11) != '@knowbox.cn'){
+                    array_push($error, '第' . ($k + 1) . '行，员工请使用公司邮箱');
+                    continue;
+                }
             }
 
+            if($allDepartment[intval($v[4])]['is_outer'] == 0 && empty($v[12])){
+                array_push($error, '第' . ($k + 1) . '行，员工请填写工号');
+                continue;
+            }
             if (!empty($v[12])) {
                 $work_number = UserCenter::find()->where(['status'=>0, 'work_number'=>$v[12]])->asArray(true)->one();
                 if (!empty($work_number)) {
@@ -573,9 +604,9 @@ class User extends RequestBaseModel
 
             $paramsUcenter[$k] = [
                 'id'=>$startUserId + $k,
-                'username' => $v[0],
-                'mobile' => $v[1],
-                'email'=>$v[2],
+                'username' => trim($v[0]),
+                'mobile' => trim($v[1]),
+                'email'=>trim($v[2]),
                 'sex' => $v[3],
                 'department_id'=>$v[4],
                 'idcard' => $v[5],
@@ -590,11 +621,22 @@ class User extends RequestBaseModel
                 'work_type'   => $v[11] ?? 0,
                 'work_number' => $v[12],
                 'password'    => empty($v[13]) ? md5('1234567') : md5($v[13]),
-//                'grade_part' => $v[11],
-//                'subject' => $v[10],
             ];
         }
         if(!empty($paramsUcenter)){
+            $allMobile = array_values(array_filter(array_column($paramsUcenter,'mobile')));
+            $allEmail = array_values(array_filter(array_column($paramsUcenter,'email')));
+            $allWorkNumber = array_values(array_filter(array_column($paramsUcenter,'work_number')));
+            if(count($allMobile) != count(array_unique($allMobile))){
+                throw new Exception("表格中手机号存在重复");
+            }
+            if(count($allEmail) != count(array_unique($allEmail))){
+                throw new Exception("表格中非空邮箱存在重复");
+            }
+            if(count($allWorkNumber) != count(array_unique($allWorkNumber))){
+                throw new Exception("表格中非空工号存在重复");
+            }
+
             $columns = array_keys(array_values($paramsUcenter)[0]);
             $rows = [];
             foreach($paramsUcenter as $v){

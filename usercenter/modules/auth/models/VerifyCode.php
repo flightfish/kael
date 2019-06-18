@@ -12,7 +12,7 @@ class VerifyCode extends \yii\db\ActiveRecord {
     {
         $code = self::getStudentPasswordCode($mobile);
         if (empty($code)) {
-            $code = rand(1000, 9999);
+            $code = rand(100000, 999999);
             self::setStudentPasswordCode($mobile, $code);
         }
         return [$code, $this->getPowerfulCode()];
@@ -28,7 +28,7 @@ class VerifyCode extends \yii\db\ActiveRecord {
     public static function setStudentPasswordCode($mobile, $data)
     {
         $key = self::gen('USER_STUDENT_PASSWORD_CODE_%s', $mobile);
-        return self::setex($key, 300, $data);
+        return self::setex($key, 180, $data);
     }
     protected static function setex($key, $expire, $val, $conn = null)
     {

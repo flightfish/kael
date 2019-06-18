@@ -289,12 +289,15 @@ class CommonApi extends RequestBaseModel
         $cacheKeyTime = ['kael_deepblue_user_mobile_time', $this->user_mobile];
         $this->RedisKeyCheck($cacheKey, $cacheKeyTime);
         $user = CommonUser::findByMobile($this->user_mobile);
+        $message = "";
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         } else {
             if ($user['user_type'] == 0) {
-                if (empty($user['password']) || $user['password'] == md5('123456')) {
-                    throw new Exception("密码过于简单，请点击忘记密码修改密码", Exception::ERROR_COMMON);
+                $preg = '/^(?:(?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[\W_].*))[\W_0-9A-Za-z]{8,}$/';
+                if (!preg_match($preg,$this->user_pass)) {
+                    throw new Exception("密码过于简单，请点击忘记密码修改密码",Exception::ERROR_COMMON);
+//                    $message = "密码过于简单，请点击忘记密码修改密码，3月1日后开始强制修改密码";
                 }
             }
             if (empty($user['password'])) {
@@ -303,7 +306,7 @@ class CommonApi extends RequestBaseModel
             }
             if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
                 $this->setPassCount($cacheKey, $cacheKeyTime);
-                throw new Exception(Exception::USER_PASS_WRONG, Exception::ERROR_COMMON);
+                throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
             }
         }
         CommonUser::updateAll(['login_ip' => UserToken::getRealIP()], ['id' => $user['id']]);
@@ -315,7 +318,7 @@ class CommonApi extends RequestBaseModel
         setcookie(Constant::LOGIN_TOKEN_NAME, $token, time() + Constant::LOGIN_TOKEN_TIME, '/', Constant::LOGIN_TOKEN_HOST);
 //        !isset($_COOKIE['token']) && setcookie('token', $token, time() + 7*24*3600, '/', Constant::LOGIN_TOKEN_HOST);
         $this->setCache($cacheKey, -1);
-        return ['token' => $token];
+        return ['token' => $token,'message'=>$message];
     }
 
     //登出
@@ -347,8 +350,9 @@ class CommonApi extends RequestBaseModel
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         }
         if ($this->user['user_type'] == 0) {
-            if ($this->user_pass == '123456') {
-                throw new Exception("密码过于简单，请重新设置", Exception::ERROR_COMMON);
+            $preg = '/^(?:(?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[\W_].*))[\W_0-9A-Za-z]{8,}$/';
+            if (!preg_match($preg,$this->user_pass)) {
+                throw new Exception("密码必须是8位以上的字母加数字加特殊字符的组合", Exception::ERROR_COMMON);
             }
         }
         if (!empty($this->token) && empty($this->old_pass)) { //找回密码修改
@@ -397,16 +401,35 @@ class CommonApi extends RequestBaseModel
     //发送验证码
     public function SendPasswordCode()
     {
-//        $login_ip = UserToken::getRealIP();
-//        $cacheKey = ['kael_deepblue_user_mobile', $login_ip];
-//        $checkCount = Cache::checkCache($cacheKey);
-//        $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
-//        if($checkCount && $checkRes >= 10){
-//            throw new Exception("每小时只能访问10次", Exception::ERROR_COMMON);
-//        }else{
-//            $checkRes += 1;
-//            Cache::setCache($cacheKey, ['count' => $checkRes]);
-//        }
+        //同一ip 内网一秒钟只能发一次 外网1分钟发一次
+        $login_ip = UserToken::getRealIP();
+        $cacheKey = ['kael_user_mobile', $login_ip];
+        $checkCount = Cache::checkCache($cacheKey);
+        $checkRes = isset($checkCount['count']) ? $checkCount['count'] : 0;
+
+        if($checkCount && $checkRes >= 1){
+            throw new Exception("还不能发送验证码", Exception::ERROR_COMMON);
+        }else{
+            $checkRes += 1;
+            $user = Platform::findOneById(1);
+            $allIpList = explode(',',$user['allow_ips']);
+            if(in_array($login_ip,$allIpList)){
+                Cache::setCache($cacheKey, ['count' => $checkRes],1);
+            }else{
+                Cache::setCache($cacheKey, ['count' => $checkRes],60);
+            }
+        }
+        //同一手机号一分钟只能发一次
+        $mobileCacheKey = ['kael_user_mobile', $this->user_mobile];
+        $mobileCheckCount = Cache::checkCache($mobileCacheKey);
+        $mobileCheckRes = isset($mobileCheckCount['count']) ? $mobileCheckCount['count'] : 0;
+        if($mobileCheckCount && $mobileCheckRes >= 1){
+            throw new Exception("还不能发送验证码", Exception::ERROR_COMMON);
+        }else{
+            $mobileCheckRes += 1;
+            Cache::setCache($mobileCacheKey, ['count' => $mobileCheckRes],60);
+        }
+
         $user = CommonUser::findByMobile($this->user_mobile);
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_NOT_FIND, Exception::ERROR_COMMON);
@@ -491,7 +514,7 @@ class CommonApi extends RequestBaseModel
 
         if ($this->user['user_type'] == 0) {
             if (empty($this->user['password']) || $this->user['password'] == md5('123456')) {
-                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
+//                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
             }
         }
         //判断部门权限
@@ -504,6 +527,16 @@ class CommonApi extends RequestBaseModel
             throw new Exception('您的权限不足，请确认有权限后重试', Exception::ERROR_COMMON);
         }
 
+        return $this->user;
+    }
+
+    //校验权限
+    public function checkAuth()
+    {
+        $token = UserToken::getToken();
+        if(empty($token)){
+            throw new Exception(Exception::NOT_LOGIN_MSG,Exception::NOT_LOGIN_CODE);
+        }
         return $this->user;
     }
 }

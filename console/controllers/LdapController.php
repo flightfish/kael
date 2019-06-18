@@ -18,37 +18,19 @@ class LdapController extends Controller
             echo "is_running";
             exit();
         }
-        ///etc/openldap/ldap.conf  TLS_REQCERT allow
         if(empty(Yii::$app->params['ldap_addr'])){
             echo "未设置ldap地址\n";
             exit();
         }
-//        echo $caPath = dirname(dirname(dirname(__FILE__))).'/common/config/'."\n";
-//        echo $caFile = './ca.pem';//dirname(dirname(dirname(__FILE__))).'/common/config/ca.pem'."\n";
-
-//        putenv('LDAPTLS_CACERT='.$caPath);
-//        putenv('LDAPTLS_CACERT='.$caFile);
-//        putenv('LDAPTLS_CACERTDIR='.$caPath);
-//        ldap_set_option(NULL, LDAP_OPT_DEBUG_LEVEL, 7);
         echo Yii::$app->params['ldap_addr'].':'.Yii::$app->params['ldap_port']."\n";
         $ds = ldap_connect(Yii::$app->params['ldap_addr'],Yii::$app->params['ldap_port']) or die("Could not connect to LDAP server.");
         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
         try{
             ldap_bind($ds, Yii::$app->params['ldap_rdn'], Yii::$app->params['ldap_passwd']);
             //先查看删除的
-            $listOld = CommonUser::getDb()->createCommand("select * from `user` where ldap_update_time < update_time and status!=0")->queryAll();
+            $listOld = CommonUser::getDb()->createCommand("select a.* from `user` a left join `user` b on a.mobile = b.mobile and a.id != b.id and b.`status` = 0 where a.ldap_update_time < a.update_time and a.status!=0 and b.id is null")->queryAll();
             $listUpdate = CommonUser::getDb()->createCommand("select * from `user` where ldap_update_time < update_time and status=0")->queryAll();
             $departmentNameIndex = array_column(Department::findAllList(),'department_name','department_id');
-//            $idList = array_column($list,'id');
-//            $filterSub = join('',array_map(function($id){return "(uidNumber={$id})";},$idList));
-//            $sr = "dc=kb,dc=com";
-//            $filter="(|$filterSub)";
-//            $filter="(|(uidNumber=20006)(uidNumber=20005))";
-//            $justthese = array("ou", "uidNumber");
-//            $sr=ldap_search($ds, $sr, $filter, $justthese);
-//            $oldList = ldap_get_entries($ds, $sr);
-//            unset($oldList['count']);
-//            $delDnList = array_filter(array_column($oldList,'dn'));
 
             foreach ($listOld as $v){
                 $v['mobile'] = trim($v['mobile']);
@@ -80,7 +62,6 @@ class LdapController extends Controller
                 }
                 $v['mobile'] = $mobileMatch[0];
                 $ou = $v['user_type'] == 0 ? 'Employee' : 'Contractor';
-//                $passwd = '{MD5}'.base64_encode(pack("H*",md5($v['password'])));
                 $passwd = '{MD5}'.base64_encode(pack("H*",$v['password']));
                 $dn = "mobile={$v['mobile']},ou={$ou},dc=kb,dc=com";
                 //查询旧的

@@ -19,4 +19,5 @@ return array(
     'linslin\\yii2\\curl\\' => array($vendorDir . '/linslin/yii2-curl'),
     'Qiniu\\' => array($vendorDir . '/qiniu/php-sdk/src/Qiniu'),
     'dosamigos\\qrcode\\' => array($vendorDir . '/2amigos/yii2-qrcode-helper/src'),
+
 );

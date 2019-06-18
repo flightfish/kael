@@ -23,6 +23,9 @@ return [
         'auth' => [
             'class' => 'usercenter\modules\auth\Module',
         ],
+        'meican' => [
+            'class' => 'usercenter\modules\meican\Module',
+        ],
     ],
     'controllerNamespace' => 'usercenter\controllers',
     'components' => [
@@ -36,7 +39,7 @@ return [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error'],
-                    'categories' => ['usercenter'],
+//                    'categories' => ['usercenter'],
                     'logFile' => '@runtime/logs/error.log.'.date('Ymd'),
                     'logVars' => [],
                     'enableRotation'=> false,

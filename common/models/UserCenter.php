@@ -232,6 +232,12 @@ class UserCenter extends \common\models\BaseActiveRecord
         return $query->asArray()->one();
     }
 
+    public static function findOneByWhere($where=[],$select='*',$status=0){
+        !isset($where['status']) && $status != -1 && $where['status'] = $status;
+        $query = self::find()->select($select)->where($where)->asArray()->one();
+        return $query;
+    }
+
     //根据电话号码查询所有人员
     public static function findByMobileStatus($mobile)
     {
@@ -316,5 +322,30 @@ class UserCenter extends \common\models\BaseActiveRecord
 
     public static function findListByRole($roleId){
         return self::find()->where(['admin'=>$roleId,'status'=>self::STATUS_VALID])->asArray(true)->all();
+    }
+
+    public static function findList($where=[],$indexKey="",$select='*',$status=0){
+        !isset($where['status']) && $status != -1 && $where['status'] = $status;
+        if(!empty($indexKey)){
+            return static::find()
+                ->select($select)
+                ->where($where)
+                ->indexBy($indexKey)
+                ->asArray(true)
+                ->all();
+        }
+        return static::find()
+            ->select($select)
+            ->where($where)
+            ->asArray(true)
+            ->all();
+    }
+    public static function findListByWhereAndWhereArr($where,$whereArr,$select='*',$status=0){
+        !isset($where['status']) &&  $status != -1 && $where['status']=0;
+        $query =  self::find()->select($select)->where($where);
+        foreach ($whereArr as $v){
+            $query = $query->andWhere($v);
+        }
+        return $query->asArray(true)->all();
     }
 }
