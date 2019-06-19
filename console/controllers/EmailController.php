@@ -333,6 +333,7 @@ class EmailController extends Controller
                 $checkList = EmailApi::batchCheck($emailForUpdate);
                 if(!empty($checkList['list'])){
                     foreach ($checkList['list'] as $v){
+                        echo $v['user']."\t检查结果:type=".$v['type']."\n";
                         if($v['type'] == -1){
                             continue;
                         }
@@ -355,7 +356,7 @@ class EmailController extends Controller
                             try{
                                 EmailApi::addUser($v['user'],$emailToName[$v['user']],'1Knowbox!');
                             }catch (\Exception $e){
-                                echo date('Y-m-d H:i:s').$e->getMessage()."\n";
+                                echo date('Y-m-d H:i:s')."\t创建邮箱失败\t".$v['user']."\t".$e->getMessage()."\n";
                                 continue;
                             }
                             DingTalkApi::sendWorkMessage('text',['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://exmail.qq.com\n\t账号:{$v['user']}\n\t密码:1Knowbox!"],$emailToId[$v['user']]);
