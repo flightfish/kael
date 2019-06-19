@@ -497,7 +497,7 @@ class CommonApi extends RequestBaseModel
             //深蓝
             $this->checkIp = false;
         }
-        if(($platformInfo['platform_id'] == 6000)){
+        if($platformInfo['platform_id'] == 6000&&$this->user['user_type'] == 0){
             return $this->user;
         }
         //ip限定
