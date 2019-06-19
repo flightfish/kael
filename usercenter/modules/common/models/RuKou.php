@@ -121,9 +121,11 @@ class RuKou extends RequestBaseModel
             //非内部员工
             throw new Exception("权限不足",Exception::ERROR_COMMON);
         }
-        $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],$this->platform_id);
-        if(empty($relateList)){
-            throw new Exception("权限不足",Exception::ERROR_COMMON);
+        if($this->platform_id != 6000){
+            $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],$this->platform_id);
+            if(empty($relateList)){
+                throw new Exception("权限不足",Exception::ERROR_COMMON);
+            }
         }
         $platformInfo = Platform::findOneById($this->platform_id);
         if(empty($platformInfo['platform_url'])){
