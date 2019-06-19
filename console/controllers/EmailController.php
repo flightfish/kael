@@ -267,9 +267,10 @@ class EmailController extends Controller
             return false;
         }
         if(exec('ps -ef|grep "email/create-detail-email"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
-            echo "is_running";
+            echo date('Y-m-d H:i:s')."\tis_running\n";
             exit();
         }
+        echo date('Y-m-d H:i:s')."\t开始运行:\n";
         //删除
         $listForDel = DingtalkUser::find()
             ->select('user_id,email')

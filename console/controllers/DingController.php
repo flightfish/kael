@@ -334,16 +334,33 @@ class DingController extends Controller
                             }
                         }
                         //更新员工关联kael部门  @todo 从主department_id开始向父级依次匹配
-                        $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'user_id'=>$kaelId,'status'=>0])->scalar();
-                         if(!$mainDingDepartmentForUser && !empty($departmentIds)){ //如果没有并且钉钉部门不为空 则默认设置第一个钉钉部门为主部门
-//                            $mainDingDepartmentForUser = $departmentIds[0];
-                              $mainDingDepartmentForUser = $mainDepartId;
-                            DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
-                             DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
-                         }elseif($mainDingDepartmentForUser && !in_array($mainDingDepartmentForUser,$departmentIds) && !empty($departmentIds) && in_array($mainDepartId,$departmentIds)){
+                        $mainDingDepartmentToUserInfo = DepartmentUser::findOneByWhere(['is_main'=>1,'user_id'=>$kaelId,'status'=>0]);
+//                        $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'user_id'=>$kaelId,'status'=>0])->scalar();
+                        $mainDingDepartmentForUser = $mainDingDepartmentToUserInfo['depart_id']??'';
+                        if(!$mainDingDepartmentForUser && !empty($departmentIds)){ //如果没有并且钉钉部门不为空 则默认设置第一个钉钉部门为主部门
+//                          $mainDingDepartmentForUser = $departmentIds[0];
+                            $mainDingDepartmentForUser = $mainDepartId??$departmentIds[0];
+                            $params = [];
+                            $params['is_main'] = 1;
+                            $oldMainDingDepartmentToUserInfo = DepartmentUser::findOneByWhere(['is_main'=>1,'user_id'=>$kaelId,'status'=>1],'','create_time desc');
+                            if($oldMainDingDepartmentToUserInfo){
+                                $params['position_type_id'] = $oldMainDingDepartmentToUserInfo['position_type_id'];
+                                $params['job_position_id'] = $oldMainDingDepartmentToUserInfo['job_position_id'];
+                                $params['finance_position_id'] = $oldMainDingDepartmentToUserInfo['finance_position_id'];
+                            }
+                            DepartmentUser::updateAll($params,['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
+                            DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
+
+                        }elseif($mainDingDepartmentForUser && $mainDingDepartmentForUser != $mainDepartId  && !in_array($mainDingDepartmentForUser,$departmentIds) && !empty($departmentIds) && in_array($mainDepartId,$departmentIds)){
                             DepartmentUser::updateAll(['is_main'=>0],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                             $mainDingDepartmentForUser = $mainDepartId;
-                            DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
+                            $params = [
+                                'is_main'=>1,
+                                'position_type_id'=>$mainDingDepartmentToUserInfo['position_type_id'],
+                                'job_position_id'=>$mainDingDepartmentToUserInfo['job_position_id'],
+                                'finance_position_id'=>$mainDingDepartmentToUserInfo['finance_position_id']
+                            ];
+                            DepartmentUser::updateAll($params,['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                             DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
                          }
 
@@ -353,7 +370,6 @@ class DingController extends Controller
                         }elseif(!$founder){
                             UserCenter::updateAll(['department_id'=>151],['id'=>$kaelId]);
                         }
-
                     }else{
                         // 新增
                         echo date('Y-m-d H:i:s')."\t新增员工:\n";
