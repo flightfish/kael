@@ -94,8 +94,18 @@ class RuKou extends RequestBaseModel
                 'icon' => $info['platform_icon']
             ];
         }
+        if($this->user['user_type'] == 0&&!isset($data[6000])){
+            $platform = Platform::findOneById(6000);
+            $data[] = [
+                'url'=>'/common/welcome/login-platform?platform_id=6000',
+                'name' => $platform['platform_name'],
+                'icon' => $platform['platform_icon']
+            ];
+        }
+
         $data = array_values($data);
         $username[]['username'] = $this->user['username'];
+
 
 
 
