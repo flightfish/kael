@@ -62,6 +62,8 @@ class DingController extends BaseController{
                 DingLog::add(['event_type'=>$eventType,'data'=>$params]);
                 return $params;
                 break;
+            default:
+                return ['msg'=>'参数：事件类型错误'];
         }
     }
 }
