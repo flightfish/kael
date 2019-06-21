@@ -27,9 +27,9 @@ class DingController extends BaseController{
     ];
 
     private $corpid = 'ding56f88c485c1f3d8e35c2f4657eb6378f'; //公司级编号
-    private $token = 'lqsklfsjfasfaklfsjfienfsds23rwe';
-    private $encodingAESKey = 'e3knf4sjdfa6s232iejDLKdk05jJ4565GOrmk4o2p1y';
-    private $nonce = '136lqs15opq';
+    private $token = '123456';
+    private $encodingAESKey = '4g5j64qlyl3zvetqxz5jiocdr586fn2zvjpa8zls3ij';
+    private $nonce = 'nEXhMP4r';
 
     public function actionRegister(){
         $eventList = \Yii::$app->request->post('event_list',0);
