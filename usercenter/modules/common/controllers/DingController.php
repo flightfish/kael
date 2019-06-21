@@ -54,8 +54,7 @@ class DingController extends BaseController{
 
     public function actionCallBack(){
         $eventType = \Yii::$app->request->post('EventType','');
-        $ding = new DingtalkCrypt();
-       $ding->DingtalkCrypt($this->token,$this->encodingAESKey,$this->corpid);
+        $ding = new DingtalkCrypt($this->token,$this->encodingAESKey,$this->corpid);
         switch ($eventType){
             case 'check_url':
                 $ding->EncryptMsg('success','',$this->nonce, $params);
