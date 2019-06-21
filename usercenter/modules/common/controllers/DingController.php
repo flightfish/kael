@@ -28,7 +28,7 @@ class DingController extends BaseController{
 
     private $corpid = 'ding56f88c485c1f3d8e35c2f4657eb6378f'; //公司级编号
     private $token = '123456';
-    private $encodingAESKey = '4g5j64qlyl3zvetqxz5jiocdr586fn2zvjpa8zls3ij';
+    private $encodingAESKey = '1234567890123456789012345678901234567890123';
     private $nonce = 'nEXhMP4r';
 
     public function actionRegister(){

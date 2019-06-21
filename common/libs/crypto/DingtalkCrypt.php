@@ -23,6 +23,8 @@ class DingtalkCrypt
     {
         $pc = new Prpcrypt($this->m_encodingAesKey);
         $array = $pc->encrypt($plain, $this->m_suiteKey);
+        print_r($array);
+        exit('@#$%^$%^&');
         $ret = $array[0];
         if ($ret != 0) {
             return $ret;
