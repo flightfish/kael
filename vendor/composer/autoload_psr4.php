@@ -17,5 +17,7 @@ return array(
     'cebe\\markdown\\' => array($vendorDir . '/cebe/markdown'),
     'Faker\\' => array($vendorDir . '/fzaninotto/faker/src/Faker'),
     'linslin\\yii2\\curl\\' => array($vendorDir . '/linslin/yii2-curl'),
-    'Qiniu\\' => array($vendorDir . '/qiniu/php-sdk/src/Qiniu')
+    'Qiniu\\' => array($vendorDir . '/qiniu/php-sdk/src/Qiniu'),
+    'dosamigos\\qrcode\\' => array($vendorDir . '/2amigos/yii2-qrcode-helper/src'),
+
 );

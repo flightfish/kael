@@ -95,4 +95,16 @@ class ApiController extends BaseController
         ];
     }
 
+    public function actionGetQr(){
+        try{
+            $model = new Api(['scenario'=>Api::SCENARIO_QR]);
+            $model->load($this->loadData);
+            $model->validate();
+            $ret = $model->getImage();
+            return $this->success($ret);
+        }catch(\Exception $exception){
+            return $this->error($exception);
+        }
+    }
+
 }

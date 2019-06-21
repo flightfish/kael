@@ -94,8 +94,18 @@ class RuKou extends RequestBaseModel
                 'icon' => $info['platform_icon']
             ];
         }
+        if($this->user['user_type'] == 0&&!isset($data[6000])){
+            $platform = Platform::findOneById(6000);
+            $data[] = [
+                'url'=>'/common/welcome/login-platform?platform_id=6000',
+                'name' => $platform['platform_name'],
+                'icon' => $platform['platform_icon']
+            ];
+        }
+
         $data = array_values($data);
         $username[]['username'] = $this->user['username'];
+
 
 
 
@@ -111,9 +121,11 @@ class RuKou extends RequestBaseModel
             //非内部员工
             throw new Exception("权限不足",Exception::ERROR_COMMON);
         }
-        $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],$this->platform_id);
-        if(empty($relateList)){
-            throw new Exception("权限不足",Exception::ERROR_COMMON);
+        if($this->platform_id != 6000){
+            $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],$this->platform_id);
+            if(empty($relateList)){
+                throw new Exception("权限不足",Exception::ERROR_COMMON);
+            }
         }
         $platformInfo = Platform::findOneById($this->platform_id);
         if(empty($platformInfo['platform_url'])){
