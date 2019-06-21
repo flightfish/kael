@@ -23,8 +23,6 @@ class DingLog extends \common\models\BaseActiveRecord
         foreach ($data as $key => $value) {
             $record[$key] = $value;
         }
-        print_r($record);
-        exit('#$%^^^^^^');
         $record->insert();
         return $record->id;
     }
