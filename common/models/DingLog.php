@@ -21,7 +21,7 @@ class DingLog extends \common\models\BaseActiveRecord
     {
         $record = new self();
         foreach ($data as $key => $value) {
-            $record[$key] = $value;
+            $record->$key = $value;
         }
         $record->insert();
         return $record->id;
