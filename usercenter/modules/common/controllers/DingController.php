@@ -58,7 +58,7 @@ class DingController extends BaseController{
         switch ($eventType){
             case 'check_url':
                 $ding->EncryptMsg('success','',$this->nonce, $params);
-                DingLog::add(['event_type'=>$eventType,'data'=>$params]);
+//                DingLog::add(['event_type'=>$eventType,'data'=>$params]);
                 return $params;
                 break;
             default:
