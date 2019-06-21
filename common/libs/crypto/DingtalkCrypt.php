@@ -38,12 +38,12 @@ class DingtalkCrypt
             return $ret;
         }
         $signature = $array[1];
-        $encryptMsg = json_encode(array(
+        $encryptMsg = array(
             "msg_signature" => $signature,
             "encrypt" => $encrypt,
             "timeStamp" => $timeStamp,
             "nonce" => $nonce
-        ));
+        );
         return ErrorCode::$OK;
     }
     public function DecryptMsg($signature, $timeStamp = null, $nonce, $encrypt, &$decryptMsg)
