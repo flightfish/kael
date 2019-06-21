@@ -3,6 +3,7 @@ namespace usercenter\modules\common\controllers;
 
 use common\libs\crypto\DingtalkCrypt;
 use common\libs\DingTalkApi;
+use common\models\DingLog;
 use usercenter\components\exception\Exception;
 use usercenter\controllers\BaseController;
 
@@ -45,7 +46,7 @@ class DingController extends BaseController{
             'call_back_tag'=>$eventList,
             'token'=>$this->token,
             'aes_key'=>$this->aes_key,
-            'url'=>'http://ehr.pdev.knowbox.cn/api/common/ding/call-back'
+            'url'=>'http://kael.pdev.knowbox.cn/common/ding/call-back'
         ];
         $info = DingTalkApi::registerCallBack($params);
         return ['msg'=>'操作成功'];
@@ -58,9 +59,9 @@ class DingController extends BaseController{
         switch ($eventType){
             case 'check_url':
                 $ding->EncryptMsg('success','',$this->nonce, $params);
+                DingLog::add(['event_type'=>$eventType]);
                 return $params;
                 break;
-            case '':
         }
     }
 }
