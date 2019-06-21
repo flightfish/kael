@@ -17,11 +17,11 @@ class DingLog extends \common\models\BaseActiveRecord
         return Yii::$app->get('db');
     }
 
-    public static function add($data)
+    public static function add($params)
     {
-        $record = new self();
-        foreach ($data as $key => $value) {
-            $record->$key = $value;
+        $record = new self;
+        foreach ($params as $k => $v) {
+            $record->$k = $v;
         }
         $record->insert();
         return $record->id;
