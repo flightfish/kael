@@ -32,7 +32,8 @@ class DingTalkApi {
     //获取部门详情
     const API_GET_DEPARTMENT_INFO = "https://oapi.dingtalk.com/department/get";
 
-
+    //注册业务事件回调接口
+    const API_POST_REGISTER_CALL_BACK = "https://oapi.dingtalk.com/call_back/register_call_back";
 
     /**
      * onlyActive
@@ -256,6 +257,12 @@ class DingTalkApi {
             return $e->getMessage();
         }
         return $info;
+    }
+
+
+    public static function registerCallBack($data){
+        $retJson = self::curlPost(self::API_POST_REGISTER_CALL_BACK,$data);
+        return $retJson;
     }
 
 
