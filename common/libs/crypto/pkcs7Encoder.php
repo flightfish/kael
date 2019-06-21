@@ -31,16 +31,12 @@ class PKCS7Encoder
 }
 class Prpcrypt
 {
-    public function __construct($k)
-    {
-        $this->key = base64_decode($k . "=");
-
-    }
     public $key;
-    public function Prpcrypt($k)
+    function Prpcrypt($k)
     {
         $this->key = base64_decode($k . "=");
     }
+
     public function encrypt($text, $corpid)
     {
         try {
