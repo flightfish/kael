@@ -28,7 +28,7 @@ class DingController extends BaseController{
 
     private $corpid = 'ding56f88c485c1f3d8e35c2f4657eb6378f'; //公司级编号
     private $token = 'lqsklfsjfasfaklfsjfienfsds23rwe';
-    private $aes_key = 'e3knf4sjdfa6s232iejDLKdk05jJ4565';
+    private $encodingAESKey = 'e3knf4sjdfa6s232iejDLKdk05jJ4565GOrmk4o2p1y';
     private $nonce = '136lqs15opq';
 
     public function actionRegister(){
@@ -45,7 +45,7 @@ class DingController extends BaseController{
         $params = [
             'call_back_tag'=>$eventList,
             'token'=>$this->token,
-            'aes_key'=>$this->aes_key,
+            'aes_key'=>$this->encodingAESKey,
             'url'=>'http://kael.pdev.knowbox.cn/common/ding/call-back'
         ];
         $info = DingTalkApi::registerCallBack($params);
@@ -53,10 +53,9 @@ class DingController extends BaseController{
     }
 
     public function actionCallBack(){
-        $encodingAESKey = base64_encode($this->aes_key);
         $eventType = \Yii::$app->request->post('event_list','');
         $ding = new DingtalkCrypt();
-       $ding->DingtalkCrypt($this->token,$encodingAESKey,$this->corpid);
+       $ding->DingtalkCrypt($this->token,$this->encodingAESKey,$this->corpid);
         switch ($eventType){
             case 'check_url':
                 $ding->EncryptMsg('success','',$this->nonce, $params);
