@@ -592,7 +592,7 @@ class DingController extends Controller
         echo date('Y-m-d H:i:s')."\t*********************开始更新出生日期\n";
         $id = 0 ;
         while (1){
-            if(! $dingUserList = DingtalkUser::findListByWhereWithWhereArr([],[['>','auto_id',$id]],'auto_id,user_id,name,birthday','auto_id asc',10)){
+            if(! $dingUserList = DingtalkUser::findListByWhereWithWhereArr(['birthday'=>''],[['>','auto_id',$id]],'auto_id,user_id,name,birthday','auto_id asc',10)){
                 break;
             }
             $dingUserInfos = array_column(DingTalkApi::getUserInfoForFieldsByUids(array_column($dingUserList,'user_id'),'sys02-birthTime'),null,'userid');
