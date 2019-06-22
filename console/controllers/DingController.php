@@ -608,6 +608,7 @@ class DingController extends Controller
                 }
                 $id = $v['auto_id'];
             }
+            sleep(60);
         }
         echo date('Y-m-d H:i:s')."\t*********************更新结束\n";
     }
