@@ -57,6 +57,7 @@ class DingController extends BaseController{
         $ding = new DingtalkCrypt($this->token,$this->encodingAESKey,$this->corpid);
         switch ($eventType){
             case 'check_url':
+                $params = [];
                 $ding->EncryptMsg('success','',$this->nonce, $params);
 //                DingLog::add(['event_type'=>$eventType,'data'=>$params]);
                 return $params;
