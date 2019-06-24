@@ -1,17 +1,15 @@
 <?php
 namespace common\libs\crypto;
-
 include_once "sha1.php";
 include_once "pkcs7Encoder.php";
 include_once "errorCode.php";
-
 class DingtalkCrypt
 {
     private $m_token;
     private $m_encodingAesKey;
     private $m_suiteKey;
 
-    public function __construct($token, $encodingAesKey, $suiteKey)
+    public function DingtalkCrypt($token, $encodingAesKey, $suiteKey)
     {
         $this->m_token = $token;
         $this->m_encodingAesKey = $encodingAesKey;
@@ -23,8 +21,6 @@ class DingtalkCrypt
     {
         $pc = new Prpcrypt($this->m_encodingAesKey);
         $array = $pc->encrypt($plain, $this->m_suiteKey);
-        print_r($array);
-        exit('@#$%^$%^&');
         $ret = $array[0];
         if ($ret != 0) {
             return $ret;
@@ -40,12 +36,12 @@ class DingtalkCrypt
             return $ret;
         }
         $signature = $array[1];
-        $encryptMsg = array(
+        $encryptMsg = json_encode(array(
             "msg_signature" => $signature,
             "encrypt" => $encrypt,
             "timeStamp" => $timeStamp,
             "nonce" => $nonce
-        );
+        ));
         return ErrorCode::$OK;
     }
     public function DecryptMsg($signature, $timeStamp = null, $nonce, $encrypt, &$decryptMsg)
