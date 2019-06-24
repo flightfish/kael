@@ -130,16 +130,31 @@ class DingController extends Controller
                         }
                     }
 
-                    //获取员工的主部门
-                    try{
-                        $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
-                    }catch (\Exception $e){
-                        echo date('Y-m-d H:i:s')."api_error\t钉钉账号:".$userId."\t 接口错误[智能人事获取花名册用户信息]:".$e->getMessage()."\n";
-                        continue;
+                    if(count($userInfo['department']) == 1){
+                        //只有一个部门
+                        $mainDepartId = $userInfo['department'][0];
+                    }elseif(in_array(1,$userInfo['department'])){
+                        $mainDepartId = 1;
+                    }else{
+                        $departmentUserInfoOne = DepartmentUser::findOneByWhere(['user_id'=>$userInfo['user_id']]);
+                        if(!empty($departmentUserInfoOne)
+                            && !empty($departmentUserInfoOne['department_id'])
+                            && in_array($departmentUserInfoOne['department_id'],$userInfo['department'])){
+                            $mainDepartId = $departmentUserInfoOne['department_id'];
+                        }else{
+                            $mainDepartId = $userInfo['department'][0];
+//                            //获取员工的主部门 //@todo 更新主部门
+//                            try{
+//                                $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
+//                            }catch (\Exception $e){
+//                                echo date('Y-m-d H:i:s')."api_error\t钉钉账号:".$userId."\t 接口错误[智能人事获取花名册用户信息]:".$e->getMessage()."\n";
+//                                continue;
+//                            }
+//                            $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
+//                            $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
+//                            $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
+                        }
                     }
-                    $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
-                    $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
-                    $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
 
                     if(in_array($userId,$allUserIds)){
                         echo date('Y-m-d H:i:s')."\t更新钉钉员工:\t";
@@ -157,7 +172,7 @@ class DingController extends Controller
                             'departments'=>join(',',$userInfo['department']),
 //                            'department_id'=>$userInfo['department'][0], //@todo modify main-department
                             'department_id'=>$mainDepartId,
-                            'department_subroot'=>$departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                            'department_subroot'=>$departmentToSubRoot[$mainDepartId] ?? $mainDepartId,
                             'status'=>0
                         ];
                         if(isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate'])){
@@ -577,7 +592,7 @@ class DingController extends Controller
         echo date('Y-m-d H:i:s')."\t*********************开始更新出生日期\n";
         $id = 0 ;
         while (1){
-            if(! $dingUserList = DingtalkUser::findListByWhereWithWhereArr([],[['>','auto_id',$id]],'auto_id,user_id,name,birthday','auto_id asc',10)){
+            if(! $dingUserList = DingtalkUser::findListByWhereWithWhereArr(['birthday'=>''],[['>','auto_id',$id]],'auto_id,user_id,name,birthday','auto_id asc',10)){
                 break;
             }
             $dingUserInfos = array_column(DingTalkApi::getUserInfoForFieldsByUids(array_column($dingUserList,'user_id'),'sys02-birthTime'),null,'userid');
@@ -593,6 +608,7 @@ class DingController extends Controller
                 }
                 $id = $v['auto_id'];
             }
+            sleep(60);
         }
         echo date('Y-m-d H:i:s')."\t*********************更新结束\n";
     }
