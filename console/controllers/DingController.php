@@ -136,24 +136,26 @@ class DingController extends Controller
                     }elseif(in_array(1,$userInfo['department'])){
                         $mainDepartId = 1;
                     }else{
-                        $departmentUserInfoOne = DepartmentUser::findOneByWhere(['user_id'=>$userInfo['user_id']]);
-                        if(!empty($departmentUserInfoOne)
-                            && !empty($departmentUserInfoOne['department_id'])
-                            && in_array($departmentUserInfoOne['department_id'],$userInfo['department'])){
-                            $mainDepartId = $departmentUserInfoOne['department_id'];
-                        }else{
-                            $mainDepartId = $userInfo['department'][0];
+                        sleep(60);
+//                        $departmentUserInfoOne = DepartmentUser::findOneByWhere(['user_id'=>$userInfo['user_id']]);
+//                        if(!empty($departmentUserInfoOne)
+//                            && !empty($departmentUserInfoOne['department_id'])
+//                            && in_array($departmentUserInfoOne['department_id'],$userInfo['department'])){
+//                            $mainDepartId = $departmentUserInfoOne['department_id'];
+//                        }else{
+//                            $mainDepartId = $userInfo['department'][0];
 //                            //获取员工的主部门 //@todo 更新主部门
-//                            try{
-//                                $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
-//                            }catch (\Exception $e){
-//                                echo date('Y-m-d H:i:s')."api_error\t钉钉账号:".$userId."\t 接口错误[智能人事获取花名册用户信息]:".$e->getMessage()."\n";
-//                                continue;
-//                            }
-//                            $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
-//                            $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
-//                            $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
-                        }
+                            try{
+                                $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'],'sys00-mainDept');
+                            }catch (\Exception $e){
+                                echo date('Y-m-d H:i:s')."api_error\t钉钉账号:".$userId."\t 接口错误[智能人事获取花名册用户信息]:".$e->getMessage()."\n";
+                                continue;
+                            }
+                            $mainDingDepartmentForUserInfo = array_column($mainDingDepartmentForUserInfo,null,'userid');
+                            $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'] = array_column($mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list'],null,'field_code');
+                            $mainDepartId = $mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value']<0?1:$mainDingDepartmentForUserInfo[$userInfo['userid']]['field_list']['sys00-mainDeptId']['value'];
+
+//                        }
                     }
 
                     if(in_array($userId,$allUserIds)){
@@ -368,7 +370,7 @@ class DingController extends Controller
 
                         }elseif($mainDingDepartmentForUser && $mainDingDepartmentForUser != $mainDepartId  && !in_array($mainDingDepartmentForUser,$departmentIds) && !empty($departmentIds) && in_array($mainDepartId,$departmentIds)){
                             DepartmentUser::updateAll(['is_main'=>0],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
-                            $mainDingDepartmentForUser = $mainDepartId;
+                            $mainDingDepartmentForUser = $mainDepartId??$departmentIds[0];
                             $params = [
                                 'is_main'=>1,
                                 'position_type_id'=>$mainDingDepartmentToUserInfo['position_type_id'],
@@ -499,13 +501,13 @@ class DingController extends Controller
                         $mainDingDepartmentForUser = DepartmentUser::find()->select(['depart_id'])->where(['is_main'=>1,'user_id'=>$kaelId,'status'=>0])->scalar();
                         if(!$mainDingDepartmentForUser && !empty($departmentIds)){ //如果没有并且钉钉部门不为空 则默认设置第一个钉钉部门为主部门
 //                            $mainDingDepartmentForUser = $departmentIds[0];
-                              $mainDingDepartmentForUser = $mainDepartId;
+                              $mainDingDepartmentForUser = $mainDepartId??$departmentIds[0];
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                             DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
                         }elseif($mainDingDepartmentForUser && !in_array($mainDingDepartmentForUser,$departmentIds) && !empty($departmentIds)){
                             DepartmentUser::updateAll(['is_main'=>0],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
 //                            $mainDingDepartmentForUser = $departmentIds[0];
-                              $mainDingDepartmentForUser = $mainDepartId;
+                              $mainDingDepartmentForUser = $mainDepartId??$departmentIds[0];
                             DepartmentUser::updateAll(['is_main'=>1],['user_id'=>$kaelId,'depart_id'=>$mainDingDepartmentForUser]);
                             DingtalkUser::updateAll(['department_id'=>$mainDingDepartmentForUser],['user_id'=>$userInfo['userid']]);
                         }
