@@ -5,9 +5,23 @@ use common\libs\DingTalkApi;
 use common\libs\EmailApi;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
+use common\models\ehr\AuthUser;
+use common\models\ehr\AuthUserRoleDataPermRecord;
+use common\models\ehr\AuthUserRoleRecord;
 use common\models\ehr\BusinessDepartment;
 use common\models\DepartmentRelateToKael;
+use common\models\ehr\BusinessLineRelateSecondLeader;
+use common\models\ehr\BusinessLineRelateStaff;
+use common\models\ehr\ConcernAnniversaryRecord;
+use common\models\ehr\ConcernBirthdayRecord;
 use common\models\ehr\DepartmentUser;
+use common\models\ehr\EmailRecord;
+use common\models\ehr\PsAnswer;
+use common\models\ehr\PsEvaluateRelate;
+use common\models\ehr\PsMessageDetail;
+use common\models\ehr\PushCenterAcceptUserRecord;
+use common\models\ehr\PushCenterLog;
+use common\models\ehr\StaffFieldEditRecord;
 use common\models\UserCenter;
 use common\models\UserInfo;
 use Yii;
@@ -529,11 +543,37 @@ class DingController extends Controller
         if(!empty($deleteUids)){
             $trans = DingtalkUser::getDb()->beginTransaction();
             try {
+
+                //钉钉表
                 DingtalkUser::updateAll(['status'=>1],['user_id'=>$deleteUserIds]);
+
+               //用户表
                 UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
+               //部门关联表
                 DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$deleteUids]);
+                //用户附属信息表
                 UserInfo::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                //钉钉部门主表
+                DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$deleteUids]);
+                BusinessDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$deleteUids]);
+                //ehr表
+                AuthUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                AuthUserRoleDataPermRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                AuthUserRoleRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                BusinessLineRelateSecondLeader::updateAll(['status'=>1],['leader_id'=>$deleteUids]);
+                BusinessLineRelateStaff::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                ConcernAnniversaryRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                ConcernBirthdayRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                EmailRecord::updateAll(['status'=>1],['kael_id'=>$deleteUids]);
+                PsAnswer::updateAll(['status'=>1],['evaluator_id'=>$deleteUids]);
+                PsAnswer::updateAll(['status'=>1],['be_evaluator_id'=>$deleteUids]);
+                PsEvaluateRelate::updateAll(['status'=>1],['evaluator_id'=>$deleteUids]);
+                PsEvaluateRelate::updateAll(['status'=>1],['be_evaluator_id'=>$deleteUids]);
+                PsMessageDetail::updateAll(['status'=>1],['evaluator_id'=>$deleteUids]);
+                PushCenterAcceptUserRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
+                PushCenterLog::updateAll(['status'=>1],['accept_user_id'=>$deleteUids]);
+                StaffFieldEditRecord::updateAll(['status'=>1],['staff_id'=>$deleteUids]);
+
                 $trans->commit();
             } catch (\Exception $e){
                 $trans->rollBack();
