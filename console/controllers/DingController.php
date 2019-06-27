@@ -564,7 +564,6 @@ class DingController extends Controller
                 BusinessLineRelateStaff::updateAll(['status'=>1],['user_id'=>$deleteUids]);
                 ConcernAnniversaryRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
                 ConcernBirthdayRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                EmailRecord::updateAll(['status'=>1],['kael_id'=>$deleteUids]);
                 PsAnswer::updateAll(['status'=>1],['evaluator_id'=>$deleteUids]);
                 PsAnswer::updateAll(['status'=>1],['be_evaluator_id'=>$deleteUids]);
                 PsEvaluateRelate::updateAll(['status'=>1],['evaluator_id'=>$deleteUids]);
