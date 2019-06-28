@@ -293,6 +293,11 @@ class CommonApi extends RequestBaseModel
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         } else {
+            if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
+                $this->setPassCount($cacheKey, $cacheKeyTime);
+                throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
+            }
+
             if ($user['user_type'] == 0) {
                 $preg = '/^(?:(?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[\W_].*))[\W_0-9A-Za-z]{8,}$/';
                 if (!preg_match($preg,$this->user_pass)) {
@@ -304,10 +309,7 @@ class CommonApi extends RequestBaseModel
                 $user['password'] = md5('123456');
                 UserCenter::updateAll(['password' => md5('123456')], ['id' => $user['id']]);
             }
-            if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
-                $this->setPassCount($cacheKey, $cacheKeyTime);
-                throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
-            }
+
         }
         CommonUser::updateAll(['login_ip' => UserToken::getRealIP()], ['id' => $user['id']]);
         $user['login_ip'] = UserToken::getRealIP();
