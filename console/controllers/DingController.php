@@ -211,7 +211,7 @@ class DingController extends Controller
                             //转正 邮箱正常  实习过
                             if(intval($userInfo['jobnumber']) && $dingTalkUser['email_created'] == 1 && !empty($dingTalkUser['email_suffix'])){
                                 DingtalkUser::updateAll(['email_suffix'=>''],['auto_id'=>$dingTalkUser['auto_id']]);
-                                echo "实习生[".$userInfo['name']."]转正后配置正式邮箱后缀\n";
+                                echo "实习生:".$userInfo['name']."[".$userInfo['userid']."]"."转正后配置正式邮箱后缀\n";
                             }
                             if($user['user_type']){
                                 $params['user_type'] = 0;
