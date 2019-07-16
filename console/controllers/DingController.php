@@ -208,6 +208,9 @@ class DingController extends Controller
                             if($user['work_number'] != $userInfo['jobnumber']){
                                 $params['work_number'] = $userInfo['jobnumber'];
                             }
+                            if(intval($userInfo['jobnumber']) && !empty($dingTalkUser['email_suffix'])){
+                                DingtalkUser::updateAll(['email_suffix'=>''],['auto_id'=>$dingTalkUser['auto_id']]);
+                            }
                             if($user['user_type']){
                                 $params['user_type'] = 0;
                             }
