@@ -243,7 +243,7 @@ class DingController extends Controller
                                     !empty($params) &&  UserCenter::updateAll($params,['id'=>$user['id']]);
                                     //更新钉钉员工关联kael编号
                                     DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
-                                    echo "[工号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                                    echo "[工号]钉钉账号:".$userInfo['userid']."\t->更新绑定->\tkael账号:".$user['id']."\n";
                                 }
                             }
                             if(!$user && !empty($userInfo['mobile'])){
@@ -259,7 +259,7 @@ class DingController extends Controller
                                     $kaelId = $user['id'];
                                     //更新钉钉员工关联kael编号
                                     DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
-                                    echo "[手机号]钉钉账号:".$userInfo['userid']."\t->绑定->\tkael账号:".$user['id']."\n";
+                                    echo "[手机号]钉钉账号:".$userInfo['userid']."\t->更新绑定->\tkael账号:".$user['id']."\n";
                                 }
 
                             }
@@ -290,7 +290,7 @@ class DingController extends Controller
                                 //更新钉钉员工关联kael编号
                                 DingtalkUser::updateAll(['kael_id'=>$kaelId],['user_id'=>$userInfo['userid']]);
                                 $user = UserCenter::findOne($kaelId);
-                                echo "*新增kael账号*\t[".$kaelId."]\n";
+                                echo "*更新-新增kael账号*\t[".$kaelId."]\n";
                             }
                         }
                         //更新实际部门相关  @todo main-department upupup
