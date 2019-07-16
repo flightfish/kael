@@ -196,7 +196,7 @@ class DingController extends Controller
                         DingtalkUser::updateAll($updateParams,['user_id'=>$userInfo['userid']]);
 
                         //更新kael @todo rename
-                        $dingTalkUser = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'kael_id,email');
+                        $dingTalkUser = DingtalkUser::findOneByWhere(['user_id'=>$userInfo['userid']],'');
                         $kaelId = $dingTalkUser['kael_id'];
                         $user = UserCenter::findOneByWhere(['id'=>$kaelId],'',-1);
                         if(!empty($user)){
