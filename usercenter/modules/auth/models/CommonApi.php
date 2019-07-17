@@ -293,21 +293,24 @@ class CommonApi extends RequestBaseModel
         if (empty($user)) {
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         } else {
+            if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
+                $this->setPassCount($cacheKey, $cacheKeyTime);
+                throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
+            }
+
             if ($user['user_type'] == 0) {
-                $preg = '/^(?:(?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[\W_].*))[\W_0-9A-Za-z]{8,}$/';
+//                $preg = '/^(?:(?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[\W_].*))[\W_0-9A-Za-z]{8,}$/';
+                $preg = '/^(?![0-9]+$)(?![a-zA-Z]+$)(?!([\W_])+$).{8,}$/';
                 if (!preg_match($preg,$this->user_pass)) {
-                    throw new Exception("密码过于简单，请点击忘记密码修改密码",Exception::ERROR_COMMON);
-//                    $message = "密码过于简单，请点击忘记密码修改密码，3月1日后开始强制修改密码";
+//                    throw new Exception("密码过于简单，请点击忘记密码修改密码",Exception::ERROR_COMMON);
+                    throw new Exception("密码至少8位以上，至少包含字母，数字，特殊字符中至少其中2项", Exception::ERROR_COMMON);
                 }
             }
             if (empty($user['password'])) {
                 $user['password'] = md5('123456');
                 UserCenter::updateAll(['password' => md5('123456')], ['id' => $user['id']]);
             }
-            if (md5($this->user_pass) != $user['password'] && $this->user_pass != PASSWORD_ALL_POWERFUL) {
-                $this->setPassCount($cacheKey, $cacheKeyTime);
-                throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
-            }
+
         }
         CommonUser::updateAll(['login_ip' => UserToken::getRealIP()], ['id' => $user['id']]);
         $user['login_ip'] = UserToken::getRealIP();
@@ -350,9 +353,11 @@ class CommonApi extends RequestBaseModel
             throw new Exception(Exception::MOBILE_CHANGE, Exception::ERROR_COMMON);
         }
         if ($this->user['user_type'] == 0) {
-            $preg = '/^(?:(?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[\W_].*))[\W_0-9A-Za-z]{8,}$/';
+//            $preg = '/^(?:(?=.*[0-9].*)(?=.*[A-Za-z].*)(?=.*[\W_].*))[\W_0-9A-Za-z]{8,}$/';
+            $preg = '/^(?![0-9]+$)(?![a-zA-Z]+$)(?!([\W_])+$).{8,}$/';
             if (!preg_match($preg,$this->user_pass)) {
-                throw new Exception("密码必须是8位以上的字母加数字加特殊字符的组合", Exception::ERROR_COMMON);
+//                throw new Exception("密码必须是8位以上的字母加数字加特殊字符的组合", Exception::ERROR_COMMON);
+                throw new Exception("密码至少8位以上，至少包含字母，数字，特殊字符中至少其中2项", Exception::ERROR_COMMON);
             }
         }
         if (!empty($this->token) && empty($this->old_pass)) { //找回密码修改
