@@ -53,13 +53,18 @@ class YinddController extends Controller
                 if(false === $newDep){
                     exit();
                 }
+                if(empty($newDep['id'])){
+                    echo "空id\n";
+                    exit();
+                }
                 $yinddDepamentNameToId[$newDep['name']] = $newDep['id'];
             }
             if(empty($yinddUserList[$v['ydd_account']])){
-                Ydd::userAdd($v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
+                $yddAccountId = Ydd::userAdd($v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
+                DingtalkUser::updateAll(['ydd_account'=>$yddAccountId],['auto_id'=>$v['auto_id']]);
             }else{
                 $yddUserInfo = $yinddUserList[$v['ydd_account']];
-                if($yddUserInfo['name']!=$v['name'] || $yddUserInfo['email'] != $v['email']){
+                if($yddUserInfo['name']!=$v['name'] || $yddUserInfo['email'] != $v['email'] || substr($yddUserInfo['phone'],0,1) == '1'){
                     Ydd::userUpdate($v['ydd_account'],$v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
                 }
             }
@@ -70,7 +75,7 @@ class YinddController extends Controller
     public function actionTest(){
         $ret = Ydd::depAdd('测试部门');
         echo json_encode($ret,JSON_UNESCAPED_SLASHES);
-        $ret = Ydd::userAdd('测试','test@knowbox.cn','90000000000',8396);
+        $ret = Ydd::userAdd('测试','test@knowbox.cn','',8396);
         echo "userAdd: ".strval($ret)."\n";
     }
 

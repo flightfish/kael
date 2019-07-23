@@ -86,8 +86,16 @@ class Ydd
         return $data;
     }
 
-    public static function userAdd($name,$email,$phone,$departmentId,$colorAuth=1,$printAuth=1){
-        $data = YddCore::doPostJson('/api/User/Add',[
+    public static function userAdd($name,$email,$phone,$departmentId,$colorAuth=1,$printAuth=1,$echoError=true){
+        /**
+         * {
+        "status": 8000,
+        "data": "948238846",
+        "msg": "Success",
+        "isSuccess": true
+        }
+         */
+        $ret = YddCore::doPostJson('/api/User/Add',[
             'name'=>$name,
             'sex'=>0,
             'phone'=>$phone,
@@ -96,7 +104,13 @@ class Ydd
             'colorAuth'=>$colorAuth,
             'printAuth'=>$printAuth,
         ]);
-        return $data;
+        $retJson = json_decode($ret,true);
+        if($echoError && empty($retJson) || !isset($retJson['status']) || $retJson['status'] != 8000){
+            echo "=========创建部门【{$name}】失败========\n";
+            echo strval($ret)  . "\n";
+            return false;
+        }
+        return $retJson['data'];
     }
 
     public static function userDel($account){
