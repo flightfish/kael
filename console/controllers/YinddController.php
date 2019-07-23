@@ -24,8 +24,7 @@ class YinddController extends Controller
         }
         echo date("Y-m-d H:i:s ")."=========更新打印机信息========\n";
         //全部部门
-        $ret = Ydd::depList();
-        $yinddDepartmentList = json_decode($ret,true);
+        $yinddDepartmentList = Ydd::depList();
         if(false === $yinddDepartmentList){
             exit();
         }
@@ -70,7 +69,7 @@ class YinddController extends Controller
             }else{
                 $yddUserInfo = $yinddUserList[$v['ydd_account']];
                 if($yddUserInfo['name']!=$v['name'] || $yddUserInfo['email'] != $v['email']
-                    || !empty($v['phone'])){
+                    || !empty($yddUserInfo['phone'])){
                     echo "updateUser: {$v['name']} {$v['email']} \n";
                     Ydd::userUpdate($v['ydd_account'],$v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
                 }
