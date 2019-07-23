@@ -71,7 +71,7 @@ class YinddController extends Controller
         $ret = Ydd::depAdd('测试部门');
         echo json_encode($ret,JSON_UNESCAPED_SLASHES);
         $ret = Ydd::userAdd('测试','test@knowbox.cn','90000000000',8396);
-        echo "userAdd: ".$ret."\n";
+        echo "userAdd: ".strval($ret)."\n";
     }
 
     public function actionInitUser(){
