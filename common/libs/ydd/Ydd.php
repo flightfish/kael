@@ -146,7 +146,7 @@ class Ydd
         "printAuth": 0
         }]
          */
-        return $retJson['data'];
+        return $retJson['data']['data'];
     }
     public static function userUpdate($account,$name,$email,$phone,$departmentId,$colorAuth=1,$printAuth=1){
         $data = YddCore::doPostJson('/api/User/Update',[
