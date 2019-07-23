@@ -61,6 +61,7 @@ class YinddController extends Controller
                 $yinddDepamentNameToId[$newDep['name']] = $newDep['id'];
             }
             if(empty($yinddUserList[$v['ydd_account']])){
+                echo "addUser: {$v['name']} {$v['email']} \n";
                 $yddAccountId = Ydd::userAdd($v['name'],$v['email'],$yinddDepamentNameToId[$departmentName]);
                 if(false === $yddAccountId){
                     exit();
@@ -68,7 +69,9 @@ class YinddController extends Controller
                 DingtalkUser::updateAll(['ydd_account'=>$yddAccountId],['auto_id'=>$v['auto_id']]);
             }else{
                 $yddUserInfo = $yinddUserList[$v['ydd_account']];
-                if($yddUserInfo['name']!=$v['name'] || $yddUserInfo['email'] != $v['email'] || substr($yddUserInfo['phone'],0,1) == '1'){
+                if($yddUserInfo['name']!=$v['name'] || $yddUserInfo['email'] != $v['email']
+                    || !empty($v['phone'])){
+                    echo "updateUser: {$v['name']} {$v['email']} \n";
                     Ydd::userUpdate($v['ydd_account'],$v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
                 }
                 unset($yinddUserList[$v['ydd_account']]);
