@@ -32,15 +32,47 @@ namespace common\libs\ydd;
 class Ydd
 {
     //获取部门所有数据
-    public static function depList(){
-        $data = YddCore::doGet('/api/Dep/DepGetList');
-        return $data;
+    public static function depList($echoError=true){
+        $ret = YddCore::doGet('/api/Dep/DepGetList');
+        $retJson = json_decode($ret,true);
+        if($echoError && empty($retJson) || !isset($retJson['status']) || $retJson['status'] != 8000){
+            echo "=========获取部门列表失败========\n";
+            echo strval($ret)  . "\n";
+            return false;
+        }
+        /**
+         * [{
+        "id": 8123,
+        "parentId": null,
+        "name": "合伙人",
+        "level": 0
+        }]
+         */
+        return $retJson['data'];
     }
 
     //添加部门
-    public static function depAdd($name){
-        $data = YddCore::doPostJson('/api/Dep/DepAdd',['name'=>$name]);
-        return $data;
+    public static function depAdd($name,$echoError=true){
+        /**
+        "status": 8000,
+        "data": {
+        "id": 8396,
+        "parentId": null,
+        "name": "测试部门",
+        "level": 0
+        },
+        "msg": "Success",
+        "isSuccess": true
+         */
+
+        $ret = YddCore::doPostJson('/api/Dep/DepAdd',['name'=>$name]);
+        $retJson = json_decode($ret,true);
+        if($echoError && empty($retJson) || !isset($retJson['status']) || $retJson['status'] != 8000){
+            echo "=========创建部门【{$name}】失败========\n";
+            echo strval($ret)  . "\n";
+            return false;
+        }
+        return $retJson['data'];
     }
 
     //添加部门
@@ -75,9 +107,32 @@ class Ydd
         $data = YddCore::doGet('/api/User/Get',['account'=>$account]);
         return $data;
     }
-    public static function userList($page=1,$pagesize=5000){
-        $data = YddCore::doPostJson('/api/User/GetPageList',['currentPageIndex'=>$page,'size'=>$pagesize]);
-        return $data;
+    public static function userList($page=1,$pagesize=5000,$echoError=true){
+        $ret = YddCore::doPostJson('/api/User/GetPageList',['currentPageIndex'=>$page,'size'=>$pagesize]);
+        $retJson = json_decode($ret,true);
+        if($echoError && empty($retJson) || !isset($retJson['status']) || $retJson['status'] != 8000){
+            echo "========获取用户列表失败========\n";
+            echo strval($ret)  . "\n";
+            return false;
+        }
+        /**
+        [{
+        "account": "1928581282",
+        "name": "刘夜",
+        "sex": 1,
+        "phone": "13911552662",
+        "telephone": null,
+        "birthday": null,
+        "companyId": "105383",
+        "department_Id": 8123,
+        "departmentName": "合伙人",
+        "cardNo": "",
+        "email": "liuye@knowbox.cn",
+        "colorAuth": 2,
+        "printAuth": 0
+        }]
+         */
+        return $retJson['data'];
     }
     public static function userUpdate($account,$name,$email,$phone,$departmentId,$colorAuth=1,$printAuth=1){
         $data = YddCore::doPostJson('/api/User/Update',[
