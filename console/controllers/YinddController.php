@@ -61,7 +61,8 @@ class YinddController extends Controller
                 $yinddDepamentNameToId[$newDep['name']] = $newDep['id'];
             }
             if(empty($yinddUserList[$v['ydd_account']])){
-                if(empty($yinddUserListEmail[$v['email']])){
+                if(!empty($yinddUserListEmail[$v['email']])){
+                    echo "fromEmail: {$v['name']} {$v['email']} \n";
                     $yddUserInfo = $yinddUserListEmail[$v['email']];
                     DingtalkUser::updateAll(['ydd_account'=>$yddUserInfo['account']],['auto_id'=>$v['auto_id']]);
                     unset($yinddUserList[$yddUserInfo['account']]);
