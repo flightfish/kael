@@ -75,7 +75,8 @@ class YinddController extends Controller
             }
         }
         foreach ($yinddUserList as $v){
-            $ret = Ydd::userDel($v['account']);
+            echo "del: ".json_encode($v,64|256);
+            Ydd::userDel($v['account']);
         }
     }
 
