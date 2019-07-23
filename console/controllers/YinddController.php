@@ -22,8 +22,21 @@ class YinddController extends Controller
             exit();
         }
         //全部部门
-        $list = Ydd::depList();
-        var_dump($list);
+        $ret = Ydd::depList();
+        $retJson = json_decode($ret,true);
+        if(empty($retJson) || !isset($retJson['status']) || $retJson['status'] != 8000){
+            echo "获取部门列表失败\n";
+            echo strval($ret)  . "\n";
+        }
+        /**
+         * [{
+        "id": 8123,
+        "parentId": null,
+        "name": "合伙人",
+        "level": 0
+        }]
+         */
+        $yinddDepartmentList = $retJson['data'];
         $list2 = Ydd::userList();
         var_dump($list2);
         exit();

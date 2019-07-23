@@ -76,7 +76,7 @@ class Ydd
         return $data;
     }
     public static function userList(){
-        $data = YddCore::doGet('/api/User/GetPageList',['currentPageIndex'=>1,'size'=>5000]);
+        $data = YddCore::doGet('/api/User/GetPageList',['currentPageIndex'=>1,'size'=>100]);
         return $data;
     }
     public static function userUpdate($account,$name,$email,$phone,$departmentId,$colorAuth=1,$printAuth=1){
