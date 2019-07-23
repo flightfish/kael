@@ -54,4 +54,9 @@ return [
     'qqemail_department'=>4574112202817200851,//公司员工
     'qqemail_corpsecret_txl'=>'7eCI-TyawzhY8PSai5SyFX4rxqlU7ajzfPY57Q58fv4K0y07CcpGtzFFr_rq99OG',//通讯录
     'qqemail_corpsecret_sso'=>'96WZ1in_SmKUlFSeNGuXrO0OgkhdAxxLIHYIJH11L_CRxMjjmZR9a6E5gRiBOPmL',//单点登录
+
+
+    'ydd_appkey'=>'203728392',
+    'ydd_appsecret'=>'mkeezuuaye1dvrjt33wdhijxubhf1n0u',
+    'ydd_test'=>0,
 ];
