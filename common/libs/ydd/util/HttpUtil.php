@@ -25,6 +25,7 @@
 namespace common\libs\ydd\util;
 
 use common\libs\ydd\constant\HttpSchema;
+use common\libs\ydd\constant\SystemHeader;
 use common\libs\ydd\http\HttpResponse;
 
 class HttpUtil

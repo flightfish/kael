@@ -25,6 +25,7 @@ namespace common\libs\ydd\util;
 
 use common\libs\ydd\constant\Constants;
 use common\libs\ydd\constant\HttpHeader;
+use common\libs\ydd\constant\SystemHeader;
 
 class SignUtil
 {

@@ -21,12 +21,6 @@
 
 namespace common\libs\ydd;
 
-use common\libs\ydd\constant\ContentType;
-use common\libs\ydd\constant\HttpHeader;
-use common\libs\ydd\constant\HttpMethod;
-use common\libs\ydd\constant\SystemHeader;
-use common\libs\ydd\http\HttpClient;
-use common\libs\ydd\http\HttpRequest;
 
 /**
 *请求示例
