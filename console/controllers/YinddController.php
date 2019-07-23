@@ -86,6 +86,7 @@ class YinddController extends Controller
         if(false === $yinddUserList){
             exit();
         }
+        echo json_encode($yinddUserList)."\n";
         //更新用户
         foreach ($yinddUserList as $v){
             /**
