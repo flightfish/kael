@@ -86,7 +86,7 @@ class Ydd
         return $data;
     }
 
-    public static function userAdd($name,$email,$phone,$departmentId,$colorAuth=1,$printAuth=1,$echoError=true){
+    public static function userAdd($name,$email,$departmentId,$colorAuth=1,$printAuth=1,$echoError=true){
         /**
          * {
         "status": 8000,
@@ -98,7 +98,7 @@ class Ydd
         $ret = YddCore::doPostJson('/api/User/Add',[
             'name'=>$name,
             'sex'=>0,
-            'phone'=>$phone,
+            'phone'=>'',
             'department_Id'=>$departmentId,
             'email'=>$email,
             'colorAuth'=>$colorAuth,

@@ -32,7 +32,7 @@ class YinddController extends Controller
         $yinddDepamentNameToId = array_column($yinddDepartmentList,'id','name');
         //全部用户
         $yinddUserList = Ydd::userList(1,5000);
-        if(false === $yinddDepartmentList){
+        if(false === $yinddUserList){
             exit();
         }
         $dingtalkUserList = DingtalkUser::findList([],'','auto_id,ydd_account,department_subroot,email,name');
@@ -60,7 +60,10 @@ class YinddController extends Controller
                 $yinddDepamentNameToId[$newDep['name']] = $newDep['id'];
             }
             if(empty($yinddUserList[$v['ydd_account']])){
-                $yddAccountId = Ydd::userAdd($v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
+                $yddAccountId = Ydd::userAdd($v['name'],$v['email'],$yinddDepamentNameToId[$departmentName]);
+                if(false === $yddAccountId){
+                    exit();
+                }
                 DingtalkUser::updateAll(['ydd_account'=>$yddAccountId],['auto_id'=>$v['auto_id']]);
             }else{
                 $yddUserInfo = $yinddUserList[$v['ydd_account']];
@@ -68,26 +71,21 @@ class YinddController extends Controller
                     Ydd::userUpdate($v['ydd_account'],$v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
                 }
             }
-
         }
     }
 
     public function actionTest(){
         $ret = Ydd::depAdd('测试部门');
         echo json_encode($ret,JSON_UNESCAPED_SLASHES);
-        $ret = Ydd::userAdd('测试2','test2@knowbox.cn','',8396);
+        $ret = Ydd::userAdd('测试2','test2@knowbox.cn',8396);
         echo "userAdd: ".strval($ret)."\n";
     }
 
     public function actionInitUser(){
-        $ret = Ydd::userList(1,5000);
-        $retJson = json_decode($ret,true);
-        if(empty($retJson) || !isset($retJson['status']) || $retJson['status'] != 8000){
-            echo "========获取用户列表失败========\n";
-            echo strval($ret)  . "\n";
+        $yinddUserList = Ydd::userList(1,5000);
+        if(false === $yinddUserList){
             exit();
         }
-        $yinddUserList = $retJson['data'];
         //更新用户
         foreach ($yinddUserList as $v){
             /**
