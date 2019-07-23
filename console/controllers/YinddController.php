@@ -105,6 +105,7 @@ class YinddController extends Controller
             "printAuth": 0
             }]
              */
+            echo json_encode($v);
             DingtalkUser::updateAll(['ydd_account'=>$v['account']],['mobile'=>$v['phone'],'status'=>0]);
         }
     }
