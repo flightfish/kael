@@ -75,7 +75,7 @@ class YinddController extends Controller
     public function actionTest(){
         $ret = Ydd::depAdd('测试部门');
         echo json_encode($ret,JSON_UNESCAPED_SLASHES);
-        $ret = Ydd::userAdd('测试','test@knowbox.cn','',8396);
+        $ret = Ydd::userAdd('测试2','test2@knowbox.cn','',8396);
         echo "userAdd: ".strval($ret)."\n";
     }
 
