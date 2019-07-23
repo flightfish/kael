@@ -35,6 +35,7 @@ class YinddController extends Controller
             exit();
         }
         $yinddUserList = array_column($yinddUserList,null,'account');
+        $yinddUserListEmail = array_column($yinddUserList,null,'email');
         $dingtalkUserList = DingtalkUser::findList([],'','auto_id,ydd_account,department_subroot,email,name');
         $dingtalkDepartmentIdToName = array_column(DingtalkDepartment::findList(['parentid'=>1,'status'=>0],'','id,name'),'name','id');
         //更新用户
@@ -60,12 +61,20 @@ class YinddController extends Controller
                 $yinddDepamentNameToId[$newDep['name']] = $newDep['id'];
             }
             if(empty($yinddUserList[$v['ydd_account']])){
-                echo "addUser: {$v['name']} {$v['email']} \n";
-                $yddAccountId = Ydd::userAdd($v['name'],$v['email'],$yinddDepamentNameToId[$departmentName]);
-                if(false === $yddAccountId){
-                    exit();
+                if(empty($yinddUserListEmail[$v['email']])){
+                    $yddUserInfo = $yinddUserListEmail[$v['email']];
+                    DingtalkUser::updateAll(['ydd_account'=>$yddUserInfo['account']],['auto_id'=>$v['auto_id']]);
+                    unset($yinddUserList[$yddUserInfo['account']]);
+                }else{
+                    //无邮箱
+                    echo "addUser: {$v['name']} {$v['email']} \n";
+                    $yddAccountId = Ydd::userAdd($v['name'],$v['email'],$yinddDepamentNameToId[$departmentName]);
+                    if(false === $yddAccountId){
+                        exit();
+                    }
+                    DingtalkUser::updateAll(['ydd_account'=>$yddAccountId],['auto_id'=>$v['auto_id']]);
                 }
-                DingtalkUser::updateAll(['ydd_account'=>$yddAccountId],['auto_id'=>$v['auto_id']]);
+
             }else{
                 $yddUserInfo = $yinddUserList[$v['ydd_account']];
                 if($yddUserInfo['name']!=$v['name'] || $yddUserInfo['email'] != $v['email']
