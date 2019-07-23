@@ -56,9 +56,12 @@ class YinddController extends Controller
                 $yinddDepamentNameToId[$newDep['name']] = $newDep['id'];
             }
             if(empty($yinddUserList[$v['ydd_account']])){
-                Ydd::userAdd($v['name'],$v['email'],)
+                Ydd::userAdd($v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
             }else{
-
+                $yddUserInfo = $yinddUserList[$v['ydd_account']];
+                if($yddUserInfo['name']!=$v['name'] || $yddUserInfo['email'] != $v['email']){
+                    Ydd::userUpdate($v['ydd_account'],$v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
+                }
             }
 
         }
