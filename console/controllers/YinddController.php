@@ -35,6 +35,7 @@ class YinddController extends Controller
         if(false === $yinddUserList){
             exit();
         }
+        $yinddUserList = array_column($yinddUserList,null,'account');
         $dingtalkUserList = DingtalkUser::findList([],'','auto_id,ydd_account,department_subroot,email,name');
         $dingtalkDepartmentIdToName = array_column(DingtalkDepartment::findList(['parentid'=>1,'status'=>0],'','id,name'),'name','id');
         //更新用户
@@ -70,7 +71,11 @@ class YinddController extends Controller
                 if($yddUserInfo['name']!=$v['name'] || $yddUserInfo['email'] != $v['email'] || substr($yddUserInfo['phone'],0,1) == '1'){
                     Ydd::userUpdate($v['ydd_account'],$v['name'],$v['email'],'',$yinddDepamentNameToId[$departmentName]);
                 }
+                unset($yinddUserList[$v['ydd_account']]);
             }
+        }
+        foreach ($yinddUserList as $v){
+            $ret = Ydd::userDel($v['account']);
         }
     }
 
