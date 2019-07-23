@@ -82,7 +82,7 @@ class YinddController extends Controller
     }
 
     public function actionInitUser(){
-        $yinddUserList = Ydd::userList(1,5000);
+        $yinddUserList = Ydd::userList(1,2);
         if(false === $yinddUserList){
             exit();
         }
@@ -105,7 +105,7 @@ class YinddController extends Controller
             "printAuth": 0
             }]
              */
-            echo json_encode($v);
+            echo json_encode($v,64|256)."\n";
             DingtalkUser::updateAll(['ydd_account'=>$v['account']],['mobile'=>$v['phone'],'status'=>0]);
         }
     }
