@@ -82,11 +82,10 @@ class YinddController extends Controller
     }
 
     public function actionInitUser(){
-        $yinddUserList = Ydd::userList(1,2);
+        $yinddUserList = Ydd::userList();
         if(false === $yinddUserList){
             exit();
         }
-        echo json_encode($yinddUserList)."\n";
         //更新用户
         foreach ($yinddUserList as $v){
             /**
