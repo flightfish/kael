@@ -156,8 +156,8 @@ class Ydd
             'phone'=>$phone,
             'department_Id'=>$departmentId,
             'email'=>$email,
-            'colorAuth'=>$colorAuth,
-            'printAuth'=>$printAuth,
+//            'colorAuth'=>$colorAuth,
+//            'printAuth'=>$printAuth,
         ]);
         return $data;
     }
