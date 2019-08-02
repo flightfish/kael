@@ -123,7 +123,7 @@ class AliMailApi{
     public static function createDepartment($departmentId,$name){
         return self::curlApi(self::API_DEPART_CREATE,[
             'name'=>$name,
-            'parentId'=>0,
+            'parentId'=>\Yii::$app->params['alimail_departmentRoot'],
             'customDepartmentId'=>$departmentId,
         ]);
     }

@@ -36,6 +36,7 @@ return [
     'ydd_test'=>1,
 
     'alimail_accessCode'=>'knowboxcnws',
-    'alimail_accessPassword'=>'knowBox357#123alimail'
+    'alimail_accessPassword'=>'knowBox357#123alimail',
+    'alimail_departmentRoot'=>'----.w----.LSdUHw:1'
 
 ];
