@@ -31,12 +31,13 @@ class AlimailController extends Controller
             $departmentIdToAlimail[$v['id']] = $alimailDeparmentInfo['departmentId'];
         }
         echo json_encode($departmentIdToAlimail)."\n";
-        $allEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
-        AliMailApi::createUser("王超",'wangchao@knowbox.cn',Yii::$app->params['alimail_departmentRoot']);
-        $emailInfoList = array_column(AliMailApi::userInfoList($allEmails),'');
+//        $allEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
+        $allEmails = ['wangchao@knowbox.cn'];//array_filter(array_unique(array_column($allDingUserList,'email')));
+        $emailInfoList = AliMailApi::userInfoList($allEmails);
         echo json_encode($emailInfoList,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
         exit();
         foreach ($allDingUserList as $v){
+            AliMailApi::createUser("王超",'wangchao@knowbox.cn',Yii::$app->params['alimail_departmentRoot']);
 
         }
 
