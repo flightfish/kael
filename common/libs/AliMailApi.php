@@ -62,7 +62,7 @@ class AliMailApi{
                 self::getAccessToken();
                 self::curlApi($path,$data,$fingerPrint,$deep+1);
             }
-            echo $url."\n".$postString."\n".$json."\n\n";
+            echo $url."\n".$postString."\n".$retStr."\n\n";
             throw new Exception("[ALIMAIL]".$json);
         }
         return $json['data'];
