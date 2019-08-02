@@ -167,10 +167,13 @@ class AliMailApi{
     public static function createUser($name,$email,$departmentId){
         $ret = self::curlApi(self::API_USER_CREATE,[
             "accounts"=>[
-                "name"=>$name,
-                "passwd"=>'1Knowbox!',
-                "email"=>$email,
-                "departmentId"=>$departmentId
+                [
+                    "name"=>$name,
+                    "passwd"=>'1Knowbox!',
+                    "email"=>$email,
+                    "departmentId"=>$departmentId
+                ]
+
             ]
         ]);
         if(!empty($ret['fail'])){
