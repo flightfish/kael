@@ -45,6 +45,7 @@ class AliMailApi{
         curl_close($ch);
         $json = json_decode($data,true);
         if(empty($data) || empty($data['status']) || $data['status']['statusCode'] != 100){
+            echo $url."\n".$postString."\n".$data."\n\n";
             throw new Exception("[ALIMAIL]".$data);
         }
         return $json['data'];
