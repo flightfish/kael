@@ -18,8 +18,57 @@ class AliMailApi{
     const API_USER_UPDATE = "/ud/updateAccountInfo";
     const API_USER_INFO = "/ud/getAccountsInfo";
 
+    private static $token = [];
 
-    private static function curlApi($path,$data,$fingerPrint=""){
+
+    private static function curlApi($path,$data,$fingerPrint="",$deep=0){
+        if($deep >= 2){
+            throw new Exception("重试次数过多",Exception::ERROR_COMMON);
+        }
+        if(empty($fingerPrint)){
+            $fingerPrint = microtime(true).uniqid();
+        }
+        $cacheKey = 'ALIMAIL_ACCESSTOKEN_'.(\Yii::$app->params['alimail_accessCode']);
+        if(empty(self::$token[\Yii::$app->params['alimail_accessCode']])){
+            self::$token[\Yii::$app->params['alimail_accessCode']] = Cache::getCacheString($cacheKey);
+            if(empty(self::$token[\Yii::$app->params['alimail_accessCode']])){
+                self::getAccessToken();
+            }
+        }
+
+        $url = self::ALIMAIL_API_HOST.$path;
+        $body = [
+            "access"=>[
+                "accessToken"=>self::$token[\Yii::$app->params['alimail_accessCode']],
+                "accessTarget"=>'knowbox.cn',
+//                "fingerPrint"=>$fingerPrint
+            ],
+            "param"=>$data
+        ];
+        $postString = json_encode($body);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Content-Type: application/json;charset=UTF-8'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $retStr = curl_exec($ch);
+        curl_close($ch);
+        $json = json_decode($retStr,true);
+        if(empty($json) || empty($json['status']) || $json['status']['statusCode'] != 100){
+            if($json['status']['statusCode'] == 408){
+                self::getAccessToken();
+                self::curlApi($path,$data,$fingerPrint,$deep+1);
+            }
+            echo $url."\n".$postString."\n".$json."\n\n";
+            throw new Exception("[ALIMAIL]".$json);
+        }
+        return $json['data'];
+    }
+
+    private static function curlApiNoToken($path,$data,$fingerPrint=""){
         if(empty($fingerPrint)){
             $fingerPrint = microtime(true).uniqid();
         }
@@ -45,11 +94,11 @@ class AliMailApi{
         curl_close($ch);
         $json = json_decode($data,true);
         if(empty($data) || empty($data['status']) || $data['status']['statusCode'] != 100){
-            echo $url."\n".$postString."\n".$data."\n\n";
             throw new Exception("[ALIMAIL]".$data);
         }
         return $json['data'];
     }
+
 
     //token
     public static function getAccessToken(){
@@ -61,6 +110,9 @@ class AliMailApi{
             'accessCode'=>\Yii::$app->params['alimail_accessCode'],
             'accessPassword'=>\Yii::$app->params['alimail_accessPassword']
         ]);
+        $cacheKey = 'ALIMAIL_ACCESSTOKEN_'.(\Yii::$app->params['alimail_accessCode']);
+        Cache::setCacheString($cacheKey,24 * 3600 -30 ,$res['accessToken']);
+        self::$token[\Yii::$app->params['alimail_accessCode']] = $res['accessToken'];
         return $res['accessToken'];
     }
 
