@@ -90,11 +90,11 @@ class AliMailApi{
         curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Content-Type: application/json;charset=UTF-8'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $data = curl_exec($ch);
+        $retStr = curl_exec($ch);
         curl_close($ch);
-        $json = json_decode($data,true);
-        if(empty($data) || empty($data['status']) || $data['status']['statusCode'] != 100){
-            throw new Exception("[ALIMAIL]".$data);
+        $json = json_decode($retStr,true);
+        if(empty($json) || empty($json['status']) || $json['status']['statusCode'] != 100){
+            throw new Exception("[ALIMAIL]".$retStr);
         }
         return $json['data'];
     }
