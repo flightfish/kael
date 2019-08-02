@@ -13,7 +13,9 @@ class AlimailController extends Controller
 
     //同步邮箱
     public function actionSynEmailAccount(){
-        echo AliMailApi::getAccessToken();
+        echo json_encode(AliMailApi::departmentList(),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+        echo "\n";
+        echo json_encode(AliMailApi::userInfoList(['wangchao@knowbox.cn']),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
         if(\Yii::$app->params['env'] != 'prod'){
             return false;
         }

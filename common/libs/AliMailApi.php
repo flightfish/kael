@@ -102,6 +102,7 @@ class AliMailApi{
 
     //token
     public static function getAccessToken(){
+        echo date("Y-m-d H:i:s")." get access token\n";
         /**
         accesscode:knowboxcnws
         password:knowBox357#123alimail
