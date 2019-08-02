@@ -51,7 +51,10 @@ class AlimailController extends Controller
             AliMailApi::createUserBatch($v);
         }
         foreach ($accountForUpdateDept as $aliDepartmentId=>$emails){
-            AliMailApi::updateUserDepartment($aliDepartmentId,$emails);
+            $emailChunk = array_chunk($emails,100);
+            foreach ($emailChunk as $v){
+                AliMailApi::updateUserDepartment($aliDepartmentId,$v);
+            }
         }
         exit();
 
