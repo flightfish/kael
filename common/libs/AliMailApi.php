@@ -30,7 +30,7 @@ class AliMailApi{
                 "accessTarget"=>'knowbox.cn',
 //                "fingerPrint"=>$fingerPrint
             ],
-            "params"=>$data
+            "param"=>$data
         ];
         $postString = json_encode($body);
         $ch = curl_init();
