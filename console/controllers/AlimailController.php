@@ -35,6 +35,11 @@ class AlimailController extends Controller
                 continue;
             }
             $aliDepartmentId = $departmentIdToAlimail[$v['department_subroot']] ?? Yii::$app->params['alimail_departmentRoot'];
+            echo json_encode([
+                    "name"=>$v['name'],
+                    "email"=>$v['email'],
+                    "departmentId"=>$aliDepartmentId
+                ],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
             if(!isset($emailToDepartment[$v['email']])){
                 $accountForCreate[] = [
                     "name"=>$v['name'],
