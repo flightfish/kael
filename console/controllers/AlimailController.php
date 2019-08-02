@@ -18,6 +18,7 @@ class AlimailController extends Controller
         $allDingUserList = DingtalkUser::findList([],'','auto_id,department_subroot,email,name');
         $allSubrootIds = array_filter(array_unique(array_column($allDingUserList,'department_subroot')));
         $allSubrootList = DingtalkDepartment::findList(['id'=>$allSubrootIds],'','id,name');
+        $allSubrootList[] = ['id'=>'1','name'=>'创始人'];
         $departmentIdToAlimail = array_column(AliMailApi::departmentList(),'departmentId','customDepartmentId');
         foreach ($allSubrootList as $v){
             if(isset($departmentIdToAlimail[$v['id']])){
@@ -34,7 +35,7 @@ class AlimailController extends Controller
             if(empty($v['email'])){
                 continue;
             }
-            $aliDepartmentId = $departmentIdToAlimail[$v['department_subroot']] ?? Yii::$app->params['alimail_departmentRoot'];
+            $aliDepartmentId = $departmentIdToAlimail[$v['department_subroot']] ?? $departmentIdToAlimail[1];
             echo json_encode([
                     "name"=>$v['name'],
                     "email"=>$v['email'],
