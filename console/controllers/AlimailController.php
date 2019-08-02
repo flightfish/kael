@@ -18,14 +18,21 @@ class AlimailController extends Controller
 //        echo "\n";
 //        echo json_encode(AliMailApi::userInfoList(['wangchao@knowbox.cn']),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
 
-        //所有部门
-        $allSubrootIds = DingtalkUser::find()->select('department_subroot')->where(['status'=>0])->andWhere('department_subroot>0')
-            ->distinct(true)->asArray(true)->column();
+        //所有员工
+        $allDingUserList = DingtalkUser::findList([],'','department_subroot,email');
+        $allSubrootIds = array_filter(array_unique(array_column($allDingUserList,'department_subroot')));
+//        $allSubrootIds = DingtalkUser::find()->select('department_subroot')->where(['status'=>0])->andWhere('department_subroot>0')
+//            ->distinct(true)->asArray(true)->column();
         $allSubrootList = DingtalkDepartment::findList(['id'=>$allSubrootIds],'','id,name');
+        $departmentIdToAlimail = array_column(AliMailApi::departmentList(),'departmentId','customDepartmentId');
         foreach ($allSubrootList as $v){
-            AliMailApi::createDepartment($v['id'],$v['name']);
+            if(isset($departmentIdToAlimail[$v['id']])){
+                continue;
+            }
+            $alimailDeparmentInfo = AliMailApi::createDepartment($v['id'],$v['name']);
+            $departmentIdToAlimail[$v['id']] = $alimailDeparmentInfo['departmentId'];
         }
-        echo json_encode(AliMailApi::departmentList(),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+        echo json_encode($departmentIdToAlimail);
 exit();
         if(\Yii::$app->params['env'] != 'prod'){
             return false;
