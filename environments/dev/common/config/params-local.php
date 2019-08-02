@@ -35,4 +35,7 @@ return [
     'ydd_appsecret'=>'mkeezuuaye1dvrjt33wdhijxubhf1n0u',
     'ydd_test'=>1,
 
+    'alimail_accessCode'=>'knowboxcnws',
+    'alimail_accessPassword'=>'knowBox357#123alimail'
+
 ];
