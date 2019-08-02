@@ -188,7 +188,7 @@ class AliMailApi{
         return $ret;
     }
     public static function userInfoList($email,$fields=[]){
-        return self::curlApi(self::API_USER_REMOVE,[
+        return self::curlApi(self::API_USER_INFO,[
             "emails"=>[$email],
             "fields"=>$fields,//name....
         ]);
