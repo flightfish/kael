@@ -179,8 +179,9 @@ class AliMailApi{
         return $ret;
     }
     public static function userDel($email){
+        !is_array($email) && $email = [$email];
         $ret = self::curlApi(self::API_USER_REMOVE,[
-            "emails"=>[$email],
+            "emails"=>$email,
         ]);
         if(!empty($ret['fail'])){
             throw new Exception(json_encode($ret['fail']),Exception::ERROR_COMMON);
@@ -188,8 +189,9 @@ class AliMailApi{
         return $ret;
     }
     public static function userInfoList($email,$fields=[]){
+        !is_array($email) && $email = [$email];
         return self::curlApi(self::API_USER_INFO,[
-            "emails"=>[$email],
+            "emails"=>$email,
             "fields"=>$fields,//name....
         ]);
     }
