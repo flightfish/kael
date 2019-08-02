@@ -32,8 +32,8 @@ class AlimailController extends Controller
         }
         echo json_encode($departmentIdToAlimail)."\n";
         $allEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
-        $emailInfoList = array_column(AliMailApi::userInfoList($allEmails),'');
         AliMailApi::createUser("王超",'wangchao@knowbox.cn',Yii::$app->params['alimail_departmentRoot']);
+        $emailInfoList = array_column(AliMailApi::userInfoList($allEmails),'');
         echo json_encode($emailInfoList,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
         exit();
         foreach ($allDingUserList as $v){
