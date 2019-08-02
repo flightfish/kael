@@ -42,13 +42,14 @@ class AlimailController extends Controller
                     "email"=>$v['email'],
                     "departmentId"=>$aliDepartmentId
                 ];
-//                AliMailApi::createUser($v['name'],$v['email'],$aliDepartmentId);
             }elseif($aliDepartmentId != $emailToDepartment[$v['email']]){
                 $accountForUpdateDept[$aliDepartmentId][] = $v['email'];
-//                AliMailApi::updateUserDepartment($aliDepartmentId,$v['email']);
             }
         }
-        AliMailApi::createUserBatch($accountForCreate);
+        $accountForCreateChunk = array_chunk($accountForCreate,100);
+        foreach ($accountForCreateChunk as $v){
+            AliMailApi::createUserBatch($v);
+        }
         foreach ($accountForUpdateDept as $aliDepartmentId=>$emails){
             AliMailApi::updateUserDepartment($aliDepartmentId,$emails);
         }
