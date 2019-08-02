@@ -58,12 +58,14 @@ class AliMailApi{
         curl_close($ch);
         $json = json_decode($retStr,true);
         if(empty($json) || empty($json['status']) || $json['status']['statusCode'] != 100){
+            echo $url."\n".$postString."\n".$retStr."\n\n";
             if($json['status']['statusCode'] == 408){
                 self::getAccessToken();
                 self::curlApi($path,$data,$fingerPrint,$deep+1);
+            }else{
+                throw new Exception("[ALIMAIL]".$json);
             }
-            echo $url."\n".$postString."\n".$retStr."\n\n";
-            throw new Exception("[ALIMAIL]".$json);
+
         }
         return $json['data'];
     }
