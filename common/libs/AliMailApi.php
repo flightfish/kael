@@ -190,9 +190,10 @@ class AliMailApi{
     }
     public static function userInfoList($email,$fields=[]){
         !is_array($email) && $email = [$email];
-        return self::curlApi(self::API_USER_INFO,[
+        $ret = self::curlApi(self::API_USER_INFO,[
             "emails"=>$email,
             "fields"=>$fields,//name....
         ]);
+        return $ret['dataList'];
     }
 }
