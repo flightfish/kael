@@ -36,11 +36,11 @@ class AlimailController extends Controller
                 continue;
             }
             $aliDepartmentId = $departmentIdToAlimail[$v['department_subroot']] ?? $departmentIdToAlimail[1];
-            echo json_encode([
-                    "name"=>$v['name'],
-                    "email"=>$v['email'],
-                    "departmentId"=>$aliDepartmentId
-                ],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
+//            echo json_encode([
+//                    "name"=>$v['name'],
+//                    "email"=>$v['email'],
+//                    "departmentId"=>$aliDepartmentId
+//                ],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
             if(!isset($emailToDepartment[$v['email']])){
                 $accountForCreate[] = [
                     "name"=>$v['name'],
@@ -54,7 +54,11 @@ class AlimailController extends Controller
         }
         $accountForCreateChunk = array_chunk($accountForCreate,100);
         foreach ($accountForCreateChunk as $v){
-            AliMailApi::createUserBatch($v);
+            $retData = AliMailApi::createUserBatch($v);
+            foreach ($retData['success']??[] as $successEmail){
+                echo $successEmail['email']."\n";
+
+            }
         }
         foreach ($accountForUpdateDept as $aliDepartmentId=>$emails){
             $emailChunk = array_chunk($emails,100);
