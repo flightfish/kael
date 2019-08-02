@@ -30,11 +30,14 @@ class AlimailController extends Controller
             $alimailDeparmentInfo = AliMailApi::createDepartment($v['id'],$v['name']);
             $departmentIdToAlimail[$v['id']] = $alimailDeparmentInfo['departmentId'];
         }
-        echo json_encode($departmentIdToAlimail)."\n";
+//        echo json_encode($departmentIdToAlimail)."\n";
         $allEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
         $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');
-        echo json_encode($emailToDepartment,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+//        echo json_encode($emailToDepartment,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
         foreach ($allDingUserList as $v){
+            if(empty($v['email'])){
+                continue;
+            }
             $aliDepartmentId = $departmentIdToAlimail[$v['department_subroot']] ?? Yii::$app->params['alimail_departmentRoot'];
             if(!isset($emailToDepartment[$v['email']])){
                 AliMailApi::createUser($v['name'],$v['email'],$aliDepartmentId);
