@@ -3,6 +3,7 @@ namespace console\controllers;
 
 use common\libs\AliMailApi;
 //use common\libs\DingTalkApi;
+use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use Yii;
 use yii\console\Controller;
@@ -13,9 +14,19 @@ class AlimailController extends Controller
 
     //同步邮箱
     public function actionSynEmailAccount(){
+//        echo json_encode(AliMailApi::departmentList(),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+//        echo "\n";
+//        echo json_encode(AliMailApi::userInfoList(['wangchao@knowbox.cn']),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+
+        //所有部门
+        $allSubrootIds = DingtalkUser::find()->select('department_subroot')->where(['status'=>0])->andWhere('department_subroot>0')
+            ->distinct(true)->asArray(true)->column();
+        $allSubrootList = DingtalkDepartment::findList(['id'=>$allSubrootIds],'','id,name');
+        foreach ($allSubrootList as $v){
+            AliMailApi::createDepartment($v['id'],$v['name']);
+        }
         echo json_encode(AliMailApi::departmentList(),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-        echo "\n";
-        echo json_encode(AliMailApi::userInfoList(['wangchao@knowbox.cn']),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+exit();
         if(\Yii::$app->params['env'] != 'prod'){
             return false;
         }
