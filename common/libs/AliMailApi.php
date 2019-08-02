@@ -38,7 +38,7 @@ class AliMailApi{
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Content-Type: application/json;charset=utf-8'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array ('Content-Type: application/json;charset=UTF-8'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $data = curl_exec($ch);
