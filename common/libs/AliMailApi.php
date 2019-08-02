@@ -155,9 +155,10 @@ class AliMailApi{
     }
     //user
     public static function updateUserDepartment($toDepartmentId,$email){
+        !is_array($email) && $email = [$email];
         $ret = self::curlApi(self::API_USER_UPDATE_DEPART,[
             "toDepartmentId"=>$toDepartmentId,
-            "emails"=>[$email]
+            "emails"=>$email
         ]);
         if(!empty($ret['fail'])){
             throw new Exception(json_encode($ret['fail']),Exception::ERROR_COMMON);

@@ -19,7 +19,7 @@ class AlimailController extends Controller
 //        echo json_encode(AliMailApi::userInfoList(['wangchao@knowbox.cn']),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
 
         //所有员工
-        $allDingUserList = DingtalkUser::findList([],'','auto_id,department_subroot,email');
+        $allDingUserList = DingtalkUser::findList([],'','auto_id,department_subroot,email,name');
         $allSubrootIds = array_filter(array_unique(array_column($allDingUserList,'department_subroot')));
         $allSubrootList = DingtalkDepartment::findList(['id'=>$allSubrootIds],'','id,name');
         $departmentIdToAlimail = array_column(AliMailApi::departmentList(),'departmentId','customDepartmentId');
@@ -31,15 +31,18 @@ class AlimailController extends Controller
             $departmentIdToAlimail[$v['id']] = $alimailDeparmentInfo['departmentId'];
         }
         echo json_encode($departmentIdToAlimail)."\n";
-//        $allEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
-        $allEmails = ['wangchao@knowbox.cn'];//array_filter(array_unique(array_column($allDingUserList,'email')));
-        $emailInfoList = AliMailApi::userInfoList($allEmails);
-        echo json_encode($emailInfoList,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
-        exit();
+        $allEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
+        $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');
+        echo json_encode($emailToDepartment,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
         foreach ($allDingUserList as $v){
-            AliMailApi::createUser("王超",'wangchao@knowbox.cn',Yii::$app->params['alimail_departmentRoot']);
-
+            $aliDepartmentId = $departmentIdToAlimail[$v['department_subroot']] ?? Yii::$app->params['alimail_departmentRoot'];
+            if(!isset($emailToDepartment[$v['email']])){
+                AliMailApi::createUser($v['name'],$v['email'],$aliDepartmentId);
+            }elseif($aliDepartmentId != $emailToDepartment[$v['email']]){
+                AliMailApi::updateUserDepartment($aliDepartmentId,$v['email']);
+            }
         }
+        exit();
 
         if(\Yii::$app->params['env'] != 'prod'){
             return false;
