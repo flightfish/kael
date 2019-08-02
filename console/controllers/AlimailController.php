@@ -14,10 +14,6 @@ class AlimailController extends Controller
 
     //同步邮箱
     public function actionSynEmailAccount(){
-//        echo json_encode(AliMailApi::departmentList(),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-//        echo "\n";
-//        echo json_encode(AliMailApi::userInfoList(['wangchao@knowbox.cn']),JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-
         //所有员工
         $allDingUserList = DingtalkUser::findList([],'','auto_id,department_subroot,email,name');
         $allSubrootIds = array_filter(array_unique(array_column($allDingUserList,'department_subroot')));
@@ -30,20 +26,31 @@ class AlimailController extends Controller
             $alimailDeparmentInfo = AliMailApi::createDepartment($v['id'],$v['name']);
             $departmentIdToAlimail[$v['id']] = $alimailDeparmentInfo['departmentId'];
         }
-//        echo json_encode($departmentIdToAlimail)."\n";
         $allEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
         $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');
-//        echo json_encode($emailToDepartment,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+        $accountForCreate = [];
+        $accountForUpdateDept = [];
         foreach ($allDingUserList as $v){
             if(empty($v['email'])){
                 continue;
             }
             $aliDepartmentId = $departmentIdToAlimail[$v['department_subroot']] ?? Yii::$app->params['alimail_departmentRoot'];
             if(!isset($emailToDepartment[$v['email']])){
-                AliMailApi::createUser($v['name'],$v['email'],$aliDepartmentId);
+                $accountForCreate[] = [
+                    "name"=>$v['name'],
+                    "passwd"=>'1Knowbox!',
+                    "email"=>$v['email'],
+                    "departmentId"=>$aliDepartmentId
+                ];
+//                AliMailApi::createUser($v['name'],$v['email'],$aliDepartmentId);
             }elseif($aliDepartmentId != $emailToDepartment[$v['email']]){
-                AliMailApi::updateUserDepartment($aliDepartmentId,$v['email']);
+                $accountForUpdateDept[$aliDepartmentId][] = $v['email'];
+//                AliMailApi::updateUserDepartment($aliDepartmentId,$v['email']);
             }
+        }
+        AliMailApi::createUserBatch($accountForCreate);
+        foreach ($accountForUpdateDept as $aliDepartmentId=>$emails){
+            AliMailApi::updateUserDepartment($aliDepartmentId,$emails);
         }
         exit();
 

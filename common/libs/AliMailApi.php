@@ -182,6 +182,24 @@ class AliMailApi{
         }
         return $ret;
     }
+    public static function createUserBatch($accounts){
+        $ret = self::curlApi(self::API_USER_CREATE,[
+            "accounts"=>$accounts,
+//            [
+//                [
+//                    "name"=>$name,
+//                    "passwd"=>'1Knowbox!',
+//                    "email"=>$email,
+//                    "departmentId"=>$departmentId
+//                ]
+//
+//            ]
+        ]);
+//        if(!empty($ret['fail'])){
+//            throw new Exception(json_encode($ret['fail']),Exception::ERROR_COMMON);
+//        }
+        return $ret;
+    }
     public static function userDel($email){
         !is_array($email) && $email = [$email];
         $ret = self::curlApi(self::API_USER_REMOVE,[
