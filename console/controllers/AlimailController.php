@@ -57,12 +57,12 @@ class AlimailController extends Controller
             $retData = AliMailApi::createUserBatch($v);
             foreach ($retData['success']??[] as $successEmail){
                 echo $successEmail['email']."\n";
-
             }
         }
         foreach ($accountForUpdateDept as $aliDepartmentId=>$emails){
             $emailChunk = array_chunk($emails,100);
             foreach ($emailChunk as $v){
+                echo "update mail deparment ".join(',',$v)."\n";
                 AliMailApi::updateUserDepartment($aliDepartmentId,$v);
             }
         }
