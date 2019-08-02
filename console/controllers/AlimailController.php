@@ -2,7 +2,7 @@
 namespace console\controllers;
 
 use common\libs\AliMailApi;
-//use common\libs\DingTalkApi;
+use common\libs\DingTalkApi;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use Yii;
@@ -17,7 +17,9 @@ class AlimailController extends Controller
         //删除
         AliMailApi::userDel('wangchao@knowbox.cn');
         //所有员工
-        $allDingUserList = DingtalkUser::findList([],'','auto_id,department_subroot,email,name');
+        $allDingUserList = DingtalkUser::findList([],'','auto_id,department_subroot,email,name,user_id');
+        $emailToId = array_column($allDingUserList,'user_id','email');
+
         $allSubrootIds = array_filter(array_unique(array_column($allDingUserList,'department_subroot')));
         $allSubrootList = DingtalkDepartment::findList(['id'=>$allSubrootIds],'','id,name');
         $allSubrootList[] = ['id'=>'1','name'=>'创始人'];
@@ -58,7 +60,12 @@ class AlimailController extends Controller
         foreach ($accountForCreateChunk as $v){
             $retData = AliMailApi::createUserBatch($v);
             foreach ($retData['success']??[] as $successEmail){
-                echo $successEmail['email']."\n";
+                echo 'create'. $successEmail['email']."\n";
+                if(\Yii::$app->params['env'] === 'prod' || $successEmail['email']=='wangchao@knowbox.cn'){
+                    DingTalkApi::sendWorkMessage('text',
+                        ['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://qiye.aliyun.com\n\t账号:{$successEmail['email']}\n\t密码:1Knowbox!"],
+                        $emailToId[$successEmail['email']]);
+                }
             }
         }
         foreach ($accountForUpdateDept as $aliDepartmentId=>$emails){
