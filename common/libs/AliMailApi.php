@@ -106,7 +106,7 @@ class AliMailApi{
         accesscode:knowboxcnws
         password:knowBox357#123alimail
          */
-        $res = self::curlApi(self::API_GETTOKEN,[
+        $res = self::curlApiNoToken(self::API_GETTOKEN,[
             'accessCode'=>\Yii::$app->params['alimail_accessCode'],
             'accessPassword'=>\Yii::$app->params['alimail_accessPassword']
         ]);
