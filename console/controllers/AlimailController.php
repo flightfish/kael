@@ -3,6 +3,8 @@ namespace console\controllers;
 
 use common\libs\AliMailApi;
 use common\libs\DingTalkApi;
+use common\models\AlimailStatus;
+use common\models\DBCommon;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use Yii;
@@ -11,6 +13,23 @@ use yii\console\Controller;
 
 class AlimailController extends Controller
 {
+
+    //同步删除邮箱
+    public function actionSynDel(){
+        $allDingUserList = DingtalkUser::findList([],'','email');
+        $allDingEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
+        $historyMails = AlimailStatus::findList([],'','email');
+        $delMails = array_diff($historyMails,$allDingEmails);
+        $aliDelMails = array_unique(array_column(AliMailApi::userInfoList($delMails),'email','email'));
+        foreach ($delMails as $v){
+            if(!empty($aliDelMails[$v])){
+                AliMailApi::userDel($v);
+            }
+            AlimailStatus::updateAll(['status'=>AlimailStatus::STATUS_INVALID],['email'=>$v]);
+            DingtalkUser::updateAll(['email_created_ali'=>4],['email'=>$v,'status'=>DingtalkUser::STATUS_INVALID]);
+        }
+    }
+
 
     //同步邮箱
     public function actionSynEmailAccount(){
@@ -53,9 +72,11 @@ class AlimailController extends Controller
         }
         $accountForCreateChunk = array_chunk($accountForCreate,100);
         foreach ($accountForCreateChunk as $v){
+            $alimailStatusRows = array_map(function($v){return [$v['email'],0];},$v);
+            DBCommon::batchInsertAll(AlimailStatus::tableName(),['email','status'],$alimailStatusRows,AlimailStatus::getDb(),"UPDATE");
             $retData = AliMailApi::createUserBatch($v);
             foreach ($retData['success']??[] as $successEmail){
-                DingtalkUser::updateAll(['email_created'=>1],['user_id'=>$successEmail['email']]);
+                DingtalkUser::updateAll(['email_created_ali'=>1],['user_id'=>$successEmail['email']]);
                 echo 'create'. $successEmail['email']."\n";
                 if(\Yii::$app->params['env'] === 'prod' || $successEmail['email']=='wangchao@knowbox.cn'){
                     DingTalkApi::sendWorkMessage('text',
