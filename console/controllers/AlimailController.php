@@ -34,7 +34,7 @@ class AlimailController extends Controller
     //同步邮箱
     public function actionSynEmailAccount(){
         //删除测试
-//        AliMailApi::userDel('wangchao@knowbox.cn');
+        AliMailApi::userDel('wangchao@knowbox.cn');
         //所有员工
         $allDingUserList = DingtalkUser::findList([],'','auto_id,department_subroot,email,name,user_id');
         $emailToId = array_column($allDingUserList,'user_id','email');
