@@ -20,6 +20,9 @@ class AlimailController extends Controller
         $allDingEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
         $historyMails = array_column(AlimailStatus::findList([],'','email'),'email');
         $delMails = array_diff($historyMails,$allDingEmails);
+        if(empty($delMails)){
+            exit();
+        }
         $aliDelMails = array_unique(array_column(AliMailApi::userInfoList($delMails),'email','email'));
         foreach ($delMails as $v){
             if(!empty($aliDelMails[$v])){
