@@ -77,7 +77,7 @@ class AlimailController extends Controller
             $retData = AliMailApi::createUserBatch($v);
             foreach ($retData['success']??[] as $successEmail){
                 DingtalkUser::updateAll(['email_created_ali'=>1],['user_id'=>$successEmail['email']]);
-                echo 'create'. $successEmail['email']."\n";
+                echo 'create '. $successEmail['email']."\n";
                 if(\Yii::$app->params['env'] === 'prod' || $successEmail['email']=='wangchao@knowbox.cn'){
                     DingTalkApi::sendWorkMessage('text',
                         ['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://qiye.aliyun.com\n\t账号:{$successEmail['email']}\n\t密码:1Knowbox!"],
