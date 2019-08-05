@@ -18,11 +18,12 @@ class AlimailController extends Controller
     public function actionSynDel(){
         $allDingUserList = DingtalkUser::findList([],'','email');
         $allDingEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
-        $historyMails = AlimailStatus::findList([],'','email');
+        $historyMails = array_column(AlimailStatus::findList([],'','email'),'email');
         $delMails = array_diff($historyMails,$allDingEmails);
         $aliDelMails = array_unique(array_column(AliMailApi::userInfoList($delMails),'email','email'));
         foreach ($delMails as $v){
             if(!empty($aliDelMails[$v])){
+                echo "del {$v} \n";
                 AliMailApi::userDel($v);
             }
             AlimailStatus::updateAll(['status'=>AlimailStatus::STATUS_INVALID],['email'=>$v]);
