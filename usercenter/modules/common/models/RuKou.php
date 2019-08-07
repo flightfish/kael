@@ -82,6 +82,7 @@ class RuKou extends RequestBaseModel
                 continue;
             }
             if(!empty($info['allow_ips'])){
+                !empty($info['allow_ips']) && $info['allow_ips'] = $info['allow_ips'].','.(Yii::$app->params['allow_ips']);
                 $allowIps = explode(',',$info['allow_ips']);
                 if(!in_array($ip,$allowIps)){
                     continue;
@@ -136,6 +137,7 @@ class RuKou extends RequestBaseModel
         }
         $ip = UserToken::getRealIP(false);;
         if(!empty($platformInfo['allow_ips'])){
+            !empty($platformInfo['allow_ips']) && $platformInfo['allow_ips'] = $platformInfo['allow_ips'].','.(Yii::$app->params['allow_ips']);
             $allowIps = explode(',',$platformInfo['allow_ips']);
             if(!in_array($ip,$allowIps)){
                 throw new Exception("权限不存在",Exception::ERROR_COMMON);

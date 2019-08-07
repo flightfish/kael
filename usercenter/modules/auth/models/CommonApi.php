@@ -417,6 +417,7 @@ class CommonApi extends RequestBaseModel
         }else{
             $checkRes += 1;
             $user = Platform::findOneById(1);
+            !empty($user['allow_ips']) && $user['allow_ips'] = $user['allow_ips'].','.(Yii::$app->params['allow_ips']);
             $allIpList = explode(',',$user['allow_ips']);
             if(in_array($login_ip,$allIpList)){
                 Cache::setCache($cacheKey, ['count' => $checkRes],1);
@@ -506,6 +507,7 @@ class CommonApi extends RequestBaseModel
             return $this->user;
         }
         //ip限定
+        !empty($platformInfo['allow_ips']) && $platformInfo['allow_ips'] = $platformInfo['allow_ips'].','.(Yii::$app->params['allow_ips']);
         $serverIPList = explode(',', $platformInfo['server_ips']);
         $clientIPAllow = explode(',', $platformInfo['allow_ips']);
         $serverIP = UserToken::getRealIP(false);

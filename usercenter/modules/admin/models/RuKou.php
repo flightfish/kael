@@ -36,6 +36,7 @@ class RuKou extends RequestBaseModel
     public function RuKou()
     {
         $platformInfo = Platform::findOneById(1);
+        !empty($platformInfo['allow_ips']) && $platformInfo['allow_ips'] = $platformInfo['allow_ips'].','.(Yii::$app->params['allow_ips']);
         $clientIPAllow = explode(',',$platformInfo['allow_ips']);
         $clientIP = UserToken::getRealIP(false);
         if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
