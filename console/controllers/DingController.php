@@ -130,15 +130,12 @@ class DingController extends Controller
                         echo date('Y-m-d H:i:s') . "api_error\t钉钉账号:" . $userId . "\t 接口错误[获取用户信息]:" . $e->getMessage() . "\n";
                         continue;
                     }
-                    try{
-                    if (!$userInfo['jobnumber']) {
+
+                    if (!isset($userInfo['jobnumber']) && $userInfo['jobnumber']) {
                         echo "员工:" . $userInfo['name'] . "[" . $userInfo['userid'] . "]没有工号" . "\n";
                         continue;
                     }
-                    }catch (\Exception $e){
-                        print_r($userInfo);
-                        exit('###');
-                    }
+
                     echo "\n\n\n\n\n***************************************************************\n\n\n";
 //                    echo json_encode($userInfo)."\n";
 
@@ -604,10 +601,11 @@ class DingController extends Controller
                     continue;
                 }
 
-                if (!$userInfo['jobnumber']) {
+                if (!isset($userInfo['jobnumber']) && $userInfo['jobnumber']) {
                     echo "员工:" . $userInfo['name'] . "[" . $userInfo['userid'] . "]没有工号" . "\n";
                     continue;
                 }
+                
                 echo "\n\n\n\n\n***************************************************************\n\n\n";
 //                    echo json_encode($userInfo)."\n";
 
