@@ -131,7 +131,7 @@ class DingController extends Controller
                         continue;
                     }
 
-                    if (!isset($userInfo['jobnumber']) && $userInfo['jobnumber']) {
+                    if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
                         echo "员工:" . $userInfo['name'] . "[" . $userInfo['userid'] . "]没有工号" . "\n";
                         continue;
                     }
@@ -601,11 +601,11 @@ class DingController extends Controller
                     continue;
                 }
 
-                if (!isset($userInfo['jobnumber']) && $userInfo['jobnumber']) {
+                if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
                     echo "员工:" . $userInfo['name'] . "[" . $userInfo['userid'] . "]没有工号" . "\n";
                     continue;
                 }
-                
+
                 echo "\n\n\n\n\n***************************************************************\n\n\n";
 //                    echo json_encode($userInfo)."\n";
 
