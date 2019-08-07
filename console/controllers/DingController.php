@@ -565,11 +565,6 @@ class DingController extends Controller
 
         //根部门下的用户更新(包括无部门状态的员工)
 
-
-//                if($v['id'] != 90848933){ //测试 部门
-//                    continue;
-//                }
-
         $v = [
             'id'=>1,
             'name'=>'作业盒子'
