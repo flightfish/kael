@@ -9,6 +9,7 @@ cd /data/wwwroot/kael && nohup php /data/wwwroot/kael/yii email/init >> /data/cr
 
 * * * * * * php /data/wwwroot/kael/yii email/create-detail-email >> /data/crontablog/kael/create-detail-email.log2>&1 &
 
+* * * * * * php /data/wwwroot/kael/yii email/delete-email >> /data/crontablog/kael/delete-email.log2>&1 &
 
 
 
