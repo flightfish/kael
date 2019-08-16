@@ -1044,7 +1044,6 @@ class DingController extends Controller
         if(!empty($deleteUserIds)){
             foreach ($deleteUserIds as $userId){
                 try{
-
                     $dingInfo = DingTalkApi::getUserInfo($userId);
                 }catch (\Exception $e){
                     echo date('Y-m-d H:i:s')."\tuser_id:".$userId."\t".$e->getMessage()."\n";
@@ -1053,7 +1052,6 @@ class DingController extends Controller
                 $kaelId = $deleteKaelInfos[$userId]['kael_id'];
                 $trans = DingtalkUser::getDb()->beginTransaction();
                 try {
-
                     //钉钉表
                     DingtalkUser::updateAll(['status'=>1],['user_id'=>$userId]);
 
@@ -1247,11 +1245,5 @@ class DingController extends Controller
                 }
             }
         }
-    }
-
-    private function getCurrentVersion()
-    {
-        $currentVersion = BusinessLineVersionModel::findCurrentVersion();
-        return $currentVersion;
     }
 }
