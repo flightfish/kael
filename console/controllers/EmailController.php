@@ -435,13 +435,15 @@ class EmailController extends Controller
         $allUserEmail = array_map('trim',$allUserEmail);
         //无效成员
         $inValidList = array_diff($allUsers,$allUserEmail);
-        foreach ($inValidList as $v){
-            echo "invalid email:".$v."\n";
-            try{
-                EmailApi::deleteUser($v);
-            }catch (\Exception $e){
-                echo date('Y-m-d H:i:s').$e->getMessage()."\n";
-                echo date('Y-m-d H:i:s')."删除失败[".$v."]\n";
+        if(Yii::$app->params['env'] == 'prod'){
+            foreach ($inValidList as $v){
+                echo "invalid email:".$v."\n";
+                try{
+                    EmailApi::deleteUser($v);
+                }catch (\Exception $e){
+                    echo date('Y-m-d H:i:s').$e->getMessage()."\n";
+                    echo date('Y-m-d H:i:s')."删除失败[".$v."]\n";
+                }
             }
         }
     }
