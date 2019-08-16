@@ -1057,6 +1057,10 @@ class DingController extends Controller
                     echo date('Y-m-d H:i:s')."\t[error:kael_id=0] user_id:".$userId."\t".$e->getMessage()."\n";
                     continue;
                 }
+                if(UserCenter::findOneByWhere(['id'=>$kaelId],'',-1)){
+                    echo date('Y-m-d H:i:s')."\t[error:kael account not find] user_id:".$userId."\t".$e->getMessage()."\n";
+                    continue;
+                }
                 $transKael = DingtalkUser::getDb()->beginTransaction();
                 $tranEhr = BusinessLineRelateStaff::getDb()->beginTransaction();
                 try {
