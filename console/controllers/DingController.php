@@ -16,7 +16,6 @@ use common\models\ehr\BusinessLineVersionModel;
 use common\models\ehr\ConcernAnniversaryRecord;
 use common\models\ehr\ConcernBirthdayRecord;
 use common\models\ehr\DepartmentUser;
-use common\models\ehr\EmailRecord;
 use common\models\ehr\PsAnswer;
 use common\models\ehr\PsEvaluateRelate;
 use common\models\ehr\PsMessageDetail;
@@ -1045,53 +1044,58 @@ class DingController extends Controller
             foreach ($deleteUserIds as $userId){
                 try{
                     $dingInfo = DingTalkApi::getUserInfo($userId);
+                    continue;
                 }catch (\Exception $e){
                     if($e->getMessage() != '找不到该用户'){
                         echo date('Y-m-d H:i:s')."\t[delete:no] user_id:".$userId."\t".$e->getMessage()."\n";
                         continue;
                     }
-                    echo date('Y-m-d H:i:s')."\t[delete:yes] user_id:".$userId."\t".$e->getMessage()."\n";
-                    $kaelId = $deleteKaelInfos[$userId]['kael_id'];
-                    $trans = DingtalkUser::getDb()->beginTransaction();
-                    try {
-                        //钉钉表
-                        DingtalkUser::updateAll(['status'=>1],['user_id'=>$userId]);
-
-                        //用户表
-                        UserCenter::updateAll(['status'=>1],['id'=>$kaelId]);
-                        //部门关联表
-                        DepartmentUser::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                        //用户附属信息表
-                        UserInfo::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                        //钉钉部门主表
-                        DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId]);
-                        BusinessDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId]);
-                        //ehr表
-                        AuthUser::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                        AuthUserRoleDataPermRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                        AuthUserRoleRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                        BusinessLineRelateSecondLeader::updateAll(['status'=>1],['leader_id'=>$kaelId]);
-                        BusinessLineRelateStaff::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                        ConcernAnniversaryRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                        ConcernBirthdayRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                        PsAnswer::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
-                        PsAnswer::updateAll(['status'=>1],['be_evaluator_id'=>$kaelId]);
-                        PsEvaluateRelate::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
-                        PsEvaluateRelate::updateAll(['status'=>1],['be_evaluator_id'=>$kaelId]);
-                        PsMessageDetail::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
-                        PushCenterAcceptUserRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                        PushCenterLog::updateAll(['status'=>1],['accept_user_id'=>$kaelId]);
-                        StaffFieldEditRecord::updateAll(['status'=>1],['staff_id'=>$kaelId]);
-                        $trans->commit();
-                    } catch (\Exception $e){
-                        $trans->rollBack();
-                        throw $e;
-                    }
                 }
 
+                echo date('Y-m-d H:i:s')."\t[delete:yes] user_id:".$userId."\t".$e->getMessage()."\n";
+                $kaelId = $deleteKaelInfos[$userId]['kael_id'];
+                $transKael = DingtalkUser::getDb()->beginTransaction();
+                $tranEhr = BusinessLineRelateStaff::getDb()->beginTransaction();
+                try {
+                    //钉钉表
+                    DingtalkUser::updateAll(['status'=>1],['user_id'=>$userId]);
+
+                    //用户表
+                    UserCenter::updateAll(['status'=>1],['id'=>$kaelId]);
+                    //部门关联表
+                    DepartmentUser::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                    //用户附属信息表
+                    UserInfo::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                    //钉钉部门主表
+                    DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId]);
+                    BusinessDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId]);
+                    //ehr表
+                    AuthUser::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                    AuthUserRoleDataPermRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                    AuthUserRoleRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                    BusinessLineRelateSecondLeader::updateAll(['status'=>1],['leader_id'=>$kaelId]);
+                    BusinessLineRelateStaff::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                    ConcernAnniversaryRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                    ConcernBirthdayRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                    PsAnswer::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
+                    PsAnswer::updateAll(['status'=>1],['be_evaluator_id'=>$kaelId]);
+                    PsEvaluateRelate::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
+                    PsEvaluateRelate::updateAll(['status'=>1],['be_evaluator_id'=>$kaelId]);
+                    PsMessageDetail::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
+                    PushCenterAcceptUserRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                    PushCenterLog::updateAll(['status'=>1],['accept_user_id'=>$kaelId]);
+                    StaffFieldEditRecord::updateAll(['status'=>1],['staff_id'=>$kaelId]);
+                    $transKael->commit();
+                    $tranEhr->commit();
+                } catch (\Exception $e){
+                    $transKael->rollBack();
+                    $tranEhr->rollBack();
+                    throw $e;
+                }
             }
 
         }
+
         //全局更新后根据钉钉全局结果同步删除掉kael用户(可能由于历史原因造成kael用户冗余,所以执行该部分)
 //        $kaelIds = array_keys(DingtalkUser::findList([],'kael_id','kael_id'));
 //        $deleteKaelIds = array_column(UserCenter::findListByWhereAndWhereArr([],[['not in','id',$kaelIds]],'id'),'id');

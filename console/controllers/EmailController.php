@@ -405,6 +405,9 @@ class EmailController extends Controller
                             $others = DingtalkUser::find()->where(['status'=>0,'email'=>$v['user']])
                                 ->asArray(true)->limit(1)->one();
                             if(empty($others)){
+                                if($dingInfo = DingtalkUser::findOneByWhere(['email'=>$v['user']])){
+                                    continue;
+                                }
                                 //没有有效账号则删除
                                 echo 'del - '.$v['user']."\n";
                                 echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
@@ -437,6 +440,9 @@ class EmailController extends Controller
         $inValidList = array_diff($allUsers,$allUserEmail);
         if(Yii::$app->params['env'] == 'prod'){
             foreach ($inValidList as $v){
+                if($dingInfo = DingtalkUser::findOneByWhere(['email'=>$v])){
+                    continue;
+                }
                 echo "invalid email:".$v."\n";
                 try{
                     EmailApi::deleteUser($v);
