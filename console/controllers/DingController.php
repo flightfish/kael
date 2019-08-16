@@ -1046,45 +1046,49 @@ class DingController extends Controller
                 try{
                     $dingInfo = DingTalkApi::getUserInfo($userId);
                 }catch (\Exception $e){
-                    echo date('Y-m-d H:i:s')."\tuser_id:".$userId."\t".$e->getMessage()."\n";
-                    continue;
-                }
-                $kaelId = $deleteKaelInfos[$userId]['kael_id'];
-                $trans = DingtalkUser::getDb()->beginTransaction();
-                try {
-                    //钉钉表
-                    DingtalkUser::updateAll(['status'=>1],['user_id'=>$userId]);
+                    if($e->getMessage() != '找不到该用户'){
+                        echo date('Y-m-d H:i:s')."\t[delete:no] user_id:".$userId."\t".$e->getMessage()."\n";
+                        continue;
+                    }
+                    echo date('Y-m-d H:i:s')."\t[delete:yes] user_id:".$userId."\t".$e->getMessage()."\n";
+                    $kaelId = $deleteKaelInfos[$userId]['kael_id'];
+                    $trans = DingtalkUser::getDb()->beginTransaction();
+                    try {
+                        //钉钉表
+                        DingtalkUser::updateAll(['status'=>1],['user_id'=>$userId]);
 
-                    //用户表
-                    UserCenter::updateAll(['status'=>1],['id'=>$kaelId]);
-                    //部门关联表
-                    DepartmentUser::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                    //用户附属信息表
-                    UserInfo::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                    //钉钉部门主表
-                    DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId]);
-                    BusinessDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId]);
-                    //ehr表
-                    AuthUser::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                    AuthUserRoleDataPermRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                    AuthUserRoleRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                    BusinessLineRelateSecondLeader::updateAll(['status'=>1],['leader_id'=>$kaelId]);
-                    BusinessLineRelateStaff::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                    ConcernAnniversaryRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                    ConcernBirthdayRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                    PsAnswer::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
-                    PsAnswer::updateAll(['status'=>1],['be_evaluator_id'=>$kaelId]);
-                    PsEvaluateRelate::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
-                    PsEvaluateRelate::updateAll(['status'=>1],['be_evaluator_id'=>$kaelId]);
-                    PsMessageDetail::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
-                    PushCenterAcceptUserRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
-                    PushCenterLog::updateAll(['status'=>1],['accept_user_id'=>$kaelId]);
-                    StaffFieldEditRecord::updateAll(['status'=>1],['staff_id'=>$kaelId]);
-                    $trans->commit();
-                } catch (\Exception $e){
-                    $trans->rollBack();
-                    throw $e;
+                        //用户表
+                        UserCenter::updateAll(['status'=>1],['id'=>$kaelId]);
+                        //部门关联表
+                        DepartmentUser::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                        //用户附属信息表
+                        UserInfo::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                        //钉钉部门主表
+                        DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId]);
+                        BusinessDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$kaelId]);
+                        //ehr表
+                        AuthUser::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                        AuthUserRoleDataPermRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                        AuthUserRoleRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                        BusinessLineRelateSecondLeader::updateAll(['status'=>1],['leader_id'=>$kaelId]);
+                        BusinessLineRelateStaff::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                        ConcernAnniversaryRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                        ConcernBirthdayRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                        PsAnswer::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
+                        PsAnswer::updateAll(['status'=>1],['be_evaluator_id'=>$kaelId]);
+                        PsEvaluateRelate::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
+                        PsEvaluateRelate::updateAll(['status'=>1],['be_evaluator_id'=>$kaelId]);
+                        PsMessageDetail::updateAll(['status'=>1],['evaluator_id'=>$kaelId]);
+                        PushCenterAcceptUserRecord::updateAll(['status'=>1],['user_id'=>$kaelId]);
+                        PushCenterLog::updateAll(['status'=>1],['accept_user_id'=>$kaelId]);
+                        StaffFieldEditRecord::updateAll(['status'=>1],['staff_id'=>$kaelId]);
+                        $trans->commit();
+                    } catch (\Exception $e){
+                        $trans->rollBack();
+                        throw $e;
+                    }
                 }
+
             }
 
         }
