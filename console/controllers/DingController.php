@@ -1052,7 +1052,8 @@ class DingController extends Controller
                     }
                 }
                 echo date('Y-m-d H:i:s')."\t[delete:yes] user_id:".$userId."\t".$e->getMessage()."\n";
-                $kaelId = $deleteKaelInfos[$userId]['kael_id'];
+
+                $kaelId = isset($deleteKaelInfos[$userId])?$deleteKaelInfos[$userId]['kael_id']:0;
                 if(!$kaelId){
                     echo date('Y-m-d H:i:s')."\t[error:kael_id=0] user_id:".$userId."\t".$e->getMessage()."\n";
                     continue;
