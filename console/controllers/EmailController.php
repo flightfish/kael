@@ -271,51 +271,52 @@ class EmailController extends Controller
             exit();
         }
         echo date('Y-m-d H:i:s')."\t开始运行:\n";
+
         //删除
-        $listForDel = DingtalkUser::find()
-            ->select('user_id,email')
-            ->where(['email_created'=>[1,3],'status'=>1]) //已创建 注销中
-            ->andWhere(['like','email','@knowbox.cn'])
-            ->asArray(true)
-            ->all();
-        if(!empty($listForDel)){
-            $emailForDelAll = array_column($listForDel,'email');
-            $emailToId = array_column($listForDel,'user_id','email');
-            $emailForDelChunk = array_chunk($emailForDelAll,10);
-            foreach ($emailForDelChunk as $emailForDel){
-                $checkList = EmailApi::batchCheck($emailForDel);
-                if(!empty($checkList['list'])){
-                    foreach ($checkList['list'] as $v){
-                        if($v['type'] == -1){
-                            continue;
-                        }
-                        if($v['type'] == 1){
-                            if(Yii::$app->params['env'] != 'prod'){
-                                if(strpos($v['user'],'emailtest') === false){
-                                    DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
-                                    continue;
-                                }
-                            }
-                            //查询还有没有其他账号在用
-                            $others = DingtalkUser::find()->where(['status'=>0,'email'=>$v['user']])
-                                ->asArray(true)->limit(1)->one();
-                            if(empty($others)){
-                                //没有有效账号则删除
-                                echo 'del - '.$v['user']."\n";
-                                echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
-                                try{
-                                    EmailApi::deleteUser($v['user']);
-                                }catch (\Exception $e){
-                                    echo date('Y-m-d H:i:s').$e->getMessage()."\n";
-                                    continue;
-                                }
-                            }
-                            DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
-                        }
-                    }
-                }
-            }
-        }
+//        $listForDel = DingtalkUser::find()
+//            ->select('user_id,email')
+//            ->where(['email_created'=>[1,3],'status'=>1]) //已创建 注销中
+//            ->andWhere(['like','email','@knowbox.cn'])
+//            ->asArray(true)
+//            ->all();
+//        if(!empty($listForDel)){
+//            $emailForDelAll = array_column($listForDel,'email');
+//            $emailToId = array_column($listForDel,'user_id','email');
+//            $emailForDelChunk = array_chunk($emailForDelAll,10);
+//            foreach ($emailForDelChunk as $emailForDel){
+//                $checkList = EmailApi::batchCheck($emailForDel);
+//                if(!empty($checkList['list'])){
+//                    foreach ($checkList['list'] as $v){
+//                        if($v['type'] == -1){
+//                            continue;
+//                        }
+//                        if($v['type'] == 1){
+//                            if(Yii::$app->params['env'] != 'prod'){
+//                                if(strpos($v['user'],'emailtest') === false){
+//                                    DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
+//                                    continue;
+//                                }
+//                            }
+//                            //查询还有没有其他账号在用
+//                            $others = DingtalkUser::find()->where(['status'=>0,'email'=>$v['user']])
+//                                ->asArray(true)->limit(1)->one();
+//                            if(empty($others)){
+//                                //没有有效账号则删除
+//                                echo 'del - '.$v['user']."\n";
+//                                echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
+//                                try{
+//                                    EmailApi::deleteUser($v['user']);
+//                                }catch (\Exception $e){
+//                                    echo date('Y-m-d H:i:s').$e->getMessage()."\n";
+//                                    continue;
+//                                }
+//                            }
+//                            DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         //创建
         $listUpdate = DingtalkUser::find()
@@ -369,6 +370,57 @@ class EmailController extends Controller
     }
 
     public function actionDeleteEmail(){
+
+        if(exec('ps -ef|grep "email/delete-email"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo date('Y-m-d H:i:s')."\tis_running\n";
+            exit();
+        }
+        echo date('Y-m-d H:i:s')."\t开始运行:\n";
+        //删除
+        $listForDel = DingtalkUser::find()
+            ->select('user_id,email')
+            ->where(['email_created'=>[1,3],'status'=>1]) //已创建 注销中
+            ->andWhere(['like','email','@knowbox.cn'])
+            ->asArray(true)
+            ->all();
+        if(!empty($listForDel)){
+            $emailForDelAll = array_column($listForDel,'email');
+            $emailToId = array_column($listForDel,'user_id','email');
+            $emailForDelChunk = array_chunk($emailForDelAll,10);
+            foreach ($emailForDelChunk as $emailForDel){
+                $checkList = EmailApi::batchCheck($emailForDel);
+                if(!empty($checkList['list'])){
+                    foreach ($checkList['list'] as $v){
+                        if($v['type'] == -1){
+                            continue;
+                        }
+                        if($v['type'] == 1){
+                            if(Yii::$app->params['env'] != 'prod'){
+                                if(strpos($v['user'],'emailtest') === false){
+                                    DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
+                                    continue;
+                                }
+                            }
+                            //查询还有没有其他账号在用
+                            $others = DingtalkUser::find()->where(['status'=>0,'email'=>$v['user']])
+                                ->asArray(true)->limit(1)->one();
+                            if(empty($others)){
+                                //没有有效账号则删除
+                                echo 'del - '.$v['user']."\n";
+                                echo json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
+                                try{
+                                    EmailApi::deleteUser($v['user']);
+                                }catch (\Exception $e){
+                                    echo date('Y-m-d H:i:s').$e->getMessage()."\n";
+                                    continue;
+                                }
+                            }
+                            DingtalkUser::updateAll(['email_created'=>4],['user_id'=>$emailToId[$v['user']]]);
+                        }
+                    }
+                }
+            }
+        }
         //删除
         //查询成员
         $allUsers = EmailApi::getDepartmentListUser();
@@ -393,8 +445,6 @@ class EmailController extends Controller
             }
         }
     }
-
-
 
 
     /**
