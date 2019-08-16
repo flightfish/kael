@@ -1036,6 +1036,9 @@ class DingController extends Controller
         }
         //根据钉钉变动同步删除钉钉用户及kael用户
         $deleteUserIds = array_diff($allUserIds,$newAllUserIds);
+        if(empty($deleteUserIds)){
+            return ;
+        }
         $deleteKaelInfos = DingtalkUser::findList(['user_id'=>$deleteUserIds],'user_id','kael_id');
         $deleteUids = array_column($deleteKaelInfos,'kael_id');
         echo date('Y-m-d H:i:s')."\t需要删除员工如下:\n";
