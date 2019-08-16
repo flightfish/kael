@@ -392,6 +392,34 @@ class EmailController extends Controller
         }
     }
 
+    public function actionDeleteEmail(){
+        //删除
+        //查询成员
+        $allUsers = EmailApi::getDepartmentListUser();
+        $allUsers = $allUsers['userlist'];
+        $allUsers = array_column($allUsers,'userid');
+        //所有有效的
+        $allUserEmail = DingtalkUser::find()
+            ->select('email')
+            ->where(['status'=>0])
+            ->andWhere(['like','email','knowbox.cn'])
+            ->asArray()->column();
+        $allUserEmail = array_map('trim',$allUserEmail);
+        //无效成员
+        $inValidList = array_diff($allUsers,$allUserEmail);
+        foreach ($inValidList as $v){
+            echo "invalid email:".$v."\n";
+            try{
+                EmailApi::deleteUser($v);
+            }catch (\Exception $e){
+                echo date('Y-m-d H:i:s').$e->getMessage()."\n";
+                echo date('Y-m-d H:i:s')."删除失败[".$v."]\n";
+            }
+        }
+    }
+
+
+
 
     /**
      * 初始化用户信息到EMAIL
