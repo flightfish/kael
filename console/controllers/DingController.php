@@ -12,6 +12,7 @@ use common\models\ehr\BusinessDepartment;
 use common\models\DepartmentRelateToKael;
 use common\models\ehr\BusinessLineRelateSecondLeader;
 use common\models\ehr\BusinessLineRelateStaff;
+use common\models\ehr\BusinessLineVersionModel;
 use common\models\ehr\ConcernAnniversaryRecord;
 use common\models\ehr\ConcernBirthdayRecord;
 use common\models\ehr\DepartmentUser;
@@ -945,6 +946,7 @@ class DingController extends Controller
                             //更新钉钉员工关联kael编号
                             DingtalkUser::updateAll(['kael_id' => $kaelId], ['user_id' => $userInfo['userid']]);
                             echo "[手机号]钉钉账号:" . $userInfo['userid'] . "\t->绑定->\tkael账号:" . $user['id'] . "\n";
+
                         }
                     }
 
@@ -1039,42 +1041,52 @@ class DingController extends Controller
         echo date('Y-m-d H:i:s')."\t需要删除员工如下:\n";
         echo json_encode($deleteUids)."\n";
         if(!empty($deleteUids)){
-            $trans = DingtalkUser::getDb()->beginTransaction();
-            try {
+            foreach ($deleteUserIds as $userId){
+                try{
+                    $dingInfo = DingTalkApi::getUserInfo($userId);
+                }catch (\Exception $e){
+                    echo date('Y-m-d H:i:s')."\tuser_id:".$userId."\t".$e->getMessage()."\n";
+                    continue;
+                }
 
-                //钉钉表
-                DingtalkUser::updateAll(['status'=>1],['user_id'=>$deleteUserIds]);
+                $trans = DingtalkUser::getDb()->beginTransaction();
+                try {
 
-               //用户表
-                UserCenter::updateAll(['status'=>1],['id'=>$deleteUids]);
-               //部门关联表
-                DepartmentUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                //用户附属信息表
-                UserInfo::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                //钉钉部门主表
-                DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$deleteUids]);
-                BusinessDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$deleteUids]);
-                //ehr表
-                AuthUser::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                AuthUserRoleDataPermRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                AuthUserRoleRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                BusinessLineRelateSecondLeader::updateAll(['status'=>1],['leader_id'=>$deleteUids]);
-                BusinessLineRelateStaff::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                ConcernAnniversaryRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                ConcernBirthdayRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                PsAnswer::updateAll(['status'=>1],['evaluator_id'=>$deleteUids]);
-                PsAnswer::updateAll(['status'=>1],['be_evaluator_id'=>$deleteUids]);
-                PsEvaluateRelate::updateAll(['status'=>1],['evaluator_id'=>$deleteUids]);
-                PsEvaluateRelate::updateAll(['status'=>1],['be_evaluator_id'=>$deleteUids]);
-                PsMessageDetail::updateAll(['status'=>1],['evaluator_id'=>$deleteUids]);
-                PushCenterAcceptUserRecord::updateAll(['status'=>1],['user_id'=>$deleteUids]);
-                PushCenterLog::updateAll(['status'=>1],['accept_user_id'=>$deleteUids]);
-                StaffFieldEditRecord::updateAll(['status'=>1],['staff_id'=>$deleteUids]);
-                $trans->commit();
-            } catch (\Exception $e){
-                $trans->rollBack();
-                throw $e;
+                    //钉钉表
+                    DingtalkUser::updateAll(['status'=>1],['user_id'=>$userId]);
+
+                    //用户表
+                    UserCenter::updateAll(['status'=>1],['id'=>$userId]);
+                    //部门关联表
+                    DepartmentUser::updateAll(['status'=>1],['user_id'=>$userId]);
+                    //用户附属信息表
+                    UserInfo::updateAll(['status'=>1],['user_id'=>$userId]);
+                    //钉钉部门主表
+                    DingtalkDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$userId]);
+                    BusinessDepartment::updateAll(['main_leader_id'=>0,'main_leader_name'=>''],['main_leader_id'=>$userId]);
+                    //ehr表
+                    AuthUser::updateAll(['status'=>1],['user_id'=>$userId]);
+                    AuthUserRoleDataPermRecord::updateAll(['status'=>1],['user_id'=>$userId]);
+                    AuthUserRoleRecord::updateAll(['status'=>1],['user_id'=>$userId]);
+                    BusinessLineRelateSecondLeader::updateAll(['status'=>1],['leader_id'=>$userId]);
+                    BusinessLineRelateStaff::updateAll(['status'=>1],['user_id'=>$userId]);
+                    ConcernAnniversaryRecord::updateAll(['status'=>1],['user_id'=>$userId]);
+                    ConcernBirthdayRecord::updateAll(['status'=>1],['user_id'=>$userId]);
+                    PsAnswer::updateAll(['status'=>1],['evaluator_id'=>$userId]);
+                    PsAnswer::updateAll(['status'=>1],['be_evaluator_id'=>$userId]);
+                    PsEvaluateRelate::updateAll(['status'=>1],['evaluator_id'=>$userId]);
+                    PsEvaluateRelate::updateAll(['status'=>1],['be_evaluator_id'=>$userId]);
+                    PsMessageDetail::updateAll(['status'=>1],['evaluator_id'=>$userId]);
+                    PushCenterAcceptUserRecord::updateAll(['status'=>1],['user_id'=>$userId]);
+                    PushCenterLog::updateAll(['status'=>1],['accept_user_id'=>$userId]);
+                    StaffFieldEditRecord::updateAll(['status'=>1],['staff_id'=>$userId]);
+                    $trans->commit();
+                } catch (\Exception $e){
+                    $trans->rollBack();
+                    throw $e;
+                }
             }
+
         }
         //全局更新后根据钉钉全局结果同步删除掉kael用户(可能由于历史原因造成kael用户冗余,所以执行该部分)
 //        $kaelIds = array_keys(DingtalkUser::findList([],'kael_id','kael_id'));
@@ -1233,5 +1245,11 @@ class DingController extends Controller
                 }
             }
         }
+    }
+
+    private function getCurrentVersion()
+    {
+        $currentVersion = BusinessLineVersionModel::findCurrentVersion();
+        return $currentVersion;
     }
 }

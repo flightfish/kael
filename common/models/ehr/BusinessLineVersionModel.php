@@ -3,12 +3,12 @@ namespace common\models\ehr;
 
 use Yii;
 
-class BusinessLineRelateStaff extends \common\models\BaseActiveRecord
+class BusinessLineVersionModel extends \common\models\BaseActiveRecord
 {
 
     public static function tableName()
     {
-        return 'business_line_relate_staff';
+        return 'business_line_version';
     }
 
     public static function getDb()
@@ -28,21 +28,14 @@ class BusinessLineRelateStaff extends \common\models\BaseActiveRecord
             ->one();
     }
 
-    public static function findList($where=[],$indexKey="",$select='*',$status=0){
-        !isset($where['status']) && $status != -1 && $where['status'] = $status;
-        if(!empty($indexKey)){
-            return static::find()
-                ->select($select)
-                ->where($where)
-                ->indexBy($indexKey)
-                ->asArray(true)
-                ->all();
-        }
-        return static::find()
+    public static function findCurrentVersion($select='*'){
+        $query = static::find()
             ->select($select)
-            ->where($where)
+            ->where(['status'=>0,'version_status'=>1]);
+        return $query
+            ->limit(1)
             ->asArray(true)
-            ->all();
+            ->one();
     }
 
 }
