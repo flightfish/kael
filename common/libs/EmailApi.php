@@ -131,4 +131,9 @@ class EmailApi{
     public static function getDepartmentList(){
         return self::curlTXL(self::API_GETDEPARTMENTLIST,[],'GET');
     }
+
+    public static function getUserListAll(){
+        $data = ['department_id'=>1,'fetch_child'=>1];
+        return self::curlTXL(self::API_GETDEPARTMENTUSER,$data,'GET');
+    }
 }
