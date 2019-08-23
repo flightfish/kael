@@ -14,6 +14,7 @@ use yii\console\Controller;
 class AlimailController extends Controller
 {
 
+    //alimail/update-passwd
     public function actionUpdatePasswd(){
         $allUserList = DingtalkUser::findList([],'','email,user_id');
         foreach ($allUserList as $v){
