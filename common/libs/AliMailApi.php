@@ -17,6 +17,7 @@ class AliMailApi{
     const API_USER_REMOVE = "/ud/removeAccounts";
     const API_USER_UPDATE = "/ud/updateAccountInfo";
     const API_USER_INFO = "/ud/getAccountsInfo";
+    const API_USER_UPDATE_PASSWD = "/ud/updateAccountsPassword";
 
     private static $token = [];
 
@@ -221,5 +222,21 @@ class AliMailApi{
             "fields"=>$fields,//name....
         ]);
         return $ret['dataList'];
+    }
+
+
+    public static function updateUserPasswd($email,$passwd){
+        $ret = self::curlApi(self::API_USER_UPDATE_PASSWD,[
+            "accounts"=>[
+                [
+                    "passwd"=>$passwd,
+                    "email"=>$email,
+                ]
+            ]
+        ]);
+        if(!empty($ret['fail'])){
+            throw new Exception(json_encode($ret['fail']),Exception::ERROR_COMMON);
+        }
+        return $ret;
     }
 }

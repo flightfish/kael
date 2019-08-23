@@ -14,6 +14,46 @@ use yii\console\Controller;
 class AlimailController extends Controller
 {
 
+    public function actionUpdatePasswd(){
+        $allUserList = DingtalkUser::findList([],'','email,user_id');
+        foreach ($allUserList as $v){
+            if(!empty($v['email'])){
+                $passwd = $this->genPasswd(rand(1,3),rand(6,8),rand(1,3),rand(0,2));
+                echo $passwd."\n";
+//                AliMailApi::updateUserPasswd($v['email'],$passwd);
+            }
+        }
+    }
+
+    //生成密码
+    private function genPasswd($c1,$c2,$c3,$c4){
+        //大小写数字特殊字符1Knowbox! 8-64位  3种
+        $part1 = [1,2,3,4,5,6,7,8,9,0];
+        $part2 = ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'];
+        $part3 = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+        $part4 = ['!','@','#','$','%','&','*','(',')'];
+        $ret = [1=>'',2=>'',3=>'',4=>''];
+        for($i=0;$i<$c1;$i++){
+            shuffle($part1);
+            $ret[1] .= $part1[0];
+        }
+        for($i=1;$i<$c2;$i++){
+            shuffle($part2);
+            $ret[2] .= $part2[0];
+        }
+        for($i=1;$i<$c3;$i++){
+            shuffle($part3);
+            $ret[3] .= $part3[0];
+        }
+        for($i=1;$i<$c4;$i++){
+            shuffle($part4);
+            $ret[4] .= $part4[0];
+        }
+        shuffle($ret);
+        return join('',$ret);
+    }
+
+
     //同步删除邮箱
     public function actionSynDel(){
         $allDingUserList = DingtalkUser::findList([],'','email');
