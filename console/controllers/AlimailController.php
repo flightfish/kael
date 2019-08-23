@@ -19,7 +19,7 @@ class AlimailController extends Controller
         foreach ($allUserList as $v){
             if(!empty($v['email'])){
                 $passwd = $this->genPasswd(rand(1,3),rand(6,8),rand(1,3),rand(0,2));
-                echo $passwd."\n";
+                echo "{$v['email']} {$passwd} \n";
 //                AliMailApi::updateUserPasswd($v['email'],$passwd);
             }
         }
