@@ -38,15 +38,15 @@ class AlimailController extends Controller
             shuffle($part1);
             $ret[1] .= $part1[0];
         }
-        for($i=1;$i<$c2;$i++){
+        for($i=0;$i<$c2;$i++){
             shuffle($part2);
             $ret[2] .= $part2[0];
         }
-        for($i=1;$i<$c3;$i++){
+        for($i=0;$i<$c3;$i++){
             shuffle($part3);
             $ret[3] .= $part3[0];
         }
-        for($i=1;$i<$c4;$i++){
+        for($i=0;$i<$c4;$i++){
             shuffle($part4);
             $ret[4] .= $part4[0];
         }
