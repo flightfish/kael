@@ -20,7 +20,7 @@ class EmailController extends Controller
         $ret = EmailApi::getUserListAll();
         foreach ($ret['userlist'] as $v){
             echo "update passwd: {$v['name']} {$v['userid']}\n";
-            $ret = EmailApi::updateUserPassword($v['userid'],'Zyhz1234567');
+            $ret = EmailApi::updateUserPassword($v['userid'],'Hello1234');
             echo json_encode($ret,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
         }
     }
