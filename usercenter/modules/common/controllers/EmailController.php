@@ -21,4 +21,9 @@ class EmailController extends BaseController
         return ['count'=>$count,'list'=>$userList];
     }
 
+    public function actionUpdatePasswd(){
+        $ret = EmailApi::updateUserPassword('wangchao@knowbox.cn','knowbox');
+        return $ret;
+    }
+
 }
