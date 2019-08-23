@@ -16,7 +16,9 @@ class EmailController extends BaseController
 
     public function actionAllUser(){
         $ret = EmailApi::getUserListAll();
-        return $ret;
+        $userList = array_column($ret['userlist'],'name','userid');
+        $count = count($ret['userlist']);
+        return ['count'=>$count,'list'=>$userList];
     }
 
 }
