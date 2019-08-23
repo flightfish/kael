@@ -238,10 +238,7 @@ class DingTalkApi {
                 $message[$msgType]['text'] = $data['text']??'';
                 break;
             case "action_card":
-                $message[$msgType]['title'] = $data['title']??'';
-                $message[$msgType]['markdown'] = $data['markdown']??'';
-                $message[$msgType]['single_title'] = $data['single_title']??'';
-                $message[$msgType]['single_url'] = $data['single_url']??'';
+                $message[$msgType] = $data;
                 break;
             default :
                 throw new Exception("消息错误,无此类型消息",Exception::ERROR_COMMON);

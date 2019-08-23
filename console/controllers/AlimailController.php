@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 use common\libs\AliMailApi;
+use common\libs\DingDing;
 use common\libs\DingTalkApi;
 use common\models\AlimailStatus;
 use common\models\DBCommon;
@@ -16,12 +17,27 @@ class AlimailController extends Controller
 
     //alimail/update-passwd
     public function actionUpdatePasswd(){
+        if(\Yii::$app->params['env'] != 'prod'){
+            return false;
+        }
         $allUserList = DingtalkUser::findList([],'','email,user_id');
         foreach ($allUserList as $v){
             if(!empty($v['email'])){
                 $passwd = $this->genPasswd(rand(1,3),rand(6,8),rand(1,3),rand(0,2));
                 echo "{$v['email']} {$passwd} \n";
-//                AliMailApi::updateUserPasswd($v['email'],$passwd);
+                AliMailApi::updateUserPasswd($v['email'],$passwd);
+                $param = [
+                    "title"=> "阿里邮箱密码修改通知",
+                    "markdown"=>"您的阿里邮箱密码已重置为，请尽快登陆并修改密码  \n 登陆地址:https://qiye.aliyun.com  \n 账号:{$v['email']}  \n 密码:{$passwd}",
+                    "btn_orientation"=> "1",
+                    "btn_json_list"=> [
+                        [
+                            "title"=> "点击查看",
+                            "action_url"=> 'https://qiye.aliyun.com'
+                        ]
+                    ]
+                ];
+                DingTalkApi::sendWorkMessage('action_card', $param, $v['email']);
             }
         }
     }
@@ -124,8 +140,9 @@ class AlimailController extends Controller
                 DingtalkUser::updateAll(['email_created_ali'=>1],['user_id'=>$successEmail['email']]);
                 echo 'create '. $successEmail['email']."\n";
                 if(\Yii::$app->params['env'] === 'prod' || $successEmail['email']=='wangchao@knowbox.cn'){
+                    $passwd = $this->genPasswd(rand(1,3),rand(6,8),rand(1,3),rand(0,2));
                     DingTalkApi::sendWorkMessage('text',
-                        ['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://qiye.aliyun.com\n\t账号:{$successEmail['email']}\n\t密码:1Knowbox!"],
+                        ['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://qiye.aliyun.com\n\t账号:{$successEmail['email']}\n\t密码:{$passwd}"],
                         $emailToId[$successEmail['email']]);
                 }
             }
