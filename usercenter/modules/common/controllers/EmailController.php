@@ -22,7 +22,7 @@ class EmailController extends BaseController
     }
 
     public function actionUpdatePasswd(){
-        $ret = EmailApi::updateUserPassword('wangchao@knowbox.cn','knowbox');
+        $ret = EmailApi::updateUserPassword('wangchao@knowbox.cn','Zyhz1234567');
         return $ret;
     }
 
