@@ -3,12 +3,14 @@
 # email init
 cd /data/wwwroot/kael && nohup php /data/wwwroot/kael/yii email/init >> /data/crontablog/kael/email.log 2>&1 &
 
-* * * * * * php /data/wwwroot/kael/yii email/gen-pinyin >> /data/crontablog/kael/gen-pinyin.log2>&1 &
+* * * * * * php /data/wwwroot/kael/yii email/gen-pinyin >> /data/crontablog/kael/gen-pinyin.log 2>&1 &
 
-* * * * * * php /data/wwwroot/kael/yii email/gen-email >> /data/crontablog/kael/gen-email.log2>&1 &
+* * * * * * php /data/wwwroot/kael/yii email/gen-email >> /data/crontablog/kael/gen-email.log 2>&1 &
 
-* * * * * * php /data/wwwroot/kael/yii email/create-detail-email >> /data/crontablog/kael/create-detail-email.log2>&1 &
+* * * * * * php /data/wwwroot/kael/yii email/create-detail-email >> /data/crontablog/kael/create-detail-email.log 2>&1 &
 
+# delete email
+0 0 * * * php /data/wwwroot/kael/yii email/delete-email >> /data/crontablog/kael/delete-email.log 2>&1 &
 
 
 
