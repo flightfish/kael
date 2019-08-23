@@ -15,6 +15,17 @@ use yii\console\Controller;
 class EmailController extends Controller
 {
 
+    //重置邮箱密码
+    public function actionResetPasswd(){
+        $ret = EmailApi::getUserListAll();
+        foreach ($ret['userlist'] as $v){
+            echo "update passwd: {$v['name']} {$v['userid']}\n";
+            $ret = EmailApi::updateUserPassword($v['userid'],'Zyhz1234567');
+            echo json_encode($ret,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)."\n";
+        }
+    }
+
+
     public function actionInit(){
         /**
         alter table `dingtalk_user`
