@@ -14,7 +14,7 @@ class EmailController extends BaseController
         return $ret;
     }
 
-    public function actionAll(){
+    public function actionAllUser(){
         $ret = EmailApi::getUserListAll();
         return $ret;
     }
