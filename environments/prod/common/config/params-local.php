@@ -65,4 +65,8 @@ return [
     'ydd_appkey'=>'203728392',
     'ydd_appsecret'=>'mkeezuuaye1dvrjt33wdhijxubhf1n0u',
     'ydd_test'=>0,
+
+    'alimail_accessCode'=>'knowboxcnws',
+    'alimail_accessPassword'=>'knowBox357#123alimail',
+    'alimail_departmentRoot'=>'----.w----.LSdUHw:1'
 ];
