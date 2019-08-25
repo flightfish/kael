@@ -28,7 +28,7 @@ class AlimailController extends Controller
                 AliMailApi::updateUserPasswd($v['email'],$passwd);
                 $param = [
                     "title"=> "阿里邮箱密码修改通知",
-                    "markdown"=>"您的阿里邮箱密码已重置为，请尽快登陆并修改密码  \n 登陆地址:https://qiye.aliyun.com  \n 账号:{$v['email']}  \n 密码:{$passwd}",
+                    "markdown"=>"您的阿里邮箱密码已重置，请尽快登陆并修改密码  \n 登陆地址:https://qiye.aliyun.com  \n 账号:{$v['email']}  \n 密码:{$passwd}",
                     "btn_orientation"=> "1",
                     "btn_json_list"=> [
                         [
@@ -51,7 +51,7 @@ class AlimailController extends Controller
                 AliMailApi::updateUserPasswd($v['email'],$passwd);
                 $param = [
                     "title"=> "阿里邮箱密码修改通知",
-                    "markdown"=>"您的阿里邮箱密码已重置为，请尽快登陆并修改密码  \n 登陆地址:https://qiye.aliyun.com  \n 账号:{$v['email']}  \n 密码:{$passwd}",
+                    "markdown"=>"您的阿里邮箱密码已重置，请尽快登陆并修改密码  \n 登陆地址:https://qiye.aliyun.com  \n 账号:{$v['email']}  \n 密码:{$passwd}  \n ".date("Y-m-d H:i:s"),
                     "btn_orientation"=> "1",
                     "btn_json_list"=> [
                         [
@@ -61,6 +61,7 @@ class AlimailController extends Controller
                     ]
                 ];
                 DingTalkApi::sendWorkMessage('action_card', $param, $v['user_id']);
+                break;
             }
         }
     }
