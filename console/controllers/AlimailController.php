@@ -23,7 +23,7 @@ class AlimailController extends Controller
         $allUserList = DingtalkUser::findList([],'','email,user_id');
         foreach ($allUserList as $v){
             if(!empty($v['email'])){
-                $passwd = $this->genPasswd(rand(1,3),rand(6,8),rand(1,3),rand(0,2));
+                $passwd = $this->genPasswd(rand(1,3),rand(6,8),rand(1,3),0);
                 echo "{$v['email']} {$passwd} \n";
                 AliMailApi::updateUserPasswd($v['email'],$passwd);
                 $param = [
@@ -46,7 +46,7 @@ class AlimailController extends Controller
         $allUserList = DingtalkUser::findList(['kael_id'=>11090],'','email,user_id');
         foreach ($allUserList as $v){
             if(!empty($v['email'])){
-                $passwd = $this->genPasswd(rand(1,3),rand(6,8),rand(1,3),rand(0,2));
+                $passwd = $this->genPasswd(rand(1,3),rand(6,8),rand(1,3),0);
                 echo "{$v['email']} {$passwd} \n";
                 AliMailApi::updateUserPasswd($v['email'],$passwd);
                 $param = [

@@ -229,7 +229,7 @@ class AliMailApi{
         $ret = self::curlApi(self::API_USER_UPDATE_PASSWD,[
             "accounts"=>[
                 [
-                    "passwd"=>$passwd,
+                    "password"=>$passwd,
                     "email"=>$email,
                 ]
             ]
