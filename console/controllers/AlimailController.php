@@ -15,7 +15,26 @@ use yii\console\Controller;
 class AlimailController extends Controller
 {
 
-    //alimail/update-passwd
+    public function actionListOther(){
+        //非员工邮箱
+        $allEmails = array_column(DingtalkUser::findList([],'','email'),'email');
+        $aliMails = [];
+        $aliMailStart = 0;
+        while(1){
+            $ret = AliMailApi::allUserList($aliMailStart,200);
+            echo json_encode(['start'=>$aliMailStart,'ret'=>$ret],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+            $aliMailStart += 200;
+            if(empty($ret['accounts'])){
+                break;
+            }
+            $aliMails = array_merge($aliMails,$ret['accounts']);
+        }
+        $aliMails = array_unique(array_column($aliMails,'email'));
+        $diff = array_diff($allEmails,$aliMails);
+        echo json_encode(['diff'=>$diff],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+    }
+
+    //alimail/update-pass
     public function actionUpdatePass(){
         if(\Yii::$app->params['env'] != 'prod'){
             return false;
