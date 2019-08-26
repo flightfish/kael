@@ -16,7 +16,7 @@ class AlimailController extends Controller
 {
 
     //alimail/update-passwd
-    public function actionUpdatePasswd(){
+    public function actionUpdatePass(){
         if(\Yii::$app->params['env'] != 'prod'){
             return false;
         }
@@ -47,7 +47,7 @@ class AlimailController extends Controller
         }
     }
 
-    public function actionUpdatePasswdTest(){
+    public function actionUpdatePassTest(){
         $allUserList = DingtalkUser::findList(['kael_id'=>11090],'','email,user_id');
         foreach ($allUserList as $v){
             if(!empty($v['email'])){
