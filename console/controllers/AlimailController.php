@@ -30,7 +30,7 @@ class AlimailController extends Controller
             $aliMails = array_merge($aliMails,$ret['accounts']);
         }
         $aliMails = array_unique(array_column($aliMails,'email'));
-        $diff = array_diff($aliMails,$allEmails);
+        $diff = array_values(array_diff($aliMails,$allEmails));
         echo json_encode(['diff'=>$diff],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
     }
 
