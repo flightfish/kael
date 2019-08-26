@@ -59,7 +59,7 @@ class DingController extends Controller
         echo json_encode($insertIds)."\n";
         echo date('Y-m-d H:i:s')."\t需要删除部门如下:\n";
         echo json_encode($delIds)."\n";
-        $columns = ['id','name','parentid'];
+        $columns = ['id','name','alias_name','parentid'];
         $rows = [];
         foreach ($allDepartmentList as $v){
             if(in_array($v['id'],$oldDepartmentIds)){
@@ -71,7 +71,7 @@ class DingController extends Controller
                 }
                 DingtalkDepartment::updateAll($params,['id'=>$v['id']]);
             }elseif(in_array($v['id'],$insertIds)){
-                $rows[] = [$v['id'],$v['name'],$v['parentid']];
+                $rows[] = [$v['id'],$v['name'],$v['name'],$v['parentid']];
             }
         }
         !empty($rows) && DingtalkDepartment::batchInsertAll(DingtalkDepartment::tableName(),$columns,$rows,DingtalkDepartment::getDb(),'INSERT IGNORE');
