@@ -138,7 +138,7 @@ class AlimailController extends Controller
                 AliMailApi::userDel($v);
             }
             AlimailStatus::updateAll(['status'=>AlimailStatus::STATUS_INVALID],['email'=>$v]);
-            DingtalkUser::updateAll(['email_created_ali'=>4],['email'=>$v,'status'=>DingtalkUser::STATUS_INVALID]);
+            DingtalkUser::updateAll(['email_created'=>4],['email'=>$v,'status'=>DingtalkUser::STATUS_INVALID]);
         }
     }
 
@@ -186,7 +186,7 @@ class AlimailController extends Controller
             DBCommon::batchInsertAll(AlimailStatus::tableName(),['email','status'],$alimailStatusRows,AlimailStatus::getDb(),"UPDATE");
             $retData = AliMailApi::createUserBatch($v);
             foreach ($retData['success']??[] as $successEmail){
-                DingtalkUser::updateAll(['email_created_ali'=>1],['user_id'=>$successEmail['email']]);
+                DingtalkUser::updateAll(['email_created'=>1],['user_id'=>$successEmail['email']]);
                 echo 'create '. $successEmail['email']."\n";
                 if(\Yii::$app->params['env'] === 'prod'){
                     $passwd = '1Knowbox!';
