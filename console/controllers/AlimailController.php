@@ -31,7 +31,11 @@ class AlimailController extends Controller
         }
         $aliMails = array_unique(array_column($aliMails,'email'));
         $diff = array_values(array_diff($aliMails,$allEmails));
-        echo json_encode(['diff'=>$diff],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+//        echo json_encode(['diff'=>$diff],JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+        echo "================diff======================\n";
+        foreach ($diff as $v){
+            echo $v."\n";
+        }
     }
 
     //alimail/update-pass
