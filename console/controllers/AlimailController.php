@@ -146,8 +146,6 @@ class AlimailController extends Controller
 
     //同步邮箱
     public function actionSynEmailAccount(){
-        //删除测试
-        AliMailApi::userDel('wangchao@knowbox.cn');
         //所有员工
         $allDingUserList = DingtalkUser::findList([],'','auto_id,department_subroot,email,name,user_id');
         $emailToId = array_column($allDingUserList,'user_id','email');
@@ -191,8 +189,8 @@ class AlimailController extends Controller
             foreach ($retData['success']??[] as $successEmail){
                 DingtalkUser::updateAll(['email_created_ali'=>1],['user_id'=>$successEmail['email']]);
                 echo 'create '. $successEmail['email']."\n";
-                if(\Yii::$app->params['env'] === 'prod' || $successEmail['email']=='wangchao@knowbox.cn'){
-                    $passwd = $this->genPasswd(rand(1,3),rand(6,8),rand(1,3),rand(0,2));
+                if(\Yii::$app->params['env'] === 'prod'){
+                    $passwd = '1Knowbox!';
                     DingTalkApi::sendWorkMessage('text',
                         ['content'=>"欢迎亲爱的盒子:\n\t公司邮箱已经为您开通啦,请尽快登陆并修改密码\n\t登陆地址:https://qiye.aliyun.com\n\t账号:{$successEmail['email']}\n\t密码:{$passwd}"],
                         $emailToId[$successEmail['email']]);
