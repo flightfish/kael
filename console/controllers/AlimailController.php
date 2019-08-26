@@ -2,7 +2,6 @@
 namespace console\controllers;
 
 use common\libs\AliMailApi;
-use common\libs\DingDing;
 use common\libs\DingTalkApi;
 use common\models\AlimailStatus;
 use common\models\DBCommon;
