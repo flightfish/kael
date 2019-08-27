@@ -75,7 +75,10 @@ class DingController extends Controller
             }
         }
         !empty($rows) && DingtalkDepartment::batchInsertAll(DingtalkDepartment::tableName(),$columns,$rows,DingtalkDepartment::getDb(),'INSERT IGNORE');
-        !empty($delIds) && DingtalkDepartment::updateAll(['status'=>1],['id'=>$delIds]);
+        if(!empty($delIds)){
+            DingtalkDepartment::updateAll(['status'=>1],['id'=>$delIds]);
+            DepartmentRelateToKael::updateAll(['status'=>1],['department_id'=>$delIds]);
+        }
         //更新level
         $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id where status = 0 and parentid = 1";
         DingtalkDepartment::getDb()->createCommand($sql)->execute();
