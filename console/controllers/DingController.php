@@ -1045,7 +1045,7 @@ class DingController extends Controller
         if(empty($deleteUserIds)){
             return ;
         }
-        $deleteKaelInfos = DingtalkUser::findList(['user_id'=>$deleteUserIds],'user_id','kael_id');
+        $deleteKaelInfos = DingtalkUser::findList(['user_id'=>$deleteUserIds],'user_id','user_id,kael_id');
         $deleteUids = array_column($deleteKaelInfos,'kael_id');
         echo date('Y-m-d H:i:s')."\t需要删除员工如下:\n";
         echo json_encode($deleteUids)."\n";
