@@ -33,9 +33,9 @@ class MysqlCommand extends Command
         } catch (\yii\db\Exception $e) {
             if (strstr($e->getMessage(),'MySQL server has gone away')) {
                 echo '重连数据库';
-                $this->db->close();
+//                $this->db->close();
                 $this->db->open();
-//                $this->pdoStatement = null;
+                $this->pdoStatement = null;
                 return parent::execute();
             }
             throw $e;
