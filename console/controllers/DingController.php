@@ -1055,7 +1055,7 @@ class DingController extends Controller
                     $dingInfo = DingTalkApi::getUserInfo($userId);
                     continue;
                 }catch (\Exception $e){
-                    if($e->getMessage() != '找不到该用户'){
+                    if($e->getMessage() != '[DING]找不到该用户'){
                         echo date('Y-m-d H:i:s')."\t[delete:no] user_id:".$userId."\t".$e->getMessage()."\n";
                         continue;
                     }
