@@ -654,7 +654,6 @@ class DingController extends Controller
                 }
 
                 if (in_array($userId, $allUserIds)) {
-                    continue;
                     echo date('Y-m-d H:i:s') . "\t更新钉钉员工:\t";
                     echo $userInfo['userid'] . "\n";
                     //更新
