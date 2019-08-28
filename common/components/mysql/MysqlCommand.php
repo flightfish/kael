@@ -31,6 +31,8 @@ class MysqlCommand extends Command
         try {
             return parent::execute();
         } catch (\yii\db\Exception $e) {
+            var_dump($e);
+            exit('###');
             if ($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013) {
 //                echo '重连数据库';
                 $this->db->close();
