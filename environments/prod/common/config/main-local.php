@@ -2,7 +2,7 @@
 return [
     'components' => [
         'db' => [//用户中心
-            'class' => 'yii\db\Connection',
+            'class' => 'common\components\mysql\MysqlConnection',
             'dsn' => 'mysql:host=10.19.141.31;port=3310;dbname=usercenter',
             'username' => 'tkapi',
             'password' => 'TK5gFp6HO',
@@ -16,7 +16,7 @@ return [
             'password' => 'KBRedispt'
         ],
         'db_ehr' => [
-            'class' => 'yii\db\Connection',
+            'class' => 'common\components\mysql\MysqlConnection',
             'dsn' => 'mysql:host=10.19.141.31;port=3321;dbname=ehr',
             'username' => 'ehrRoot',
             'password' => 'ehrPassword',
