@@ -14,8 +14,8 @@ class MysqlCommand extends Command
     {
         try {
             return parent::queryInternal($method, $fetchMode);
-        } catch (\yii\db\Exception $e) {
-            if ($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013) {
+        } catch (\Exception $e) {
+            if (stripos($e->getMessage(),'gone away')) {
 //                echo '重连数据库';
                 $this->db->close();
                 $this->db->open();
@@ -30,8 +30,8 @@ class MysqlCommand extends Command
     {
         try {
             return parent::execute();
-        } catch (\yii\db\Exception $e) {
-            if ($e->errorInfo[1] == 2006 || $e->errorInfo[1] == 2013) {
+        } catch (\Exception $e) {
+            if (stripos($e->getMessage(),'gone away')) {
 //                echo '重连数据库';
                 $this->db->close();
                 $this->db->open();
