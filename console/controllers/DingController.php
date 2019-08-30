@@ -161,7 +161,7 @@ class DingController extends Controller
                     } elseif (in_array(1, $userInfo['department'])) {
                         $mainDepartId = 1;
                     } else {
-//                        sleep(60);
+                        sleep(60);
 //                        $departmentUserInfoOne = DepartmentUser::findOneByWhere(['user_id'=>$userInfo['user_id']]);
 //                        if(!empty($departmentUserInfoOne)
 //                            && !empty($departmentUserInfoOne['department_id'])
