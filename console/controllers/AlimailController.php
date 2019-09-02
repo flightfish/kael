@@ -37,6 +37,11 @@ class AlimailController extends Controller
         }
     }
 
+    public function actionSetPasswdMailService(){
+        $passwd = 'Know1111';
+        return AliMailApi::updateUserPasswd('mail_service@knowbox.cn',$passwd);
+    }
+
     //alimail/update-pass
     public function actionUpdatePass(){
         if(\Yii::$app->params['env'] != 'prod'){
