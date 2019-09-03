@@ -26,6 +26,9 @@ return [
         'meican' => [
             'class' => 'usercenter\modules\meican\Module',
         ],
+        'ldap' => [
+            'class' => 'usercenter\modules\ldap\Module',
+        ],
     ],
     'controllerNamespace' => 'usercenter\controllers',
     'components' => [
