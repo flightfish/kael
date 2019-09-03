@@ -20,9 +20,9 @@ class LoginController extends BaseController{
                 'message' => '',
                 'data' => $data,
             ];
-            return json_encode($result, JSON_UNESCAPED_UNICODE);
+            return $result;
         }catch(\Exception $e){
-            return json_encode(['message'=>$e->getMessage(),'data'=>[]], JSON_UNESCAPED_UNICODE);
+            return ['message'=>$e->getMessage(),'data'=>[]];
 
         }
     }

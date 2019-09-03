@@ -19,7 +19,6 @@ class LdapLogin extends RequestBaseModel
     {
         return array_merge([
             [['password','username'],'string'],
-            [['username'],'trim'],
             [['password','username'],'required'=>self::SCENARIO_LOGIN],
         ], parent::rules());
     }
@@ -32,7 +31,10 @@ class LdapLogin extends RequestBaseModel
     }
 
     public function login(){
-        $userInfo = UserCenter::findOneByWhere(['mobile'=>$this->username]);
+        if(empty(trim($this->username))){
+            throw new Exception("用户不存在");
+        }
+        $userInfo = UserCenter::findOneByWhere(['mobile'=>trim($this->username)]);
         if(empty($userInfo)){
             throw new Exception("用户不存在");
         }
