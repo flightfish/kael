@@ -19,7 +19,7 @@ class LdapLogin extends RequestBaseModel
     {
         return array_merge([
             [['password','username'],'string'],
-            [['password','username'],'required'=>self::SCENARIO_LOGIN],
+            [['password','username'],'required','on'=>self::SCENARIO_LOGIN],
         ], parent::rules());
     }
 
