@@ -47,10 +47,10 @@ class LdapLogin extends RequestBaseModel
             'mobile' => $userInfo['mobile'],
             'phone' => $userInfo['mobile'],
             'email' => $userInfo['email'],
-            'department' => '',
-            'position' => '',
-            'location' => '',
-            'im' => '',
+            'department' => '小盒科技',
+            'position' => '小盒科技',
+            'location' => '小盒科技',
+            'im' => '小盒科技',
         ];
     }
 
