@@ -26,7 +26,7 @@ class LdapLogin extends RequestBaseModel
     public function scenarios()
     {
         $scenarios = parent::scenarios();
-        $scenarios[self::SCENARIO_LOGIN] = [];
+        $scenarios[self::SCENARIO_LOGIN] = ['password','username'];
         return $scenarios;
     }
 
