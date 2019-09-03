@@ -37,10 +37,10 @@ class AlimailController extends Controller
         }
     }
 
-    public function actionSetPasswdMailService(){
-        $passwd = 'Know1111';
-        return AliMailApi::updateUserPasswd('mail_service@knowbox.cn',$passwd);
-    }
+//    public function actionSetPasswdMailService(){
+//        $passwd = 'Know1111';
+//        return AliMailApi::updateUserPasswd('mail_service@knowbox.cn',$passwd);
+//    }
 
     //alimail/update-pass
     public function actionUpdatePass(){
