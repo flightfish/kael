@@ -19,7 +19,7 @@ class DingKaoqinController extends Controller
             exit();
         }
         echo date('Y-m-d H:i:s')."\t组装用户ID\n";
-        $userIds = array_values(array_filter(array_unique(array_column(DingtalkUser::findList([],'','user_id',-1),'user_id'))));
+        $userIds = array_values(array_filter(array_unique(array_column(DingtalkUser::findList([],'','user_id'),'user_id'))));
         //dayList
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
