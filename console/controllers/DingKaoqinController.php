@@ -43,7 +43,7 @@ class DingKaoqinController extends Controller
     }
 
     public function synKaoqin(){
-        $scheduleList = DingTalkApi::getAttendanceListSchedule('2019-08-31');
+        $scheduleList = DingTalkApi::getAttendanceListSchedule('2019-09-20');
         echo json_encode($scheduleList,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
         return false;
         $list = DingTalkApi::getAttendanceList(
