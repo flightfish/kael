@@ -45,7 +45,7 @@ class DingKaoqinController extends Controller
         //dayList
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
-        },range(time()-7*3600,time(),24*3600));
+        },range(time()-7*24*3600,time(),24*3600));
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
             $this->synSchedule($day);
