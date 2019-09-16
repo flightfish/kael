@@ -30,7 +30,7 @@ class DingKaoqinController extends Controller
 {
 
     /**
-     * 钉钉考勤信息同步
+     * 钉钉考勤信息同步 ding-kaoqin/syn
      */
     public function actionSyn(){
         if(exec('ps -ef|grep "ding-kaoqin/syn"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
@@ -44,6 +44,7 @@ class DingKaoqinController extends Controller
 
     public function synKaoqin(){
         $ret = DingTalkApi::getAttendanceListRecord('2019-09-10 23:59:59','2019-09-16 23:59:59',['00036','15243079933019240','15667442833927047']);
+        var_dump($ret);
         return $ret;
     }
 }
