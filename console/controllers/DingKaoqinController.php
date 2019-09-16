@@ -38,23 +38,35 @@ class DingKaoqinController extends Controller
             exit();
         }
         echo date('Y-m-d H:i:s')."\t开始同步考勤数据到kael\n";
-        $this->synKaoqin();
+        $this->synKaoqin(date("Y-m-d"));
         echo date('Y-m-d H:i:s')."\t同步考勤数据结束\n";
     }
 
-    public function synKaoqin(){
-        $scheduleList = DingTalkApi::getAttendanceListSchedule('2019-09-10');
-        echo json_encode($scheduleList,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-        return false;
-        $list = DingTalkApi::getAttendanceList(
-            '2019-08-28 00:00:00',
-            '2019-08-31 23:59:59',
+    public function synKaoqin($day){
+        //排班时间
+        $scheduleList = DingTalkApi::getAttendanceListSchedule(date('Y-m-d',strtotime($day)));
+        foreach ($scheduleList as $v){
+            /**
+            "plan_id":1,
+            "check_type":"OnDuty",
+            "approve_id":1,
+            "userid":"0001",
+            "class_id":1,
+            "class_setting_id":1,
+            "plan_check_time":"2017-04-11 11:11:11",
+            "group_id":1
+             */
+        }
+        //考勤时间
+        $attendanceList = DingTalkApi::getAttendanceList(
+            date('Y-m-d 00:00:00',strtotime($day)),
+            date('Y-m-d 23:59:59',strtotime($day)),
             [
                 '00036',
-//                '15243079933019240',
+                '15243079933019240',
                 '15667442833927047'
             ]);
-        foreach ($list as $v){
+        foreach ($attendanceList as $v){
             /**
             "baseCheckTime": 1463392800000,
             "checkType": "OffDuty",
