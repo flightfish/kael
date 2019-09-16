@@ -11,6 +11,29 @@ class DingKaoqinController extends Controller
 {
 
     /**
+     * 钉钉考勤信息初始化 ding-kaoqin/init
+     */
+    public function actionInit(){
+        if(exec('ps -ef|grep "ding-kaoqin/init"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
+        echo date('Y-m-d H:i:s')."\t组装用户ID\n";
+        $userIds = array_values(array_filter(array_unique(array_column(DingtalkUser::findList([],'','user_id',-1),'user_id'))));
+        //dayList
+        $dayList = array_map(function($v){
+            return date("Y-m-d",$v);
+        },range(strtotime('2019-07-01'),time(),24*3600));
+        foreach ($dayList as $day){
+            echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
+            $this->synSchedule($day);
+            echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤数据到kael\n";
+            $this->synKaoqin($day,$userIds);
+            echo date('Y-m-d H:i:s')."\t {$day} 同步考勤数据结束\n";
+        }
+    }
+
+    /**
      * 钉钉考勤信息同步 ding-kaoqin/syn
      */
     public function actionSyn(){
