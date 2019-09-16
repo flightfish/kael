@@ -101,10 +101,10 @@ class DingTalkApi {
                 'offset'=>$offset,
                 'limit'=>50
             ]);
+            $list = array_merge($list,$retJson['recordresult']);
             if(empty($retJson['hasMore'])){
                 break;
             }
-            $list = array_merge($list,$retJson['recordresult']);
         }
         return $list;
 
