@@ -87,7 +87,7 @@ class DingKaoqinController extends Controller
                     'group_id'=>$v['group_id'],
                 ];
             }catch (\Exception $e){
-                echo $v."\n";
+                echo json_encode($v,64|256)."\n";
                 throw $e;
             }
 
