@@ -43,7 +43,7 @@ class DingKaoqinController extends Controller
     }
 
     public function synKaoqin(){
-        $ret = DingTalkApi::getAttendanceListRecord(
+        $list = DingTalkApi::getAttendanceList(
             '2019-09-11 00:00:00',
             '2019-09-16 23:59:59',
             [
@@ -51,42 +51,24 @@ class DingKaoqinController extends Controller
 //                '15243079933019240',
                 '15667442833927047'
             ]);
-        foreach ($ret['recordresult'] as $v){
+        foreach ($list as $v){
             /**
-             * {
-            "gmtModified": 1568599964000,
-            "baseCheckTime": 1568599200000,
-            "groupId": 160790019,
-            "timeResult": "Late",
-            "deviceId": "535321c9164b8fe9a75dc4fcc471b25",
-            "baseLongitude": 116.480198,
-            "userAccuracy": 550,
-            "classId": 80240005,
-            "workDate": 1568563200000,
-            "planId": 72491443063,
-            "id": 22752893818,
-            "baseAccuracy": 0,
-            "checkType": "OnDuty",
-            "planCheckTime": 1568599200000,
-            "corpId": "ding56f88c485c1f3d8e35c2f4657eb6378f",
+            "baseCheckTime": 1463392800000,
+            "checkType": "OffDuty",
+            "corpId": "ding53a2fb0458ba9639",
+            "groupId": 20451893,
+            "id": 60714703,
             "locationResult": "Normal",
-            "userLongitude": 116.474133,
-            "isLegal": "N",
-            "baseAddress": "阜安西路",
-            "gmtCreate": 1568599964000,
-            "userId": "15243079933019240",
-            "userAddress": "望京SOHO中心T2",
-            "userLatitude": 39.997954,
-            "baseLatitude": 39.997037,
-            "sourceType": "AUTO_CHECK",
-            "userCheckTime": 1568599964000,
-            "locationMethod": "MAP"
-            }
+            "planId": 210071562,
+            "recordId": 30068312,
+            "timeResult": "Early",
+            "userCheckTime": 1463392235000,
+            "userId": "manager6699",
+            "workDate": 1463328000000,
+            "procInstId": "cb992267-9b70"
              */
-            isset($v['gmtModified']) && $v['gmtModified'] = date("Y-m-d H:i:s",intval($v['gmtModified']/1000));
             isset($v['baseCheckTime']) && $v['baseCheckTime'] = date("Y-m-d H:i:s",intval($v['baseCheckTime']/1000));
             isset($v['workDate']) && $v['workDate'] = date("Y-m-d H:i:s",intval($v['workDate']/1000));
-            isset($v['gmtCreate']) && $v['gmtCreate'] = date("Y-m-d H:i:s",intval($v['gmtCreate']/1000));
             isset($v['userCheckTime']) && $v['userCheckTime'] = date("Y-m-d H:i:s",intval($v['userCheckTime']/1000));
             echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
         }

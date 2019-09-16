@@ -40,6 +40,7 @@ class DingTalkApi {
     const API_TOPAPI_ATTENDANCE_LISTSCHEDULE = "https://oapi.dingtalk.com/topapi/attendance/listschedule";
     //考勤打卡记录
     const API_TOPAPI_ATTENDANCE_LISTRECORD = "https://oapi.dingtalk.com/attendance/listRecord";
+    const API_TOPAPI_ATTENDANCE_LIST = "https://oapi.dingtalk.com/attendance/list";
 
     public static function getAttendanceListSchedule($date){
         $offset = 0;
@@ -77,6 +78,7 @@ class DingTalkApi {
     }
 
     public static function getAttendanceListRecord($startTime,$endTime,$userIds){
+        //补卡算 班次时间范围  不算在补卡时间范围内
         $retJson = self::curlPost(self::API_TOPAPI_ATTENDANCE_LISTRECORD,[
             'userIds'=>$userIds,
             'checkDateFrom'=>$startTime,
@@ -85,6 +87,29 @@ class DingTalkApi {
         ]);
         return $retJson;
     }
+
+    public static function getAttendanceList($startTime,$endTime,$userIds){
+        $offset = 0;
+        $list = [];
+        while(1){
+            //补卡算 班次时间范围  不算在补卡时间范围内
+            $retJson = self::curlPost(self::API_TOPAPI_ATTENDANCE_LIST,[
+                'userIds'=>$userIds,
+                'checkDateFrom'=>$startTime,
+                'checkDateTo'=>$endTime,
+                'isI18n'=>"false",
+                'offset'=>$offset,
+                'limit'=>50
+            ]);
+            if(empty($retJson['hasMore'])){
+                break;
+            }
+            $list = array_merge($list,$retJson['recordresult']);
+        }
+        return $list;
+
+    }
+
 
 
 
