@@ -48,6 +48,7 @@ class DingKaoqinController extends Controller
         //排班时间
         $scheduleList = DingTalkApi::getAttendanceListSchedule(date('Y-m-d',strtotime($day)));
         foreach ($scheduleList as $v){
+            echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
             DingtalkAttendanceSchedule::add([
                 'plan_id'=>$v['plan_id'],
                 'schedule_date'=>date("Y-m-d",strtotime($v['plan_check_time'])),
