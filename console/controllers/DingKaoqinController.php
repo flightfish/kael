@@ -60,6 +60,10 @@ class DingKaoqinController extends Controller
             "userid": "00003"
             }
              */
+            if(empty($v['class_id'])){
+                //没有排班
+                continue;
+            }
             DingtalkAttendanceSchedule::add([
                 'plan_id'=>$v['plan_id'],
                 'schedule_date'=>date("Y-m-d",strtotime($v['plan_check_time'])),
