@@ -44,7 +44,7 @@ class DingKaoqinController extends Controller
 
     public function synKaoqin(){
         $list = DingTalkApi::getAttendanceList(
-            '2019-08-38 00:00:00',
+            '2019-08-28 00:00:00',
             '2019-08-31 23:59:59',
             [
                 '00036',
