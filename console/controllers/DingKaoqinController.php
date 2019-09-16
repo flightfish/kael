@@ -76,11 +76,11 @@ class DingKaoqinController extends Controller
             "locationMethod": "MAP"
             }
              */
-            $v['gmtModified'] = date("Y-m-d H:i:s",intval($v['gmtModified']/1000));
-            $v['baseCheckTime'] = date("Y-m-d H:i:s",intval($v['baseCheckTime']/1000));
-            $v['workDate'] = date("Y-m-d H:i:s",intval($v['workDate']/1000));
-            $v['gmtCreate'] = date("Y-m-d H:i:s",intval($v['gmtCreate']/1000));
-            $v['userCheckTime'] = date("Y-m-d H:i:s",intval($v['userCheckTime']/1000));
+            isset($v['gmtModified']) && $v['gmtModified'] = date("Y-m-d H:i:s",intval($v['gmtModified']/1000));
+            isset($v['baseCheckTime']) && $v['baseCheckTime'] = date("Y-m-d H:i:s",intval($v['baseCheckTime']/1000));
+            isset($v['workDate']) && $v['workDate'] = date("Y-m-d H:i:s",intval($v['workDate']/1000));
+            isset($v['gmtCreate']) && $v['gmtCreate'] = date("Y-m-d H:i:s",intval($v['gmtCreate']/1000));
+            isset($v['userCheckTime']) && $v['userCheckTime'] = date("Y-m-d H:i:s",intval($v['userCheckTime']/1000));
             echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
         }
     }
