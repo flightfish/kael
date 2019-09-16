@@ -52,7 +52,7 @@ class DingKaoqinController extends Controller
                 'plan_id'=>$v['plan_id'],
                 'schedule_date'=>date("Y-m-d",strtotime($v['plan_check_time'])),
                 'check_type'=>$v['check_type'],
-                'approve_id'=>$v['approve_id'],
+                'approve_id'=>$v['approve_id'] ?? 0,
                 'user_id'=>$v['user_id'],
                 'class_id'=>$v['class_id'],
                 'class_setting_id'=>$v['class_setting_id'],
