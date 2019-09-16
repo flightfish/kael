@@ -2,6 +2,8 @@
 namespace console\controllers;
 
 use common\libs\DingTalkApi;
+use common\models\DingtalkAttendanceResult;
+use common\models\DingtalkAttendanceSchedule;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use common\models\ehr\AuthUser;
@@ -46,6 +48,17 @@ class DingKaoqinController extends Controller
         //排班时间
         $scheduleList = DingTalkApi::getAttendanceListSchedule(date('Y-m-d',strtotime($day)));
         foreach ($scheduleList as $v){
+            DingtalkAttendanceSchedule::add([
+                'plan_id'=>$v['plan_id'],
+                'schedule_date'=>date("Y-m-d",strtotime($v['plan_check_time'])),
+                'check_type'=>$v['check_type'],
+                'approve_id'=>$v['approve_id'],
+                'user_id'=>$v['user_id'],
+                'class_id'=>$v['class_id'],
+                'class_setting_id'=>$v['class_setting_id'],
+                'plan_check_time'=>$v['plan_check_time'],
+                'group_id'=>$v['group_id'],
+            ]);
             /**
             "plan_id":1,
             "check_type":"OnDuty",
@@ -83,9 +96,25 @@ class DingKaoqinController extends Controller
             "procInstId": "cb992267-9b70"
              */
             isset($v['baseCheckTime']) && $v['baseCheckTime'] = date("Y-m-d H:i:s",intval($v['baseCheckTime']/1000));
-            isset($v['workDate']) && $v['workDate'] = date("Y-m-d H:i:s",intval($v['workDate']/1000));
+            isset($v['workDate']) && $v['workDate'] = date("Y-m-d",intval($v['workDate']/1000));
             isset($v['userCheckTime']) && $v['userCheckTime'] = date("Y-m-d H:i:s",intval($v['userCheckTime']/1000));
-            echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+
+            DingtalkAttendanceResult::add([
+                'id'=>$v['id'],
+                'group_id'=>$v['groupId'] ?? 0,
+                'plan_id'=>$v['planId'] ?? 0,
+                'record_id'=>$v['recordId'] ?? 0,
+                'work_date'=>$v['workDate']??'0000-00-00',
+                'user_id'=>$v['userId'],
+                'check_type'=>$v['checkType'],
+                'time_result'=>$v['timeResult'],
+                'location_result'=>$v['locationResult'],
+                'approve_id'=>$v['approveId']??0,
+                'proc_inst_id'=>$v['procInstId']??0,
+                'base_check_time'=>$v['baseCheckTime']??'0000-00-00 00:00:00',
+                'user_check_time'=>$v['userCheckTime']??'0000-00-00 00:00:00',
+                'source_type'=>$v['sourceType'],
+            ]);
         }
     }
 }

@@ -29,7 +29,7 @@ CREATE TABLE `dingtalk_attendance_result` (
   `proc_inst_id` varchar(50) NOT NULL DEFAULT '' COMMENT '关联的审批实例id',
   `base_check_time` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '计算迟到和早退，基准时间',
   `user_check_time` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '实际打卡时间',
-  `sourceType` varchar(50) NOT NULL DEFAULT '' COMMENT '数据来源ATM：考勤机;BEACON：IBeacon;DING_ATM：钉钉考勤机;USER：用户打卡;BOSS：老板改签;APPROVE：审批系统;SYSTEM：考勤系统;AUTO_CHECK：自动打卡 ',
+  `source_type` varchar(50) NOT NULL DEFAULT '' COMMENT '数据来源ATM：考勤机;BEACON：IBeacon;DING_ATM：钉钉考勤机;USER：用户打卡;BOSS：老板改签;APPROVE：审批系统;SYSTEM：考勤系统;AUTO_CHECK：自动打卡 ',
   `status` int(11) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

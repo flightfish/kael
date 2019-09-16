@@ -18,4 +18,11 @@ class DingtalkAttendanceResult extends \common\models\BaseActiveRecord
     }
 
 
+    public static function add($params){
+        $model = new self();
+        foreach ($params as $k=>$v){
+            $model->$k = $v;
+        }
+        return $model->insert();
+    }
 }
