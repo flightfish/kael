@@ -94,9 +94,9 @@ class DingTalkApi {
         while(1){
             //补卡算 班次时间范围  不算在补卡时间范围内
             $retJson = self::curlPost(self::API_TOPAPI_ATTENDANCE_LIST,[
-                'userIds'=>$userIds,
-                'checkDateFrom'=>$startTime,
-                'checkDateTo'=>$endTime,
+                'userIdList'=>$userIds,
+                'workDateFrom'=>$startTime,
+                'workDateTo'=>$endTime,
                 'isI18n'=>"false",
                 'offset'=>$offset,
                 'limit'=>50
