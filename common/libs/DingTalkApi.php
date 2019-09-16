@@ -68,11 +68,11 @@ class DingTalkApi {
             }
              */
             $retJson = self::curlPost(self::API_TOPAPI_ATTENDANCE_LISTSCHEDULE,['size'=>200,'offset'=>$offset,'workDate'=>$date]);
+            $scheduleList = array_merge($scheduleList,$retJson['result']['schedules']);
             if(!$retJson['result']['has_more']){
                 break;
             }
             $offset += 200;
-            $scheduleList = array_merge($scheduleList,$retJson['result']['schedules']);
         }
         return $scheduleList;
     }
@@ -105,6 +105,7 @@ class DingTalkApi {
             if(empty($retJson['hasMore'])){
                 break;
             }
+            $offset += 50;
         }
         return $list;
 
