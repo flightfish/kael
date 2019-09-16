@@ -74,6 +74,9 @@ class DingKaoqinController extends Controller
             "userid": "00003"
             }
              */
+            if(empty($v['plan_check_time'])){
+                continue;
+            }
             try{
                 $tmp = [
                     'plan_id'=>$v['plan_id'],
