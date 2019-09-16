@@ -44,7 +44,8 @@ class DingKaoqinController extends Controller
 
     public function synKaoqin(){
         $ret = DingTalkApi::getAttendanceListRecord('2019-09-10 23:59:59','2019-09-16 23:59:59',['00036','15243079933019240','15667442833927047']);
-        var_dump($ret);
-        return $ret;
+        foreach ($ret['recordresult'] as $v){
+            echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+        }
     }
 }
