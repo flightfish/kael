@@ -35,6 +35,61 @@ class DingTalkApi {
     //注册业务事件回调接口
     const API_POST_REGISTER_CALL_BACK = "https://oapi.dingtalk.com/call_back/register_call_back";
 
+
+    //企业考勤排班详情
+    const API_TOPAPI_ATTENDANCE_LISTSCHEDULE = "https://oapi.dingtalk.com/topapi/attendance/listschedule";
+    //考勤打卡记录
+    const API_TOPAPI_ATTENDANCE_LISTRECORD = "https://oapi.dingtalk.com/attendance/listRecord";
+
+    public static function getAttendanceListSchedule($date){
+        $offset = 0;
+        $scheduleList = [];
+        while(1){
+            /**
+            {
+            "result":{
+            "schedules":[
+            {
+            "plan_id":1,
+            "check_type":"OnDuty",
+            "approve_id":1,
+            "userid":"0001",
+            "class_id":1,
+            "class_setting_id":1,
+            "plan_check_time":"2017-04-11 11:11:11",
+            "group_id":1
+            }
+            ],
+            "has_more":false
+            },
+            "errmsg":"ok",
+            "errcode":0
+            }
+             */
+            $retJson = self::curlPost(self::API_TOPAPI_ATTENDANCE_LISTSCHEDULE,['size'=>200,'offset'=>$offset,'workDate'=>$date]);
+            if(!$retJson['result']['has_more']){
+                break;
+            }
+            $offset += 200;
+            $scheduleList = array_merge($scheduleList,$retJson['result']['schedules']);
+        }
+        return $scheduleList;
+    }
+
+    public static function getAttendanceListRecord($startTime,$endTime,$userIds){
+        $retJson = self::curlPost(self::API_TOPAPI_ATTENDANCE_LISTRECORD,[
+            'userIds'=>$userIds,
+            'checkDateFrom'=>$startTime,
+            'checkDateTo'=>$endTime,
+            'isI18n'=>"false",
+        ]);
+        return $retJson;
+    }
+
+
+
+
+
     /**
      * onlyActive
      * 0：包含未激活钉钉的人员数量
