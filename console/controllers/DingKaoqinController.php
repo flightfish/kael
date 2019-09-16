@@ -74,17 +74,23 @@ class DingKaoqinController extends Controller
             "userid": "00003"
             }
              */
-            $tmp = [
-                'plan_id'=>$v['plan_id'],
-                'schedule_date'=>date("Y-m-d",strtotime($v['plan_check_time'])),
-                'check_type'=>$v['check_type'],
-                'approve_id'=>$v['approve_id'] ?? 0,
-                'user_id'=>$v['userid'],
-                'class_id'=>$v['class_id'] ?? 0,
-                'class_setting_id'=>$v['class_setting_id'] ?? 0,
-                'plan_check_time'=>$v['plan_check_time'],
-                'group_id'=>$v['group_id'],
-            ];
+            try{
+                $tmp = [
+                    'plan_id'=>$v['plan_id'],
+                    'schedule_date'=>date("Y-m-d",strtotime($v['plan_check_time'])),
+                    'check_type'=>$v['check_type'],
+                    'approve_id'=>$v['approve_id'] ?? 0,
+                    'user_id'=>$v['userid'],
+                    'class_id'=>$v['class_id'] ?? 0,
+                    'class_setting_id'=>$v['class_setting_id'] ?? 0,
+                    'plan_check_time'=>$v['plan_check_time'],
+                    'group_id'=>$v['group_id'],
+                ];
+            }catch (\Exception $e){
+                echo $v."\n";
+                throw $e;
+            }
+
             empty($columns) && $columns = array_keys($tmp);
             $rows[] = array_values($tmp);
         }
