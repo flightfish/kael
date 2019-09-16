@@ -40,7 +40,7 @@ class DingKaoqinController extends Controller
             exit();
         }
         echo date('Y-m-d H:i:s')."\t开始同步考勤数据到kael\n";
-        $this->synKaoqin(date("Y-m-d"));
+        $this->synKaoqin(date("Y-m-d",time()-24*3600));
         echo date('Y-m-d H:i:s')."\t同步考勤数据结束\n";
     }
 
