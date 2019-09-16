@@ -25,4 +25,14 @@ class DingtalkAttendanceSchedule extends \common\models\BaseActiveRecord
         return $model->insert();
     }
 
+    public static function addUpdateColumnRows($columns,$rows){
+        if(empty($rows)){
+            return false;
+        }
+        $rowsChunkList = array_chunk($rows,300);
+        foreach ($rowsChunkList as $rowsChunkOne){
+            DBCommon::batchInsertAll(self::tableName(),$columns,$rowsChunkOne,self::getDb(),'UPDATE');
+        }
+    }
+
 }

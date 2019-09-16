@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 use common\libs\DingTalkApi;
+use common\models\DBCommon;
 use common\models\DingtalkAttendanceResult;
 use common\models\DingtalkAttendanceSchedule;
 use common\models\DingtalkDepartment;
@@ -39,16 +40,29 @@ class DingKaoqinController extends Controller
             echo "is_running";
             exit();
         }
-        echo date('Y-m-d H:i:s')."\t开始同步考勤数据到kael\n";
-        $this->synKaoqin(date("Y-m-d",time()-24*3600));
-        echo date('Y-m-d H:i:s')."\t同步考勤数据结束\n";
+        echo date('Y-m-d H:i:s')."\t组装用户ID\n";
+        $userIds = array_values(array_filter(array_unique(array_column(DingtalkUser::findList([],'','user_id'),'user_id'))));
+        //dayList
+        $dayList = array_map(function($v){
+            return date("Y-m-d",$v);
+        },range(time()-7*3600,time(),24*3600));
+        foreach ($dayList as $day){
+            echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
+            $this->synSchedule($day);
+            echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤数据到kael\n";
+            $this->synKaoqin($day,$userIds);
+            echo date('Y-m-d H:i:s')."\t {$day} 同步考勤数据结束\n";
+        }
+
+
     }
 
-    public function synKaoqin($day){
+    public function synSchedule($day){
         //排班时间
         $scheduleList = DingTalkApi::getAttendanceListSchedule(date('Y-m-d',strtotime($day)));
+        $columns = [];
+        $rows = [];
         foreach ($scheduleList as $v){
-            echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
             /**
             {
             "check_type": "OnDuty",
@@ -60,41 +74,31 @@ class DingKaoqinController extends Controller
             "userid": "00003"
             }
              */
-            if(empty($v['class_id'])){
-                //没有排班
-                continue;
-            }
-            DingtalkAttendanceSchedule::add([
+            $tmp = [
                 'plan_id'=>$v['plan_id'],
                 'schedule_date'=>date("Y-m-d",strtotime($v['plan_check_time'])),
                 'check_type'=>$v['check_type'],
                 'approve_id'=>$v['approve_id'] ?? 0,
                 'user_id'=>$v['userid'],
-                'class_id'=>$v['class_id'],
-                'class_setting_id'=>$v['class_setting_id'],
+                'class_id'=>$v['class_id'] ?? 0,
+                'class_setting_id'=>$v['class_setting_id'] ?? 0,
                 'plan_check_time'=>$v['plan_check_time'],
                 'group_id'=>$v['group_id'],
-            ]);
-            /**
-            "plan_id":1,
-            "check_type":"OnDuty",
-            "approve_id":1,
-            "userid":"0001",
-            "class_id":1,
-            "class_setting_id":1,
-            "plan_check_time":"2017-04-11 11:11:11",
-            "group_id":1
-             */
+            ];
+            empty($columns) && $columns = array_keys($tmp);
+            $rows[] = array_values($tmp);
         }
+        DingtalkAttendanceSchedule::addUpdateColumnRows($columns,$rows);
+    }
+
+    public function synKaoqin($day,$userIds){
+        $columns = [];
+        $rows = [];
         //考勤时间
         $attendanceList = DingTalkApi::getAttendanceList(
             date('Y-m-d 00:00:00',strtotime($day)),
             date('Y-m-d 23:59:59',strtotime($day)),
-            [
-                '00036',
-                '15243079933019240',
-                '15667442833927047'
-            ]);
+            $userIds);
         foreach ($attendanceList as $v){
             /**
             "baseCheckTime": 1463392800000,
@@ -115,7 +119,8 @@ class DingKaoqinController extends Controller
             isset($v['workDate']) && $v['workDate'] = date("Y-m-d",intval($v['workDate']/1000));
             isset($v['userCheckTime']) && $v['userCheckTime'] = date("Y-m-d H:i:s",intval($v['userCheckTime']/1000));
 
-            DingtalkAttendanceResult::add([
+
+            $tmp = [
                 'id'=>$v['id'],
                 'group_id'=>$v['groupId'] ?? 0,
                 'plan_id'=>$v['planId'] ?? 0,
@@ -130,7 +135,10 @@ class DingKaoqinController extends Controller
                 'base_check_time'=>$v['baseCheckTime']??'0000-00-00 00:00:00',
                 'user_check_time'=>$v['userCheckTime']??'0000-00-00 00:00:00',
                 'source_type'=>$v['sourceType'],
-            ]);
+            ];
+            empty($columns) && $columns = array_keys($tmp);
+            $rows[] = array_values($tmp);
         }
+        DingtalkAttendanceResult::addUpdateColumnRows($columns,$rows);
     }
 }

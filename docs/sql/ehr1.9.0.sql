@@ -33,7 +33,7 @@ CREATE TABLE `dingtalk_attendance_result` (
   `status` int(11) NOT NULL DEFAULT '0',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`plan_id`),
+  PRIMARY KEY (`id`),
   INDEX idx_scheduledate_userid(`work_date`,`user_id`),
   INDEX idx_userid(`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
