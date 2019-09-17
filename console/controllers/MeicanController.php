@@ -87,4 +87,8 @@ class MeicanController extends Controller
         }
 
     }
+
+    public function actionSynBill(){
+
+    }
 }

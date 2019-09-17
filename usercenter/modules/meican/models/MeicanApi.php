@@ -67,6 +67,29 @@ class MeicanApi
         return $retJson;
     }
 
+    public static function curlApiGet($urlPath,$data = []){
+        if(empty(\Yii::$app->params['meican_corp_prefix'])){
+            return [];
+        }
+        $urlPath = str_replace(':corp_prefix',\Yii::$app->params['meican_corp_prefix'],$urlPath);
+        $apiUrl = \Yii::$app->params['meican_api'];
+        $timestamp = intval(1000 * microtime(true));
+        $sign = sha1(\Yii::$app->params['meican_crop_token'].$timestamp,false);
+        if(!empty($data)){
+            $data = http_build_query($data);
+            $retStr = AppFunc::curlGet($apiUrl.$urlPath."?timestamp={$timestamp}&signature={$sign}&{$data}");
+        }else{
+            $retStr = AppFunc::curlGet($apiUrl.$urlPath."?timestamp={$timestamp}&signature={$sign}");
+        }
+        $retJson = json_decode($retStr,true);
+        if(empty($retJson) || $retJson['resultCode'] != 'OK'){
+            var_dump($apiUrl.$urlPath);
+            var_dump($data);
+            throw new Exception("美餐请求失败".($retJson['resultDescription'] ?? $retStr));
+        }
+        return $retJson;
+    }
+
     public static function addMember($userId,$realName,$department){
         $email = self::genEmailMt($userId);
         $ret = self::curlApi(self::API_ADDMEMBER,[
@@ -93,7 +116,7 @@ class MeicanApi
     public static function listBill($day){
         $data = [];
         !empty($day) && $data['target'] = $day;
-        $ret = self::curlApi(self::API_LISTBILL,$data);
+        $ret = self::curlApiGet(self::API_LISTBILL,$data);
         return $ret;
     }
 
