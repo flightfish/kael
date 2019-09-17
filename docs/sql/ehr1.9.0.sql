@@ -39,7 +39,7 @@ CREATE TABLE `dingtalk_attendance_result` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `dingcan_order` (
-  `id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '唯一标识id',
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `supplier` int(11)  NOT NULL DEFAULT 0 COMMENT '1美餐 2竹蒸笼',
   `meal_time` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '饭点',
   `order_id` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '订餐ID',
