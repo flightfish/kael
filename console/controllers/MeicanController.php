@@ -4,6 +4,8 @@ namespace console\controllers;
 use common\libs\AppFunc;
 use common\models\CommonUser;
 use common\models\Department;
+use common\models\DingtalkDepartment;
+use common\models\DingtalkUser;
 use usercenter\modules\meican\models\MeicanApi;
 use Yii;
 use yii\console\Controller;
@@ -89,6 +91,82 @@ class MeicanController extends Controller
     }
 
     public function actionSynBill(){
+/*
+{
+    "resultCode": "OK",
+	"resultDescription": "查询成功",
+	"data": {
+            "orderList": [{
+                "meal": "美餐⽹ 午餐",
+				"time": "2016-01-15 20:00:00",
+				"type": "ONLINE",
+				"dinerCount": 1,
+				"dishCount": 1,
+				"orderList": [{
+                    "orderId": "7de347de44aa",
+					"email": "zhangsan@meican.com",
+					"realName": "张三",
+					"employeeId": "123",
+					"orderContent": [{
+                        "name": "巨⽆霸",
+						"restaurant": "肯德基",
+						"priceInCent": 1000,
+						"count": 1
+					}]
+				}]
+			},
+			{
+                "meal": "美餐⽹ 到店",
+				"dinerCount": 1,
+				"type": "OFFLINE",
+				"dishCount": 1,
+				"time": "2016-01-15 20:00:00",
+				"mealList": [{
+                "orderId": "Y2LKD5qgLpDwX5M",
+					"employeeId": "123",
+					"postbox": "",
+					"email": "zhangsan@meican.com",
+					"realName": "张三",
+					"orderContent": [{
+                    "count": 1,
+						"name": "到店",
+						"priceInCent": 2200,
+						"restaurant": "肯德基"
+					}]
+				}]
+			}
+		]
+	}
+}
+*/
 
+        //每天6点半
+        $day = date('Y-m-d');
+        $retJson = MeicanApi::listBill($day);
+        $columns = [];
+        $rows = [];
+        $kaelIdToDepartmentId = array_column(DingtalkUser::findList([],'','kael_id,department_id'),'department_id','kael_id');
+        $departmentIdToName = array_column(DingtalkDepartment::findList([],'','id,name',-1),'name','id');
+        $departmentIdToName[1] = '小盒科技';
+        foreach ($retJson['data']['orderList'] as $mealInfo){
+            foreach ($mealInfo['orderList'] as $orderInfo){
+                $orderInfo['_meal'] = $mealInfo['meal'];
+                $orderInfo['_time'] = $mealInfo['time'];
+                $orderInfo['_type'] = $mealInfo['type'];
+                $orderInfo['_dinerCount'] = $mealInfo['dinerCount'];
+                $orderInfo['_dishCount'] = $mealInfo['dishCount'];
+                $kaelId = intval($orderInfo['email']);
+                $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
+                $departmentName = $departmentIdToName[$departmentId] ?? "";
+                $tmp = [
+                    'order_id'=>$orderInfo['orderId'],
+                    'user_id'=>intval($orderInfo['email']),
+                    'order_ext'=>json_encode($orderInfo),
+                    'supplier'=>1,//1美餐 2竹蒸笼
+                    'department_id'=>$departmentId,
+                    'department_name'=>$departmentName
+                ];
+            }
+        }
     }
 }
