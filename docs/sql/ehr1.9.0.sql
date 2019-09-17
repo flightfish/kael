@@ -37,3 +37,20 @@ CREATE TABLE `dingtalk_attendance_result` (
   INDEX idx_scheduledate_userid(`work_date`,`user_id`),
   INDEX idx_userid(`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `dingcan_order` (
+  `id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '唯一标识id',
+  `supplier` int(11)  NOT NULL DEFAULT 0 COMMENT '1美餐 2竹蒸笼',
+  `order_id` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '订餐ID',
+  `kael_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'kael用户ID',
+  `dingtalk_department_id` bigint(20)  NOT NULL DEFAULT 0 COMMENT '钉钉部门ID',
+  `dingtalk_department_name` VARCHAR(100)  NOT NULL DEFAULT 0 COMMENT '钉钉部门名称',
+  `dingtalk_subroot_id` bigint(20)  NOT NULL DEFAULT 0 COMMENT '钉钉一级部门ID',
+  `dingtalk_subroot_name` VARCHAR(100)  NOT NULL DEFAULT 0 COMMENT '钉钉一级部门名称',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX idx_supplier_orderid(`supplier`,`order_id`),
+  INDEX idx_kaelid(`kael_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -146,8 +146,8 @@ class MeicanController extends Controller
         $columns = [];
         $rows = [];
         $kaelIdToDepartmentId = array_column(DingtalkUser::findList([],'','kael_id,department_id'),'department_id','kael_id');
-        $departmentIdToName = array_column(DingtalkDepartment::findList([],'','id,name',-1),'name','id');
-        $departmentIdToName[1] = '小盒科技';
+        $departmentIdToInfo = array_column(DingtalkDepartment::findList([],'','id,name,subroot_id',-1),null,'id');
+        $departmentIdToInfo[1] = ['id'=>1,'name'=>'小盒科技','subroot_id'=>1];
         foreach ($retJson['data']['orderList'] as $mealInfo){
             foreach ($mealInfo['orderList'] as $orderInfo){
                 $orderInfo['_meal'] = $mealInfo['meal'];
@@ -157,15 +157,28 @@ class MeicanController extends Controller
                 $orderInfo['_dishCount'] = $mealInfo['dishCount'];
                 $kaelId = intval($orderInfo['email']);
                 $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
-                $departmentName = $departmentIdToName[$departmentId] ?? "";
+                $departmentName = '';
+                $subrootId = 0;
+                $subrootName = '';
+                $departmentInfo = $departmentIdToInfo[$departmentId] ?? [];
+                if(!empty($departmentInfo)){
+                    $departmentName = $departmentInfo['name'];
+                    $subrootId = $departmentInfo['subroot_id'];
+                    $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
+                }
                 $tmp = [
                     'order_id'=>$orderInfo['orderId'],
-                    'user_id'=>intval($orderInfo['email']),
+                    'kael_id'=>intval($orderInfo['email']),
                     'order_ext'=>json_encode($orderInfo),
                     'supplier'=>1,//1美餐 2竹蒸笼
-                    'department_id'=>$departmentId,
-                    'department_name'=>$departmentName
+                    'dingtalk_department_id'=>$departmentId,
+                    'dingtalk_department_name'=>$departmentName,
+                    'dingtalk_subroot_id'=>$subrootId,
+                    'dingtalk_subroot_name'=>$subrootName,
+                    //时间
                 ];
+                empty($columns) && $columns = array_keys($tmp);
+                $rows[] = array_values($tmp);
             }
         }
     }
