@@ -15,16 +15,11 @@ return [
 
     'env'=>'dev',
 
-//    'meican_email'=>'@mt.knowbox.cn',
-//    'meican_crop_token'=>'046837b3-bdb9-4418-9c02-c13ef9346c04',
-//    'meican_login'=>'https://meican.com/corps/simpleauth',
-//    'meican_api'=>'https://api.meican.com',
-//    'meican_corp_prefix'=>'142399',
-    'meican_email'=>'@mc.knowbox.cn',
-    'meican_crop_token'=>'1273560b-9068-400d-bbf9-589d09699986',
+    'meican_email'=>'@mt.knowbox.cn',
+    'meican_crop_token'=>'046837b3-bdb9-4418-9c02-c13ef9346c04',
     'meican_login'=>'https://meican.com/corps/simpleauth',
     'meican_api'=>'https://api.meican.com',
-    'meican_corp_prefix'=>'195691',
+    'meican_corp_prefix'=>'142399',
     'meican_department'=>[
         '部门1',
         '部门2',
