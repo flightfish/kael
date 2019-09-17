@@ -4,6 +4,7 @@ namespace console\controllers;
 use common\libs\AppFunc;
 use common\models\CommonUser;
 use common\models\Department;
+use common\models\DingcanOrder;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use usercenter\modules\meican\models\MeicanApi;
@@ -102,7 +103,7 @@ class MeicanController extends Controller
 				"type": "ONLINE",
 				"dinerCount": 1,
 				"dishCount": 1,
-				"orderList": [{
+				"mealList": [{
                     "orderId": "7de347de44aa",
 					"email": "zhangsan@meican.com",
 					"realName": "张三",
@@ -149,12 +150,10 @@ class MeicanController extends Controller
         $departmentIdToInfo = array_column(DingtalkDepartment::findList([],'','id,name,subroot_id',-1),null,'id');
         $departmentIdToInfo[1] = ['id'=>1,'name'=>'小盒科技','subroot_id'=>1];
         foreach ($retJson['data']['orderList'] as $mealInfo){
-            foreach ($mealInfo['orderList'] as $orderInfo){
+            foreach ($mealInfo['mealList'] as $orderInfo){
                 $orderInfo['_meal'] = $mealInfo['meal'];
                 $orderInfo['_time'] = $mealInfo['time'];
                 $orderInfo['_type'] = $mealInfo['type'];
-                $orderInfo['_dinerCount'] = $mealInfo['dinerCount'];
-                $orderInfo['_dishCount'] = $mealInfo['dishCount'];
                 $kaelId = intval($orderInfo['email']);
                 $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
                 $departmentName = '';
@@ -168,6 +167,7 @@ class MeicanController extends Controller
                 }
                 $tmp = [
                     'order_id'=>$orderInfo['orderId'],
+                    'meal_time'=>$mealInfo['time'],
                     'kael_id'=>intval($orderInfo['email']),
                     'order_ext'=>json_encode($orderInfo),
                     'supplier'=>1,//1美餐 2竹蒸笼
@@ -175,11 +175,12 @@ class MeicanController extends Controller
                     'dingtalk_department_name'=>$departmentName,
                     'dingtalk_subroot_id'=>$subrootId,
                     'dingtalk_subroot_name'=>$subrootName,
-                    //时间
+                    'price'=>array_sum(array_column($orderInfo['orderContent'],'priceInCent'))/100
                 ];
                 empty($columns) && $columns = array_keys($tmp);
                 $rows[] = array_values($tmp);
             }
         }
+        DingcanOrder::addUpdateColumnRows($columns,$rows);
     }
 }
