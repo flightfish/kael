@@ -44,6 +44,7 @@ CREATE TABLE `dingtalk_attendance_record` (
   `work_date` DATE NOT NULL DEFAULT '0000-00-00' COMMENT '工作日',
   `user_id` varchar(100) NOT NULL DEFAULT '' COMMENT '人员ID',
   `check_type` varchar(50) NOT NULL DEFAULT '' COMMENT '打卡类型，OnDuty表示上班打卡，OffDuty表示下班打卡',
+  `source_type` varchar(50) NOT NULL DEFAULT '' COMMENT '数据来源ATM：考勤机;BEACON：IBeacon;DING_ATM：钉钉考勤机;USER：用户打卡;BOSS：老板改签;APPROVE：审批系统;SYSTEM：考勤系统;AUTO_CHECK：自动打卡 ',
   `device_id` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '设备id',
   `user_address` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '用户打卡地址',
   `record_ext` TEXT COMMENT '记录详情',

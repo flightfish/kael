@@ -196,6 +196,7 @@ class DingKaoqinController extends Controller
                 'work_date'=>$v['workDate']??'0000-00-00',
                 'user_id'=>$v['userId'],
                 'check_type'=>$v['checkType']??'',
+                'source_type'=>$v['sourceType']??'',
                 'device_id'=>$v['deviceId']??'',
                 'user_address'=>$v['userAddress']??'',
                 'record_ext'=>json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)
