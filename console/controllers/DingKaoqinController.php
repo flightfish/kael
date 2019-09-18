@@ -55,6 +55,8 @@ class DingKaoqinController extends Controller
             $this->synSchedule($day);
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤数据到kael\n";
             $this->synKaoqin($day,$userIds);
+            echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤记录到kael\n";
+            $this->synKaoqinRecord($day,$userIds);
             echo date('Y-m-d H:i:s')."\t {$day} 同步考勤数据结束\n";
         }
 
