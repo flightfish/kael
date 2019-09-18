@@ -12,7 +12,8 @@ CREATE TABLE `dingtalk_attendance_schedule` (
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`plan_id`),
-  INDEX idx_scheduledate(`schedule_date`)
+  INDEX idx_scheduledate(`schedule_date`),
+  INDEX idx_userid_scheduledate(user_id,`schedule_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `dingtalk_attendance_result` (
