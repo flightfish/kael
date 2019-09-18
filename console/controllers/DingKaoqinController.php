@@ -51,10 +51,10 @@ class DingKaoqinController extends Controller
             return date("Y-m-d",$v);
         },range(time()-7*24*3600,time(),24*3600));
         foreach ($dayList as $day){
-            echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
-            $this->synSchedule($day);
-            echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤数据到kael\n";
-            $this->synKaoqin($day,$userIds);
+//            echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
+//            $this->synSchedule($day);
+//            echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤数据到kael\n";
+//            $this->synKaoqin($day,$userIds);
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤记录到kael\n";
             $this->synKaoqinRecord($day,$userIds);
             echo date('Y-m-d H:i:s')."\t {$day} 同步考勤数据结束\n";
@@ -190,7 +190,7 @@ class DingKaoqinController extends Controller
             "procInstId": "cb992267-9b70"
              */
             isset($v['workDate']) && $v['workDate'] = date("Y-m-d",intval($v['workDate']/1000));
-
+            echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
             $tmp = [
                 'id'=>$v['id'],
                 'work_date'=>$v['workDate']??'0000-00-00',
