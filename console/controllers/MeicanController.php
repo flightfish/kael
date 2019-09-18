@@ -141,7 +141,7 @@ class MeicanController extends Controller
 }
 */
 
-        //每天6点半
+        //每天下午6点半
         $day = date('Y-m-d');
         $retJson = MeicanApi::listBill($day);
         $columns = [];
