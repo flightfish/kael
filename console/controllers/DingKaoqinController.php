@@ -24,7 +24,7 @@ class DingKaoqinController extends Controller
         //dayList
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
-        },range(strtotime(''),time(),24*3600));
+        },range(strtotime('2019-07-01'),time(),24*3600));
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
             $this->synSchedule($day);
@@ -205,6 +205,7 @@ class DingKaoqinController extends Controller
                 echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
                 throw $e;
             }
+
             empty($columns) && $columns = array_keys($tmp);
             $rows[] = array_values($tmp);
         }
