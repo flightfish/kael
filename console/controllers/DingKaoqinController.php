@@ -66,13 +66,13 @@ class DingKaoqinController extends Controller
                 'dingtalk_department_name'=>$departmentInfo['department_name'],
                 'dingtalk_subroot_id'=>$departmentInfo['subroot_id'],
                 'dingtalk_subroot_name'=>$departmentInfo['subroot_name'],
-            ],['user_id'=>$userId]);
+            ],['user_id'=>$userId,'dingtalk_department_id'=>0]);
             DingtalkAttendanceResult::updateAll([
                 'dingtalk_department_id'=>$departmentInfo['department_id'],
                 'dingtalk_department_name'=>$departmentInfo['department_name'],
                 'dingtalk_subroot_id'=>$departmentInfo['subroot_id'],
                 'dingtalk_subroot_name'=>$departmentInfo['subroot_name'],
-            ],['user_id'=>$userId]);
+            ],['user_id'=>$userId,'dingtalk_department_id'=>0]);
         }
         echo date('Y-m-d H:i:s')."\t 同步部门数据结束\n";
     }
@@ -130,13 +130,13 @@ class DingKaoqinController extends Controller
                 'dingtalk_department_name'=>$departmentInfo['department_name'],
                 'dingtalk_subroot_id'=>$departmentInfo['subroot_id'],
                 'dingtalk_subroot_name'=>$departmentInfo['subroot_name'],
-            ],['user_id'=>$userId]);
+            ],['user_id'=>$userId,'dingtalk_department_id'=>0]);
             DingtalkAttendanceResult::updateAll([
                 'dingtalk_department_id'=>$departmentInfo['department_id'],
                 'dingtalk_department_name'=>$departmentInfo['department_name'],
                 'dingtalk_subroot_id'=>$departmentInfo['subroot_id'],
                 'dingtalk_subroot_name'=>$departmentInfo['subroot_name'],
-            ],['user_id'=>$userId]);
+            ],['user_id'=>$userId,'dingtalk_department_id'=>0]);
         }
         echo date('Y-m-d H:i:s')."\t 同步部门数据结束\n";
 
