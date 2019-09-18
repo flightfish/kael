@@ -190,17 +190,21 @@ class DingKaoqinController extends Controller
             "procInstId": "cb992267-9b70"
              */
             isset($v['workDate']) && $v['workDate'] = date("Y-m-d",intval($v['workDate']/1000));
-            echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
-            $tmp = [
-                'id'=>$v['id'],
-                'work_date'=>$v['workDate']??'0000-00-00',
-                'user_id'=>$v['userId'],
-                'check_type'=>$v['checkType']??'',
-                'source_type'=>$v['sourceType']??'',
-                'device_id'=>$v['deviceId']??'',
-                'user_address'=>$v['userAddress']??'',
-                'record_ext'=>json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)
-            ];
+            try{
+                $tmp = [
+                    'id'=>$v['id'],
+                    'work_date'=>$v['workDate']??'0000-00-00',
+                    'user_id'=>$v['userId'],
+                    'check_type'=>$v['checkType']??'',
+                    'source_type'=>$v['sourceType']??'',
+                    'device_id'=>$v['deviceId']??'',
+                    'user_address'=>$v['userAddress']??'',
+                    'record_ext'=>json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)
+                ];
+            }catch (\Exception $e){
+                echo json_encode($v,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)."\n";
+                throw $e;
+            }
             empty($columns) && $columns = array_keys($tmp);
             $rows[] = array_values($tmp);
         }
