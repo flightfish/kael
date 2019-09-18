@@ -78,14 +78,20 @@ class DingTalkApi {
     }
 
     public static function getAttendanceListRecord($startTime,$endTime,$userIds){
-        //补卡算 班次时间范围  不算在补卡时间范围内
-        $retJson = self::curlPost(self::API_TOPAPI_ATTENDANCE_LISTRECORD,[
-            'userIds'=>$userIds,
-            'checkDateFrom'=>$startTime,
-            'checkDateTo'=>$endTime,
-            'isI18n'=>"false",
-        ]);
-        return $retJson;
+
+        $list = [];
+        $userIdsChunkList = array_chunk($userIds,50);
+        foreach ($userIdsChunkList as $userIdsChunk){
+            //补卡算 班次时间范围  不算在补卡时间范围内
+            $retJson = self::curlPost(self::API_TOPAPI_ATTENDANCE_LISTRECORD,[
+                'userIds'=>$userIdsChunk,
+                'checkDateFrom'=>$startTime,
+                'checkDateTo'=>$endTime,
+                'isI18n'=>"false",
+            ]);
+            $list = array_merge($list,$retJson['recordresult']);
+        }
+        return $list;
     }
 
     public static function getAttendanceList($startTime,$endTime,$userIds){

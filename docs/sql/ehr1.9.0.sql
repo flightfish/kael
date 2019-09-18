@@ -38,6 +38,25 @@ CREATE TABLE `dingtalk_attendance_result` (
   INDEX idx_userid(`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
+CREATE TABLE `dingtalk_attendance_record` (
+  `id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '唯一标识id',
+  `work_date` DATE NOT NULL DEFAULT '0000-00-00' COMMENT '工作日',
+  `user_id` varchar(100) NOT NULL DEFAULT '' COMMENT '人员ID',
+  `check_type` varchar(50) NOT NULL DEFAULT '' COMMENT '打卡类型，OnDuty表示上班打卡，OffDuty表示下班打卡',
+  `device_id` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '设备id',
+  `user_address` VARCHAR(255) NOT NULL DEFAULT '' COMMENT '用户打卡地址',
+  `record_ext` TEXT COMMENT '记录详情',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX idx_scheduledate_userid(`work_date`,`user_id`),
+  INDEX idx_userid(`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
 CREATE TABLE `dingcan_order` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `supplier` int(11)  NOT NULL DEFAULT 0 COMMENT '1美餐 2竹蒸笼',

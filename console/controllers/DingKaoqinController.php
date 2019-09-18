@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 use common\libs\DingTalkApi;
+use common\models\DingtalkAttendanceRecord;
 use common\models\DingtalkAttendanceResult;
 use common\models\DingtalkAttendanceSchedule;
 use common\models\DingtalkUser;
@@ -23,13 +24,15 @@ class DingKaoqinController extends Controller
         //dayList
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
-        },range(strtotime('2019-07-01'),time(),24*3600));
+        },range(strtotime(''),time(),24*3600));
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
             $this->synSchedule($day);
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤数据到kael\n";
             $this->synKaoqin($day,$userIds);
-            echo date('Y-m-d H:i:s')."\t {$day} 同步考勤数据结束\n";
+            echo date("Y-m-d H:i:s")."\t {$day} 开始同步考勤数据详情到kael\n";
+            $this->synKaoqinRecord($day,$userIds);
+            echo date('Y-m-d H:i:s')."\t {$day} 同步数据结束\n";
         }
     }
 
@@ -150,5 +153,54 @@ class DingKaoqinController extends Controller
             $rows[] = array_values($tmp);
         }
         DingtalkAttendanceResult::addUpdateColumnRows($columns,$rows);
+    }
+
+    public function synKaoqinRecord($day,$userIds){
+        $columns = [];
+        $rows = [];
+        //考勤时间
+        $attendanceList = DingTalkApi::getAttendanceListRecord(
+            date('Y-m-d 00:00:00',strtotime($day)),
+            date('Y-m-d 23:59:59',strtotime($day)),
+            $userIds);
+        foreach ($attendanceList as $v){
+            /**
+            "isLegal": "N",
+            "baseCheckTime": 1492568460000,
+            "id": 933202551,
+            "userAddress": "北京市朝阳区崔各庄镇阿里中心.望京A座阿里巴巴绿地中心",
+            "userId": "manager7078",
+            "checkType": "OnDuty",
+            "timeResult": "Normal",
+            "deviceId": "cb7ace07d52fe9be14f4d8bec5e1ba79",
+            "corpId": "ding7536bfee6fb1fa5a35c2f4657eb6378f",
+            "sourceType": "USER",
+            "workDate": 1492531200000,
+            "planCheckTime": 1492568497000,
+            "locationMethod": "MAP",
+            "locationResult": "Outside",
+            "userLongitude": 116.486888,
+            "planId": 4550269081,
+            "groupId": 121325603,
+            "userAccuracy": 65,
+            "userCheckTime": 1492568497000,
+            "userLatitude": 39.999946,
+            "procInstId": "cb992267-9b70"
+             */
+            isset($v['workDate']) && $v['workDate'] = date("Y-m-d",intval($v['workDate']/1000));
+
+            $tmp = [
+                'id'=>$v['id'],
+                'work_date'=>$v['workDate']??'0000-00-00',
+                'user_id'=>$v['userId'],
+                'check_type'=>$v['checkType'],
+                'device_id'=>$v['deviceId'],
+                'user_address'=>$v['userAddress'],
+                'record_ext'=>json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)
+            ];
+            empty($columns) && $columns = array_keys($tmp);
+            $rows[] = array_values($tmp);
+        }
+        DingtalkAttendanceRecord::addUpdateColumnRows($columns,$rows);
     }
 }
