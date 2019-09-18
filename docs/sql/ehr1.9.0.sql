@@ -80,3 +80,18 @@ CREATE TABLE `dingcan_order` (
   INDEX idx_kaelid_mealdate(`kael_id`,`meal_date`),
   INDEX idx_mealtime(`meal_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `work_day_config` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `day` DATE NOT NULL DEFAULT '0000-00-00' COMMENT '日期',
+  `is_work_day` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '是否工作日',
+  `is_allow_dingcan` TINYINT(4) NOT NULL DEFAULT 0 COMMENT '是否允许订餐',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX idx_day(`day`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
