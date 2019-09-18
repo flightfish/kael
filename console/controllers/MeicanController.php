@@ -168,6 +168,7 @@ class MeicanController extends Controller
                 $tmp = [
                     'order_id'=>$orderInfo['orderId'],
                     'meal_time'=>$mealInfo['time'],
+                    'meal_date'=>date('Y-m-d',strtotime($mealInfo['time'])),
                     'kael_id'=>intval($orderInfo['email']),
                     'order_ext'=>json_encode($orderInfo),
                     'supplier'=>1,//1美餐 2竹蒸笼

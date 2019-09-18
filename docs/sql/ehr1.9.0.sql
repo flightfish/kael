@@ -62,6 +62,7 @@ CREATE TABLE `dingtalk_attendance_record` (
 CREATE TABLE `dingcan_order` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `supplier` int(11)  NOT NULL DEFAULT 0 COMMENT '1美餐 2竹蒸笼',
+  `meal_date` DATE NOT NULL DEFAULT '0000-00-00' COMMENT '日期',
   `meal_time` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '饭点',
   `order_id` VARCHAR(100) NOT NULL DEFAULT '' COMMENT '订餐ID',
   `kael_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'kael用户ID',
@@ -76,6 +77,6 @@ CREATE TABLE `dingcan_order` (
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE INDEX idx_supplier_orderid(`supplier`,`order_id`),
-  INDEX idx_kaelid(`kael_id`),
+  INDEX idx_kaelid_mealdate(`kael_id`,`meal_date`),
   INDEX idx_mealtime(`meal_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
