@@ -51,10 +51,10 @@ class DingKaoqinController extends Controller
             return date("Y-m-d",$v);
         },range(time()-7*24*3600,time(),24*3600));
         foreach ($dayList as $day){
-//            echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
-//            $this->synSchedule($day);
-//            echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤数据到kael\n";
-//            $this->synKaoqin($day,$userIds);
+            echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
+            $this->synSchedule($day);
+            echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤数据到kael\n";
+            $this->synKaoqin($day,$userIds);
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步考勤记录到kael\n";
             $this->synKaoqinRecord($day,$userIds);
             echo date('Y-m-d H:i:s')."\t {$day} 同步考勤数据结束\n";
@@ -196,8 +196,8 @@ class DingKaoqinController extends Controller
                 'work_date'=>$v['workDate']??'0000-00-00',
                 'user_id'=>$v['userId'],
                 'check_type'=>$v['checkType']??'',
-                'device_id'=>$v['deviceId'],
-                'user_address'=>$v['userAddress'],
+                'device_id'=>$v['deviceId']??'',
+                'user_address'=>$v['userAddress']??'',
                 'record_ext'=>json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE)
             ];
             empty($columns) && $columns = array_keys($tmp);
