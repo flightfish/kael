@@ -37,6 +37,9 @@ return [
 
     'alimail_accessCode'=>'knowboxcnws',
     'alimail_accessPassword'=>'knowBox357#123alimail',
-    'alimail_departmentRoot'=>'----.w----.LSdUHw:1'
+    'alimail_departmentRoot'=>'----.w----.LSdUHw:1',
+
+    'zzl_secretkey'=>'abc',
+    'zzl_url'=>'http://api.rwe90.cn',
 
 ];

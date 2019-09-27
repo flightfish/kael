@@ -1,6 +1,7 @@
 <?php
 namespace common\libs;
 
+use common\models\DingtalkUser;
 use usercenter\components\exception\Exception;
 
 class DingTalkApi {
@@ -10,6 +11,10 @@ class DingTalkApi {
     const APP_AGENT_ID = "241646599";
     const APPSECRET_MEICAN = 'PK4CNsCl0lby7JiztCiEDIcRlzM3R0KnQ5yrtsUa4u59fmCQS7Pejgh1TVwgM5gJ';
     const APPKEY_MEICAN = 'dingtnt2colo1xdamw1h';
+
+
+    const APPKEY_ZHUZHENGLONG = 'dingy0y40sral9zvgrca';
+    const APPSECRET_ZHUZHENGLONG = 'oNrdT_KEUif8xfEbE7iJTOzR-swFHtC53tzBtQsSGYydeGDWKWDoUyc8iF3e4OWl';
 
     const API_GETTOKEN = 'https://oapi.dingtalk.com/gettoken';//获取token
     const API_DEPARTMENT_LIST = 'https://oapi.dingtalk.com/department/list';//获取子部门ID列表
@@ -167,13 +172,39 @@ class DingTalkApi {
     }
 
 
+    public static function getDingDbInfoByCode($code,$type='meican'){
+        if($type == 'meican'){
+            $token = self::getAccessTokenMeican();
+        }elseif($type == 'zzl'){
+            $token = self::getAccessTokenZzl();
+        }else{
+            throw new Exception("不支持的类型");
+        }
+        $url = self::API_GETUSERINFO_BYCODE.'?access_token='.$token.'&code='.$code;
+        $retStr = AppFunc::curlGet($url);
+        $retJson = json_decode($retStr,true);
+        if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
+            throw new Exception('[DINGMM]'.$retJson['errmsg']??"");
+        }
+        $userInfo = DingtalkUser::findOneByWhere(['user_id'=>$retJson['userid']]);
+        if(empty($userInfo) || empty($userInfo['kael_id'])){
+            throw new Exception("用户信息不存在");
+        }
+        return $userInfo;
+    }
 
 
 
 
-
-    public static function getUserInfoByCode($code){
-        $url = self::API_GETUSERINFO_BYCODE.'?access_token='.self::getAccessTokenMeican().'&code='.$code;
+    public static function getUserInfoByCode($code,$type='meican'){
+        if($type == 'meican'){
+            $token = self::getAccessTokenMeican();
+        }elseif($type == 'zzl'){
+            $token = self::getAccessTokenZzl();
+        }else{
+            throw new Exception("不支持的类型");
+        }
+        $url = self::API_GETUSERINFO_BYCODE.'?access_token='.$token.'&code='.$code;
         $retStr = AppFunc::curlGet($url);
         $retJson = json_decode($retStr,true);
         if(!isset($retJson['errcode']) || 0 != $retJson['errcode']){
@@ -253,6 +284,21 @@ class DingTalkApi {
             return $ret;
         }
         $retStr = AppFunc::curlGet(self::API_GETTOKEN.'?appkey='.self::APPKEY_MEICAN.'&appsecret='.self::APPSECRET_MEICAN);
+        $retJson = json_decode($retStr,true);
+        if(empty($retJson) || empty($retJson['access_token'])){
+            throw new Exception("[DINGM]".$retJson['errmsg'] ?? $retStr);
+        }
+        Cache::setCacheString($key,7000,$retJson['access_token']);
+        return $retJson['access_token'];
+    }
+
+    private static function getAccessTokenZzl(){
+        $key = 'DINGTALK_ACCESS_TOKEN_'.self::APPKEY_ZHUZHENGLONG;
+        $ret = Cache::getCacheString($key);
+        if(!empty($ret)){
+            return $ret;
+        }
+        $retStr = AppFunc::curlGet(self::API_GETTOKEN.'?appkey='.self::APPKEY_ZHUZHENGLONG.'&appsecret='.self::APPSECRET_ZHUZHENGLONG);
         $retJson = json_decode($retStr,true);
         if(empty($retJson) || empty($retJson['access_token'])){
             throw new Exception("[DINGM]".$retJson['errmsg'] ?? $retStr);

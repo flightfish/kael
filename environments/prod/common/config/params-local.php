@@ -79,5 +79,9 @@ return [
 
     'alimail_accessCode'=>'knowboxcnws',
     'alimail_accessPassword'=>'knowBox357#123alimail',
-    'alimail_departmentRoot'=>'----.w----.LSdUHw:1'
+    'alimail_departmentRoot'=>'----.w----.LSdUHw:1',
+
+    'zzl_secretkey'=>'sHKPiDPCOpIXPu4GjgxR35Gl5Eq5xO2l',
+    'zzl_url'=>'http://www.fan7.cn',
+
 ];

@@ -6,6 +6,7 @@ use usercenter\controllers\BaseController;
 use usercenter\models\RequestBaseModel;
 use usercenter\modules\meican\models\MeicanApi;
 use usercenter\modules\meican\models\MeicanLogin;
+use usercenter\modules\meican\models\ZzlApi;
 use Yii;
 
 class QueryController extends BaseController{
@@ -47,6 +48,26 @@ class QueryController extends BaseController{
             }
             $day = Yii::$app->request->get('day','');
             $list = MeicanApi::listBill($day);
+            return $this->success($list);
+        }catch(\Exception $e){
+            return $this->error($e);
+        }
+    }
+
+    public function actionBillZzl()
+    {
+        try{
+            $model = new RequestBaseModel();
+            $model->load($this->loadData);
+            $userInfo = $model->getUser();
+            if(!empty($userInfo['user_type'])){
+                throw new Exception("权限不足",Exception::ERROR_COMMON);
+            }
+            if($userInfo['user_id'] != 11090){
+                throw new Exception("权限不足",Exception::ERROR_COMMON);
+            }
+            $day = Yii::$app->request->get('day','');
+            $list = ZzlApi::orderList($day);
             return $this->success($list);
         }catch(\Exception $e){
             return $this->error($e);
