@@ -186,7 +186,7 @@ class Api extends RequestBaseModel {
         $this->pagesize = max($this->pagesize,1);
         $this->page = max($this->page,1);
 
-        if(empty($this->where)){
+        if(empty($this->where) && empty($this->where2)){
             $relateList = RelateUserPlatform::findListByPlatformPage($this->getPlatformId(),$this->page,$this->pagesize);
             $count = RelateUserPlatform::findCoutByPlatfrom($this->getPlatformId());
             $userIds = array_column($relateList,'user_id');
