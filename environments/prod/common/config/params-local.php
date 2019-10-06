@@ -84,4 +84,6 @@ return [
     'zzl_secretkey'=>'sHKPiDPCOpIXPu4GjgxR35Gl5Eq5xO2l',
     'zzl_url'=>'http://www.fan7.cn',
 
+    'proxy_dingtalk_jianzhi' => ['10.19.44.23','8888'],
+
 ];

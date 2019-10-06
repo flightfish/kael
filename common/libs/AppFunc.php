@@ -37,13 +37,18 @@ class AppFunc{
         return $result;
     }
 
-    public static function curlGet($url,$headers=[]){
+    public static function curlGet($url,$headers=[],$proxy=[]){
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         if(!empty($headers)){
             curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
+        if(!empty($proxy)  && !empty($proxy[1])){
+            curl_setopt($ch, CURLOPT_PROXY, $proxy[0]); //代理服务器地址
+            curl_setopt($ch, CURLOPT_PROXYPORT,$proxy[1]); //代理服务器端口
+        }
+
         \Yii::beginProfile('GET '.$url, __METHOD__);
         $result = curl_exec($ch);
         \Yii::endProfile('GET '.$url, __METHOD__);
@@ -268,7 +273,7 @@ class AppFunc{
     }
 
 
-    public static function postJson($url, $jsonArr) {
+    public static function postJson($url, $jsonArr,$proxy=[]) {
         $post_string = json_encode($jsonArr);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -281,6 +286,12 @@ class AppFunc{
         // 线下环境不用开启curl证书验证, 未调通情况可尝试添加该代码
         // curl_setopt ($ch, CURLOPT_SSL_VERIFYHOST, 0);
         // curl_setopt ($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        //代理
+        if(!empty($proxy)  && !empty($proxy[1])){
+            curl_setopt($ch, CURLOPT_PROXY, $proxy[0]); //代理服务器地址
+            curl_setopt($ch, CURLOPT_PROXYPORT,$proxy[1]); //代理服务器端口
+        }
+
         $data = curl_exec($ch);
         curl_close($ch);
         unset($ch);

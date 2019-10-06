@@ -42,4 +42,6 @@ return [
     'zzl_secretkey'=>'abc',
     'zzl_url'=>'http://api.rwe90.cn',
 
+    'proxy_dingtalk_jianzhi' => ['106.75.87.8','8888'],
+
 ];
