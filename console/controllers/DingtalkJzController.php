@@ -116,6 +116,7 @@ class DingtalkJzController extends Controller
     public function actionImportDing(){
         //$list = TmpImportJianzhi::find()->where(['status'=>0])->asArray(true)->all();
         $list = file_get_contents('/data/wwwroot/kael/tmpimport.json');
+        $list = json_decode($list,true);
         $listNew = $list;
         foreach ($list as $k=>$v){
             if(!empty($v['ding_userid'])){
