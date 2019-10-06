@@ -17,6 +17,7 @@ class DingTalkApiJZ {
     const API_GETTOKEN = 'https://oapi.dingtalk.com/gettoken';//获取token
     const API_DEPARTMENT_LIST = 'https://oapi.dingtalk.com/department/list';//获取子部门ID列表
     const API_USER_GET = 'https://oapi.dingtalk.com/user/get';//获取用户信息
+    const API_USER_CREATE = 'https://oapi.dingtalk.com/user/create';//创建用户
     const API_USER_GETDEPTMEMBER = 'https://oapi.dingtalk.com/user/getDeptMember';//获取部门用户
     const API_DEPARTMENT_PARENTLIST = 'https://oapi.dingtalk.com/department/list_parent_depts_by_dept';//获取父级IDList
     const API_CALLBACK_QUERY = 'https://oapi.dingtalk.com/call_back/get_call_back';//查询回调
@@ -44,6 +45,21 @@ class DingTalkApiJZ {
     //考勤打卡记录
     const API_TOPAPI_ATTENDANCE_LISTRECORD = "https://oapi.dingtalk.com/attendance/listRecord";
     const API_TOPAPI_ATTENDANCE_LIST = "https://oapi.dingtalk.com/attendance/list";
+
+    public static function addUser($userId,$name,$mobile,$departmentId,$jobNumber){
+        $params = [
+            'userid'=>$userId,
+            'name'=>$name,
+            'department'=>[intval($departmentId)],
+            'mobile'=>$mobile,
+            'jobnumber'=>$jobNumber
+        ];
+        $retJson = self::curlPost(self::API_USER_CREATE,$params);
+        return $retJson;
+    }
+
+
+
 
     public static function getAttendanceListSchedule($date){
         $offset = 0;
