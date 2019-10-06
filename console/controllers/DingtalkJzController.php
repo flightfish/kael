@@ -3,12 +3,14 @@ namespace console\controllers;
 
 
 use common\libs\DingTalkApiJZ;
+use common\models\DBCommon;
+use common\models\TmpImportJianzhi;
 use yii\console\Controller;
 
 
 class DingtalkJzController extends Controller
 {
-    public function actionTest(){
+    public function actionImport(){
 
 //        $PHPReader = new \PHPExcel_Reader_Excel2007(); // Reader很关键，用来读excel文件
 //        if (!$PHPReader->canRead($filePath)) { // 这里是用Reader尝试去读文件，07不行用05，05不行就报错。注意，这里的return是Yii框架的方式。
@@ -51,6 +53,7 @@ class DingtalkJzController extends Controller
         $objPHPExcel = $PHPReader->load($filePath); // Reader读出来后，加载给Excel实例
         $data = $objPHPExcel->getSheet(0)->toArray();
         $dataFormat = [];
+        $rows = [];
         foreach ($data as $k=>$v){
             if($k == 0){
                 echo json_encode($v,64|256);
@@ -64,9 +67,14 @@ class DingtalkJzController extends Controller
             $tmp = ['name'=>$v[1],'mobile'=>$v[6],'department_name'=>"{$v[5]}|{$v[4]}|{$v[3]}|{$v[2]}"];
             $tmp['department_id'] = $nameToInfo[$tmp['department_name']]['id'];
             $dataFormat[] = $tmp;
+            $rows[] = [$tmp['mobile'],$tmp['name'],$tmp['department_name'],$tmp['department_id']];
         }
+        echo json_encode($rows,64|256)."\n";
+        exit();
+        $columns = ['mobile','name','department_name','department_id'];
+        DBCommon::batchInsertAll(TmpImportJianzhi::tableName(),$columns,$rows,TmpImportJianzhi::getDb(),'INSERT IGNORE');
 
-        echo json_encode($dataFormat,64|256)."\n";
+//        echo json_encode($dataFormat,64|256)."\n";
 
         return $dataFormat;
     }
