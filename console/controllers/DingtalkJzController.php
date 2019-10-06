@@ -82,7 +82,7 @@ class DingtalkJzController extends Controller
 
     public function actionImportFromRows(){
         $rows = require '/data/wwwroot/kael/rows.json';
-        $rows = json_decode($rows);
+        $rows = json_decode($rows,true);
         $columns = ['mobile','name','department_name','department_id'];
         DBCommon::batchInsertAll(TmpImportJianzhi::tableName(),$columns,$rows,TmpImportJianzhi::getDb(),'INSERT IGNORE');
     }
