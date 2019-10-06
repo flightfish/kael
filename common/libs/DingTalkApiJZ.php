@@ -7,9 +7,11 @@ use usercenter\components\exception\Exception;
 //小盒兼职辅导团队
 class DingTalkApiJZ {
 
-    const APPSECRET='9YdKgU0RDEBznfl3KJHY_DXcLmXVgH8o6XFJusBL8Hn_7sMVjqmucu6yOIxKG5cD';
-    const APPKEY='ding4isajaqgcgop8uuw';
-    const APP_AGENT_ID = "241646599";
+    const CORP_ID = 'ding961b41a45c1071fc35c2f4657eb6378f';
+
+    const APPSECRET='OB5rlJPXS3wp1Zfsd8JJGrntVGCKJidomYdOMxfVxSCJT4wW4so46_vPDX8YmNST';
+    const APPKEY='ding2mbi3upjkbi8lx8w';
+    const APP_AGENT_ID = "299816336";
 
 
     const API_GETTOKEN = 'https://oapi.dingtalk.com/gettoken';//获取token
