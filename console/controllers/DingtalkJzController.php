@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 
+
 use common\libs\DingTalkApiJZ;
 use common\models\DBCommon;
 use common\models\TmpImportJianzhi;
@@ -109,5 +110,25 @@ class DingtalkJzController extends Controller
         $list = TmpImportJianzhi::find()->where(['status'=>0])->asArray(true)->all();
         $str = json_encode($list,64|256);
         file_put_contents('/data/wwwroot/kael/tmpimport.json',$str);
+    }
+
+
+    public function actionImportDing(){
+        //$list = TmpImportJianzhi::find()->where(['status'=>0])->asArray(true)->all();
+        $list = file_get_contents('/data/wwwroot/kael/tmpimport.json');
+        $listNew = $list;
+        foreach ($list as $k=>$v){
+            if(!empty($v['ding_userid'])){
+               continue;
+            }
+            if(empty($v['work_number'])){
+                continue;
+            }
+            echo $v['work_number'].'-'.$v['name'].'-'.$v['mobile'].'-'.$v['department_id'].'-'.$v['department_name']."\n";
+            DingTalkApiJZ::addUser($v['work_number'],$v['name'],$v['mobile'],$v['department_id'],$v['work_number']);
+            $listNew[$k]['ding_userid'] = $v['work_number'];
+            file_put_contents('/data/wwwroot/kael/tmpimport.json',json_encode($listNew,64|256));
+            break;
+        }
     }
 }
