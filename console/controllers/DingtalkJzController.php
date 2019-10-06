@@ -132,10 +132,28 @@ class DingtalkJzController extends Controller
             }catch (\Exception $e){
                 $listNew[$k]['ding_userid'] = '-1';
                 $listNew[$k]['ding_error'] = $e->getMessage();
+                echo "error: ".$e->getMessage()."\n";
             }
             file_put_contents('/data/wwwroot/kael/tmpimport.json',json_encode($listNew,64|256));
 //            sleep(1);
 //            break;
+        }
+    }
+
+    public function actionCheckImport(){
+        $list = file_get_contents('/data/wwwroot/kael/tmpimport.json');
+        $list = json_decode($list,true);
+        foreach ($list as $k=>$v){
+            if(!empty($v['ding_userid'])){
+                continue;
+            }
+            if(empty($v['work_number'])){
+                continue;
+            }
+            if($v['ding_userid'] != '-1'){
+                continue;
+            }
+            echo $v['work_number'].'-'.$v['name'].'-'.$v['mobile'].'-'.$v['department_id'].'-'.$v['department_name'].'-'.$v['ding_error']."\n";
         }
     }
 }
