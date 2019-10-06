@@ -86,4 +86,19 @@ class DingtalkJzController extends Controller
         $columns = ['mobile','name','department_name','department_id'];
         DBCommon::batchInsertAll(TmpImportJianzhi::tableName(),$columns,$rows,TmpImportJianzhi::getDb(),'INSERT IGNORE');
     }
+
+    public function actionComputeWorknumber(){
+        $list = TmpImportJianzhi::find()->select('id')->where(['status'=>0])->asArray(true)->all();
+        foreach ($list as $v){
+            $workNunmber = '';
+            $orgId = intval($v['id']);
+            $v['id'] = intval($v['id']);
+            while($v['id']){
+                $yu = $v['id']%9;
+                $v['id'] = intval($v['id']/9);
+                $workNunmber = $yu.$workNunmber;
+            }
+            echo $orgId.'-'.$workNunmber."\n";
+        }
+    }
 }
