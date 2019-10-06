@@ -103,4 +103,11 @@ class DingtalkJzController extends Controller
             TmpImportJianzhi::updateAll(['work_number'=>$workNunmber],['id'=>$orgId]);
         }
     }
+
+
+    public function actionExportFileFromTmp(){
+        $list = TmpImportJianzhi::find()->where(['status'=>0])->asArray(true)->all();
+        $str = json_encode($list,64|256);
+        file_put_contents('/data/wwwroot/kael/tmpimport.json',$str);
+    }
 }
