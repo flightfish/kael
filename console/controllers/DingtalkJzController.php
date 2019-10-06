@@ -126,10 +126,15 @@ class DingtalkJzController extends Controller
                 continue;
             }
             echo $v['work_number'].'-'.$v['name'].'-'.$v['mobile'].'-'.$v['department_id'].'-'.$v['department_name']."\n";
-            DingTalkApiJZ::addUser($v['work_number'],$v['name'],$v['mobile'],$v['department_id'],$v['work_number']);
-            $listNew[$k]['ding_userid'] = $v['work_number'];
+            try{
+                DingTalkApiJZ::addUser($v['work_number'],$v['name'],$v['mobile'],$v['department_id'],$v['work_number']);
+                $listNew[$k]['ding_userid'] = $v['work_number'];
+            }catch (\Exception $e){
+                $listNew[$k]['ding_userid'] = '-1';
+                $listNew[$k]['ding_error'] = $e->getMessage();
+            }
             file_put_contents('/data/wwwroot/kael/tmpimport.json',json_encode($listNew,64|256));
-            sleep(1);
+//            sleep(1);
 //            break;
         }
     }
