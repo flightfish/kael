@@ -129,7 +129,8 @@ class DingtalkJzController extends Controller
             DingTalkApiJZ::addUser($v['work_number'],$v['name'],$v['mobile'],$v['department_id'],$v['work_number']);
             $listNew[$k]['ding_userid'] = $v['work_number'];
             file_put_contents('/data/wwwroot/kael/tmpimport.json',json_encode($listNew,64|256));
-            break;
+            sleep(1);
+//            break;
         }
     }
 }
