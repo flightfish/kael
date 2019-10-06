@@ -94,11 +94,13 @@ class DingtalkJzController extends Controller
             $orgId = intval($v['id']);
             $v['id'] = intval($v['id']);
             while($v['id']){
-                $yu = $v['id']%9;
+                $next = $v['id']%9 + 1;
                 $v['id'] = intval($v['id']/9);
-                $workNunmber = $yu.$workNunmber;
+                $workNunmber = $next.$workNunmber;
             }
-            echo $orgId.'-'.$workNunmber."\n";
+            $workNunmber = 1000000 + intval($workNunmber);
+            $workNunmber = 'JZ'.$workNunmber;
+            TmpImportJianzhi::updateAll(['work_number'=>$workNunmber],['id'=>$orgId]);
         }
     }
 }
