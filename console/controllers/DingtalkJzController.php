@@ -56,7 +56,7 @@ class DingtalkJzController extends Controller
         $rows = [];
         foreach ($data as $k=>$v){
             if($k == 0){
-                echo json_encode($v,64|256);
+//                echo json_encode($v,64|256);
                 continue;
             }
             if(empty($v[6])){
