@@ -156,4 +156,34 @@ class DingtalkJzController extends Controller
             echo $v['work_number'].'-'.$v['name'].'-'.$v['mobile'].'-'.$v['department_id'].'-'.$v['department_name'].'-'.$v['ding_error']."\n";
         }
     }
+
+    public function actionRestore(){
+        $list = file_get_contents('/data/wwwroot/kael/tmpimport.json');
+        $list = json_decode($list,true);
+        /**
+        `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '自增id',
+        `mobile` varchar(20) NOT NULL DEFAULT '' COMMENT '电话号码',
+        `name` varchar(20) NOT NULL DEFAULT '' COMMENT '用户名',
+        `department_name` varchar(255) NOT NULL DEFAULT '' COMMENT '部门名称',
+        `department_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '部门id',
+        `ding_userid` varchar(100) NOT NULL DEFAULT '',
+        `ding_error` varchar(1000) NOT NULL DEFAULT '',
+        `work_number` varchar(100) NOT NULL DEFAULT '',
+         */
+        $columns = ['id','mobile','name','department_name','department_id','ding_userid','ding_error','work_number'];
+        $rows = [];
+        foreach ($list as $k=>$v){
+            $rows[] = [
+                $v['id'],
+                $v['mobile'],
+                $v['name'],
+                $v['department_name'],
+                $v['department_id'],
+                $v['ding_userid'],
+                $v['ding_error']??'',
+                $v['work_number']
+            ];
+        }
+        DBCommon::batchInsertAll(TmpImportJianzhi::tableName(),$columns,$rows,TmpImportJianzhi::getDb(),'INSERT IGNORE');
+    }
 }
