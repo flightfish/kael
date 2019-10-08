@@ -52,19 +52,11 @@ class DingController extends Controller
         $allDepartmentList = DingTalkApi::getDepartmentAllList();
         $allIds = array_column($allDepartmentList,'id');
 
-        $allDepartmentListForJZ = DingTalkApiJZ::getDepartmentAllList();
-        $allIdsForJZ = array_column($allDepartmentListForJZ,'id');
-
-        $oldDepartments = array_column(DingtalkDepartment::find()->select('*')->where(['status'=>0])->asArray(true)->all(),null,'id');
+        $oldDepartments = array_column(DingtalkDepartment::find()->select('*')->where(['status'=>0,'corp_type'=>1])->asArray(true)->all(),null,'id');
         $oldDepartmentIds = array_keys($oldDepartments);
         $oldDepartmentIds = array_map('intval',$oldDepartmentIds);
-
-
-        $delIds = array_diff($oldDepartmentIds,$allIds,$allIdsForJZ);
-
-
+        $delIds = array_diff($oldDepartmentIds,$allIds);
         $insertIds  = array_diff($allIds,$oldDepartmentIds);
-        $insertIdsForJz  = array_diff($allIdsForJZ,$oldDepartmentIds);
         echo date('Y-m-d H:i:s')."\t新增部门如下:\n";
         echo json_encode($insertIds)."\n";
         echo date('Y-m-d H:i:s')."\t需要删除部门如下:\n";
@@ -87,8 +79,37 @@ class DingController extends Controller
                 $rows[] = [$v['id'],$v['name'],$v['name'],$v['parentid'],1];
             }
         }
-        //兼职团队
-        foreach ($allDepartmentListForJZ as $v){
+        !empty($rows) && DingtalkDepartment::batchInsertAll(DingtalkDepartment::tableName(),$columns,$rows,DingtalkDepartment::getDb(),'INSERT IGNORE');
+        if(!empty($delIds)){
+            DingtalkDepartment::updateAll(['status'=>1],['id'=>$delIds]);
+            DepartmentRelateToKael::updateAll(['status'=>1],['department_id'=>$delIds]);
+        }
+        //更新level
+        $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id where status = 0 and parentid = 1";
+        DingtalkDepartment::getDb()->createCommand($sql)->execute();
+        for($level =1 ; $level <= 10; $level++){
+            $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id where a.status = 0 and b.status = 0 and b.`level`={$level}";
+            DingtalkDepartment::getDb()->createCommand($sql)->execute();
+        }
+    }
+    private function updateDingDepartmentJZ(){
+        $allDepartmentList = DingTalkApiJZ::getDepartmentAllList();
+        $allIds = array_column($allDepartmentList,'id');
+        $oldDepartments = array_column(DingtalkDepartment::find()->select('*')->where(['status'=>0,'corp_type'=>2])->asArray(true)->all(),null,'id');
+        $oldDepartmentIds = array_keys($oldDepartments);
+        $oldDepartmentIds = array_map('intval',$oldDepartmentIds);
+
+
+        $delIds = array_diff($oldDepartmentIds,$allIds);
+        $insertIds  = array_diff($allIds,$oldDepartmentIds);
+
+        echo date('Y-m-d H:i:s')."\t新增兼职部门如下:\n";
+        echo json_encode($insertIds)."\n";
+        echo date('Y-m-d H:i:s')."\t需要删除兼职部门如下:\n";
+        echo json_encode($delIds)."\n";
+        $columns = ['id','name','alias_name','parentid','corp_type'];
+        $rows = [];
+        foreach ($allDepartmentList as $v){
             if(in_array($v['id'],$oldDepartmentIds)){
                 $params = ['name'=>$v['name'],'parentid'=>$v['parentid']];
                 if(empty($oldDepartments[$v['id']]['alias_name'])){
@@ -100,7 +121,7 @@ class DingController extends Controller
                     $params['main_leader_name'] = '';
                 }
                 DingtalkDepartment::updateAll($params,['id'=>$v['id']]);
-            }elseif(in_array($v['id'],$insertIdsForJz)){
+            }elseif(in_array($v['id'],$insertIds)){
                 $rows[] = [$v['id'],$v['name'],$v['name'],$v['parentid'],2];
             }
         }
