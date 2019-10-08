@@ -54,8 +54,10 @@ class DingtalkJzController extends Controller
         $PHPReader = new \PHPExcel_Reader_Excel5();
         $objPHPExcel = $PHPReader->load($filePath); // Reader读出来后，加载给Excel实例
         $data = $objPHPExcel->getSheet(0)->toArray();
-        $dataFormat = [];
+//        $dataFormat = [];
         $rows = [];
+        $lastId = TmpImportJianzhi::find()->select('id')->orderBy('id desc')->limit(1)->asArray(true)->scalar();
+        $lastId = intval($lastId);
         foreach ($data as $k=>$v){
             if($k == 0){
 //                echo json_encode($v,64|256);
@@ -66,19 +68,21 @@ class DingtalkJzController extends Controller
                 continue;
             }
             //0工号忽略 1姓名 2.3.4.5 1-4级部门 6手机 7邮箱
-            $tmp = ['name'=>$v[1],'mobile'=>$v[6],'department_name'=>"{$v[5]}|{$v[4]}|{$v[3]}|{$v[2]}"];
+            $lastId += 1;
+            $tmp = ['id'=>$lastId,'name'=>$v[1],'mobile'=>$v[6],'department_name'=>"{$v[5]}|{$v[4]}|{$v[3]}|{$v[2]}"];
             $tmp['department_id'] = $nameToInfo[$tmp['department_name']]['id'];
-            $dataFormat[] = $tmp;
-            $rows[] = [$tmp['mobile'],$tmp['name'],$tmp['department_name'],$tmp['department_id']];
+            echo json_encode($tmp,64|256)."\n";
+//            $dataFormat[] = $tmp;
+            $rows[] = [$lastId,$tmp['mobile'],$tmp['name'],$tmp['department_name'],$tmp['department_id']];
         }
-        echo json_encode($rows,64|256)."\n";
-        exit();
-        $columns = ['mobile','name','department_name','department_id'];
+//        echo json_encode($rows,64|256)."\n";
+//        exit();
+        $columns = ['id','mobile','name','department_name','department_id'];
         DBCommon::batchInsertAll(TmpImportJianzhi::tableName(),$columns,$rows,TmpImportJianzhi::getDb(),'INSERT IGNORE');
 
 //        echo json_encode($dataFormat,64|256)."\n";
 
-        return $dataFormat;
+//        return $dataFormat;
     }
 
 
