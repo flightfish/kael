@@ -16,7 +16,7 @@ class AlimailController extends Controller
 
     public function actionListOther(){
         //非员工邮箱
-        $allEmails = array_column(DingtalkUser::findList([],'','email'),'email');
+        $allEmails = array_column(DingtalkUser::findList(['corp_type'=>1],'','email'),'email');
         $aliMails = [];
         $aliMailStart = 0;
         while(1){
@@ -151,7 +151,7 @@ class AlimailController extends Controller
     //同步邮箱
     public function actionSynEmailAccount(){
         //所有员工
-        $allDingUserList = DingtalkUser::findList([],'','auto_id,department_subroot,email,name,user_id');
+        $allDingUserList = DingtalkUser::findList(['corp_type'=>1],'','auto_id,department_subroot,email,name,user_id');
         $emailToId = array_column($allDingUserList,'user_id','email');
 
         $allSubrootIds = array_filter(array_unique(array_column($allDingUserList,'department_subroot')));

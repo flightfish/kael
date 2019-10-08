@@ -88,7 +88,8 @@ class EmailController extends Controller
                 'status'=>0,
                 'email_errno'=>0,
                 'email'=>'',
-                'email_pinyin'=>''
+                'email_pinyin'=>'',
+                'corp_type'=>1,
             ])
             ->asArray(true)
             ->all();

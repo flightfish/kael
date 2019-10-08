@@ -50,7 +50,8 @@ class DingtalkJzController extends Controller
             $nameToInfo[$name] = $v;
         }
 
-        $filePath = './jianzhi_201909.xls';
+//        $filePath = './jianzhi_201909.xls';
+        $filePath = './jianzhi_20191008.xls';
         $PHPReader = new \PHPExcel_Reader_Excel5();
         $objPHPExcel = $PHPReader->load($filePath); // Reader读出来后，加载给Excel实例
         $data = $objPHPExcel->getSheet(0)->toArray();
