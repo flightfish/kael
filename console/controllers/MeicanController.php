@@ -46,7 +46,7 @@ class MeicanController extends Controller
                 ->from('user a')
                 ->leftJoin('dingtalk_user b','a.work_number = b.job_number')
                 ->leftJoin('dingtalk_department c','b.department_subroot = c.id')
-                ->where(['a.user_type'=>0,'a.status'=>0,'b.status'=>0])
+                ->where(['a.user_type'=>0,'a.status'=>0,'b.status'=>0,'b.corp_type'=>1])
                 ->andWhere(['!=','a.work_number',''])
                 ->orderBy('a.work_number asc')
                 ->createCommand()
