@@ -3,6 +3,7 @@ namespace console\controllers;
 
 
 
+use common\libs\DingTalkApi;
 use common\libs\DingTalkApiJZ;
 use common\models\DBCommon;
 use common\models\TmpImportJianzhi;
@@ -88,9 +89,13 @@ class DingtalkJzController extends Controller
         DBCommon::batchInsertAll(TmpImportJianzhi::tableName(),$columns,$rows,TmpImportJianzhi::getDb(),'INSERT IGNORE');
     }
 
-    public function actionComputeWorknumber(){
-        $list = TmpImportJianzhi::find()->select('id')->where(['status'=>0])->asArray(true)->all();
+    public function computeWorknumber(){
+        $list = TmpImportJianzhi::find()->where(['status'=>0,'work_number'=>''])
+            ->asArray(true)->all();
         foreach ($list as $v){
+            if(!empty($v['work_number'])){
+                continue;
+            }
             $workNunmber = '';
             $orgId = intval($v['id']);
             $v['id'] = intval($v['id']);
@@ -113,7 +118,7 @@ class DingtalkJzController extends Controller
     }
 
 
-    public function actionImportDing(){
+    public function actionImportDingFromFile(){
         //$list = TmpImportJianzhi::find()->where(['status'=>0])->asArray(true)->all();
         $list = file_get_contents('/data/wwwroot/kael/tmpimport.json');
         $list = json_decode($list,true);
@@ -185,5 +190,32 @@ class DingtalkJzController extends Controller
             ];
         }
         DBCommon::batchInsertAll(TmpImportJianzhi::tableName(),$columns,$rows,TmpImportJianzhi::getDb(),'INSERT IGNORE');
+    }
+
+    public function actionImportDing(){
+        echo "update compute worknumber\n";
+        $this->computeWorknumber();
+        sleep(1);
+        echo "select need import\n";
+        $list = TmpImportJianzhi::find()->where(['status'=>0,'ding_userid'=>['','0','-1']])->asArray(true)->all();
+        $listNew = $list;
+        foreach ($list as $k=>$v){
+            if(empty($v['work_number'])){
+                continue;
+            }
+            echo $v['work_number'].'-'.$v['name'].'-'.$v['mobile'].'-'.$v['department_id'].'-'.$v['department_name']."\n";
+            try{
+                DingTalkApiJZ::addUser($v['work_number'],$v['name'],$v['mobile'],$v['department_id'],$v['work_number']);
+                $listNew[$k]['ding_userid'] = $v['work_number'];
+                TmpImportJianzhi::updateAll(['ding_userid'=>$v['work_number']],['id'=>$v['id']]);
+                echo "success\n";
+            }catch (\Exception $e){
+                $listNew[$k]['ding_userid'] = '-1';
+                $listNew[$k]['ding_error'] = $e->getMessage();
+                echo "error: ".$e->getMessage()."\n";
+                TmpImportJianzhi::updateAll(['ding_userid'=>'-1','ding_error'=>$e->getMessage()],['id'=>$v['id']]);
+            }
+//            file_put_contents('/data/wwwroot/kael/tmpimport.json',json_encode($listNew,64|256));
+        }
     }
 }
