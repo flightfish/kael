@@ -636,7 +636,7 @@ class DingController extends Controller
     {
         $corpType = 2;
         //所有企业员工
-        $allMobileBox = array_column(DingtalkUser::findList(['corp_type'=>$corpType], '', 'mobile'), 'mobile');
+        $allMobileBox = array_column(DingtalkUser::findList(['corp_type'=>1], '', 'mobile'), 'mobile');
         $allUserIds = array_column(DingtalkUser::findList(['corp_type'=>$corpType], '', 'user_id'), 'user_id');
         $newAllUserIds = [];//所有
         $currentUserIds = [];//已经出现在过循环中
