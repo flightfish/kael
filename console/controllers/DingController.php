@@ -444,6 +444,7 @@ class DingController extends Controller
                             'departments' => join(',', $userInfo['department']),
                             'department_id' => $userInfo['department'][0],
                             'department_subroot' => $departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                            'corp_type' => $corpType,
                         ];
                         if (isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate'])) {
                             $addParams['hired_date'] = date('Y-m-d', $userInfo['hiredDate'] / 1000);
@@ -923,6 +924,7 @@ class DingController extends Controller
                             'departments' => join(',', $userInfo['department']),
                             'department_id' => $userInfo['department'][0],
                             'department_subroot' => $departmentToSubRoot[$userInfo['department'][0]] ?? $userInfo['department'][0],
+                            'corp_type' => $corpType,
                         ];
                         if (isset($userInfo['hiredDate']) && !empty($userInfo['hiredDate'])) {
                             $addParams['hired_date'] = date('Y-m-d', $userInfo['hiredDate'] / 1000);
