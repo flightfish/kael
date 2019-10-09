@@ -37,18 +37,18 @@ class DingController extends Controller
             echo "is_running";
             exit();
         }
-        echo date('Y-m-d H:i:s')."\t开始同步钉钉部门到kael\n";
-        $this->updateDingDepartment();
-        echo date('Y-m-d H:i:s')."\t部门同步结束\n";
-
-        echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉部门到kael\n";
-        $this->updateDingDepartmentJZ();
-        echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
-
-
-        echo date('Y-m-d H:i:s')."\t开始同步钉钉人员到kael\n";
-        $this->updateDingUser();
-        echo date('Y-m-d H:i:s')."\t员工同步结束\n";
+//        echo date('Y-m-d H:i:s')."\t开始同步钉钉部门到kael\n";
+//        $this->updateDingDepartment();
+//        echo date('Y-m-d H:i:s')."\t部门同步结束\n";
+//
+//        echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉部门到kael\n";
+//        $this->updateDingDepartmentJZ();
+//        echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
+//
+//
+//        echo date('Y-m-d H:i:s')."\t开始同步钉钉人员到kael\n";
+//        $this->updateDingUser();
+//        echo date('Y-m-d H:i:s')."\t员工同步结束\n";
 
         echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉人员到kael\n";
         $this->updateDingUserJZ();
