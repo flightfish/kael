@@ -19,6 +19,7 @@ class DingTalkApiJZ {
     const API_USER_GET = 'https://oapi.dingtalk.com/user/get';//获取用户信息
     const API_USER_CREATE = 'https://oapi.dingtalk.com/user/create';//创建用户
     const API_USER_GETDEPTMEMBER = 'https://oapi.dingtalk.com/user/getDeptMember';//获取部门用户
+    const API_USER_GETDEPTMEMBER_USERINFO = 'https://oapi.dingtalk.com/user/listbypage';//获取部门用户信息
     const API_DEPARTMENT_PARENTLIST = 'https://oapi.dingtalk.com/department/list_parent_depts_by_dept';//获取父级IDList
     const API_CALLBACK_QUERY = 'https://oapi.dingtalk.com/call_back/get_call_back';//查询回调
 
@@ -45,6 +46,20 @@ class DingTalkApiJZ {
     //考勤打卡记录
     const API_TOPAPI_ATTENDANCE_LISTRECORD = "https://oapi.dingtalk.com/attendance/listRecord";
     const API_TOPAPI_ATTENDANCE_LIST = "https://oapi.dingtalk.com/attendance/list";
+
+    public static function getDepartmentUserInfoList($departmentId){
+        $offset = 0;
+        $userInfoList = [];
+        while(1){
+            $retJson = self::curlGet(self::API_USER_GETDEPTMEMBER_USERINFO,['size'=>100,'offset'=>$offset,'department_id'=>$departmentId]);
+            $scheduleList = array_merge($userInfoList,$retJson['userlist']);
+            if(!$retJson['has_more']){
+                break;
+            }
+            $offset += 200;
+        }
+        return $userInfoList;
+    }
 
     public static function addUser($userId,$name,$mobile,$departmentId,$jobNumber){
         if (\Yii::$app->params['env'] != 'prod') {

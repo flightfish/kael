@@ -657,10 +657,16 @@ class DingController extends Controller
                     ->asArray(true)->all();
             }
             foreach ($departmentList as $v) {
-                $userIdList = DingTalkApiJZ::getDepartmentUserIds($v['id']);
+                $userInfoList = DingTalkApiJZ::getDepartmentUserInfoList($v['id']);
+                $userIdList = array_column($userInfoList,'userid');
+//                $userIdList = DingTalkApiJZ::getDepartmentUserIds($v['id']);
                 echo date('Y-m-d H:i:s') . "\t同步部门人员：{$v['name']}[{$v['id']}]\n";
-                echo json_encode($userIdList) . "\n";
-                foreach ($userIdList as $userId) {
+                echo json_encode($userInfoList) . "\n";
+//                echo json_encode($userIdList) . "\n";
+                foreach ($userInfoList as $userInfo){
+                    $userId = $userInfo['userid'];
+//                }
+//                foreach ($userIdList as $userId) {
                     if (in_array($userId, $currentUserIds)) {
                         //重复
                         continue;
@@ -673,7 +679,7 @@ class DingController extends Controller
                     $currentUserIds[] = $userId;
 
                     try {
-                        $userInfo = DingTalkApiJZ::getUserInfo($userId);
+//                        $userInfo = DingTalkApiJZ::getUserInfo($userId);
                         if(in_array($userInfo['mobile'],$allMobileBox)){
                             echo "{$userInfo['mobile']} {$userInfo['name']} 主公司员工 跳过\n";
                             DingtalkUser::updateAll(['status'=>1],['corp_type'=>$corpType,'user_id'=>$userInfo['userid']]);
