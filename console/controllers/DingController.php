@@ -676,7 +676,7 @@ class DingController extends Controller
                         $userInfo = DingTalkApiJZ::getUserInfo($userId);
                         if(in_array($userInfo['mobile'],$allMobileBox)){
                             echo "{$userInfo['mobile']} {$userInfo['name']} 主公司员工 跳过\n";
-                            DingtalkUser::updateAll(['status'=>1],['crop_type'=>$corpType,'user_id'=>$userInfo['userid']]);
+                            DingtalkUser::updateAll(['status'=>1],['corp_type'=>$corpType,'user_id'=>$userInfo['userid']]);
                             //主公司员工
                             continue;
                         }
