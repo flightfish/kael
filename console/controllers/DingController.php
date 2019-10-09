@@ -118,6 +118,7 @@ class DingController extends Controller
     private function updateDingDepartmentJZ(){
         $allDepartmentList = DingTalkApiJZ::getDepartmentAllList();
         $allIds = array_column($allDepartmentList,'id');
+        DingtalkDepartment::updateAll(['corp_type'=>2],['id'=>$allIds]);
         $oldDepartments = array_column(DingtalkDepartment::find()->select('*')->where(['status'=>0,'corp_type'=>2])->asArray(true)->all(),null,'id');
         $oldDepartmentIds = array_keys($oldDepartments);
         $oldDepartmentIds = array_map('intval',$oldDepartmentIds);
@@ -132,7 +133,6 @@ class DingController extends Controller
         echo json_encode($delIds)."\n";
         $columns = ['id','name','alias_name','parentid','corp_type'];
         $rows = [];
-        $rowsId = [];
         foreach ($allDepartmentList as $v){
             if(in_array($v['id'],$oldDepartmentIds)){
                 $params = ['name'=>$v['name'],'parentid'=>$v['parentid']];
@@ -147,10 +147,8 @@ class DingController extends Controller
                 DingtalkDepartment::updateAll($params,['id'=>$v['id']]);
             }elseif(in_array($v['id'],$insertIds)){
                 $rows[] = [$v['id'],$v['name'],$v['name'],$v['parentid'],2];
-                $rowsId[] = $v['id'];
             }
         }
-        DingtalkDepartment::updateAll(['corp_type'=>2],['id'=>$rowsId]);
         !empty($rows) && DingtalkDepartment::batchInsertAll(DingtalkDepartment::tableName(),$columns,$rows,DingtalkDepartment::getDb(),'INSERT IGNORE');
         if(!empty($delIds)){
             DingtalkDepartment::updateAll(['status'=>1],['id'=>$delIds]);
