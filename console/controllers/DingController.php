@@ -179,10 +179,11 @@ class DingController extends Controller
                 echo json_encode($userIdList) . "\n";
                 foreach ($userIdList as $userId) {
                     if (in_array($userId, $currentUserIds)) {
+                        echo "{$userId} 在 current 中\n";
                         //重复
                         continue;
                     }
-                    echo "\n****\t第" . $i . "次执行\t****\n";
+                    echo "第" . $i . "次执行*******\n";
                     $i++;
                     if (!in_array($userId, $newAllUserIds)) {
                         $newAllUserIds[] = $userId;
