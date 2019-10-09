@@ -623,7 +623,7 @@ abstract class Schema extends Object
                 $exceptionClass = $class;
             }
         }
-        $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql";
+        $message = $e->getMessage()  . "\nThe SQL being executed was: $rawSql". '-line:'. $e->getLine();
         $errorInfo = $e instanceof \PDOException ? $e->errorInfo : null;
         return new $exceptionClass($message, $errorInfo, (int) $e->getCode(), $e);
     }
