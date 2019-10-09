@@ -30,7 +30,14 @@ class DingController extends Controller
 {
 
     public function actionUpdateJzUserTest(){
+        echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉部门到kael\n";
+        $this->updateDingDepartmentJZ();
+        echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
+
+        echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉人员到kael\n";
         $this->updateDingUserJZ();
+        echo date('Y-m-d H:i:s')."\t员工同步兼职团队结束\n";
+
     }
 
 
