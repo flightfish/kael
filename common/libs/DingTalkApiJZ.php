@@ -47,6 +47,9 @@ class DingTalkApiJZ {
     const API_TOPAPI_ATTENDANCE_LIST = "https://oapi.dingtalk.com/attendance/list";
 
     public static function addUser($userId,$name,$mobile,$departmentId,$jobNumber){
+        if (\Yii::$app->params['env'] != 'prod') {
+            return false;
+        }
         $params = [
             'userid'=>$userId,
             'name'=>$name,
@@ -227,6 +230,9 @@ class DingTalkApiJZ {
     }
 
     public static function updateEmailForUser($userId,$email){
+        if (\Yii::$app->params['env'] != 'prod') {
+            return false;
+        }
         $params = [
             'userid'=>$userId,
             'email'=>$email
@@ -327,6 +333,9 @@ class DingTalkApiJZ {
 
 
     public static function registerCallBack($data){
+        if (\Yii::$app->params['env'] != 'prod') {
+            return false;
+        }
         $retJson = self::curlPost(self::API_POST_REGISTER_CALL_BACK,$data);
         return $retJson;
     }

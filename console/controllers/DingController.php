@@ -3,7 +3,6 @@ namespace console\controllers;
 
 use common\libs\DingTalkApi;
 use common\libs\DingTalkApiJZ;
-use common\libs\EmailApi;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use common\models\ehr\AuthUser;
