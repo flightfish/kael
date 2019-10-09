@@ -531,7 +531,7 @@ class CommonApi extends RequestBaseModel
         //判断部门权限
         $relate = RelateDepartmentPlatform::findListByDepartmentPlatform($this->user['department_id'], $platformInfo['platform_id']);
         if (empty($relate)) {
-            throw new Exception('权限不足，请确认有权限后重试', Exception::ERROR_COMMON);
+            throw new Exception('权限不足，请确认有权限后重试|'.$this->user['id'], Exception::ERROR_COMMON);
         }
         $relate = RelateUserPlatform::findListByUserPlatform($this->user['id'], $platformInfo['platform_id']);
         if (empty($relate)) {

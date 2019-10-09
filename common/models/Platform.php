@@ -23,7 +23,7 @@ class Platform extends \common\models\BaseActiveRecord
             return null;
         }
         if(empty($platformId)){
-            return self::find()->where(['status'=>self::STATUS_VALID])->andWhere(['like','platform_url',$host])->asArray(true)->one();
+            return self::find()->where(['status'=>self::STATUS_VALID])->andWhere(['like','platform_url','//'.$host])->asArray(true)->one();
         }else{
             return self::find()->where(['status'=>self::STATUS_VALID,'platform_id'=>$platformId])->andWhere(['like','platform_api',$host])->asArray(true)->one();
         }
