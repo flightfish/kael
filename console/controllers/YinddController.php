@@ -36,7 +36,7 @@ class YinddController extends Controller
         }
         $yinddUserList = array_column($yinddUserList,null,'account');
         $yinddUserListEmail = array_column($yinddUserList,null,'email');
-        $dingtalkUserList = DingtalkUser::findList([],'','auto_id,ydd_account,department_subroot,email,name');
+        $dingtalkUserList = DingtalkUser::findList(['corp_type'=>1],'','auto_id,ydd_account,department_subroot,email,name');
         $dingtalkDepartmentIdToName = array_column(DingtalkDepartment::findList(['parentid'=>1,'status'=>0],'','id,name'),'name','id');
         //更新用户
         foreach ($dingtalkUserList as $v){
