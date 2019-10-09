@@ -168,7 +168,7 @@ class DingController extends Controller
         $i = 0;
         for ($level = 0; $level < 10; $level++) {
             echo "level: ".$level."\n";
-            if($level = 0){
+            if($level == 0){
                 $departmentList = [
                     ['id'=>1,'name'=>'小盒科技']
                 ];
@@ -643,7 +643,7 @@ class DingController extends Controller
         $departmentToSubRoot = array_column($departmentToSubRoot, 'subroot_id', 'id');
         $i = 0;
         for ($level = 0; $level < 10; $level++) {
-            if($level = 0){
+            if($level == 0){
                 $departmentList = [
                     ['id'=>1,'name'=>'兼职辅导团队']
                 ];
