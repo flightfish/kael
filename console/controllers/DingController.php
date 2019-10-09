@@ -154,17 +154,20 @@ class DingController extends Controller
     {
         $corpType = 1;
         //所有企业员工
+        echo 1;
         $allUserIds = array_column(DingtalkUser::findList(['corp_type'=>$corpType], '', 'user_id'), 'user_id');
+        echo 2;
         $newAllUserIds = [];//所有
         $currentUserIds = [];//已经出现在过循环中
         $departmentToSubRoot = DingtalkDepartment::find()
             ->select('id,subroot_id')
             ->where(['status' => 0,'corp_type'=>$corpType])
             ->asArray(true)->all();
-
+        echo "3\n";
         $departmentToSubRoot = array_column($departmentToSubRoot, 'subroot_id', 'id');
         $i = 0;
         for ($level = 0; $level < 10; $level++) {
+            echo "level: ".$level;
             if($level = 0){
                 $departmentList = [
                     ['id'=>1,'name'=>'小盒科技']
@@ -174,6 +177,7 @@ class DingController extends Controller
                     ->asArray(true)->all();
             }
             foreach ($departmentList as $v) {
+                echo "dept: {$v['id']}\n";
                 $userIdList = DingTalkApi::getDepartmentUserIds($v['id']);
                 echo date('Y-m-d H:i:s') . "\t同步部门人员：{$v['name']}[{$v['id']}]\n";
                 echo json_encode($userIdList) . "\n";
