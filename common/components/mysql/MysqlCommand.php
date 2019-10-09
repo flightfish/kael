@@ -35,7 +35,7 @@ class MysqlCommand extends Command
 //                echo '重连数据库';
                 $this->db->close();
                 $this->db->open();
-                $this->pdoStatement = null;
+                $this->pdoStatement = $this->prepare();
                 return parent::execute();
             }
             throw $e;
