@@ -56,13 +56,15 @@ class DingTalkApiJZ {
             return false;
         }
         $params = [
-            'name'=>$name,
-            'mobile'=>$mobile,
-            'extend_info'=>json_encode([
-                'depts'=>strval($departmentId),
-                'mainDeptId'=>$departmentId,
-                'jobNumber'=>$jobNumber,
-            ])
+            'param'=>[
+                'name'=>$name,
+                'mobile'=>$mobile,
+                'extend_info'=>json_encode([
+                    'depts'=>strval($departmentId),
+                    'mainDeptId'=>$departmentId,
+                    'jobNumber'=>$jobNumber,
+                ])
+            ]
         ];
         $retJson = self::curlPost(self::API_TOPAPI_HRM_ADDPREENTRY,$params);
         return $retJson;
