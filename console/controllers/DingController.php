@@ -118,7 +118,7 @@ class DingController extends Controller
     private function updateDingDepartmentJZ(){
         $allDepartmentList = DingTalkApiJZ::getDepartmentAllList();
         $allIds = array_column($allDepartmentList,'id');
-        DingtalkDepartment::updateAll(['corp_type'=>2],['id'=>$allIds]);
+        DingtalkDepartment::updateAll(['corp_type'=>2,'status'=>0],['id'=>$allIds]);
         $oldDepartments = array_column(DingtalkDepartment::find()->select('*')->where(['status'=>0,'corp_type'=>2])->asArray(true)->all(),null,'id');
         $oldDepartmentIds = array_keys($oldDepartments);
         $oldDepartmentIds = array_map('intval',$oldDepartmentIds);
