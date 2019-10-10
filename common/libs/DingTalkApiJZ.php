@@ -47,6 +47,28 @@ class DingTalkApiJZ {
     const API_TOPAPI_ATTENDANCE_LISTRECORD = "https://oapi.dingtalk.com/attendance/listRecord";
     const API_TOPAPI_ATTENDANCE_LIST = "https://oapi.dingtalk.com/attendance/list";
 
+
+    //添加待入职
+    const API_TOPAPI_HRM_ADDPREENTRY = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/addpreentry';
+
+    public static function addPreEntry($name,$mobile,$departmentId,$jobNumber){
+        if (\Yii::$app->params['env'] != 'prod') {
+            return false;
+        }
+        $params = [
+            'name'=>$name,
+            'mobile'=>$mobile,
+            'extend_info'=>json_encode([
+                'depts'=>strval($departmentId),
+                'mainDeptId'=>$departmentId,
+                'jobNumber'=>$jobNumber,
+            ])
+        ];
+        $retJson = self::curlPost(self::API_TOPAPI_HRM_ADDPREENTRY,$params);
+        return $retJson;
+    }
+
+
     public static function getDepartmentUserInfoList($departmentId){
         $offset = 0;
         $userInfoList = [];

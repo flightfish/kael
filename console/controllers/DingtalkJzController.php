@@ -51,7 +51,7 @@ class DingtalkJzController extends Controller
         }
 
 //        $filePath = './jianzhi_201909.xls';
-        $filePath = './jianzhi_20191008.xls';
+        $filePath = './jianzhi_20191010.xls';
         $PHPReader = new \PHPExcel_Reader_Excel5();
         $objPHPExcel = $PHPReader->load($filePath); // Reader读出来后，加载给Excel实例
         $data = $objPHPExcel->getSheet(0)->toArray();
@@ -87,7 +87,8 @@ class DingtalkJzController extends Controller
     }
 
 
-    public function actionImportFromRows(){
+    private function actionImportFromRows(){
+        exit();
         $rows = trim(file_get_contents('/data/wwwroot/kael/rows.json'));
         $rows = json_decode($rows,true);
         $columns = ['mobile','name','department_name','department_id'];
@@ -116,14 +117,16 @@ class DingtalkJzController extends Controller
     }
 
 
-    public function actionExportFileFromTmp(){
+    private function actionExportFileFromTmp(){
+        exit();
         $list = TmpImportJianzhi::find()->where(['status'=>0])->asArray(true)->all();
         $str = json_encode($list,64|256);
         file_put_contents('/data/wwwroot/kael/tmpimport.json',$str);
     }
 
 
-    public function actionImportDingFromFile(){
+    private function actionImportDingFromFile(){
+        exit();
         //$list = TmpImportJianzhi::find()->where(['status'=>0])->asArray(true)->all();
         $list = file_get_contents('/data/wwwroot/kael/tmpimport.json');
         $list = json_decode($list,true);
@@ -150,7 +153,8 @@ class DingtalkJzController extends Controller
         }
     }
 
-    public function actionCheckImport(){
+    private function actionCheckImport(){
+        exit();
         $list = file_get_contents('/data/wwwroot/kael/tmpimport.json');
         $list = json_decode($list,true);
         foreach ($list as $k=>$v){
@@ -167,7 +171,8 @@ class DingtalkJzController extends Controller
         }
     }
 
-    public function actionRestore(){
+    private function actionRestore(){
+        exit();
         $list = file_get_contents('/data/wwwroot/kael/tmpimport.json');
         $list = json_decode($list,true);
         /**
@@ -197,7 +202,8 @@ class DingtalkJzController extends Controller
         DBCommon::batchInsertAll(TmpImportJianzhi::tableName(),$columns,$rows,TmpImportJianzhi::getDb(),'INSERT IGNORE');
     }
 
-    public function actionImportDing(){
+    private function actionImportDing(){
+        exit();
         echo "update compute worknumber\n";
         $this->computeWorknumber();
         sleep(1);
@@ -221,6 +227,32 @@ class DingtalkJzController extends Controller
                 TmpImportJianzhi::updateAll(['ding_userid'=>'-1','ding_error'=>$e->getMessage()],['id'=>$v['id']]);
             }
 //            file_put_contents('/data/wwwroot/kael/tmpimport.json',json_encode($listNew,64|256));
+        }
+    }
+
+    public function actionImportDingPre(){
+        echo "update compute worknumber\n";
+        $this->computeWorknumber();
+        sleep(1);
+        echo "select need import pre\n";
+        $list = TmpImportJianzhi::find()->where(['status'=>0,'ding_userid'=>''])->andWhere(['>=','create_time','2019-10-10 17:00:00'])->asArray(true)->all();
+        $listNew = $list;
+        foreach ($list as $k=>$v){
+            if(empty($v['work_number'])){
+                continue;
+            }
+            echo $v['work_number'].'-'.$v['name'].'-'.$v['mobile'].'-'.$v['department_id'].'-'.$v['department_name']."\n";
+            try{
+                DingTalkApiJZ::addPreEntry($v['name'],$v['mobile'],$v['department_id'],$v['work_number']);
+                $listNew[$k]['ding_userid'] = 'PRE';
+                TmpImportJianzhi::updateAll(['ding_userid'=>'PRE'],['id'=>$v['id']]);
+                echo "success\n";
+            }catch (\Exception $e){
+                $listNew[$k]['ding_userid'] = 'PRE_ERR';
+                $listNew[$k]['ding_error'] = $e->getMessage();
+                echo "error: ".$e->getMessage()."\n";
+                TmpImportJianzhi::updateAll(['ding_userid'=>'PRE_ERR','ding_error'=>$e->getMessage()],['id'=>$v['id']]);
+            }
         }
     }
 }
