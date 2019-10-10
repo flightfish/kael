@@ -170,7 +170,10 @@ class AlimailController extends Controller
         $allEmailsChunk = array_chunk($allEmails,20);
         $emailToDepartment = [];
         foreach ($allEmailsChunk as $vallEmailsChunk){
-            $emailToDepartment[$vallEmailsChunk['email']] = $vallEmailsChunk['departmentId'];
+            $aliEmailUserInfoListChunk = AliMailApi::userInfoList($vallEmailsChunk);
+            foreach ($aliEmailUserInfoListChunk as $vv){
+                $emailToDepartment[$vv['email']] = $vv['departmentId'];
+            }
 //            $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');
         }
         $accountForCreate = [];
