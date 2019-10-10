@@ -166,7 +166,13 @@ class AlimailController extends Controller
             $departmentIdToAlimail[$v['id']] = $alimailDeparmentInfo['departmentId'];
         }
         $allEmails = array_filter(array_unique(array_column($allDingUserList,'email')));
-        $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');
+//        $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');
+        $allEmailsChunk = array_chunk($allEmails,20);
+        $emailToDepartment = [];
+        foreach ($allEmailsChunk as $vallEmailsChunk){
+            $emailToDepartment[$vallEmailsChunk['email']] = $vallEmailsChunk['departmentId'];
+//            $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');
+        }
         $accountForCreate = [];
         $accountForUpdateDept = [];
         foreach ($allDingUserList as $v){
