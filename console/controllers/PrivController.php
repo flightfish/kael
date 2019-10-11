@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 use common\libs\AppFunc;
+use common\libs\UserToken;
 use common\models\CommonUser;
 use common\models\Department;
 use common\models\RelateUserPlatform;
@@ -58,6 +59,35 @@ where a.`status` = 0 and a.user_type=0 and b.relate_id is null and a.department_
 SQL;
         RelateUserPlatform::getDb()->createCommand($sql)->execute();
 
+    }
 
+
+
+    public function actionCurlBoss(){
+//        $userList = CommonUser::find()->where(['department_id'=>158,'status'=>0])->asArray(true)->all();
+        $sql = <<<SQL
+select DISTINCT a.*
+from `user` a
+ left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004
+where a.`status` = 0 and a.user_type=0 and b.relate_id > 0 and a.department_id=158
+SQL;
+        $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
+
+        foreach ($userList as $user){
+            $user['login_ip'] = '127.0.0.1';
+            $token = UserToken::userToToken($user);
+
+            $headers = [
+                "Cookie:UCENTER_IUCTOKEN={$token}",
+                "Referer: https://bslive.knowbox.cn/",
+                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
+                "Sec-Fetch-Mode: cors",
+                "Accept: application/json, text/plain, */*"
+            ];
+            echo $user['id']."\n";
+            $ret = AppFunc::curlPost('https://bslive.knowbox.cn/permissionsMenu.do',[],$headers);
+            echo $ret."\n";
+            sleep(1);
+        }
     }
 }
