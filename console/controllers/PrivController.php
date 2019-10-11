@@ -85,7 +85,7 @@ SQL;
                 "Accept: application/json, text/plain, */*"
             ];
             echo $user['id']."\n";
-            $ret = AppFunc::curlPost('https://bslive.knowbox.cn/permissionsMenu.do',[],$headers);
+            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/permissionsMenu.do',[],$headers);
             echo $ret."\n";
             sleep(1);
         }
