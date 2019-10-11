@@ -64,6 +64,10 @@ SQL;
 
 
     public function actionCurlBoss(){
+        if(exec('ps -ef|grep "priv/curl-boss"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
 //        $userList = CommonUser::find()->where(['department_id'=>158,'status'=>0])->asArray(true)->all();
         $sql = <<<SQL
 select DISTINCT a.*
