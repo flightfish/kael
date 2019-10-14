@@ -33,4 +33,13 @@ class DingtalkDepartmentUser extends \common\models\BaseActiveRecord
             ->asArray(true)
             ->all();
     }
+
+    public static function add($params){
+        $model = new self();
+        foreach ($params as $k=>$v){
+            $model->$k = $v;
+        }
+        $model->insert();
+        return $model->relate_id;
+    }
 }
