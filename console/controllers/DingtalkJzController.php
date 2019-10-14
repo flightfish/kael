@@ -86,6 +86,68 @@ class DingtalkJzController extends Controller
 //        return $dataFormat;
     }
 
+    public function actionImport6(){
+        $departmentList = DingTalkApiJZ::getDepartmentAllList();
+        $departmentList = array_column($departmentList,null,'id');
+        foreach ($departmentList as $k=>$v){
+            if(!empty($departmentList[$v['parentid']])){
+                $parentInfo = $departmentList[$v['parentid']];
+                if(!empty($departmentList[$parentInfo['parentid']])){
+                    $parentInfo2 = $departmentList[$parentInfo['parentid']];
+                    if(!empty($departmentList[$parentInfo2['parentid']])){
+                        $parentInfo3 = $departmentList[$parentInfo2['parentid']];
+                        if(!empty($departmentList[$parentInfo3['parentid']])){
+                            $parentInfo4 = $departmentList[$parentInfo3['parentid']];
+                            if(!empty($departmentList[$parentInfo4['parentid']])){
+                                $parentInfo5 = $departmentList[$parentInfo4['parentid']];
+                                $v['name_node'] = join('|',[$v['name'],$parentInfo['name'],$parentInfo2['name'],$parentInfo3['name'],$parentInfo4['name'],$parentInfo5['name']]);
+                            }else{
+                                $v['name_node'] = join('|',[$v['name'],$parentInfo['name'],$parentInfo2['name'],$parentInfo3['name'],$parentInfo4['name']]);
+                            }
+                        }else{
+                            $v['name_node'] = join('|',[$v['name'],$parentInfo['name'],$parentInfo2['name'],$parentInfo3['name']]);
+                        }
+                    }else{
+                        $v['name_node'] = join('|',[$v['name'],$parentInfo['name'],$parentInfo2['name']]);
+                    }
+                }else{
+                    $v['name_node'] = $v['name'] . '|' . $parentInfo['name'];
+                }
+                $departmentList[$k] = $v;
+            }
+        }
+        $nameToInfo = [];
+        foreach ($departmentList as $k=>$v){
+            $name = $v['name_node'] ?? $v['name'];
+            $nameToInfo[$name] = $v;
+        }
+        $filePath = './jianzhi_1014_1455.xls';
+        $PHPReader = new \PHPExcel_Reader_Excel5();
+        $objPHPExcel = $PHPReader->load($filePath); // Reader读出来后，加载给Excel实例
+        $data = $objPHPExcel->getSheet(0)->toArray();
+//        $dataFormat = [];
+        $rows = [];
+        $lastId = TmpImportJianzhi::find()->select('id')->orderBy('id desc')->limit(1)->asArray(true)->scalar();
+        $lastId = intval($lastId);
+        foreach ($data as $k=>$v){
+            if($k == 0){
+                continue;
+            }
+            if(empty($v[8])){
+                continue;
+            }
+            //0工号忽略 1姓名 2.3.4.5,6,7 1-6级部门 8手机 9邮箱
+            $lastId += 1;
+            $tmp = ['id'=>$lastId,'name'=>$v[1],'mobile'=>$v[8],'department_name'=>join('|',[$v[7],$v[6],$v[5],$v[4],$v[3],$v[2]])];
+            $tmp['department_id'] = $nameToInfo[$tmp['department_name']]['id'];
+            echo json_encode($tmp,64|256)."\n";
+            $rows[] = [$lastId,$tmp['mobile'],$tmp['name'],$tmp['department_name'],$tmp['department_id']];
+        }
+        $columns = ['id','mobile','name','department_name','department_id'];
+        DBCommon::batchInsertAll(TmpImportJianzhi::tableName(),$columns,$rows,TmpImportJianzhi::getDb(),'INSERT IGNORE');
+
+    }
+
 
     private function actionImportFromRows(){
         exit();

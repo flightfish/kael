@@ -14,6 +14,12 @@ class DingNewController extends Controller
 {
 
 
+    public function actionTest(){
+        $userInfoList = DingTalkApi::getDepartmentUserInfoList(1);
+        echo json_encode($userInfoList);
+    }
+
+
     /**
      * 初始化钉钉信息
      */
