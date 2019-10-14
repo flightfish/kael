@@ -215,7 +215,8 @@ class AliMailApi{
     public static function userInfoList($email,$fields=[
         'name',
         'email',
-        'departmentId'
+        'departmentId',
+        'displayAlias'
     ]){
         !is_array($email) && $email = [$email];
         $ret = self::curlApi(self::API_USER_INFO,[

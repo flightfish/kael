@@ -136,7 +136,7 @@ class AlimailController extends Controller
         if(empty($delMails)){
             exit();
         }
-        $aliDelMails = array_unique(array_column(AliMailApi::userInfoList($delMails),'email','email'));
+        $aliDelMails = array_unique(array_column(AliMailApi::userInfoList($delMails),'displayAlias','displayAlias'));
         foreach ($delMails as $v){
             if(!empty($aliDelMails[$v])){
                 echo "del {$v} \n";
@@ -172,7 +172,7 @@ class AlimailController extends Controller
         foreach ($allEmailsChunk as $vallEmailsChunk){
             $aliEmailUserInfoListChunk = AliMailApi::userInfoList($vallEmailsChunk);
             foreach ($aliEmailUserInfoListChunk as $vv){
-                $emailToDepartment[$vv['email']] = $vv['departmentId'];
+                $emailToDepartment[$vv['displayAlias']] = $vv['departmentId'];
             }
 //            $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');
         }
@@ -191,10 +191,10 @@ class AlimailController extends Controller
                     "departmentId"=>$aliDepartmentId
                 ];
             }elseif($aliDepartmentId != $emailToDepartment[$v['email']]){
-                DingtalkUser::updateAll(['email_created'=>1],['user_id'=>$emailToId[$v['email']]]);
+                DingtalkUser::updateAll(['email_created'=>1],['user_id'=>$emailToId[$v['email']],'email_created'=>0]);
                 $accountForUpdateDept[$aliDepartmentId][] = $v['email'];
             }else{
-                DingtalkUser::updateAll(['email_created'=>1],['user_id'=>$emailToId[$v['email']]]);
+                DingtalkUser::updateAll(['email_created'=>1],['user_id'=>$emailToId[$v['email']],'email_created'=>0]);
             }
         }
         $accountForCreateChunk = array_chunk($accountForCreate,100);
