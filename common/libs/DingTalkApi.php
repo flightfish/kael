@@ -53,8 +53,8 @@ class DingTalkApi {
         $userInfoList = [];
         while(1){
             $retJson = self::curlGet(self::API_USER_GETDEPTMEMBER_USERINFO,['size'=>100,'offset'=>$offset,'department_id'=>$departmentId]);
-            $scheduleList = array_merge($userInfoList,$retJson['userlist']);
-            if(!$retJson['has_more']){
+            $userInfoList = array_merge($userInfoList,$retJson['userlist']);
+            if(!$retJson['hasMore']){
                 break;
             }
             $offset += 200;
