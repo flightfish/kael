@@ -172,7 +172,7 @@ class DingNewController extends Controller
                         'org_email' => $userInfo['orgEmail'] ?? '',
                         'avatar' => $userInfo['avatar'] ?? '',
                         'job_number' => $userInfo['jobnumber'] ?? '',
-                        'ext_attr' => json_encode($userInfo['ext_attr'], 64 | 256),
+                        'ext_attr' => json_encode($userInfo['extattr']??new \stdClass(), 64 | 256),
                         'status' => 0
                     ];
                     if (!empty($relateId)) {
