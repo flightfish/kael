@@ -177,10 +177,10 @@ class DingNewController extends Controller
                     ];
                     if (!empty($relateId)) {
                         echo date('Y-m-d H:i:s') . "\t更新钉钉员工 {$userInfo['name']}[{$userInfo['userid']}]\n";
-                        DingtalkUser::updateAll($userParams, ['relate_id' => $relateId]);
+                        DingtalkDepartmentUser::updateAll($userParams, ['relate_id' => $relateId]);
                     } else {
                         echo date('Y-m-d H:i:s') . "\t新增钉钉员工 {$userInfo['name']}[{$userInfo['userid']}]\n";
-                        DingtalkUser::add($userParams);
+                        DingtalkDepartmentUser::add($userParams);
                     }
                 }
             }
