@@ -144,9 +144,9 @@ class DingNewController extends Controller
 
                     $userId = $userInfo['userid'];
                     $relateId = 0;
-                    if(isset($allDepartmentUserIndex[$v['id'].'|'.$v['user_id']])){
+                    if(isset($allDepartmentUserIndex[$v['id'].'|'.$userId])){
                         $relateId = $allDepartmentUserIndex[$v['id'] . '|' . $userId];
-                        unset($allDepartmentUserIndex[$v['id'].'|'.$v['user_id']]);
+                        unset($allDepartmentUserIndex[$v['id'].'|'.$userId]);
                     }
 
                     $userParams = [
