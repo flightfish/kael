@@ -136,7 +136,15 @@ class AlimailController extends Controller
         if(empty($delMails)){
             exit();
         }
-        $aliDelMails = array_unique(array_column(AliMailApi::userInfoList($delMails),'displayAlias','displayAlias'));
+        $delMailsChunkList = array_chunk($delMails,20);
+        $aliDelMails = [];
+        foreach ($delMailsChunkList as $vDelMailsChunk){
+            $aliDelMailsTmp = AliMailApi::userInfoList($vDelMailsChunk,['displayAlias']);
+            foreach ($aliDelMailsTmp as $vv){
+                $aliDelMails[$vv['displayAlias']] = $vv['displayAlias'];
+            }
+        }
+        echo "del:".json_encode(array_values($aliDelMails))."\n";
         foreach ($delMails as $v){
             if(!empty($aliDelMails[$v])){
                 echo "del {$v} \n";
