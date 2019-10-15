@@ -39,6 +39,7 @@ class DingNewController extends Controller
             $this->updateDingDepartment(2);
             echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
 
+            sleep(1);
 
             echo date('Y-m-d H:i:s')."\t开始同步钉钉人员到kael\n";
             $this->updateDingUser(1);
