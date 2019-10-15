@@ -215,8 +215,9 @@ class DingController extends Controller
                     }
 
                     if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
-                        echo "员工:{$userInfo['name']}[{$userInfo['userid']}]没有工号" . "\n";
-                        continue;
+                        $userInfo['jobnumber'] = 'NO_'.microtime(true);
+//                        echo "员工:{$userInfo['name']}[{$userInfo['userid']}]没有工号" . "\n";
+//                        continue;
                     }
 
 
@@ -699,8 +700,9 @@ class DingController extends Controller
                     }
 
                     if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
-                        echo "员工:{$userInfo['name']}[{$userInfo['userid']}]没有工号" . "\n";
-                        continue;
+                        $userInfo['jobnumber'] = 'NO_'.microtime(true);
+//                        echo "员工:{$userInfo['name']}[{$userInfo['userid']}]没有工号" . "\n";
+//                        continue;
                     }
 
 
