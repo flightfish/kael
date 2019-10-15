@@ -51,4 +51,5 @@ create table dingtalk_department_user (
 
 alter table dingtalk_department_user
     add column kael_id bigint(20) not null default 0 after department_id,
-    add column hired_date timestamp not null default '0000-00-00 00:00:00' after job_number;
+    add column hired_date timestamp not null default '0000-00-00 00:00:00' after job_number,
+    add column state_code varchar(50) not null default '' after mobile;

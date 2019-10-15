@@ -167,6 +167,7 @@ class DingNewController extends Controller
                         'union_id' => $userInfo['unionid'],
                         'open_id' => $userInfo['openid'] ?? '',
                         'mobile' => $userInfo['mobile'],
+                        'state_code' => $userInfo['stateCode']??'',
                         'tel' => $userInfo['tel'] ?? '',
                         'work_place' => $userInfo['workplace']??'',
                         'remark' => $userInfo['remark']??'',
