@@ -122,7 +122,7 @@ SQL;
                 "Accept: application/json, text/plain, */*"
             ];
             echo $user['id']."\n";
-            $ret = AppFunc::curlPost('https://bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost('https://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             sleep(1);
         }
@@ -152,7 +152,7 @@ SQL;
                 "Accept: application/json, text/plain, */*"
             ];
             echo $user['id']."\n";
-            $ret = AppFunc::curlPost('https://bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost('https://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             $oldPlatIds = RelateUserPlatform::find()
                 ->select('platform_id')
