@@ -144,14 +144,15 @@ class AlimailController extends Controller
                 $aliDelMails[$vv['displayAlias']] = $vv['displayAlias'];
             }
         }
-        echo "del:".json_encode(array_values($aliDelMails))."\n";
+        $i = 0;
         foreach ($delMails as $v){
             if(!empty($aliDelMails[$v])){
-                echo "del {$v} \n";
+                $i++;
+                echo "del {$i}: {$v} \n";
                 AliMailApi::userDel($v);
             }
             AlimailStatus::updateAll(['status'=>AlimailStatus::STATUS_INVALID],['email'=>$v]);
-            DingtalkUser::updateAll(['email_created'=>4],['email'=>$v,'status'=>DingtalkUser::STATUS_INVALID]);
+            DingtalkUser::updateAll(['email_created'=>4],['email'=>$v]);
         }
     }
 
