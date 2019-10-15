@@ -3,6 +3,7 @@ namespace console\controllers;
 
 use common\libs\DingTalkApi;
 use common\libs\DingTalkApiJZ;
+use common\models\CommonUser;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkDepartmentUser;
 use common\models\DingtalkUser;
@@ -120,6 +121,9 @@ class DingNewController extends Controller
         foreach ($allDepartmentUserAll as $v){
             $allDepartmentUserIndex[$v['department_id'].'|'.$v['user_id']] = $v['relate_id'];
         }
+        //所有kael信息
+        $kaelInfoList = CommonUser::find()->select('id,mobile')->where(['status'=>0])->asArray(true)->all();
+        $mobileToKaelId = array_column($kaelInfoList,'id','mobile');
         $i = 0;
         for ($level = 0; $level < 10; $level++) {
             echo "level: ".$level."\n";
@@ -158,6 +162,7 @@ class DingNewController extends Controller
                     $userParams = [
                         'corp_type' => $corpType,
                         'department_id' => $v['id'],
+                        'kael_id'=>$mobileToKaelId[$userInfo['mobile']] ?? 0,
                         'user_id' => $userId,
                         'union_id' => $userInfo['unionid'],
                         'open_id' => $userInfo['openid'] ?? '',
@@ -177,6 +182,7 @@ class DingNewController extends Controller
                         'email' => $userInfo['email'] ?? '',
                         'org_email' => $userInfo['orgEmail'] ?? '',
                         'avatar' => $userInfo['avatar'] ?? '',
+                        'hired_date'=>empty($userInfo['hiredDate']) ? '0000-00-00 00:00:00' : date('Y-m-d', $userInfo['hiredDate'] / 1000),
                         'job_number' => $userInfo['jobnumber'] ?? '',
                         'ext_attr' => json_encode($userInfo['extattr']??new \stdClass(), 64 | 256),
                         'status' => 0

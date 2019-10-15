@@ -46,3 +46,9 @@ create table dingtalk_department_user (
  INDEX idx_departmentid_userid (department_id,user_id),
  INDEX idx_userid (user_id)
 )ENGINE=innodb default charset=utf8mb4;
+
+
+
+alter table dingtalk_department_user
+    add column kael_id bigint(20) not null default 0 after department_id,
+    add column hired_date timestamp not null default '0000-00-00 00:00:00' after job_number;
