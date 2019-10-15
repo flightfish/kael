@@ -31,14 +31,15 @@ class DingNewController extends Controller
         }
         try{
 
-//            echo date('Y-m-d H:i:s')."\t开始同步钉钉部门到kael\n";
-//            $this->updateDingDepartment(1);
-//            echo date('Y-m-d H:i:s')."\t部门同步结束\n";
-//
-//            echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉部门到kael\n";
-//            $this->updateDingDepartment(2);
-//            echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
+            echo date('Y-m-d H:i:s')."\t开始同步钉钉部门到kael\n";
+            $this->updateDingDepartment(1);
+            echo date('Y-m-d H:i:s')."\t部门同步结束\n";
 
+            echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉部门到kael\n";
+            $this->updateDingDepartment(2);
+            echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
+
+            sleep(1);
 
             echo date('Y-m-d H:i:s')."\t开始同步钉钉人员到kael\n";
             $this->updateDingUser(1);
