@@ -211,8 +211,12 @@
                 field: 'platform_icon',
                 title: '应用图标',
                 formatter:function(value,row,index){
-                    return '<img src=' + value + '>';
-                    return btnhtml;
+                    if(value = ''){
+                        return '<img src=' + value + ' style="width:270px;height=140px;">';
+                    }else{
+                        return '未配置';
+                    }
+
                 }
             },{
                 field: 'platform_url',
