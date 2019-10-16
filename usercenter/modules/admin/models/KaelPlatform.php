@@ -39,7 +39,7 @@ class KaelPlatform extends RequestBaseModel
         return array_merge([
             [['page','pagesize','env_type','is_show','admin_user','ip_limit','platform_id'], 'integer'],
             [['platform_name','platform_url','platform_icon'], 'string'],
-            [['page','pagesize','env_type','platform_name'], 'required', 'on' => self::SCENARIO_LIST],
+            [['page','pagesize'], 'required', 'on' => self::SCENARIO_LIST],
             [['platform_id','env_type','is_show','admin_user','ip_limit','platform_name','platform_url','platform_icon'], 'required', 'on' => self::SCENARIO_EDIT],
             [['platform_id'], 'required', 'on' => self::SCENARIO_DEL],
             [['env_type','is_show','admin_user','ip_limit','platform_name','platform_url','platform_icon'], 'required', 'on' => self::SCENARIO_ADD],
@@ -49,6 +49,10 @@ class KaelPlatform extends RequestBaseModel
     public function scenarios()
     {
         $scenarios = parent::scenarios();
+        $scenarios[self::SCENARIO_LIST] = ['page','pagesize','platform_name','env_type'];
+        $scenarios[self::SCENARIO_DEL] = ['platform_id'];
+        $scenarios[self::SCENARIO_EDIT] = ['platform_id','env_type','is_show','admin_user','ip_limit','platform_name','platform_url','platform_icon'];
+        $scenarios[self::SCENARIO_ADD] = ['env_type','is_show','admin_user','ip_limit','platform_name','platform_url','platform_icon'];
         return $scenarios;
     }
 
