@@ -214,7 +214,8 @@ class RuKou extends RequestBaseModel
         $retData = [
             'list'=>array_values($data),
             'username'=>$this->user['username'],
-            'ip_limit'=> $hasIpLimit
+            'ip_limit'=> $hasIpLimit,
+            'ip'=>$ip
         ];
         return $retData;
     }
