@@ -92,6 +92,7 @@ class KaelPlatform extends RequestBaseModel
 
         foreach($list as $k=>$v){
             $v['admin_user_name'] = $userIdToName[$v['admin_user']] ?? '未分配';
+            $v['ip_limit'] = empty($v['allow_ips']) ? 0 : 1;
             $list[$k] = $v;
         }
 

@@ -232,10 +232,10 @@
                 field: 'admin_user_department',
                 title: '负责人部门',
             },{
-                field: 'allow_ips',
+                field: 'ip_limit',
                 title: '外网访问',
                 formatter:function(value,row,index){
-                    if(value == ''){
+                    if(value == 0){
                         return "不限";
                     }else{
                         return "限内网";
@@ -281,10 +281,8 @@
         var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
             pagesize: params.limit,   //页面大小
             page: params.offset/params.limit + 1,  //页码
-            filter:{
-                env_type:$("#filter-envtype").val(),
-                platform_name:$("#filter-platformname").val(),
-            }
+            env_type:$("#filter-envtype").val(),
+            platform_name:$("#filter-platformname").val(),
         };
         return temp;
     }
@@ -324,10 +322,12 @@
         var tmpid = button.data('whatever'); // Extract info from data-* attributes
         var modal = $(this);
         if(tmpList[tmpid]){
-            $("#department_name_edit").val(tmpList[tmpid]['department_name']);
-            $("#department_leader_edit").val(tmpList[tmpid]['department_leader_email']);
+            $("#platform_icon").src(tmpList[tmpid]['platform_icon']);
+            $("#platform_name").val(tmpList[tmpid]['platform_name']);
+            $("#platform_url").val(tmpList[tmpid]['platform_url']);
+            $("#admin_user").val(tmpList[tmpid]['admin_user']);
             $("#modal-title2").html("编辑");
-            $("#is_outer").val(tmpList[tmpid]['is_outer']);
+            $("#ip_limit").val(tmpList[tmpid]['ip_limit']);
         }else{
             $("#department_name_edit").val("");
             $("#department_leader_edit").val("");
