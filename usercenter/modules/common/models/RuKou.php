@@ -210,11 +210,10 @@ class RuKou extends RequestBaseModel
         }
 
         $data = array_values($data);
-        $username[]['username'] = $this->user['username'];
 
         $retData = [
             'list'=>array_values($data),
-            'username'=>$username,
+            'username'=>$this->user['username'],
             'ip_limit'=> $hasIpLimit
         ];
         return $retData;
