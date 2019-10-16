@@ -111,7 +111,18 @@ class KaelPlatform extends RequestBaseModel
         if(empty($platformInfo)){
             throw new Exception("平台不存在",Exception::ERROR_COMMON);
         }
-        Platform::updateAll(['status'=>Platform::STATUS_INVALID],['platform_id' => $this->platform_id]);
+        $trans = Platform::getDb()->beginTransaction();
+        try{
+            Platform::updateAll(['status'=>Platform::STATUS_INVALID],['platform_id' => $this->platform_id]);
+            if(empty($platfromId)){
+                throw new Exception("删除失败");
+            }
+            LogPlatform::log(LogPlatform::DEL,$platfromId,$this->user['id'],'');
+            $trans->commit();
+        }catch (\Exception $e){
+            $trans->rollBack();
+            throw $e;
+        }
         return [];
     }
 
