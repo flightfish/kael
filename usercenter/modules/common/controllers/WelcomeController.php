@@ -21,6 +21,19 @@ class WelcomeController extends BaseController
         }
     }
 
+    public function actionListAll()
+    {
+        try {
+            $model = new RuKou(['scenario' => RuKou::SCENARIO_RUKOU]);
+            $model->load($this->loadData);
+            $model->validate();
+            $ret = $model->ruKouAll();
+            return $this->success($ret);
+        } catch (\Exception $exception) {
+            return $this->error($exception);
+        }
+    }
+
     public function actionLoginPlatform(){
         try {
             $model = new RuKou(['scenario' => RuKou::SCENARIO_RUKOU]);
