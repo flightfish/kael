@@ -179,6 +179,7 @@ class RuKou extends RequestBaseModel
 
         $data = [];
 
+        $hasIpLimit = 0;
         foreach($relateList as $relateInfo){
             $platformId = $relateInfo['platform_id'];
             if(empty($platformList[$platformId])){
@@ -197,13 +198,14 @@ class RuKou extends RequestBaseModel
                 $allowIps = array_filter(explode(',',$info['allow_ips']));
                 if(!in_array($ip,$allowIps)){
                     $isIpLimit = 1;
+                    $hasIpLimit = 1;
                 }
             }
             $data[$info['platform_id']] = [
                 'url'=>'/common/welcome/login-platform?platform_id='.$info['platform_id'],
                 'name' => $info['platform_name'],
                 'icon' => $info['platform_icon'],
-                'limit'=>$isIpLimit
+                'ip_limit'=>$isIpLimit
             ];
         }
 
@@ -212,7 +214,8 @@ class RuKou extends RequestBaseModel
 
         $retData = [
             'list'=>array_values($data),
-            'username'=>$username
+            'username'=>$username,
+            'ip_limit'=> $hasIpLimit
         ];
         return $retData;
     }
