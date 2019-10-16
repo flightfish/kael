@@ -115,7 +115,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" >应用图标</span>
-                    <div class="form-control">点击上传</div>
+                    <input type="file" id="file_icon" class="form-control">点击上传</input>
 <!--                    <input id="platform_icon_button" value="" class="form-control"/>-->
                 </div>
                 <img src="" id="platform_icon" style="width: 270px;height:140px;">
