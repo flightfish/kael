@@ -211,7 +211,7 @@
                 field: 'platform_icon',
                 title: '应用图标',
                 formatter:function(value,row,index){
-                    if(value = ''){
+                    if(value != ''){
                         return '<img src=' + value + ' style="width:270px;height=140px;">';
                     }else{
                         return '未配置';
