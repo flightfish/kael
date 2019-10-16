@@ -210,6 +210,10 @@
             },{
                 field: 'platform_icon',
                 title: '应用图标',
+                formatter:function(value,row,index){
+                    return '<img src=' + value + '>';
+                    return btnhtml;
+                }
             },{
                 field: 'platform_url',
                 title: '应用链接',
