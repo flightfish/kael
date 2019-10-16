@@ -107,7 +107,7 @@
                 <h4 class="modal-title" id="modal-title2">编辑</h4>
             </div>
             <div class="modal-body">
-                <input type="hidden" id="modid-department" value="">
+                <input type="hidden" id="modid-platform" value="">
 
                 <div class="input-group">
                     <span class="input-group-addon" >应用名称</span>
@@ -153,8 +153,8 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-white" data-dismiss="modal" id="closebtn-department">关闭</button>
-                <button type="button" class="btn btn-primary" id="saveedit-department" onclick="editDepartment(1)">保存</button>
+                <button type="button" class="btn btn-white" data-dismiss="modal" id="closebtn">关闭</button>
+                <button type="button" class="btn btn-primary" id="saveedit-department" onclick="editPlatform">保存</button>
             </div>
         </div>
     </div>
@@ -344,7 +344,7 @@
             $("#modal-title2").html("新建");
             $("#ip_limit").val(-1);
         }
-        $("#modid-department").val(tmpid);
+        $("#modid-platform").val(tmpid);
     });
 
     function edit(is_old){
@@ -389,16 +389,30 @@
         });
     };
 
-    function editDepartment(is_old){
-        var id = is_old ? $('#modid-department').val() : 0;
-        var platform_list_checked = $('input[name="platform_list_edit"]:checked');
-        var platform_list = [];
-        $.each(platform_list_checked, function () {
-            var platform_id = $(this).val()
-            platform_list.push(platform_id);
-        });
-        if($("#is_outer").val() == -1){
-            alert("请选择部门类型");
+    function editPlatform(){
+        var id = $('#modid-platform').val() || 0;
+        if(!$("#platform_name").val()){
+            alert("请填写应用名称");
+            return false;
+        }
+        if(!$("#platform_icon").val()){
+            alert("请上传应用图标");
+            return false;
+        }
+        if(!$("#platform_url").val()){
+            alert("请填写应用链接");
+            return false;
+        }
+        if(!$("#env_type").val() == -1){
+            alert("请选择应用类型");
+            return false;
+        }
+        if(!$("#ip_limit").val() == -1){
+            alert("请选择IP限制");
+            return false;
+        }
+        if(!$("#is_show").val() == -1){
+            alert("请选择是否展示卡片");
             return false;
         }
         $.ajax({
@@ -414,7 +428,7 @@
             success:function(data){
                 if(data.code==0){
                     alert("操作成功");
-                    $("#closebtn-department").click();
+                    $("#closebtn").click();
                     $("#mytable").bootstrapTable("refresh");
                 }else{
                     alert(data.message);
