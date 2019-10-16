@@ -91,7 +91,7 @@
             <button id="search-button" class="btn btn-info">搜索</button>
         </div>
         <div style="float: left;">
-            <button class="btn btn-success" data-toggle="modal" data-target="#editDepartModal" data-whatever="0">新建应用</button>
+            <button class="btn btn-success" data-toggle="modal" data-target="#editModal" data-whatever="0">新建应用</button>
         </div>
 
     </div>
@@ -322,7 +322,7 @@
         var tmpid = button.data('whatever'); // Extract info from data-* attributes
         var modal = $(this);
         if(tmpList[tmpid]){
-            $("#platform_icon").src(tmpList[tmpid]['platform_icon']);
+            $("#platform_icon").attr('src',tmpList[tmpid]['platform_icon']);
             $("#platform_name").val(tmpList[tmpid]['platform_name']);
             $("#platform_url").val(tmpList[tmpid]['platform_url']);
             $("#admin_user").val(tmpList[tmpid]['admin_user']);
