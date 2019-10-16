@@ -177,7 +177,7 @@
         pageList: [10,20,50],    //可供选择的每页的行数（*）
         clickToSelect:false,        //是否启用点击选中行
         height: maxheight,         //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
-        uniqueId: "id",           //每一行的唯一标识，一般为主键列
+        uniqueId: "platform_id",           //每一行的唯一标识，一般为主键列
         cardView: false,          //是否显示详细视图
         detailView: false,          //是否显示父子表
         showHeader:true,
