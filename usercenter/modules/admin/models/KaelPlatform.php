@@ -137,7 +137,7 @@ class KaelPlatform extends RequestBaseModel
             'platform_name'=>$this->platform_name,
             'platform_url'=>$this->platform_url,
             'platform_icon'=>$this->platform_icon,
-            'allow_ips'=>$this->ip_limit ? '127.0.0.1' : '',
+            'allow_ips'=>$this->ip_limit && $this->ip_limit > 0 ? '127.0.0.1' : '',
             'is_show'=>$this->is_show,
             'admin_user'=>$this->admin_user,
             'env_type'=>$this->env_type

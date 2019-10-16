@@ -116,7 +116,6 @@
                 <div class="input-group">
                     <span class="input-group-addon" >应用图标</span>
                     <input type="file" id="file_icon" class="form-control"/>
-<!--                    <input id="platform_icon_button" value="" class="form-control"/>-->
                 </div>
                 <img src="" id="platform_icon" style="width: 270px;height:140px;">
                 <div class="input-group">
@@ -338,10 +337,12 @@
             $("#modal-title2").html("编辑");
             $("#ip_limit").val(tmpList[tmpid]['ip_limit']);
         }else{
-            $("#department_name_edit").val("");
-            $("#department_leader_edit").val("");
+            $("#platform_icon").attr('src','');
+            $("#platform_name").val('');
+            $("#platform_url").val('');
+            $("#admin_user").val(0);
             $("#modal-title2").html("新建");
-            $("#is_outer").val(-1);
+            $("#ip_limit").val(-1);
         }
         $("#modid-department").val(tmpid);
     });
