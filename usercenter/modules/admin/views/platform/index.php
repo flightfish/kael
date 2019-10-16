@@ -115,7 +115,7 @@
                 </div>
                 <div class="input-group">
                     <span class="input-group-addon" >应用图标</span>
-                    <input type="file" id="file_icon" class="form-control"/>
+                    <input type="file" id="file_icon" class="form-control" value=""/>
                 </div>
                 <img src="" id="platform_icon" style="width: 270px;height:140px;">
                 <div class="input-group">
@@ -415,65 +415,56 @@
             alert("请选择是否展示卡片");
             return false;
         }
-        $.ajax({
-            type:'post',
-            url: editDepatmentURL,
-            data:{
-                department_id:id,
-                department_name:$("#department_name_edit").val(),
-                is_outer:$("#is_outer").val(),
-                platform_list: platform_list,
-                leader:$("#department_leader_edit").val()
-            },
-            success:function(data){
-                if(data.code==0){
-                    alert("操作成功");
-                    $("#closebtn").click();
-                    $("#mytable").bootstrapTable("refresh");
-                }else{
-                    alert(data.message);
+        let data = {
+            platform_id:id,
+            platform_name:$("#platform_name").val(),
+            platform_url:$("#platform_url").val(),
+            admin_user:$("#admin_user").val()
+            is_show:$("#is_show").val()
+            platform_icon:$("#platform_icon").attr('src'),
+            env_type:$("#env_type").val(),
+            ip_limit:$("#ip_limit").val(),
+        };
+        if($("#modal-title2").html() == '编辑'){
+            $.ajax({
+                type:'post',
+                url: editURL,
+                data:data,
+                success:function(data){
+                    if(data.code==0){
+                        alert("操作成功");
+                        $("#closebtn").click();
+                        $("#mytable").bootstrapTable("refresh");
+                    }else{
+                        alert(data.message);
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            $.ajax({
+                type:'post',
+                url: addUrl,
+                data:data,
+                success:function(data){
+                    if(data.code==0){
+                        alert("操作成功");
+                        $("#closebtn").click();
+                        $("#mytable").bootstrapTable("refresh");
+                    }else{
+                        alert(data.message);
+                    }
+                }
+            });
+        }
+
     };
 
 
-    function platfromListByDepart(department_id){
-        var adminList = tmpList[department_id]['admin_list'];
-        $.ajax({
-            type:'post',
-            url: platURL,
-            data:{
-                department_id: department_id
-            },
-            success:function(data){
-                if(data.code==0){
-                    //clear
-                    $("#platform_list_container").html("");
-                    let html = "";
-                    for(var i in data.data){
-                        html +=  '<div style="width: 30%;float: left""><input type="checkbox" name="platform_list" value="'+ data.data[i].platform_id +'"/>' + data.data[i].platform_name+"</div>";
-                    }
-                    html +="<div style='clear: both'></div>";
-                    $("#platform_list_container").html(html);
-                }else{
-                    alert(data.message);
-                }
-            }
-        });
-    }
 
     $("#search-button").on('click',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
     });
 
-    $("#filter-role").on('change',function(){
-        $('#mytable').bootstrapTable('refresh',{url:listURL});
-    });
-
-    $("#filter-department").on('change',function(){
-        $('#mytable').bootstrapTable('refresh',{url:listURL});
-    });
 
     $("#filter-platform").on('change',function(){
         $('#mytable').bootstrapTable('refresh',{url:listURL});
@@ -483,22 +474,11 @@
         $('[data-toggle="tooltip"]').tooltip()
     });
 
-    function changeSelectAdminUser(userid){
-        $("#admin_user").parent().hide();
-        $("#platform_list_container").parent().show();
-        $("#admin_user").val(userid);
-        $("#admin_user").change();
-        $("#current_admin").children().removeClass('active');
-        $("#current_admin_"+$("#admin_user").val()).addClass('active');
-    }
+    $("#file_icon").on('change',function(e){
+        console.log(e)
+    })
 
-    function showSelectAdminUser(userid){
-        $("#admin_user").parent().show();
-        $("#platform_list_container").parent().show();
-        $("#admin_user").val(userid);
-        $("#admin_user").change();
-        $("#current_admin").children().removeClass('active');
-    }
+
 
 </script>
 
