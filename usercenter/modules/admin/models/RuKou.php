@@ -40,7 +40,7 @@ class RuKou extends RequestBaseModel
         $clientIPAllow = explode(',',$platformInfo['allow_ips']);
         $clientIP = UserToken::getRealIP(false);
         if(!empty($platformInfo['allow_ips']) && !in_array($clientIP,$clientIPAllow)){
-            throw new Exception('无权访问，请联系管理员',Exception::ERROR_COMMON);
+            throw new Exception('该平台仅限公司内网访问',Exception::ERROR_COMMON);
         }
 
         $data = [];
@@ -58,6 +58,10 @@ class RuKou extends RequestBaseModel
             $data[] = [
                 'url'=>'/admin/department/index',
                 'name' => '部门管理',
+            ];
+            $data[] = [
+                'url'=>'/admin/platform/index',
+                'name' => '平台管理',
             ];
             $data[] = [
                 'url'=>'/admin/user-lock/index',
