@@ -460,7 +460,7 @@
         // uptoken : '<Your upload token>', //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
         // unique_names: true, // 默认 false，key为文件名。若开启该选项，SDK为自动生成上传成功后的key（文件名）。
         // save_key: true,   // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK会忽略对key的处理
-        domain: 'http://qiniu-plupload.qiniudn.com/',   //bucket 域名，下载资源时用到，**必需**
+        domain: 'https://innerplatformqiniu.knowbox.cn/o_1dnbt88b59r3scvlev5kma55a.png/',   //bucket 域名，下载资源时用到，**必需**
         get_new_uptoken: false,  //设置上传文件的时候是否每次都重新获取新的token
         container: 'file_icon_parent',           //上传区域DOM ID，默认是browser_button的父元素，
         max_file_size: '4mb',           //最大文件体积限制
