@@ -492,7 +492,7 @@
                 // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
 
                 var domain = up.getOption('domain');
-                var res = parseJSON(info);
+                var res = Json.Parse(info);
                 var sourceLink = domain + res.key; //获取上传成功后的文件的Url
                 $("#platform_icon").attr('src',sourceLink)
             },
