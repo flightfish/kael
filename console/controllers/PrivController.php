@@ -119,9 +119,11 @@ SQL;
                 "Referer: https://bslive.knowbox.cn/",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
                 "Sec-Fetch-Mode: cors",
-                "Accept: application/json, text/plain, */*"
+                "Accept: application/json, text/plain, */*",
+                "Content-Type: application/json",
             ];
             echo json_encode($user,64|256)."\n";
+            $user = json_encode($user,64|256);
             $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
@@ -149,9 +151,11 @@ SQL;
                 "Referer: https://bslive.knowbox.cn/",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
                 "Sec-Fetch-Mode: cors",
-                "Accept: application/json, text/plain, */*"
+                "Accept: application/json, text/plain, */*",
+                "Content-Type: application/json",
             ];
             echo json_encode($user,64|256)."\n";
+            $user = json_encode($user,64|256);
             $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             $oldPlatIds = RelateUserPlatform::find()
@@ -184,9 +188,11 @@ SQL;
                 "Referer: https://bslive.knowbox.cn/",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
                 "Sec-Fetch-Mode: cors",
-                "Accept: application/json, text/plain, */*"
+                "Accept: application/json, text/plain, */*",
+                "Content-Type: application/json",
             ];
             echo json_encode($user,64|256)."\n";
+            $user = json_encode($user,64|256);
             $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
