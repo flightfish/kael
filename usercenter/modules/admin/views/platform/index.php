@@ -491,6 +491,7 @@
                 //  }
                 // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
 
+                console.log(info)
                 var domain = up.getOption('domain');
                 var res = info.parseJSON();
                 var sourceLink = domain + res.key; //获取上传成功后的文件的Url
