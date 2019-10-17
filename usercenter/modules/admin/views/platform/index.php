@@ -506,8 +506,7 @@
                 // 该配置必须要在 unique_names: false , save_key: false 时才生效
                 console.log(up);
                 console.log(file)
-                let key = '';
-                // var key = "/kaeltmp/"+ (+new Date());
+                let key = "/iconkael/"+ (+new Date())+"_"+file.name;
                 // do something with key here
                 return key
             }
