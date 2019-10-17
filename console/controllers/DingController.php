@@ -3,6 +3,7 @@ namespace console\controllers;
 
 use common\libs\DingTalkApi;
 use common\libs\DingTalkApiJZ;
+use common\models\DBCommon;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use common\models\ehr\AuthUser;
@@ -21,6 +22,7 @@ use common\models\ehr\PsMessageDetail;
 use common\models\ehr\PushCenterAcceptUserRecord;
 use common\models\ehr\PushCenterLog;
 use common\models\ehr\StaffFieldEditRecord;
+use common\models\TmpImportJianzhi;
 use common\models\UserCenter;
 use common\models\UserInfo;
 use Yii;
@@ -700,7 +702,16 @@ class DingController extends Controller
                     }
 
                     if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
-                        $userInfo['jobnumber'] = 'NO_'.microtime(true);
+                        $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
+                        if(empty($tmpImportJianzhi)){
+                            $columnsTmpJz = ['mobile','name','ding_userid','ding_error'];
+                            DBCommon::batchInsertAll($columnsTmpJz,[
+                                [$userInfo['mobile'],$userInfo['name'],$userInfo['userid'],'OLD IMPORT']
+                            ],TmpImportJianzhi::getDb(),'INSERT IGNORE');
+                            $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
+                        }
+                        $userInfo['jobnumber'] = self::tmpIdToWorknumber($tmpImportJianzhi['id']);
+//                        $userInfo['jobnumber'] = 'NO_'.microtime(true);
 //                        echo "员工:{$userInfo['name']}[{$userInfo['userid']}]没有工号" . "\n";
 //                        continue;
                     }
@@ -1277,5 +1288,18 @@ class DingController extends Controller
                 }
             }
         }
+    }
+
+    public static function tmpIdToWorknumber($id){
+        $workNunmber = '';
+        $id = intval($id);
+        while($id){
+            $next = $id%9 + 1;
+            $v['id'] = intval($id/9);
+            $workNunmber = $next.$workNunmber;
+        }
+        $workNunmber = 1000000 + intval($workNunmber);
+        $workNunmber = 'JZ'.$workNunmber;
+        return $workNunmber;
     }
 }
