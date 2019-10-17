@@ -133,6 +133,12 @@ class KaelPlatform extends RequestBaseModel
 
     public function add(){
         $this->checkUserAuth();
+        $hostArr = parse_url($this->platform_url);
+        $host = $hostArr['host'];
+        $old = Platform::findOneByHost($host,0);
+        if(!empty($old)){
+            throw new Exception("域名已存在，请用其他域名");
+        }
         $param = [
             'platform_name'=>$this->platform_name,
             'platform_url'=>$this->platform_url,
@@ -161,6 +167,19 @@ class KaelPlatform extends RequestBaseModel
         $platformInfo = Platform::findOneById($this->platform_id);
         if(empty($platformInfo)){
             throw new Exception("平台不存在",Exception::ERROR_COMMON);
+        }
+        if($platformInfo['platform_url'] != $this->platform_url){
+            $hostArr = parse_url($this->platform_url);
+            $host = $hostArr['host'];
+            $others = self::find()
+                ->where(['status'=>0])
+                ->andWhere(['like','platform_url','//'.$host])
+                ->andWhere(['!=','platform_id',$platformInfo['platform_id']])
+                ->asArray(true)
+                ->one();
+            if(!empty($others)){
+                throw new Exception("域名已被其他平台占用，请用其他域名");
+            }
         }
         $param = [
             'platform_name'=>$this->platform_name,
