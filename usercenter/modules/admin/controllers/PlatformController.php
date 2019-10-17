@@ -30,7 +30,8 @@ class PlatformController extends BaseController{
             }
             UserToken::tokenToUser($token);
             $token = Qiniu::getUploadToken();
-            return $this->success($token);
+            $this->success($token);
+            return $token;
         }catch (\Exception $e){
             return $this->error($e);
         }
