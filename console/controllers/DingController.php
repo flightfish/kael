@@ -1301,7 +1301,7 @@ class DingController extends Controller
         $id = intval($id);
         while($id){
             $next = $id%9 + 1;
-            $v['id'] = intval($id/9);
+            $id = intval($id/9);
             $workNunmber = $next.$workNunmber;
         }
         $workNunmber = 1000000 + intval($workNunmber);
