@@ -419,7 +419,7 @@
             platform_id:id,
             platform_name:$("#platform_name").val(),
             platform_url:$("#platform_url").val(),
-            admin_user:$("#admin_user").val()
+            admin_user:$("#admin_user").val(),
             is_show:$("#is_show").val(),
             platform_icon:$("#platform_icon").attr('src'),
             env_type:$("#env_type").val(),
