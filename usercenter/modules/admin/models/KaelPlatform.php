@@ -133,6 +133,9 @@ class KaelPlatform extends RequestBaseModel
 
     public function add(){
         $this->checkUserAuth();
+        if(substr($this->platform_url,0,4) != 'http'){
+            throw new Exception("请输入正确域名");
+        }
         $hostArr = parse_url($this->platform_url);
         $host = $hostArr['host'];
         $old = Platform::findOneByHost($host,0);
@@ -164,6 +167,9 @@ class KaelPlatform extends RequestBaseModel
 
     public function edit(){
         $this->checkUserAuth();
+        if(substr($this->platform_url,0,4) != 'http'){
+            throw new Exception("请输入正确域名");
+        }
         $platformInfo = Platform::findOneById($this->platform_id);
         if(empty($platformInfo)){
             throw new Exception("平台不存在",Exception::ERROR_COMMON);
