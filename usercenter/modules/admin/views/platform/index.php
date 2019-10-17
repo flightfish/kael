@@ -156,7 +156,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-white" data-dismiss="modal" id="closebtn">关闭</button>
-                <button type="button" class="btn btn-primary" id="saveedit-department" onclick="editPlatform">保存</button>
+                <button type="button" class="btn btn-primary"  onclick="editPlatform()">保存</button>
             </div>
         </div>
     </div>
@@ -355,7 +355,7 @@
             alert("请填写应用名称");
             return false;
         }
-        if(!$("#platform_icon").val()){
+        if(!$("#platform_icon").attr('src')){
             alert("请上传应用图标");
             return false;
         }
