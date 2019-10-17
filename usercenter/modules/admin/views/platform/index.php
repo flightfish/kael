@@ -476,6 +476,7 @@
 
     $("#file_icon").on('change',function(e){
         console.log(e)
+        console.log($('#file_icon').val())
     })
 
 
