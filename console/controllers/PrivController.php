@@ -172,7 +172,7 @@ SQL;
         $sql = <<<SQL
 select DISTINCT a.*
 from `user` a
-where a.`status` = 0 and a.user_type=0 and a.user_id=59021 and a.department_id=158
+where a.`status` = 0 and a.user_type=0 and a.id=59021 and a.department_id=158
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
 
