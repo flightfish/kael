@@ -17,7 +17,7 @@ class LogPlatform extends \common\models\BaseActiveRecord
 
     public static function tableName()
     {
-        return '{{log_auth_user}}';
+        return '{{log_auth_platform}}';
     }
 
 
