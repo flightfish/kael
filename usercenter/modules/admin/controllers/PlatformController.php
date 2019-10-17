@@ -1,6 +1,9 @@
 <?php
 namespace usercenter\modules\admin\controllers;
 
+use common\libs\Qiniu;
+use common\libs\UserToken;
+use usercenter\components\exception\Exception;
 use usercenter\controllers\BaseController;
 use usercenter\modules\admin\models\KaelPlatform;
 use Yii;
@@ -19,6 +22,20 @@ class PlatformController extends BaseController{
         }
     }
 
+    public function actionQiniuToken(){
+        try{
+            $token = UserToken::getToken();
+            if(empty($token)){
+                throw new Exception(Exception::NOT_LOGIN_MSG,Exception::NOT_LOGIN_CODE);
+            }
+            UserToken::tokenToUser($token);
+            $token = Qiniu::getUploadToken();
+            return $this->success($token);
+        }catch (\Exception $e){
+            return $this->error($e);
+        }
+
+    }
 
     public function actionList(){
         try{

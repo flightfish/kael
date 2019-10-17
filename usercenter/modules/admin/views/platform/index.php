@@ -45,8 +45,8 @@
     <script src="/statics/js/jquery.cookie.min.js?v=1.4.1"></script>
     <script src="/statics/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
     <script src="/statics/qiniu/qiniu.2.5.4.min.js"></script>
-<!--    <script type="text/javascript" src="/statics/qiniu/moxie.min.js"></script>-->
-<!--    <script type="text/javascript" src="/statics/qiniu/plupload.full.min.js"></script>-->
+    <script type="text/javascript" src="/statics/qiniu/moxie.min.js"></script>
+    <script type="text/javascript" src="/statics/qiniu/plupload.full.min.js"></script>
     <script src="/statics/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
     <script src="/statics/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
     <script src="/statics/js/plugins/layer/laydate/laydate.js"></script>
@@ -59,6 +59,7 @@
         var editURL = "/admin/platform/edit"+urlParam;
         var addUrl = "/admin/platform/add"+urlParam;
         var delURL = "/admin/platform/del"+urlParam;
+        var qiniuTokenUrl = "/admin/platform/qiniu-token"+urlParam;
     </script>
 </head>
 
@@ -113,9 +114,10 @@
                     <span class="input-group-addon" >应用名称</span>
                     <input id="platform_name" value="" class="form-control"/>
                 </div>
-                <div class="input-group">
+                <div class="input-group" id="file_icon_parent">
                     <span class="input-group-addon" >应用图标</span>
-                    <input type="file" id="file_icon" class="form-control" value=""/>
+<!--                    <input type="file" id="file_icon" class="form-control" value=""/>-->
+                    <div  id="file_icon" class="form-control" value="form-control">点击上传</div>
                 </div>
                 <img src="" id="platform_icon" style="width: 270px;height:140px;">
                 <div class="input-group">
@@ -347,48 +349,6 @@
         $("#modid-platform").val(tmpid);
     });
 
-    function edit(is_old){
-        var id = is_old ? $('#modid').val() : 0;
-        var platform_list_checked = $('input[name="platform_list"]:checked');
-        var platform_list = [];
-        $.each(platform_list_checked, function () {
-            var platform_id = $(this).val()
-            platform_list.push(platform_id);
-        });
-        if(!($("#admin_user").val() > 0)){
-            alert("请选择管理员");
-            return false;
-        }
-        $.ajax({
-            type:'post',
-            url: editAdminURL,
-            data:{
-                department_id:id,
-                user_id:$("#admin_user").val(),
-                platform_list: platform_list,
-            },
-            success:function(data){
-                if(data.code==0){
-                    alert("操作成功");
-//                    $("#closebtn").click();
-                    updateTmpListAdminList();
-                    $("#current_admin_"+$("#admin_user").val()).remove();
-                    if(platform_list.length > 0){
-                        let spanhtml = "<button onclick='changeSelectAdminUser("+$("#admin_user").val()+")' class='btn btn-outline btn-primary' id='current_admin_"+ $("#admin_user").val() +"'>"+ $("#admin_user").find("option:selected").text()  +"</button>&nbsp;&nbsp;"
-                        $("#current_admin").append(spanhtml);
-                        $("#current_admin_"+$("#admin_user").val()).click();
-                    }else{
-                        $("#current_admin").children().removeClass('active');
-                        $("#platform_list_container").parent().hide();
-                    }
-//                    $("#mytable").bootstrapTable("refresh");
-                }else{
-                    alert(data.message);
-                }
-            }
-        });
-    };
-
     function editPlatform(){
         var id = $('#modid-platform').val() || 0;
         if(!$("#platform_name").val()){
@@ -475,9 +435,82 @@
     });
 
     $("#file_icon").on('change',function(e){
-        console.log(e)
-        console.log($('#file_icon').val())
-    })
+        let filepath = $('#file_icon').val();
+        $.ajax({
+            type:'post',
+            url: qiniuTokenUrl,
+            data:data,
+            success:function(data){
+                if(data.code==0){
+                    let qiniutoken = dats.data;
+                    var observable = qiniu.upload(file, key, token, putExtra, config)
+                    console.log(qiniutoken)
+                }else{
+                    alert(data.message);
+                }
+            }
+        });
+    });
+
+    //qiniu
+    var uploader = Qiniu.uploader({
+        runtimes: 'html5,flash,html4',    //上传模式,依次退化
+        browse_button: 'file_icon',       //上传选择的点选按钮，**必需**
+        uptoken_url: qiniuTokenUrl,            //Ajax请求upToken的Url，**强烈建议设置**（服务端提供）
+        // uptoken : '<Your upload token>', //若未指定uptoken_url,则必须指定 uptoken ,uptoken由其他程序生成
+        // unique_names: true, // 默认 false，key为文件名。若开启该选项，SDK为自动生成上传成功后的key（文件名）。
+        // save_key: true,   // 默认 false。若在服务端生成uptoken的上传策略中指定了 `sava_key`，则开启，SDK会忽略对key的处理
+        domain: 'http://qiniu-plupload.qiniudn.com/',   //bucket 域名，下载资源时用到，**必需**
+        get_new_uptoken: false,  //设置上传文件的时候是否每次都重新获取新的token
+        container: 'file_icon_parent',           //上传区域DOM ID，默认是browser_button的父元素，
+        max_file_size: '4mb',           //最大文件体积限制
+        flash_swf_url: 'js/plupload/Moxie.swf',  //引入flash,相对路径
+        max_retries: 3,                   //上传失败最大重试次数
+        dragdrop: true,                   //开启可拖曳上传
+        drop_element: 'file_icon_parent',        //拖曳上传区域元素的ID，拖曳文件或文件夹后可触发上传
+        chunk_size: '4mb',                //分块上传时，每片的体积
+        auto_start: true,                 //选择文件后自动上传，若关闭需要自己绑定事件触发上传
+        init: {
+            'FilesAdded': function(up, files) {
+                plupload.each(files, function(file) {
+                    // 文件添加进队列后,处理相关的事情
+                });
+            },
+            'BeforeUpload': function(up, file) {
+                // 每个文件上传前,处理相关的事情
+            },
+            'UploadProgress': function(up, file) {
+                // 每个文件上传时,处理相关的事情
+            },
+            'FileUploaded': function(up, file, info) {
+                // 每个文件上传成功后,处理相关的事情
+                // 其中 info 是文件上传成功后，服务端返回的json，形式如
+                // {
+                //    "hash": "Fh8xVqod2MQ1mocfI4S4KpRL6D98",
+                //    "key": "gogopher.jpg"
+                //  }
+                // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
+
+                // var domain = up.getOption('domain');
+                // var res = parseJSON(info);
+                // var sourceLink = domain + res.key; 获取上传成功后的文件的Url
+            },
+            'Error': function(up, err, errTip) {
+                //上传出错时,处理相关的事情
+            },
+            'UploadComplete': function() {
+                //队列文件处理完毕后,处理相关的事情
+            },
+            'Key': function(up, file) {
+                // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
+                // 该配置必须要在 unique_names: false , save_key: false 时才生效
+
+                var key = "";
+                // do something with key here
+                return key
+            }
+        }
+    });
 
 
 
