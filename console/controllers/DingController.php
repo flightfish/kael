@@ -705,9 +705,15 @@ class DingController extends Controller
                         $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
                         if(empty($tmpImportJianzhi)){
                             $columnsTmpJz = ['mobile','name','ding_userid','ding_error'];
-                            DBCommon::batchInsertAll($columnsTmpJz,[
-                                [$userInfo['mobile'],$userInfo['name'],$userInfo['userid'],'OLD IMPORT']
-                            ],TmpImportJianzhi::getDb(),'INSERT IGNORE');
+                            DBCommon::batchInsertAll(
+                                TmpImportJianzhi::tableName(),
+                                $columnsTmpJz,
+                                [
+                                    [$userInfo['mobile'],$userInfo['name'],$userInfo['userid'],'OLD IMPORT']
+                                ],
+                                TmpImportJianzhi::getDb(),
+                                'INSERT IGNORE'
+                            );
                             $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
                         }
                         $userInfo['jobnumber'] = self::tmpIdToWorknumber($tmpImportJianzhi['id']);
