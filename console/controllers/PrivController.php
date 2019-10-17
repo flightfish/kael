@@ -124,7 +124,7 @@ SQL;
             echo json_encode($user,64|256)."\n";
             $ret = AppFunc::curlPost('https://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
-            sleep(1);
+            //sleep(1);
         }
     }
 
@@ -159,7 +159,37 @@ SQL;
                 ->where(['user_id'=>$user['id'],'status'=>0])->asArray(true)->column();
             $addPlat = array_values(array_diff([50004,50005],$oldPlatIds));
             !empty($addPlat) && RelateUserPlatform::batchAdd($user['id'],$addPlat);
-            sleep(1);
+            //sleep(1);
+        }
+    }
+
+
+    public function actionBossTest(){
+        if(exec('ps -ef|grep "priv/boss-test"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
+        $sql = <<<SQL
+select DISTINCT a.*
+from `user` a
+where a.`status` = 0 and a.user_type=0 and a.user_id=59021 and a.department_id=158
+SQL;
+        $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
+
+        foreach ($userList as $user){
+            $user['name'] = $user['username'];
+            $user['user_id'] = $user['id'];
+
+            $headers = [
+                "Referer: https://bslive.knowbox.cn/",
+                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
+                "Sec-Fetch-Mode: cors",
+                "Accept: application/json, text/plain, */*"
+            ];
+            echo json_encode($user,64|256)."\n";
+            $ret = AppFunc::curlPost('https://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+            echo $ret."\n";
+            //sleep(1);
         }
     }
 }
