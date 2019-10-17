@@ -121,7 +121,7 @@ SQL;
                 "Sec-Fetch-Mode: cors",
                 "Accept: application/json, text/plain, */*"
             ];
-            echo $user['id']."\n";
+            echo json_encode($user,64|256)."\n";
             $ret = AppFunc::curlPost('https://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             sleep(1);
@@ -151,7 +151,7 @@ SQL;
                 "Sec-Fetch-Mode: cors",
                 "Accept: application/json, text/plain, */*"
             ];
-            echo $user['id']."\n";
+            echo json_encode($user,64|256)."\n";
             $ret = AppFunc::curlPost('https://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             $oldPlatIds = RelateUserPlatform::find()
