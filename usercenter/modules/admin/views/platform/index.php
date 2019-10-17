@@ -474,7 +474,7 @@
         $('[data-toggle="tooltip"]').tooltip()
     });
 
-    $("#file_icon").on('click',function(e){
+    $("#file_icon").on('change',function(e){
         console.log(e)
     })
 
