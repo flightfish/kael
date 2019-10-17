@@ -3,6 +3,8 @@
 namespace usercenter\modules\admin\models;
 
 use common\libs\UserToken;
+use common\models\DingtalkDepartment;
+use common\models\DingtalkUser;
 use common\models\LogPlatform;
 use common\models\Platform;
 use common\models\Role;
@@ -90,12 +92,18 @@ class KaelPlatform extends RequestBaseModel
         !empty($this->env_type) && $this->env_type > 0 && $where['env_type']=$this->env_type;
         $list = Platform::findPageList($page,$pagesize,$where,'platform_id desc','*',$whereArr);
         $count = Platform::findCount($where,$whereArr);
-        $adminUserIds = array_unique(array_column($list,'admin_user'));
+        $adminUserIds = array_unique(array_filter(array_column($list,'admin_user')));
         $userInfoList = UserCenter::findListById($adminUserIds);
         $userIdToName = array_column($userInfoList,'username','id');
 
+        $kaelIdToDepartmentId = DingtalkUser::findList(['kael_id'=>$adminUserIds],'','kael_id,department_id');
+        $kaelIdToDepartmentId = array_column($kaelIdToDepartmentId,'department_id','kael_id');
+        $departmentInfoIdToName = array_column(DingtalkDepartment::findList(['id'=>array_values($kaelIdToDepartmentId)],'','id,department_name'),'department_name','id');
+        $departmentInfoIdToName[1] = '小盒科技';
+
         foreach($list as $k=>$v){
             $v['admin_user_name'] = $userIdToName[$v['admin_user']] ?? '未分配';
+            $v['admin_user_department'] = $departmentInfoIdToName[($kaelIdToDepartmentId[$v['admin_user']]??0)] ?? '未知';
             $v['ip_limit'] = empty($v['allow_ips']) ? 0 : 1;
             $list[$k] = $v;
         }
