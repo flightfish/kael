@@ -98,7 +98,7 @@ class KaelPlatform extends RequestBaseModel
 
         $kaelIdToDepartmentId = DingtalkUser::findList(['kael_id'=>$adminUserIds],'','kael_id,department_id');
         $kaelIdToDepartmentId = array_column($kaelIdToDepartmentId,'department_id','kael_id');
-        $departmentInfoIdToName = array_column(DingtalkDepartment::findList(['id'=>array_values($kaelIdToDepartmentId)],'','id,department_name'),'department_name','id');
+        $departmentInfoIdToName = array_column(DingtalkDepartment::findList(['id'=>array_values($kaelIdToDepartmentId)],'','id,name'),'name','id');
         $departmentInfoIdToName[1] = '小盒科技';
 
         foreach($list as $k=>$v){
