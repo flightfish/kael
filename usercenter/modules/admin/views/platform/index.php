@@ -491,9 +491,10 @@
                 //  }
                 // 参考http://developer.qiniu.com/docs/v6/api/overview/up/response/simple-response.html
 
-                // var domain = up.getOption('domain');
-                // var res = parseJSON(info);
-                // var sourceLink = domain + res.key; 获取上传成功后的文件的Url
+                var domain = up.getOption('domain');
+                var res = parseJSON(info);
+                var sourceLink = domain + res.key; //获取上传成功后的文件的Url
+                $("#platform_icon").attr('src',sourceLink)
             },
             'Error': function(up, err, errTip) {
                 //上传出错时,处理相关的事情
@@ -504,8 +505,6 @@
             'Key': function(up, file) {
                 // 若想在前端对每个文件的key进行个性化处理，可以配置该函数
                 // 该配置必须要在 unique_names: false , save_key: false 时才生效
-                console.log(up);
-                console.log(file)
                 let key = "iconkael/"+ (+new Date())+"_"+file.name;
                 // do something with key here
                 return key
