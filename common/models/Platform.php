@@ -78,6 +78,7 @@ class Platform extends \common\models\BaseActiveRecord
         foreach ($params as $k=>$v){
             $model->$k = $v;
         }
+        $model->insert();
         return $model->platform_id;
     }
 }

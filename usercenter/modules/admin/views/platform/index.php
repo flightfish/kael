@@ -363,15 +363,15 @@
             alert("请填写应用链接");
             return false;
         }
-        if(!$("#env_type").val() == -1){
+        if($("#env_type").val() == -1){
             alert("请选择应用类型");
             return false;
         }
-        if(!$("#ip_limit").val() == -1){
+        if($("#ip_limit").val() == -1){
             alert("请选择IP限制");
             return false;
         }
-        if(!$("#is_show").val() == -1){
+        if($("#is_show").val() == -1){
             alert("请选择是否展示卡片");
             return false;
         }
