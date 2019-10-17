@@ -120,7 +120,7 @@ class KaelPlatform extends RequestBaseModel
         try{
             Platform::updateAll(['status'=>Platform::STATUS_INVALID],['platform_id' => $this->platform_id]);
             if(empty($platfromId)){
-                throw new Exception("删除失败");
+                throw new Exception("删除失败",Exception::ERROR_COMMON);
             }
             LogPlatform::log(LogPlatform::DEL,$platfromId,$this->user['id'],'');
             $trans->commit();
@@ -134,13 +134,13 @@ class KaelPlatform extends RequestBaseModel
     public function add(){
         $this->checkUserAuth();
         if(substr($this->platform_url,0,4) != 'http'){
-            throw new Exception("请输入正确域名");
+            throw new Exception("请输入正确域名",Exception::ERROR_COMMON);
         }
         $hostArr = parse_url($this->platform_url);
         $host = $hostArr['host'];
         $old = Platform::findOneByHost($host,0);
         if(!empty($old)){
-            throw new Exception("域名已存在，请用其他域名");
+            throw new Exception("域名已存在，请用其他域名",Exception::ERROR_COMMON);
         }
         $param = [
             'platform_name'=>$this->platform_name,
@@ -155,7 +155,7 @@ class KaelPlatform extends RequestBaseModel
         try{
             $platfromId = Platform::add($param);
             if(empty($platfromId)){
-                throw new Exception("保存失败");
+                throw new Exception("保存失败",Exception::ERROR_COMMON);
             }
             LogPlatform::log(LogPlatform::ADD,$platfromId,$this->user['id'],$param);
             $trans->commit();
@@ -168,7 +168,7 @@ class KaelPlatform extends RequestBaseModel
     public function edit(){
         $this->checkUserAuth();
         if(substr($this->platform_url,0,4) != 'http'){
-            throw new Exception("请输入正确域名");
+            throw new Exception("请输入正确域名",Exception::ERROR_COMMON);
         }
         $platformInfo = Platform::findOneById($this->platform_id);
         if(empty($platformInfo)){
@@ -184,7 +184,7 @@ class KaelPlatform extends RequestBaseModel
                 ->asArray(true)
                 ->one();
             if(!empty($others)){
-                throw new Exception("域名已被其他平台占用，请用其他域名");
+                throw new Exception("域名已被其他平台占用，请用其他域名",Exception::ERROR_COMMON);
             }
         }
         $param = [
@@ -200,7 +200,7 @@ class KaelPlatform extends RequestBaseModel
         try{
             $platfromId = Platform::updateAll($param,['platform_id'=>$this->platform_id]);
             if(empty($platfromId)){
-                throw new Exception("保存失败");
+                throw new Exception("保存失败",Exception::ERROR_COMMON);
             }
             LogPlatform::log(LogPlatform::EDIT,$platfromId,$this->user['id'],$param);
             $trans->commit();
