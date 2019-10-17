@@ -21,7 +21,10 @@ class Qiniu {
         $auth = new Auth(self::ACCESS_KEY, self::SECRET_KEY);
         $bucket = self::BUCKET;
 
-        $token = $auth->uploadToken($bucket);
+        $policy = [
+            'insertOnly'=>1,
+        ];
+        $token = $auth->uploadToken($bucket,null,600,$policy);
         $ret = ['uptoken'=>$token];
         return $ret;
     }
