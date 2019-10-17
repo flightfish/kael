@@ -44,9 +44,9 @@
     <script src="/statics/js/bootstrap.min.js?v=3.3.6"></script>
     <script src="/statics/js/jquery.cookie.min.js?v=1.4.1"></script>
     <script src="/statics/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
-    <script src="/statics/qiniu/qiniu.min.js?v=1.0.16"></script>
-    <script type="text/javascript" src="/statics/qiniu/moxie.min.js"></script>
-    <script type="text/javascript" src="/statics/qiniu/plupload.full.min.js"></script>
+    <script src="/statics/qiniu/qiniu.2.5.4.min.js"></script>
+<!--    <script type="text/javascript" src="/statics/qiniu/moxie.min.js"></script>-->
+<!--    <script type="text/javascript" src="/statics/qiniu/plupload.full.min.js"></script>-->
     <script src="/statics/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
     <script src="/statics/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
     <script src="/statics/js/plugins/layer/laydate/laydate.js"></script>
@@ -474,7 +474,7 @@
         $('[data-toggle="tooltip"]').tooltip()
     });
 
-    $("#file_icon").on('change',function(e){
+    $("#file_icon").on('click',function(e){
         console.log(e)
     })
 
