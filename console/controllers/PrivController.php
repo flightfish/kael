@@ -161,13 +161,14 @@ SQL;
                 "Content-Type: application/json",
             ];
             echo json_encode($user,64|256)."\n";
+            $userId = $user['id'];
             $user = json_encode($user,64|256);
 //            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
             $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             $oldPlatIds = RelateUserPlatform::find()
                 ->select('platform_id')
-                ->where(['user_id'=>$user['id'],'status'=>0])->asArray(true)->column();
+                ->where(['user_id'=>$userId,'status'=>0])->asArray(true)->column();
             $addPlat = array_values(array_diff([50004,50005],$oldPlatIds));
             !empty($addPlat) && RelateUserPlatform::batchAdd($user['id'],$addPlat);
             //sleep(1);
