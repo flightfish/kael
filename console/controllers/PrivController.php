@@ -75,7 +75,7 @@ SQL;
 select DISTINCT a.*
 from `user` a
  left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004
-where a.`status` = 0 and a.user_type=0 and b.relate_id > 0 and a.department_id=158
+where a.`status` = 0 and a.user_type=0 and b.relate_id > 0 and a.department_id in (158,155)
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
 
@@ -107,7 +107,7 @@ SQL;
 select DISTINCT a.*
 from `user` a
  left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004
-where a.`status` = 0 and a.user_type=0 and b.relate_id > 0 and a.department_id=158
+where a.`status` = 0 and a.user_type=0 and b.relate_id > 0 and a.department_id in (158,155)
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
 
@@ -139,7 +139,7 @@ SQL;
 select DISTINCT a.*
 from `user` a
  left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004
-where a.`status` = 0 and a.user_type=0 and b.relate_id is null and a.department_id=158
+where a.`status` = 0 and a.user_type=0 and b.relate_id is null and a.department_id in (158,155)
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
 
@@ -176,7 +176,7 @@ SQL;
         $sql = <<<SQL
 select DISTINCT a.*
 from `user` a
-where a.`status` = 0 and a.user_type=0 and a.id=59021 and a.department_id=158
+where a.`status` = 0 and a.user_type=0 and a.id=59021 and a.department_id in (158,155)
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
 
