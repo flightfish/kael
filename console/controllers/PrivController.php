@@ -124,7 +124,8 @@ SQL;
             ];
             echo json_encode($user,64|256)."\n";
             $user = json_encode($user,64|256);
-            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+//            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
         }
@@ -161,7 +162,8 @@ SQL;
             ];
             echo json_encode($user,64|256)."\n";
             $user = json_encode($user,64|256);
-            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+//            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             $oldPlatIds = RelateUserPlatform::find()
                 ->select('platform_id')
@@ -198,7 +200,8 @@ SQL;
             ];
             echo json_encode($user,64|256)."\n";
             $user = json_encode($user,64|256);
-            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+//            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
         }
