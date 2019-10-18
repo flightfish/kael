@@ -170,7 +170,7 @@ SQL;
                 ->select('platform_id')
                 ->where(['user_id'=>$userId,'status'=>0])->asArray(true)->column();
             $addPlat = array_values(array_diff([50004,50005],$oldPlatIds));
-            !empty($addPlat) && RelateUserPlatform::batchAdd($user['id'],$addPlat);
+            !empty($addPlat) && RelateUserPlatform::batchAdd($userId,$addPlat);
             //sleep(1);
         }
     }
