@@ -717,6 +717,7 @@ class DingController extends Controller
                             $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
                         }
                         $userInfo['jobnumber'] = self::tmpIdToWorknumber($tmpImportJianzhi['id']);
+                        DingTalkApiJZ::updateUser($userInfo['userid'],['jobnumber'=>$userInfo['jobnumber']]);
 //                        $userInfo['jobnumber'] = 'NO_'.microtime(true);
 //                        echo "员工:{$userInfo['name']}[{$userInfo['userid']}]没有工号" . "\n";
 //                        continue;

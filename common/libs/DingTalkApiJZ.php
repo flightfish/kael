@@ -280,6 +280,15 @@ class DingTalkApiJZ {
         return $retJson;
     }
 
+    public static function updateUser($userId,$params){
+        if (\Yii::$app->params['env'] != 'prod') {
+            return false;
+        }
+        $params['userid'] = $userId;
+        $retJson = self::curlPost(self::API_POST_UPDATE_EMAIL_BY_UID,$params);
+        return $retJson;
+    }
+
     private static function getAccessToken(){
         $key = 'DINGTALK_ACCESS_TOKEN_'.self::APPKEY;
         $ret = Cache::getCacheString($key);
