@@ -106,7 +106,7 @@ SQL;
         $sql = <<<SQL
 select DISTINCT a.*
 from `user` a
- left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004
+ left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004 and b.status=0
 where a.`status` = 0 and a.user_type=0 and b.relate_id > 0 and a.department_id in (158,155)
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
@@ -135,18 +135,23 @@ SQL;
             echo "is_running";
             exit();
         }
-        $sql = <<<SQL
-select DISTINCT a.*
-from `user` a
- left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004
-where a.`status` = 0 and a.user_type=0 and b.relate_id is null and a.department_id in (158,155)
-SQL;
-        $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
+        $userList = CommonUser::find()->where(['status'=>0,'department_id'=>[158,155]])->asArray(true)->all();
+        $privList = RelateUserPlatform::find()->select('user_id')->where(['status'=>0,'platform_id'=>50004])->asArray(true)->all();
+        $privList = array_column($privList,'user_id','user_id');
+//        $sql = <<<SQL
+//select DISTINCT a.*
+//from `user` a
+// left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004 and b.status=0
+//where a.`status` = 0 and a.user_type=0 and b.relate_id is null and a.department_id in (158,155)
+//SQL;
+//        $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
 
         foreach ($userList as $user){
+            if(isset($privList[$user['id']])){
+                continue;
+            }
             $user['name'] = $user['username'];
             $user['user_id'] = $user['id'];
-
             $headers = [
                 "Referer: https://bslive.knowbox.cn/",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
