@@ -158,6 +158,12 @@ class DingNewController extends Controller
                     echo "第" . $i . "次执行*******\n";
 
                     $userId = $userInfo['userid'];
+
+                    if(empty($userInfo['mobile'])){
+                        echo "没有手机号-{$userId}\n";
+                        continue;
+                    }
+
                     $relateId = 0;
                     if(isset($allDepartmentUserIndex[$v['id'].'|'.$userId])){
                         $relateId = $allDepartmentUserIndex[$v['id'] . '|' . $userId];
