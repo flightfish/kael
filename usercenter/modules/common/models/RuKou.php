@@ -202,7 +202,7 @@ class RuKou extends RequestBaseModel
                 }
             }
             $data[$info['platform_id']] = [
-                'url'=>'/common/welcome/login-platform?platform_id='.$info['platform_id'],
+                'url'=>$isIpLimit ? '' : '/common/welcome/login-platform?platform_id='.$info['platform_id'],
                 'name' => $info['platform_name'],
                 'icon' => $info['platform_icon'],
                 'ip_limit'=>$isIpLimit
