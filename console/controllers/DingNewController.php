@@ -39,6 +39,10 @@ class DingNewController extends Controller
             $this->updateDingDepartment(2);
             echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
 
+            echo date('Y-m-d H:i:s')."\t部门同步path_name开始\n";
+            $this->updateDingDepartmentPathName();
+            echo date('Y-m-d H:i:s')."\t部门同步path_name结束\n";
+
             sleep(1);
 
             echo date('Y-m-d H:i:s')."\t开始同步钉钉人员到kael\n";
@@ -205,5 +209,24 @@ class DingNewController extends Controller
             $delRelateIds = array_values($allDepartmentUserIndex);
             DingtalkDepartmentUser::updateAll(['status'=>1],['relate_id'=>$delRelateIds]);
         }
+    }
+
+
+    private function updateDingDepartmentPathName(){
+        for($level =1 ; $level <= 10; $level++){
+            if($level==1){
+                $sql = "update dingtalk_department set path_name=alias_name where level ={$level} and status=0;";
+            }else{
+                $sql = <<<SQL
+update  dingtalk_department s
+left join dingtalk_department p on s.parentid = p.id
+set s.path_name = concat(p.path_name,'/',s.alias_name)
+where s.status = 0 and p.status=0 and s.level={$level};
+SQL;
+            }
+
+            DingtalkDepartment::getDb()->createCommand($sql)->execute();
+        }
+
     }
 }
