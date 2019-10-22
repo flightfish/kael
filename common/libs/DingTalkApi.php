@@ -57,7 +57,7 @@ class DingTalkApi {
             if(!$retJson['hasMore']){
                 break;
             }
-            $offset += 200;
+            $offset += 100;
         }
         return $userInfoList;
     }
