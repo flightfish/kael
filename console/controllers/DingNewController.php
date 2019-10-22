@@ -113,10 +113,10 @@ class DingNewController extends Controller
             DepartmentRelateToKael::updateAll(['status'=>1],['department_id'=>$delIds]);
         }
         //更新level
-        $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id,`path_name` = alias_name,`path_id`=concat({$corpType},'/',id) where status = 0 and parentid = 1 and corp_type={$corpType}";
+        $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id,`path_name` = alias_name,`path_id`=concat('|',{$corpType},'|',id,'|') where status = 0 and parentid = 1 and corp_type={$corpType}";
         DingtalkDepartment::getDb()->createCommand($sql)->execute();
         for($level =1 ; $level <= 10; $level++){
-            $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id,a.path_name = concat(b.path_name,'/',a.alias_name),a.path_id = concat(b.path_id,'/',a.id) where a.status = 0 and b.status = 0 and b.`level`={$level} and b.corp_type={$corpType}";
+            $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id,a.path_name = concat(b.path_name,'/',a.alias_name),a.path_id = concat(b.path_id,a.id,'|') where a.status = 0 and b.status = 0 and b.`level`={$level} and b.corp_type={$corpType}";
             DingtalkDepartment::getDb()->createCommand($sql)->execute();
         }
     }
