@@ -8,6 +8,7 @@ use common\models\DingtalkDepartment;
 use common\models\DingtalkDepartmentUser;
 use common\models\DingtalkUser;
 use common\models\DepartmentRelateToKael;
+use common\models\ehr\DepartmentUser;
 use usercenter\components\exception\Exception;
 use yii\console\Controller;
 
@@ -39,9 +40,9 @@ class DingNewController extends Controller
             $this->updateDingDepartment(2);
             echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
 
-            echo date('Y-m-d H:i:s')."\t部门同步path_name开始\n";
-            $this->updateDingDepartmentPathName();
-            echo date('Y-m-d H:i:s')."\t部门同步path_name结束\n";
+//            echo date('Y-m-d H:i:s')."\t部门同步path_name开始\n";
+//            $this->updateDingDepartmentPathName();
+//            echo date('Y-m-d H:i:s')."\t部门同步path_name结束\n";
 
             sleep(1);
 
@@ -52,6 +53,8 @@ class DingNewController extends Controller
             echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉人员到kael\n";
             $this->updateDingUser(2);
             echo date('Y-m-d H:i:s')."\t员工同步兼职团队结束\n";
+
+
 
         }catch (\Exception $e){
             throw $e;
@@ -110,10 +113,10 @@ class DingNewController extends Controller
             DepartmentRelateToKael::updateAll(['status'=>1],['department_id'=>$delIds]);
         }
         //更新level
-        $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id where status = 0 and parentid = 1";
+        $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id,`path_name` = alias_name,`path_id`=concat({$corpType},'/',id) where status = 0 and parentid = 1 and corp_type={$corpType}";
         DingtalkDepartment::getDb()->createCommand($sql)->execute();
         for($level =1 ; $level <= 10; $level++){
-            $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id where a.status = 0 and b.status = 0 and b.`level`={$level}";
+            $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id,a.path_name = concat(b.path_name,'/',a.alias_name),a.path_id = concat(b.path_id,'/',a.id) where a.status = 0 and b.status = 0 and b.`level`={$level} and b.corp_type={$corpType}";
             DingtalkDepartment::getDb()->createCommand($sql)->execute();
         }
     }
@@ -154,6 +157,8 @@ class DingNewController extends Controller
                     throw new Exception("不支持的企业");
                 }
                 echo date('Y-m-d H:i:s') . "\t同步部门人员：{$v['name']}[{$v['id']}]\n";
+                $mainLeaderId = 0;
+                $mainLeaderName = "";
                 foreach ($userInfoList as $userInfo) {
                     echo "第" . $i . "次执行*******\n";
 
@@ -206,7 +211,12 @@ class DingNewController extends Controller
                         echo date('Y-m-d H:i:s') . "\t新增钉钉员工 {$userInfo['name']}[{$userInfo['userid']}]\n";
                         DingtalkDepartmentUser::add($userParams);
                     }
+                    if($userParams['is_leader']){
+                        $mainLeaderId = $userParams['kael_id'];
+                        $mainLeaderName = $userParams['name'];
+                    }
                 }
+//                DingtalkDepartment::updateAll(['main_leader_id' => $mainLeaderId, 'main_leader_name' => $mainLeaderName], ['id' => $v['id']]);
             }
         }
 
@@ -235,4 +245,13 @@ SQL;
         }
 
     }
+
+
+    private function updateDingUserFromDepartmentUser(){
+        $allDepartmentList = DepartmentUser::findList([]);
+
+    }
+
+
+
 }
