@@ -288,6 +288,7 @@ SQL;
                     'employee_status'=>$userField['sys01-employeeStatus']??'',
                     'birth_time'=>$userField['sys02-birthTime']??'',
                 ];
+                echo json_encode($resultUser,64|256)."\n";
                 if(!empty($old)){
                     //update
                     DingtalkHrmUser::updateAll($updateParmas,['id'=>$old['id']]);
