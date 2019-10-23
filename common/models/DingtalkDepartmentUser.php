@@ -42,4 +42,5 @@ class DingtalkDepartmentUser extends \common\models\BaseActiveRecord
         $model->insert();
         return $model->relate_id;
     }
+
 }

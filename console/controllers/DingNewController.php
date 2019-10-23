@@ -9,6 +9,8 @@ use common\models\DingtalkDepartmentUser;
 use common\models\DingtalkHrmUser;
 use common\models\DingtalkUser;
 use common\models\DepartmentRelateToKael;
+use common\models\RelateDingtalkDepartmentPlatform;
+use common\models\RelateUserPlatform;
 use usercenter\components\exception\Exception;
 use yii\console\Controller;
 
@@ -47,12 +49,16 @@ class DingNewController extends Controller
             sleep(1);
 
             echo date('Y-m-d H:i:s')."\t开始同步钉钉人员到kael\n";
-            $this->updateDingUser(1);
+            $this->updateDingDepartmentUser(1);
             echo date('Y-m-d H:i:s')."\t员工同步结束\n";
 
             echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉人员到kael\n";
-            $this->updateDingUser(2);
+            $this->updateDingDepartmentUser(2);
             echo date('Y-m-d H:i:s')."\t员工同步兼职团队结束\n";
+
+            sleep(1);
+
+
 
 
 
@@ -121,7 +127,7 @@ class DingNewController extends Controller
         }
     }
 
-    private function updateDingUser($corpType)
+    private function updateDingDepartmentUser($corpType)
     {
         //所有企业员工
         $allDepartmentUserAll = DingtalkDepartmentUser::findList(['corp_type'=>$corpType], '', 'user_id,department_id,relate_id');
@@ -247,7 +253,7 @@ SQL;
     }
 
 
-    private function updateDingUserFromDepartmentUser(){
+    private function updateDingUserFrom(){
         $allDepartmentUserList = DingtalkDepartmentUser::findList([]);
         $allUserListIndex = [];
         foreach ($allDepartmentUserList as $v){
@@ -310,7 +316,37 @@ SQL;
 
 
     public function actionHrm(){
+        $this->hrmUserInfo(1);
         $this->hrmUserInfo(2);
+    }
+
+    public function actionAutoPriv(){
+        //开通权限
+        $allNeedPrivList = RelateDingtalkDepartmentPlatform::findAllList();
+        $departmentPrivs = [];
+        foreach ($allNeedPrivList as $v){
+            $departmentPrivs[$v['department_id']][] = $v['platform_id'];
+        }
+        foreach ($departmentPrivs as $departmentId=>$platformIds){
+            $platformIds = array_values(array_unique($platformIds));
+            $departmentIdsInPath = DingtalkDepartment::findListByWhereAndWhereArr([],[['like','path_id',"|{$departmentId}|"]],'path_id');
+            $departmentIdsInPath = array_column($departmentIdsInPath,'path_id');
+            if(empty($departmentIdsInPath)){
+                continue;
+            }
+            $allKaelIds = DingtalkDepartmentUser::findList(['department_id'=>$departmentIdsInPath],'','kael_id');
+            $allKaelIds = array_values(array_unique($allKaelIds));
+            foreach ($allKaelIds as $kaelId){
+                if(empty($kaelId)){
+                    continue;
+                }
+                $oldPlatIds = RelateUserPlatform::find()
+                    ->select('platform_id')
+                    ->where(['user_id'=>$kaelId,'status'=>0])->asArray(true)->column();
+                $addPlat = array_diff($platformIds,$oldPlatIds);
+                !empty($addPlat) && RelateUserPlatform::batchAdd($kaelId,$addPlat);
+            }
+        }
     }
 
 }
