@@ -9,7 +9,6 @@ use common\models\DingtalkDepartmentUser;
 use common\models\DingtalkHrmUser;
 use common\models\DingtalkUser;
 use common\models\DepartmentRelateToKael;
-use common\models\ehr\DepartmentUser;
 use usercenter\components\exception\Exception;
 use yii\console\Controller;
 
@@ -249,7 +248,7 @@ SQL;
 
 
     private function updateDingUserFromDepartmentUser(){
-        $allDepartmentUserList = DepartmentUser::findList([]);
+        $allDepartmentUserList = DingtalkDepartmentUser::findList([]);
         $allUserListIndex = [];
         foreach ($allDepartmentUserList as $v){
             $allUserListIndex[$v['mobile']][] = $v;
@@ -257,7 +256,7 @@ SQL;
     }
 
     public function hrmUserInfo($corpType){
-        $allUserIds = array_values(array_unique(array_column(DepartmentUser::findList(['corp_type'=>$corpType], '', 'user_id'),'user_id')));
+        $allUserIds = array_values(array_unique(array_column(DingtalkDepartmentUser::findList(['corp_type'=>$corpType], '', 'user_id'),'user_id')));
         $allUserIdsChunkList = array_chunk($allUserIds,20);
 
         $allHrmUserList = DingtalkHrmUser::findList(['corp_type'=>$corpType],'','user_id,main_dept_id,id');
