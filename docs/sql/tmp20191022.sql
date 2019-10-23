@@ -3,7 +3,7 @@ alter table dingtalk_department add column path_id varchar(1000) not null defaul
 
 
 CREATE TABLE `dingtalk_hrm_user` (
-  `id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '部门ID',
+  `id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '部门ID' auto_increment ,
   `corp_type` int(11) NOT NULL DEFAULT '0' COMMENT '1主企业 2兼职企业',
   `user_id` varchar(100) NOT NULL DEFAULT '' COMMENT '用户ID',
   `name` varchar(100) NOT NULL DEFAULT '',
