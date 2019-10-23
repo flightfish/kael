@@ -248,8 +248,16 @@ SQL;
 
 
     private function updateDingUserFromDepartmentUser(){
-        $allDepartmentList = DepartmentUser::findList([]);
+        $allDepartmentUserList = DepartmentUser::findList([]);
+        $allUserListIndex = [];
+        foreach ($allDepartmentUserList as $v){
+            $allUserListIndex[$v['mobile']][] = $v;
+        }
+    }
 
+    public function actionHrm(){
+        $ret = DingTalkApi::getHrmUserInfoByUids('00036');
+        echo json_encode($ret,64|256);
     }
 
 
