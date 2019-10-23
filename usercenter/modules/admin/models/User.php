@@ -157,12 +157,12 @@ class User extends RequestBaseModel
                 $platList = [];
             }else{
 //                $departmentAllowPlat = RelateDepartmentPlatform::findListByDepartment($this->department_id);
-//                $departmentAllowPlatSelf = RelateAdminDepartment::findListByAdminDepartment($this->user['id'],$this->department_id);
+                $departmentAllowPlatSelf = RelateAdminDepartment::findListByAdminDepartment($this->user['id'],$this->department_id);
 //                $platIdAllow = array_column($departmentAllowPlat,'platform_id');
-//                $platIdAllowSelf = array_column($departmentAllowPlatSelf,'platform_id');
+                $platIdAllowSelf = array_column($departmentAllowPlatSelf,'platform_id');
 //                $platId = array_intersect($platIdAllow,$platIdAllowSelf);
-//                $platList = Platform::findListById($platId);
-                $platList = Platform::findAllList();
+                $platList = Platform::findListById($platIdAllowSelf);
+//                $platList = Platform::findAllList();
             }
 
         }else{
