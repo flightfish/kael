@@ -161,15 +161,15 @@
                         <option value="1">外包</option>
                     </select>
                 </div>
-                <div  class="input-group">
-                    <span class="input-group-addon" >部门权限</span>
-                    <div class="form-control" id="platform_list_container2"  style="height: 100%;">
-                        <?php foreach($platformList as $v) :?>
-                            <div style="width: 30%;float: left"><input type="checkbox" name="platform_list_edit" value="<?php echo $v['platform_id'];?>"/><?php echo $v['platform_name'];?></div>
-                        <?php endforeach;?>
-                        <div style='clear: both'></div>
-                    </div>
-                </div>
+<!--                <div  class="input-group">-->
+<!--                    <span class="input-group-addon" >部门权限</span>-->
+<!--                    <div class="form-control" id="platform_list_container2"  style="height: 100%;">-->
+<!--                        --><?php //foreach($platformList as $v) :?>
+<!--                            <div style="width: 30%;float: left"><input type="checkbox" name="platform_list_edit" value="--><?php //echo $v['platform_id'];?><!--"/>--><?php //echo $v['platform_name'];?><!--</div>-->
+<!--                        --><?php //endforeach;?>
+<!--                        <div style='clear: both'></div>-->
+<!--                    </div>-->
+<!--                </div>-->
 
             </div>
             <div class="modal-footer">
@@ -243,22 +243,24 @@
                         return "外包";
                     }
                 }
-            },{
-                field: 'platform_list',
-                title: '平台权限',
-                width:"30%",
-                formatter:function(value,row,index){
-                    var name = "";
-                    for(var i in value){
-                        if(name){
-                            name += "<br/>";
-                        }
-                        name = name + value[i].platform_name
-                    }
-                    name = '<div style="max-height:100px;overflow-y:scroll;">'+name+'<div style="max-height:100px;overflow-y:scroll;">';
-                    return name;
-                }
-            },{
+            },
+            // {
+            //     field: 'platform_list',
+            //     title: '平台权限',
+            //     width:"30%",
+            //     formatter:function(value,row,index){
+            //         var name = "";
+            //         for(var i in value){
+            //             if(name){
+            //                 name += "<br/>";
+            //             }
+            //             name = name + value[i].platform_name
+            //         }
+            //         name = '<div style="max-height:100px;overflow-y:scroll;">'+name+'<div style="max-height:100px;overflow-y:scroll;">';
+            //         return name;
+            //     }
+            // },
+            {
                 field: 'admin_list',
                 title: '部门管理员',
                 width:"30%",
@@ -404,14 +406,15 @@
     }
 
     function updatePlatCheckDepartment(){
-        let departmentId = $("#modid-department").val();
-        $("input[name='platform_list_edit']").prop("checked", false);
-        if(tmpList[departmentId]){
-            for(let i in tmpList[departmentId]['platform_list']){
-                console.log(tmpList[departmentId]['platform_list'][i]['platform_id'])
-                $("input[name='platform_list_edit'][value='"+ tmpList[departmentId]['platform_list'][i]['platform_id'] +"']").prop("checked", true);
-            }
-        }
+        return false;
+        // let departmentId = $("#modid-department").val();
+        // $("input[name='platform_list_edit']").prop("checked", false);
+        // if(tmpList[departmentId]){
+        //     for(let i in tmpList[departmentId]['platform_list']){
+        //         console.log(tmpList[departmentId]['platform_list'][i]['platform_id'])
+        //         $("input[name='platform_list_edit'][value='"+ tmpList[departmentId]['platform_list'][i]['platform_id'] +"']").prop("checked", true);
+        //     }
+        // }
     }
 
 
@@ -455,7 +458,7 @@
         }
         $("#modid-department").val(tmpid);
 
-        updatePlatCheckDepartment();
+        // updatePlatCheckDepartment();
     });
 
     function edit(is_old){
@@ -519,7 +522,7 @@
                 department_id:id,
                 department_name:$("#department_name_edit").val(),
                 is_outer:$("#is_outer").val(),
-                platform_list: platform_list,
+                // platform_list: platform_list,
                 leader:$("#department_leader_edit").val()
             },
             success:function(data){
