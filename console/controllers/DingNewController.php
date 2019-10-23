@@ -6,6 +6,7 @@ use common\libs\DingTalkApiJZ;
 use common\models\CommonUser;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkDepartmentUser;
+use common\models\DingtalkHrmUser;
 use common\models\DingtalkUser;
 use common\models\DepartmentRelateToKael;
 use common\models\ehr\DepartmentUser;
@@ -255,11 +256,55 @@ SQL;
         }
     }
 
-    public function actionHrm(){
-        $ret = DingTalkApi::getHrmUserInfoByUids('00036');
-        echo json_encode($ret,64|256);
+    public function hrmUserInfo($corpType){
+        $allUserIds = array_values(array_unique(array_column(DepartmentUser::findList(['corp_type'=>$corpType], '', 'user_id'),'user_id')));
+        $allUserIdsChunkList = array_chunk($allUserIds,20);
+
+        $allHrmUserList = DingtalkHrmUser::findList(['corp_type'=>$corpType],'','user_id,main_dept_id,id');
+        $allHrmUserIndex = [];
+        foreach ($allHrmUserList as $v){
+            $allHrmUserIndex[$v['user_id']] = $v;
+        }
+
+        foreach ($allUserIdsChunkList as $userIdsChunkOne){
+            $resultList = DingTalkApi::getHrmUserInfoByUids($userIdsChunkOne);
+            foreach ($resultList as $resultUser){
+                $old = $allHrmUserIndex[$resultUser['userid']]??[];
+                $userField = array_column($resultUser['field_list'],'label','field_code');
+                if(empty($userField['sys00-mobile'])){
+                    !empty($old) && DingtalkHrmUser::updateAll(['status'=>1],['id'=>$old['id']]);
+                    continue;
+                }
+                $updateParmas = [
+                    'corp_type'=>$corpType,
+                    'user_id'=>$resultUser['userid'],
+                    'name'=>$userField['sys00-name'],
+                    'mobile'=>$userField['sys00-mobile'],
+                    'email'=>$userField['sys00-email']??'',
+                    'job_number'=>$userField['sys00-jobNumber']??'',
+                    'sex'=>$userField['sys02-sexType']??'',
+                    'main_dept_id'=>$userField['sys00-mainDeptId']??'0',
+                    'main_dept_name'=>$userField['sys00-mainDept']??'',
+                    'employee_type'=>$userField['sys01-employeeType']??'',
+                    'employee_status'=>$userField['sys01-employeeStatus']??'',
+                    'birth_time'=>$userField['sys02-birthTime']??'',
+                ];
+                if(!empty($old)){
+                    //update
+                    DingtalkHrmUser::updateAll($updateParmas,['id'=>$old['id']]);
+                }else{
+                    //insert
+                    DingtalkHrmUser::add($updateParmas);
+                }
+            }
+            sleep(1);
+        }
+
     }
 
 
+    public function actionHrm(){
+        $this->hrmUserInfo(2);
+    }
 
 }
