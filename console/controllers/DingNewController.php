@@ -267,6 +267,7 @@ SQL;
 
         foreach ($allUserIdsChunkList as $userIdsChunkOne){
             $resultList = DingTalkApi::getHrmUserInfoByUids($userIdsChunkOne);
+            echo 'userList======='.json_encode($resultList,64|256)."\n";
             foreach ($resultList as $resultUser){
                 $old = $allHrmUserIndex[$resultUser['userid']]??[];
                 $userField = array_column($resultUser['field_list'],'label','field_code');
@@ -288,7 +289,6 @@ SQL;
                     'employee_status'=>$userField['sys01-employeeStatus']??'',
                     'birth_time'=>$userField['sys02-birthTime']??'',
                 ];
-                echo json_encode($resultUser,64|256)."\n";
                 if(!empty($old)){
                     //update
                     DingtalkHrmUser::updateAll($updateParmas,['id'=>$old['id']]);
