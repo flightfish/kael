@@ -163,14 +163,19 @@ class RuKou extends RequestBaseModel
             }
         }
 
-        $data = [];
-        $deparmentPlatList = RelateDepartmentPlatform::findListByDepartment($this->user['department_id']);
-        $platformIdsDepartment = array_column($deparmentPlatList,'platform_id');
+//        $deparmentPlatList = RelateDepartmentPlatform::findListByDepartment($this->user['department_id']);
+//        $platformIdsDepartment = array_column($deparmentPlatList,'platform_id');
+//        $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],-1);
+//        $platformIds = array_column($relateList,'platform_id');
+//        $platformIds = array_intersect($platformIds,$platformIdsDepartment);
+//        $platformList = Platform::findListById($platformIds);
+
         $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],-1);
         $platformIds = array_column($relateList,'platform_id');
-        $platformIds = array_intersect($platformIds,$platformIdsDepartment);
         $platformList = Platform::findListById($platformIds);
-        $ip = UserToken::getRealIP(false);;
+
+
+        $ip = UserToken::getRealIP(false);
 
 
         usort($relateList,function($a,$b){

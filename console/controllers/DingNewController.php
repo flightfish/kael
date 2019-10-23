@@ -253,7 +253,7 @@ SQL;
     }
 
 
-    private function updateDingUserFrom(){
+    private function updateDingUserAndEhr(){
         $allDepartmentUserList = DingtalkDepartmentUser::findList([]);
         $allUserListIndex = [];
         foreach ($allDepartmentUserList as $v){

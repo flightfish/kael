@@ -22,3 +22,5 @@ CREATE TABLE `dingtalk_hrm_user` (
   PRIMARY KEY (`id`),
   KEY `idx_userid_corytype` (`user_id`,`corp_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 comment '钉钉花名册';
+
+alter table relate_user_platform add index idx_userid_platformid (user_id,platform_id);
