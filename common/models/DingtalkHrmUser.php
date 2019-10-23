@@ -40,6 +40,6 @@ class DingtalkHrmUser extends \common\models\BaseActiveRecord
             $model->$k = $v;
         }
         $model->insert();
-        return $model->relate_id;
+        return $model->id;
     }
 }
