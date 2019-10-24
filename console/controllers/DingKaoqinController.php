@@ -25,7 +25,7 @@ class DingKaoqinController extends Controller
         //dayList
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
-        },range(strtotime('2019-07-01'),time(),24*3600));
+        },range(strtotime('2019-10-01'),time(),24*3600));
         //钉钉信息
         $userIdToDepartmentId = array_column(DingtalkUser::findList([],'','user_id,department_id',-1),'department_id','user_id');
         $departmentIdToInfo = array_column(DingtalkDepartment::findList([],'','id,name,subroot_id',-1),null,'id');
