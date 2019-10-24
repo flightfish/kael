@@ -181,6 +181,7 @@ class AlimailController extends Controller
         foreach ($allEmailsChunk as $vallEmailsChunk){
             $aliEmailUserInfoListChunk = AliMailApi::userInfoList($vallEmailsChunk);
             foreach ($aliEmailUserInfoListChunk as $vv){
+                echo json_encode($vv,64|256)."\n";
                 $emailToDepartment[$vv['displayAlias']] = $vv['departmentId'];
             }
 //            $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');
