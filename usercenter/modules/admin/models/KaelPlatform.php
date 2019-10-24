@@ -185,7 +185,7 @@ class KaelPlatform extends RequestBaseModel
         if($platformInfo['platform_url'] != $this->platform_url){
             $hostArr = parse_url($this->platform_url);
             $host = $hostArr['host'];
-            $others = self::find()
+            $others = Platform::find()
                 ->where(['status'=>0])
                 ->andWhere(['like','platform_url','//'.$host])
                 ->andWhere(['!=','platform_id',$platformInfo['platform_id']])
