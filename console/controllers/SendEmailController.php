@@ -60,7 +60,7 @@ class SendEmailController extends Controller
                     $v['create_time']
                 ];
             }
-            $filename = '/data/wwwroot/kael/console/runtime/'.microtime(true).'xls';
+            $filename = '/data/wwwroot/kael/console/runtime/'.microtime(true).'.xls';
             $objPHPExcel = new \PHPExcel();
             $objSheet = $objPHPExcel->getActiveSheet();
             $objSheet->setTitle('候选人名单');
