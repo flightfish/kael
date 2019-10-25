@@ -144,7 +144,7 @@ class DingKaoqinController extends Controller
 
     public function synSchedule($day){
         //排班时间
-        $scheduleList = DingTalkApi::getAttendanceListSchedule(date('Y-m-d',strtotime($day)));
+        $scheduleList = DingTalkApi::getAttendanceListSchedule(date('Y-m-d',strtotime($day)));return $scheduleList;
         $columns = [];
         $rows = [];
         foreach ($scheduleList as $v){
