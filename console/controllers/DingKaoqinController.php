@@ -142,6 +142,7 @@ class DingKaoqinController extends Controller
 
     }
     public function actionYu(){
+        echo  '333';
         return 1;
     }
 
