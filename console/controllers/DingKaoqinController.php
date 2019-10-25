@@ -141,9 +141,10 @@ class DingKaoqinController extends Controller
         echo date('Y-m-d H:i:s')."\t 同步部门数据结束\n";
 
     }
-    public function actionYu(){
-        echo  '333';
-        return 1;
+
+    public function actionProc($proc_inst_id){
+        $process_instance = DingTalkApi::getProcessInstance($proc_inst_id);
+        var_dump( $process_instance);
     }
 
     public function synSchedule($day){

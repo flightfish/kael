@@ -47,6 +47,8 @@ class DingTalkApi {
     //考勤打卡记录
     const API_TOPAPI_ATTENDANCE_LISTRECORD = "https://oapi.dingtalk.com/attendance/listRecord";
     const API_TOPAPI_ATTENDANCE_LIST = "https://oapi.dingtalk.com/attendance/list";
+    //根据审批实例id调用此接口获取审批实例详情
+    const API_TOPAPI_PROCESSINSTANCE_GET = "https://oapi.dingtalk.com/topapi/processinstance/get";
 
     public static function getDepartmentUserInfoList($departmentId){
         $offset = 0;
@@ -420,6 +422,12 @@ class DingTalkApi {
         }
         $retJson = self::curlPost(self::API_POST_REGISTER_CALL_BACK,$data);
         return $retJson;
+    }
+
+    public static function getProcessInstance($proc_inst_id){
+
+        $retJson = self::curlPost(self::API_TOPAPI_PROCESSINSTANCE_GET,['process_instance_id'=>$proc_inst_id]);
+        var_dump( $retJson);
     }
 
 
