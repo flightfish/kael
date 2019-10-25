@@ -141,6 +141,9 @@ class DingKaoqinController extends Controller
         echo date('Y-m-d H:i:s')."\t 同步部门数据结束\n";
 
     }
+    public function actionYu(){
+        return 1;
+    }
 
     public function synSchedule($day){
         //排班时间
