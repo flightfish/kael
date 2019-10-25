@@ -143,7 +143,7 @@ class DingKaoqinController extends Controller
     }
 
     public function actionYu(){
-        $proc_inst_id="15c929df-d59f-4c21-920f-1ba99d5ab09f";
+        $proc_inst_id="70fd36ed-4f60-4176-bc78-c72ba0a0cd71";
         $process_instance = DingTalkApi::getProcessInstance($proc_inst_id);
         var_dump( $process_instance);
     }
