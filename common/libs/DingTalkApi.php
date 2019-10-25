@@ -427,7 +427,7 @@ class DingTalkApi {
     public static function getProcessInstance($proc_inst_id){
 
         $retJson = self::curlPost(self::API_TOPAPI_PROCESSINSTANCE_GET,['process_instance_id'=>$proc_inst_id]);
-        var_dump( $retJson);
+        var_dump($retJson['process_instance']);
     }
 
 
