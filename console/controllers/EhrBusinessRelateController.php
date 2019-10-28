@@ -32,7 +32,7 @@ class EhrBusinessRelateController extends Controller
         ];
 
 
-        $filePath = './ehr_business_line_20191026.xlsx';
+        $filePath = './ehr_business_line_20191027.xlsx';
         $PHPReader = new \PHPExcel_Reader_Excel2007();
         $objPHPExcel = $PHPReader->load($filePath); // Reader读出来后，加载给Excel实例
         $data = $objPHPExcel->getSheet(0)->toArray();
@@ -72,27 +72,51 @@ class EhrBusinessRelateController extends Controller
                 $rows[] = [4,$kaelId,$businessId,$hc];
             }
             if(!empty($v[8])){
-                //业务线1
+                //业务线2
                 $businessId = $businessLineToId[$v[8]];
                 $hc = intval($v[9])/100;
                 $rows[] = [4,$kaelId,$businessId,$hc];
             }
             if(!empty($v[10])){
-                //业务线2
+                //业务线3
                 $businessId = $businessLineToId[$v[10]];
                 $hc = intval($v[11])/100;
                 $rows[] = [4,$kaelId,$businessId,$hc];
             }
             if(!empty($v[12])){
-                //业务线3
+                //业务线4
                 $businessId = $businessLineToId[$v[12]];
                 $hc = intval($v[13])/100;
                 $rows[] = [4,$kaelId,$businessId,$hc];
             }
             if(!empty($v[14])){
-                //业务线1
+                //业务线5
                 $businessId = $businessLineToId[$v[14]];
                 $hc = intval($v[15])/100;
+                $rows[] = [4,$kaelId,$businessId,$hc];
+            }
+            if(!empty($v[16])){
+                //业务线6
+                $businessId = $businessLineToId[$v[16]];
+                $hc = intval($v[17])/100;
+                $rows[] = [4,$kaelId,$businessId,$hc];
+            }
+            if(!empty($v[18])){
+                //业务线7
+                $businessId = $businessLineToId[$v[18]];
+                $hc = intval($v[19])/100;
+                $rows[] = [4,$kaelId,$businessId,$hc];
+            }
+            if(!empty($v[20])){
+                //业务线8
+                $businessId = $businessLineToId[$v[20]];
+                $hc = intval($v[21])/100;
+                $rows[] = [4,$kaelId,$businessId,$hc];
+            }
+            if(!empty($v[22])){
+                //业务线9
+                $businessId = $businessLineToId[$v[22]];
+                $hc = intval($v[23])/100;
                 $rows[] = [4,$kaelId,$businessId,$hc];
             }
         }
