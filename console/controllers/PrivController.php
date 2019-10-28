@@ -107,7 +107,7 @@ SQL;
 select DISTINCT a.*
 from `user` a
  left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004 and b.status=0
-where a.`status` = 0 and a.user_type=0 and b.relate_id > 0 and a.department_id in (158,155)
+where a.`status` = 0 and a.user_type=0 and b.relate_id > 0
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
 
@@ -124,8 +124,8 @@ SQL;
             ];
             echo json_encode($user,64|256)."\n";
             $user = json_encode($user,64|256);
-//            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
-            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+//            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
         }
@@ -163,8 +163,8 @@ SQL;
             echo json_encode($user,64|256)."\n";
             $userId = $user['id'];
             $user = json_encode($user,64|256);
-//            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
-            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+//            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             $oldPlatIds = RelateUserPlatform::find()
                 ->select('platform_id')
@@ -201,8 +201,8 @@ SQL;
             ];
             echo json_encode($user,64|256)."\n";
             $user = json_encode($user,64|256);
-//            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
-            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+//            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
         }
