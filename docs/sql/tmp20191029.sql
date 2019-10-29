@@ -10,7 +10,11 @@ CREATE TABLE `callback_register` (
    KEY `idx_platformid` (`platform_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-alter table relate_user_platform add column notice_status int(11) not null default 0 comment '0未通知 1已通知' after platform_id;
+alter table relate_user_platform
+    add column notice_status_add int(11) not null default 0 comment '0未通知 1已通知' after platform_id,
+    add column notice_status_del int(11) not null default 0 comment '0未通知 1已通知' after notice_status_add,
+    add index idx_noticestatusadd(notice_status_add),
+    add index idx_noticestatusdel_status(notice_status_del,status);
 
 
 CREATE TABLE `callback_queue` (
