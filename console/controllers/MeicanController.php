@@ -193,6 +193,8 @@ class MeicanController extends Controller
         DingcanOrder::addUpdateColumnRows($columns, $rows);
     }
 
+    public function actionYu(){}
+
     public function actionCanExceptionInit()
     {
         echo date('Y-m-d H:i:s') . "\t  开始导入异常订餐数据\n";
