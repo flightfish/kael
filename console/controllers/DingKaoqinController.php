@@ -310,7 +310,7 @@ class DingKaoqinController extends Controller
             $proc_inst_id_arr = array_unique(array_column($resultList, 'proc_inst_id'));
             foreach ($proc_inst_id_arr as $proc_inst_id) {
                 $proc_inst_id='085ca781-205b-4cec-8d92-b9a3e7d076dc';
-                $res = DingTalkApi::getProcessInstance($proc_inst_id);var_dump($res);return;
+                $res = DingTalkApi::getProcessInstance($proc_inst_id);
                 if ($res['errcode'] == 0) {var_dump($proc_inst_id);
                     $processInstance = $res['process_instance'];
                     $tmp = [
@@ -338,8 +338,7 @@ class DingKaoqinController extends Controller
                     $rows[] = array_values($tmp);
                 }
             }
-            DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns,$rows);return 3;
-
+            DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns,$rows);
         }
     }
 }
