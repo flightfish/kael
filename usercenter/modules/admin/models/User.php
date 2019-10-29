@@ -925,7 +925,7 @@ class User extends RequestBaseModel
             $v = array_map('strval',$v);
             $v = array_map('trim',$v);
 
-            if(empty($v[0]) && empty($v[1]) && empty($v[2]) && empty($v[3]) && empty($v)){
+            if(empty($v[0]) && empty($v[1]) && empty($v[2]) && empty($v[3]) && empty($v[4])){
                 continue;
             }
 
