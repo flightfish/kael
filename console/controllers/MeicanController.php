@@ -192,43 +192,43 @@ class MeicanController extends Controller
     public function actionCanExceptionInit()
     {
         echo date('Y-m-d H:i:s') . "\t  开始导入异常订餐数据\n";
-        $dayList = array_map(function ($v) {
-            return date("Y-m-d", $v);
-        }, range(strtotime('2019-07-01'), time(), 24 * 3600));
-        $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
-
-        $rows = $rows = [];
-        $userList = DingTalkUser::findList([''], 'kael_id', 'kael_id,name,user_id');var_dump($workDayConfig);
-        foreach ($dayList as $day) {
-//            echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
-//            $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*', 'id desc');
+//        $dayList = array_map(function ($v) {
+//            return date("Y-m-d", $v);
+//        }, range(strtotime('2019-07-01'), time(), 24 * 3600));
+//        $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
 //
-//            $dayConf = $workDayConfig[$day] ?? [];
-//            var_dump($dayConf);
-//            return;
-//            if(empty($dayConf['is_allow_dingcan'])){
-//                $rows = array_merge($rows, $dingcanList);
-//            }else{
-//                if(!empty($dingcanList)){
-//                    $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
-//                        ['schedule_date' => $day],
-//                        [['!=', 'class_id', 0]],
-//                        'schedule_date,check_type,plan_check_time,user_id');
-//                    $scheduleListIndex = [];
-//                    foreach ($scheduleList as $v) {
-//                        $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
-//                    }
-//
-//                    $resultList = DingtalkAttendanceRecord::findListByWhereWithWhereArr(['work_date' => $day
-//                    ], [], 'work_date,check_type,user_check_time,user_id');
-//                    $resultListIndex = [];
-//                    foreach ($resultList as $v) {
-//                        $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
-//                    }
-//
-//                    var_dump($scheduleListIndex);
-//                    return;
-        }
+//        $rows = $rows = [];
+//        $userList = DingTalkUser::findList([''], 'kael_id', 'kael_id,name,user_id');var_dump($workDayConfig);
+//        foreach ($dayList as $day) {
+////            echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
+////            $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*', 'id desc');
+////
+////            $dayConf = $workDayConfig[$day] ?? [];
+////            var_dump($dayConf);
+////            return;
+////            if(empty($dayConf['is_allow_dingcan'])){
+////                $rows = array_merge($rows, $dingcanList);
+////            }else{
+////                if(!empty($dingcanList)){
+////                    $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
+////                        ['schedule_date' => $day],
+////                        [['!=', 'class_id', 0]],
+////                        'schedule_date,check_type,plan_check_time,user_id');
+////                    $scheduleListIndex = [];
+////                    foreach ($scheduleList as $v) {
+////                        $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
+////                    }
+////
+////                    $resultList = DingtalkAttendanceRecord::findListByWhereWithWhereArr(['work_date' => $day
+////                    ], [], 'work_date,check_type,user_check_time,user_id');
+////                    $resultListIndex = [];
+////                    foreach ($resultList as $v) {
+////                        $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
+////                    }
+////
+////                    var_dump($scheduleListIndex);
+////                    return;
+//        }
 
 
 
