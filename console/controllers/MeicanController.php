@@ -192,10 +192,11 @@ class MeicanController extends Controller
     public function actionCanExceptionInit()
     {
         echo date('Y-m-d H:i:s') . "\t  开始导入异常订餐数据\n";
-//        $dayList = array_map(function ($v) {
-//            return date("Y-m-d", $v);
-//        }, range(strtotime('2019-07-01'), time(), 24 * 3600));
-//        $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
+        $dayList = array_map(function ($v) {
+            return date("Y-m-d", $v);
+        }, range(strtotime('2019-07-01'), time(), 24 * 3600));
+        $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
+        var_dump($workDayConfig);
 //
 //        $rows = $rows = [];
 //        $userList = DingTalkUser::findList([''], 'kael_id', 'kael_id,name,user_id');var_dump($workDayConfig);
