@@ -217,9 +217,9 @@ class MeicanController extends Controller
             } else {
                 $dingcanListIndex = [];
                 foreach ($dingcanList as $v){
-                    $dingcanListIndex[$v['kael_id']][$v['meal_date']][] = $v;
+                    $dingcanListIndex[$v['kael_id']][] = $v;
                 }
-                var_dump($dingcanListIndex);
+
 
                 if (!empty($dingcanList)) {
                     $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
