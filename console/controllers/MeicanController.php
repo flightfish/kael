@@ -151,7 +151,6 @@ class MeicanController extends Controller
         //每天下午6点半
         $day = date('Y-m-d');
         $retJson = MeicanApi::listBill($day);
-        var_dump($retJson);return 1;
         $columns = [];
         $rows = [];
         $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
@@ -193,10 +192,24 @@ class MeicanController extends Controller
         DingcanOrder::addUpdateColumnRows($columns, $rows);
     }
 
-    public function actionYu(){}
-
+    /**
+     * 同步订餐数据
+     */
+    public function actionDingCanOrderInit(){
+        if(exec('ps -ef|grep "meican/can-exception-init"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
+    }
+    /**
+     * 同步异常数据
+     */
     public function actionCanExceptionInit()
     {
+        if(exec('ps -ef|grep "meican/can-exception-init"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
         echo date('Y-m-d H:i:s') . "\t  开始导入异常订餐数据\n";
         $dingcanOrderExceptionOne = DingcanOrderException::findOneByWhere([], '', 'id desc');
         if (!empty($dingcanOrderExceptionOne)) {
@@ -291,7 +304,14 @@ class MeicanController extends Controller
         }
         DingcanOrderException::addUpdateColumnRows($columns, $rows);
     }
+    /**
+     * 更新异常数据
+     */
     public function actionCanExceptionUpdate(){
+        if(exec('ps -ef|grep "meican/can-exception-update"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
         echo date('Y-m-d H:i:s') . "\t  异常订餐数据校验,30天内\n";
         $startDate = date('Y-m-d', strtotime("-100 days"));
         $dayList = array_map(function ($v) {
