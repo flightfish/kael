@@ -52,4 +52,16 @@ class DingcanOrderException extends \common\models\BaseActiveRecord
         $limit>0 && $query = $query->limit($limit);
         return $query->asArray(true)->all();
     }
+
+    public static function findOneByWhere($where,$select='*',$order=""){
+        !isset($where['status']) && $where['status'] = 0;
+        $query = static::find()
+            ->select($select)
+            ->where($where);
+        !empty($order) && $query = $query->orderBy($order);
+        return $query
+            ->limit(1)
+            ->asArray(true)
+            ->one();
+    }
 }
