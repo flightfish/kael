@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 use common\libs\DingTalkApi;
+use common\models\DingtalkAttendanceProcessInstance;
 use common\models\DingtalkAttendanceRecord;
 use common\models\DingtalkAttendanceResult;
 use common\models\DingtalkAttendanceSchedule;
@@ -299,6 +300,7 @@ class DingKaoqinController extends Controller
             echo "is_running";
             exit();
         }
+        $columns=$rows=[];
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
         },range(strtotime('2019-07-01'),time(),24*3600));
@@ -307,10 +309,35 @@ class DingKaoqinController extends Controller
             $resultList=DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date' => $day], [['!=', 'proc_inst_id', 0]],'id,proc_inst_id');
             $proc_inst_id_arr=array_column($resultList,'proc_inst_id');
             foreach ($proc_inst_id_arr as $proc_inst_id){
-                $process_instance = DingTalkApi::getProcessInstance($proc_inst_id);
-                var_dump( $process_instance);return 1;
-            }
+                $res = DingTalkApi::getProcessInstance($proc_inst_id);
+                if($res['errcode'==0]){
+                    $processInstance=$res['process_instance'];
+                    $tmp = [
+                        'proc_inst_id'=>$proc_inst_id,
+                        'title'=>$processInstance['title'] ?? '',
+                        'start_date'=>date('Y-m-d',strtotime($processInstance['create_time'])) ?? 0,
+                        'start_time'=>$processInstance['create_time'],
+                        'finish_time'=>$processInstance['finish_time'],
+                        'user_id'=>$processInstance['originator_userid'],
+                        'dingtalk_department_id'=>$processInstance['originator_dept_id'],
+                        'dingtalk_department_name'=>$processInstance['originator_dept_name'],
+                        'process_status'=>$processInstance['status'],
 
+                        'cc_user_id'=>$processInstance['cc_userids'],
+                        'result'=>$processInstance['result'],
+                        'business_id'=>$processInstance['business_id'],
+                        'form_component_values'=> json_encode($processInstance['form_component_values'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),
+                        'operation_records'=> json_encode($processInstance['operation_records'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),
+                        'tasks'=> json_encode($processInstance['tasks'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),
+
+                        'attached_process_instance_ids'=>json_encode($processInstance['attached_process_instance_ids'],JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE),
+                        'biz_action'=>$processInstance['biz_action'],
+                    ];
+                    empty($columns) && $columns = array_keys($tmp);
+                    $rows[] = array_values($tmp);
+                }
+            }
         }
+        DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns,$rows);
     }
 }
