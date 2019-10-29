@@ -260,7 +260,10 @@ class MeicanController extends Controller
                         }
 
                         //非工作日
-                        elseif (!isset($offDutyResult['user_check_time']) && !isset($onDutyResult['user_check_time'])) {
+                        elseif (!isset($offDutyResult['user_check_time']) &&
+                            !isset($onDutyResult['user_check_time'])&&
+                            !isset($offDutySchedule['plan_check_time'])
+                        ) {
                             //未打卡
                             foreach ($canList as $can){
                                 $rows[]=$can;
@@ -287,16 +290,75 @@ class MeicanController extends Controller
     }
     public function actionCanExceptionUpdate(){
         echo date('Y-m-d H:i:s') . "\t  异常订餐数据校验,40天内\n";
-
-        $dingcanOrderExceptionOne = DingcanOrderException::findList([]);
-
-            $startDate = date('Y-m-d', strtotime("-40 days"));
-            var_dump($startDate);
-
+        $startDate = date('Y-m-d', strtotime("-40 days"));
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($startDate), time(), 24 * 3600));
         $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
+
+        $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
+        foreach ($dayList as $day) {
+            echo date('Y-m-d H:i:s') . "\t {$day} 开始异常订餐重新校验\n";
+            $dingcanList = DingcanOrderException::findListByWhereWithWhereArr(['meal_date' => $day], [], '*');
+
+            $dayConf = $workDayConfig[$day] ?? [];
+
+            if (!empty($dayConf['is_allow_dingcan'])) {
+                if (!empty($dingcanList)) {
+                    $dingcanListIndex = [];
+                    foreach ($dingcanList as $v){
+                        $dingcanListIndex[$v['kael_id']][] = $v;
+                    }
+                    $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
+                        ['schedule_date' => $day],
+                        [['!=', 'class_id', 0]],
+                        'schedule_date,check_type,plan_check_time,user_id');
+
+                    $scheduleListIndex = [];
+                    foreach ($scheduleList as $v) {
+                        $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
+                    }
+
+
+                    $resultList = DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date' => $day
+                    ], [], 'work_date,check_type,user_check_time,user_id');
+                    $resultListIndex = [];
+                    foreach ($resultList as $v) {
+                        $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
+                    }
+                    foreach ($dingcanListIndex as $kaelId=>$canList){
+                        $offDutySchedule = $scheduleListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
+                        $onDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OnDuty'] ?? [];
+                        $offDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
+
+
+
+                        //工作日9点
+                        if (
+                            isset($offDutySchedule['plan_check_time']) &&
+                            isset($offDutyResult['user_check_time']) &&
+                            $offDutyResult['user_check_time'] >= $day . ' 21:00:00' &&
+                            count($canList) == 1
+
+                        ) {
+                            DingtalkAttendanceSchedule::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
+                        }
+                        //非工作日
+                        elseif (!isset($offDutyResult['user_check_time'])
+                            && !isset($onDutyResult['user_check_time']) &&
+                            !isset($offDutySchedule['plan_check_time'])
+                        ) {
+                            //未打卡
+                            foreach ($canList as $can) {
+                                $rows[] = $can;
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+
     }
 
 }
