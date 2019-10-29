@@ -6,6 +6,7 @@ use common\models\CommonUser;
 use common\models\Department;
 use common\models\DingcanOrder;
 use common\models\DingcanOrderException;
+use common\models\DingtalkAttendanceSchedule;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use usercenter\modules\meican\models\MeicanApi;
@@ -189,8 +190,14 @@ class MeicanController extends Controller
     public function actionCanException()
     {
         echo date('Y-m-d H:i:s')."\t 校验以前的异常数据\n";
-        $dingcanExceptionList = DingcanOrderException::findList([]);
+        $dingcanExceptionList = DingcanOrderException::findListByWhereWithWhereArr([],[],'*','id desc');
         var_dump($dingcanExceptionList);
+
+        $startTimestamp = strtotime($this->month);
+        $endTimestamp = strtotime($this->month.' +1month -1day');
+        $dayList = array_map(function($v){
+            return date("Y-m-d",$v);
+        },range($startTimestamp,$endTimestamp,24*3600));
 //        $dingcanList = DingcanOrder::findListByWhereWithWhereArr([
 //            'kael_id'=>$this->user_id,
 //            'meal_date'=>$dayList
@@ -205,29 +212,29 @@ class MeicanController extends Controller
 //        foreach ($dingcanOrder as $v){
 //            $dingcanListIndex[$v['kael_id']][$v['meal_date']][] = $v;
 //        }
-//
+
 //        $dingtalk_subroot_id_arr = array_unique(array_column($departmentList, 'id'));
-//        $scheduleList = DingTalkAttendanceSchedule::findListByWhereAndWhereArr([
-//            'schedule_date' => $dayList,'dingtalk_subroot_id'=>$dingtalk_subroot_id_arr
-//        ], [
-//            ['!=', 'class_id', 0]
-//        ], 'schedule_date,check_type,plan_check_time,user_id,dingtalk_subroot_id');
-//        $scheduleListIndex = [];
-//        foreach ($scheduleList as $v) {
-//            $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
-//        }
-//
-//
-//        $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
-//
-//
-//        $resultList = DingTalkAttendanceResult::findListByWhereAndWhereArr([
-//            'work_date' => $dayList, 'dingtalk_subroot_id' => $dingtalk_subroot_id_arr
-//        ], [], 'work_date,check_type,user_check_time,record_id,user_id,dingtalk_subroot_id');
-//        $resultListIndex = [];
-//        foreach ($resultList as $v) {
-//            $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
-//        }
+        $scheduleList =DingtalkAttendanceSchedule::findListByWhereAndWhereArr([
+        ], [
+            ['!=', 'class_id', 0]
+        ], 'schedule_date,check_type,plan_check_time,user_id,dingtalk_subroot_id');
+        $scheduleListIndex = [];
+        foreach ($scheduleList as $v) {
+            $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
+        }
+
+
+        $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
+
+
+        $resultList = DingTalkAttendanceResult::findListByWhereAndWhereArr([
+        ], [], 'work_date,check_type,user_check_time,record_id,user_id,dingtalk_subroot_id');
+        $resultListIndex = [];
+        foreach ($resultList as $v) {
+            $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
+        }
+
+       var_dump($scheduleListIndex );
 
 
     }
