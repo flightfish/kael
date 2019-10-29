@@ -323,15 +323,15 @@ class DingKaoqinController extends Controller
                         'dingtalk_department_name' => $processInstance['originator_dept_name'],
                         'process_status' => $processInstance['status'],
 
-                        'cc_user_id' => $processInstance['cc_userids'],
+                        'cc_user_id' => $processInstance['cc_userids'] ?? '',
                         'result' => $processInstance['result'],
                         'business_id' => $processInstance['business_id'],
                         'form_component_values' => json_encode($processInstance['form_component_values'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
                         'operation_records' => json_encode($processInstance['operation_records'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
                         'tasks' => json_encode($processInstance['tasks'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
 
-                        'attached_process_instance_ids' => json_encode($processInstance['attached_process_instance_ids'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
-                        'biz_action' => $processInstance['biz_action'],
+                        'attached_process_instance_ids' => json_encode($processInstance['attached_process_instance_ids'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)??'',
+                        'biz_action' => $processInstance['biz_action']??'',
                     ];
                     empty($columns) && $columns = array_keys($tmp);
                     $rows[] = array_values($tmp);
