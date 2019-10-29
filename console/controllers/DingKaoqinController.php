@@ -303,7 +303,7 @@ class DingKaoqinController extends Controller
         $columns=$rows=[];
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
-        },range(strtotime('2019-09-30'),time(),24*3600*7));
+        },range(strtotime('2019-07-01'),time(),24*3600*7));
 
         foreach ($dayList as $day) {
             $day_end=date("Y-m-d", strtotime($day) + 24 * 3600 * 6);
