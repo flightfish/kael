@@ -215,7 +215,8 @@ class MeicanController extends Controller
 //        }
 
 //        $dingtalk_subroot_id_arr = array_unique(array_column($departmentList, 'id'));
-        $scheduleList =DingtalkAttendanceSchedule::findListByWhereAndWhereArr([
+
+        $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr([
         ], [
             ['!=', 'class_id', 0]
         ], 'schedule_date,check_type,plan_check_time,user_id,dingtalk_subroot_id');
@@ -228,7 +229,7 @@ class MeicanController extends Controller
         $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
 
 
-        $resultList = DingtalkAttendanceRecord::findListByWhereAndWhereArr([
+        $resultList = DingtalkAttendanceRecord::findListByWhereWithWhereArr([
         ], [], 'work_date,check_type,user_check_time,record_id,user_id,dingtalk_subroot_id');
         $resultListIndex = [];
         foreach ($resultList as $v) {
