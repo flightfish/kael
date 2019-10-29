@@ -195,7 +195,8 @@ class MeicanController extends Controller
     public function actionCanExceptionInit()
     {
         echo date('Y-m-d H:i:s') . "\t  开始导入异常订餐数据\n";
-        $dingcanOrderExceptionOne=DingcanOrderException::findOneByWhere([],'','id desc');
+        $dingcanOrderExceptionOne = DingcanOrderException::findOneByWhere([], '', 'id desc');
+        var_dump($dingcanOrderExceptionOne['meal_date']);
         if (!empty($dingcanOrderExceptionOne)) {
             $startDate = date('Y-m-d', $dingcanOrderExceptionOne['meal_date'] + '+1 day');
         } else {
