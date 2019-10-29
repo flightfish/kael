@@ -338,10 +338,6 @@ class DingKaoqinController extends Controller
                     $rows[] = array_values($tmp);
                 }
             }
-            var_dump($rows);
-            var_dump($columns);
-            die;
-
             DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns,$rows);return 3;
 
         }
