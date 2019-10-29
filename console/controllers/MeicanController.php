@@ -201,7 +201,8 @@ class MeicanController extends Controller
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
             $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*', 'id desc');
-            var_dump( $workDayConfig);
+            $dayConf = $workDayConfig[$day] ?? [];
+            var_dump($dayConf);return;
             if (!empty($dingcanList)) {
 
 
