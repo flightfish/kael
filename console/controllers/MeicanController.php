@@ -254,8 +254,15 @@ class MeicanController extends Controller
                         }
 
                         //非工作日
-                        if (!isset($offDutyResult['user_check_time']) && !isset($onDutyResult['user_check_time'])) {
+                        elseif (!isset($offDutyResult['user_check_time']) && !isset($onDutyResult['user_check_time'])) {
                             //未打卡
+                            foreach ($canList as $can){
+                                $rows[]=$can;
+                            }
+                        }
+
+                        //订餐大于1份
+                        elseif (count($canList) > 1) {
                             foreach ($canList as $can){
                                 $rows[]=$can;
                             }
@@ -263,77 +270,13 @@ class MeicanController extends Controller
                     }
                 }
 
-
-//                //工作日9点
-//                if(
-//                    isset($offDutySchedule['plan_check_time']) && (
-//                        !isset($offDutyResult['user_check_time']) ||
-//                        $offDutyResult['user_check_time'] < $day . ' 21:00:00')
-//                ){
-//                    $dingcanStatus = 2;
-//                }
-//
-//                //非工作日
-//                if(!isset($offDutyResult['user_check_time'])&&!isset($onDutyResult['user_check_time'])){
-//                    //未打卡
-//                    $dingcanStatus = 2;
-//                }
-
-
-//        $startTimestamp = strtotime($this->month);
-//        $endTimestamp = strtotime($this->month.' +1month -1day');
-//        $dayList = array_map(function($v){
-//            return date("Y-m-d",$v);
-//        },range($startTimestamp,$endTimestamp,24*3600));
-//        $dingcanList = DingcanOrder::findListByWhereWithWhereArr([
-//            'kael_id'=>$this->user_id,
-//            'meal_date'=>$dayList
-//        ],[],'meal_date,meal_time,supplier,price,order_ext');
-//        foreach ($dingcanOrder as $val) {
-//            $resList[$val['dingtalk_subroot_id']]['price'] += $val['price'];
-//            $resList[$val['dingtalk_subroot_id']]['can_num'] += 1;
-//            $all_can_num += 1;
-//            $all_price += $val['price'];
-//        }
-//        $dingcanListIndex = [];
-//        foreach ($dingcanOrder as $v){
-//            $dingcanListIndex[$v['kael_id']][$v['meal_date']][] = $v;
-//        }
-
-//        $dingtalk_subroot_id_arr = array_unique(array_column($departmentList, 'id'));
-
-//        $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr([
-//        ], [
-//            ['!=', 'class_id', 0]
-//        ], 'schedule_date,check_type,plan_check_time,user_id,dingtalk_subroot_id');
-//        $scheduleListIndex = [];
-//        foreach ($scheduleList as $v) {
-//            $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
-//        }
-//
-//
-//        $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
-//
-//
-//        $resultList = DingtalkAttendanceRecord::findListByWhereWithWhereArr([
-//        ], [], 'work_date,check_type,user_check_time,record_id,user_id,dingtalk_subroot_id');
-//        $resultListIndex = [];
-//        foreach ($resultList as $v) {
-//            $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
-//        }
-//
-//       var_dump($scheduleListIndex );
-//        $columns = [];
-//        if(empty($columns)){
-//            foreach ($rows as $val){
-//                $columns= array_keys($val);
-//                break;
-//            }
-//        }
-//        DingcanOrder::addUpdateColumnRows($columns,$rows);
-var_dump($rows);
             }
 
         }
+
+        if (empty($columns)) {
+            $columns = array_keys($rows[0]);
+        }
+        DingcanOrder::addUpdateColumnRows($columns, $rows);
     }
 }
