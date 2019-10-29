@@ -303,8 +303,9 @@ class DingKaoqinController extends Controller
             return date("Y-m-d",$v);
         },range(strtotime('2019-07-01'),time(),24*3600));
         foreach ($dayList as $day){
-            $resultList=DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date' => $day], [['!=', 'proc_inst_id', 0]]);
-            var_dump( $resultList);
+            $resultList=DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date' => $day], [['!=', 'proc_inst_id', 0]],'id,proc_inst_id');
+            $proc_inst_id_arr=array_column($resultList,'proc_inst_id');
+            var_dump($proc_inst_id_arr);
 
         }
 
