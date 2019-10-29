@@ -312,7 +312,6 @@ class DingKaoqinController extends Controller
                 [['!=', 'proc_inst_id', 0],
                     ['>=', 'work_date', $day],
                     ['<=', 'work_date', $day_end]], 'id,proc_inst_id,work_date');
-            var_dump(array_unique(array_column($resultList,'work_date')));return;
             $proc_inst_id_arr = array_unique(array_column($resultList, 'proc_inst_id'));
             foreach ($proc_inst_id_arr as $proc_inst_id) {
                // $proc_inst_id='085ca781-205b-4cec-8d92-b9a3e7d076dc';
