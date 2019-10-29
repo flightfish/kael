@@ -7,6 +7,7 @@ use common\models\Department;
 use common\models\DingcanOrder;
 use common\models\DingcanOrderException;
 use common\models\DingtalkAttendanceRecord;
+use common\models\DingtalkAttendanceResult;
 use common\models\DingtalkAttendanceSchedule;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
@@ -222,15 +223,16 @@ class MeicanController extends Controller
                     foreach ($scheduleList as $v) {
                         $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
                     }
-                    var_dump($scheduleListIndex);return;
-                    $resultList = DingtalkAttendanceRecord::findListByWhereWithWhereArr(['work_date' => $day
+
+
+                    $resultList = DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date' => $day
                     ], [], 'work_date,check_type,user_check_time,user_id');
                     $resultListIndex = [];
                     foreach ($resultList as $v) {
                         $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
                     }
 
-                    var_dump($scheduleListIndex);
+                    var_dump($resultListIndex);
                     return;
                 }
 
