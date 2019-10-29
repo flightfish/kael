@@ -331,8 +331,6 @@ class MeicanController extends Controller
                         $onDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OnDuty'] ?? [];
                         $offDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
 
-
-
                         //工作日9点
                         if (
                             isset($offDutySchedule['plan_check_time']) &&
@@ -344,21 +342,17 @@ class MeicanController extends Controller
                             DingtalkAttendanceSchedule::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
                         }
                         //非工作日
-                        elseif (!isset($offDutyResult['user_check_time'])
-                            && !isset($onDutyResult['user_check_time']) &&
-                            !isset($offDutySchedule['plan_check_time'])
+                        elseif (
+                            (isset($offDutyResult['user_check_time']) || !isset($onDutyResult['user_check_time']))
+                            && !isset($offDutySchedule['plan_check_time'])
+                            && count($canList) == 1
                         ) {
-                            //未打卡
-                            foreach ($canList as $can) {
-                                $rows[] = $can;
-                            }
+                            DingtalkAttendanceSchedule::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
                         }
                     }
                 }
             }
-
         }
-
     }
 
 }
