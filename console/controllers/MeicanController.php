@@ -191,13 +191,13 @@ class MeicanController extends Controller
     {
         echo date('Y-m-d H:i:s')."\t 校验以前的异常数据\n";
         $dingcanExceptionList = DingcanOrderException::findListByWhereWithWhereArr([],[],'*','id desc');
-        var_dump($dingcanExceptionList);
+//        var_dump($dingcanExceptionList);
 
-        $startTimestamp = strtotime($this->month);
-        $endTimestamp = strtotime($this->month.' +1month -1day');
-        $dayList = array_map(function($v){
-            return date("Y-m-d",$v);
-        },range($startTimestamp,$endTimestamp,24*3600));
+//        $startTimestamp = strtotime($this->month);
+//        $endTimestamp = strtotime($this->month.' +1month -1day');
+//        $dayList = array_map(function($v){
+//            return date("Y-m-d",$v);
+//        },range($startTimestamp,$endTimestamp,24*3600));
 //        $dingcanList = DingcanOrder::findListByWhereWithWhereArr([
 //            'kael_id'=>$this->user_id,
 //            'meal_date'=>$dayList
