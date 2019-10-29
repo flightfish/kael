@@ -198,14 +198,14 @@ class MeicanController extends Controller
         $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
 
         $rows = $rows = [];
-        $userList = DingTalkUser::findList([''], 'kael_id', 'kael_id,name,user_id');
+        $userList = DingTalkUser::findList([''], 'kael_id', 'kael_id,name,user_id');var_dump($workDayConfig);
         foreach ($dayList as $day) {
-            echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
-            $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*', 'id desc');
-
-            $dayConf = $workDayConfig[$day] ?? [];
-            var_dump($dayConf);
-            return;
+//            echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
+//            $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*', 'id desc');
+//
+//            $dayConf = $workDayConfig[$day] ?? [];
+//            var_dump($dayConf);
+//            return;
 //            if(empty($dayConf['is_allow_dingcan'])){
 //                $rows = array_merge($rows, $dingcanList);
 //            }else{
