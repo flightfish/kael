@@ -504,11 +504,10 @@ class User extends RequestBaseModel
         $oldPlatformIds = array_column(RelateUserPlatform::findListByUserPlatform($this->id),'platform_id');
         $delPlatforms = array_diff($oldPlatformIds,$this->data['platform_list']);
         $addPlatforms = array_diff($this->data['platform_list'],$oldPlatformIds);
-        return ['add'=>$addPlatforms,'del'=>$delPlatforms];
         $trans = RelateUserPlatform::getDb()->beginTransaction();
         try{
-            RelateUserPlatform::batchAdd($this->id,$addPlatforms,$this->user['id']);
-            RelateUserPlatform::updateAll(
+            !empty($addPlatforms) && RelateUserPlatform::batchAdd($this->id,$addPlatforms,$this->user['id']);
+            !empty($delPlatforms) && RelateUserPlatform::updateAll(
                 ['status'=>RelateUserPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
                 ['user_id' => $this->id,'platform_id'=>$delPlatforms,'status'=>RelateUserPlatform::STATUS_VALID]);
             LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_EDIT_USER_ROLE,$this->data);
