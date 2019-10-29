@@ -219,10 +219,6 @@ class MeicanController extends Controller
                     foreach ($dingcanList as $v){
                         $dingcanListIndex[$v['kael_id']][] = $v;
                     }
-
-                    foreach ($dingcanListIndex as $val){
-                        var_dump($val);
-                    }
                     $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
                         ['schedule_date' => $day],
                         [['!=', 'class_id', 0]],
@@ -240,11 +236,10 @@ class MeicanController extends Controller
                     foreach ($resultList as $v) {
                         $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
                     }
-                    foreach ($dingcanList as $can){
-                        $offDutySchedule = $scheduleListIndex[$userList[$can['kael_id']]['user_id']][$day . ':OffDuty'] ?? [];
-                        $onDutyResult = $resultListIndex[$userList[$can['kael_id']]['user_id']][$day . ':OnDuty'] ?? [];
-                        $offDutyResult = $resultListIndex[$userList[$can['kael_id']]['user_id']][$day . ':OffDuty'] ?? [];
-
+                    foreach ($dingcanListIndex as $kaelId=>$canList){
+                        $offDutySchedule = $scheduleListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
+                        $onDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OnDuty'] ?? [];
+                        $offDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
                         //工作日9点
                         if (
                             isset($offDutySchedule['plan_check_time']) && (
@@ -252,17 +247,20 @@ class MeicanController extends Controller
                                 $offDutyResult['user_check_time'] < $day . ' 21:00:00')
 
                         ) {
-                            $rows[]=$can;
-                        }
+                            foreach ($canList as $can){
+                                $rows[]=$can;
+                            }
 
+                        }
 
                         //非工作日
                         if (!isset($offDutyResult['user_check_time']) && !isset($onDutyResult['user_check_time'])) {
                             //未打卡
-                            $rows[]=$can;
+                            foreach ($canList as $can){
+                                $rows[]=$can;
+                            }
                         }
                     }
-
                 }
 
 
@@ -333,7 +331,7 @@ class MeicanController extends Controller
 //            }
 //        }
 //        DingcanOrder::addUpdateColumnRows($columns,$rows);
-
+var_dump($rows);
             }
 
         }
