@@ -206,7 +206,7 @@ class MeicanController extends Controller
             $dayConf = $workDayConfig[$day] ?? [];
             if(empty($dayConf['is_allow_dingcan'])){
                 $rows = array_merge($rows, $dingcanList);
-            }else{
+            }else{return 1;
                 if(!empty($dingcanList)){
                     $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
                         ['schedule_date' => $day],
