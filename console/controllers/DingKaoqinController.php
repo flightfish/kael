@@ -311,7 +311,7 @@ class DingKaoqinController extends Controller
             foreach ($proc_inst_id_arr as $proc_inst_id) {
                 $proc_inst_id='085ca781-205b-4cec-8d92-b9a3e7d076dc';
                 $res = DingTalkApi::getProcessInstance($proc_inst_id);
-                if ($res['errcode'] == 0) {var_dump($proc_inst_id);
+                if ($res['errcode'] == 0) {
                     $processInstance = $res['process_instance'];
                     $tmp = [
                         'proc_inst_id' => $proc_inst_id,
