@@ -290,7 +290,7 @@ class MeicanController extends Controller
     }
     public function actionCanExceptionUpdate(){
         echo date('Y-m-d H:i:s') . "\t  异常订餐数据校验,30天内\n";
-        $startDate = date('Y-m-d', strtotime("-90 days"));
+        $startDate = date('Y-m-d', strtotime("-100 days"));
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($startDate), time(), 24 * 3600));
