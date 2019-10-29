@@ -83,5 +83,8 @@ class NoticeController extends Controller
             echo "is_running";
             exit();
         }
+
     }
+
+
 }
