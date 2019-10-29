@@ -10,6 +10,7 @@ use common\models\DingtalkAttendanceRecord;
 use common\models\DingtalkAttendanceSchedule;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
+use common\models\WorkDayConfig;
 use usercenter\modules\meican\models\MeicanApi;
 use Yii;
 use yii\console\Controller;
@@ -191,8 +192,22 @@ class MeicanController extends Controller
     public function actionCanExceptionInit()
     {
         echo date('Y-m-d H:i:s')."\t  开始导入异常订餐数据\n";
-        $dingcanList = DingcanOrder::findListByWhereWithWhereArr([],[],'*','id desc');
-        var_dump($dingcanList);
+        $dayList = array_map(function($v){
+            return date("Y-m-d",$v);
+        },range(strtotime('2019-07-01'),time(),24*3600));
+        $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList),null,'day');
+
+
+        foreach ($dayList as $day){
+            echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
+            $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*', 'id desc');
+            return $workDayConfig;
+            if (!empty($dingcanList)) {
+
+
+            }
+
+        }
 
 //        $startTimestamp = strtotime($this->month);
 //        $endTimestamp = strtotime($this->month.' +1month -1day');
