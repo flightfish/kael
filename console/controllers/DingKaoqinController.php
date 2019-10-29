@@ -142,7 +142,11 @@ class DingKaoqinController extends Controller
 
     }
 
-    public function actionYu(){
+    public function actionProcessInstance(){
+        if(exec('ps -ef|grep "ding-kaoqin/syn"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
         $proc_inst_id="70fd36ed-4f60-4176-bc78-c72ba0a0cd71";
         $process_instance = DingTalkApi::getProcessInstance($proc_inst_id);
         var_dump( $process_instance);
