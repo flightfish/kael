@@ -23,6 +23,7 @@ CREATE TABLE `dingcan_order_exception` (
 
 
 CREATE TABLE `dingtalk_attendance_process_instance` (
+   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
    `proc_inst_id` varchar(255) NOT NULL DEFAULT '' COMMENT '审批实例id',
    `title` varchar(255)  NOT NULL DEFAULT '' COMMENT '审批实例标题',
    `start_date` DATE NOT NULL DEFAULT '0000-00-00' COMMENT '发起日期',
@@ -43,7 +44,8 @@ CREATE TABLE `dingtalk_attendance_process_instance` (
    `status` int(11) NOT NULL DEFAULT '0',
    `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
    `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   PRIMARY KEY (`proc_inst_id`)
+   PRIMARY KEY (`id`),
+   UNIQUE INDEX idx_proc_inst_id(`proc_inst_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
