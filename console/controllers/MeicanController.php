@@ -339,8 +339,8 @@ class MeicanController extends Controller
                             count($canList) == 1
 
                         ) {
-                            var_dump($canList[0]['id']);return;
-                            DingtalkAttendanceSchedule::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
+
+                            DingtalkAttendanceSchedule::updateAll(['status' => 1], ['id' => $canList[0]['id']]);return 3;
                         }
                         //非工作日
                         elseif (
