@@ -309,7 +309,7 @@ class DingKaoqinController extends Controller
             $resultList = DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date' => $day], [['!=', 'proc_inst_id', 0]], 'id,proc_inst_id');
             $proc_inst_id_arr = array_unique(array_column($resultList, 'proc_inst_id'));
             foreach ($proc_inst_id_arr as $proc_inst_id) {
-                $proc_inst_id='69018df6-990c-4f51-a092-219f9f7196e2';
+                //$proc_inst_id='69018df6-990c-4f51-a092-219f9f7196e2';
                 $res = DingTalkApi::getProcessInstance($proc_inst_id);
                 if ($res['errcode'] == 0) {var_dump($proc_inst_id);
                     $processInstance = $res['process_instance'];
@@ -335,9 +335,10 @@ class DingKaoqinController extends Controller
                         'biz_action' => $processInstance['biz_action']??'',
                     ];
                     empty($columns) && $columns = array_keys($tmp);
-                    $rows[] = array_values($tmp);return 4;
+                    $rows[] = array_values($tmp);
                 }
             }
+            return 4;
             DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns,$rows);
             return 1;
         }
