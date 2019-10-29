@@ -199,14 +199,13 @@ class MeicanController extends Controller
             return date("Y-m-d", $v);
         }, range(strtotime('2019-07-01'), time(), 24 * 3600));
         $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
-        var_dump($workDayConfig);
+
 
         $columns = $rows = [];
         $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
         foreach ($dayList as $day) {
             echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
             $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*');
-            var_dump($day);
 
             $dayConf = $workDayConfig[$day] ?? [];
 
@@ -219,7 +218,7 @@ class MeicanController extends Controller
                 foreach ($dingcanList as $v){
                     $dingcanListIndex[$v['kael_id']][$v['meal_date']][] = $v;
                 }
-
+var_dump($dingcanListIndex);
 
                 if (!empty($dingcanList)) {
                     $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
