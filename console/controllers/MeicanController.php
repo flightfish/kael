@@ -288,7 +288,7 @@ class MeicanController extends Controller
     public function actionCanExceptionUpdate(){
         echo date('Y-m-d H:i:s') . "\t  异常订餐数据校验,40天内\n";
 
-        $dingcanOrderExceptionOne = DingcanOrderException::fin([], '', 'id desc');
+        $dingcanOrderExceptionOne = DingcanOrderException::findList([]);
 
             $startDate = date('Y-m-d', strtotime("-40 days"));
             var_dump($startDate);
