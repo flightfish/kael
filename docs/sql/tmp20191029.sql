@@ -19,7 +19,6 @@ alter table relate_user_platform
 
 CREATE TABLE `callback_queue` (
      `queue_id` bigint(20) unsigned NOT NULL auto_increment,
-     `user_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '平台ID',
      `platform_id` bigint(20) NOT NULL DEFAULT '0' COMMENT '平台ID',
      `notice_url` varchar(255) not null default '0' comment '通知url',
      `notice_type` int(11) not null default '0' comment '1开通权限 2关闭权限',
@@ -30,5 +29,4 @@ CREATE TABLE `callback_queue` (
      PRIMARY KEY (`queue_id`),
      KEY `idx_userid_platformid` (`user_id`,`platform_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 
