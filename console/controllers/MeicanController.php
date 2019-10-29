@@ -202,7 +202,7 @@ class MeicanController extends Controller
         $userList = DingTalkUser::findList([''], 'kael_id', 'kael_id,name,user_id');var_dump($workDayConfig);
         foreach ($dayList as $day) {
             echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
-            $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*', 'id desc');
+            $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*');
             var_dump( $dingcanList);
 //
 //            $dayConf = $workDayConfig[$day] ?? [];
