@@ -340,7 +340,7 @@ class MeicanController extends Controller
 
                         ) {
 
-                            DingtalkAttendanceSchedule::updateAll(['status' => 1], ['id' => $canList[0]['id']]);return 3;
+                            DingtalkAttendanceSchedule::updateAll(['status' => 1], ['order_id' => $canList[0]['order_id']]);return 3;
                         }
                         //非工作日
                         elseif (
