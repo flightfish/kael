@@ -285,4 +285,18 @@ class MeicanController extends Controller
         }
         DingcanOrderException::addUpdateColumnRows($columns, $rows);
     }
+    public function actionCanExceptionUpdate(){
+        echo date('Y-m-d H:i:s') . "\t  异常订餐数据校验,40天内\n";
+
+        $dingcanOrderExceptionOne = DingcanOrderException::fin([], '', 'id desc');
+
+            $startDate = date('Y-m-d', strtotime("-40 days"));
+            var_dump($startDate);
+
+        $dayList = array_map(function ($v) {
+            return date("Y-m-d", $v);
+        }, range(strtotime($startDate), time(), 24 * 3600));
+        $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
+    }
+
 }
