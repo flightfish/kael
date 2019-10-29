@@ -5,6 +5,7 @@ use common\libs\AppFunc;
 use common\models\CommonUser;
 use common\models\Department;
 use common\models\DingcanOrder;
+use common\models\DingcanOrderException;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use usercenter\modules\meican\models\MeicanApi;
@@ -184,4 +185,51 @@ class MeicanController extends Controller
         }
         DingcanOrder::addUpdateColumnRows($columns,$rows);
     }
+
+    public function actionCanException()
+    {
+        echo date('Y-m-d H:i:s')."\t 校验以前的异常数据\n";
+        $dingcanExceptionList = DingcanOrderException::findList([]);
+        var_dump($dingcanExceptionList);
+//        $dingcanList = DingcanOrder::findListByWhereWithWhereArr([
+//            'kael_id'=>$this->user_id,
+//            'meal_date'=>$dayList
+//        ],[],'meal_date,meal_time,supplier,price,order_ext');
+//        foreach ($dingcanOrder as $val) {
+//            $resList[$val['dingtalk_subroot_id']]['price'] += $val['price'];
+//            $resList[$val['dingtalk_subroot_id']]['can_num'] += 1;
+//            $all_can_num += 1;
+//            $all_price += $val['price'];
+//        }
+//        $dingcanListIndex = [];
+//        foreach ($dingcanOrder as $v){
+//            $dingcanListIndex[$v['kael_id']][$v['meal_date']][] = $v;
+//        }
+//
+//        $dingtalk_subroot_id_arr = array_unique(array_column($departmentList, 'id'));
+//        $scheduleList = DingTalkAttendanceSchedule::findListByWhereAndWhereArr([
+//            'schedule_date' => $dayList,'dingtalk_subroot_id'=>$dingtalk_subroot_id_arr
+//        ], [
+//            ['!=', 'class_id', 0]
+//        ], 'schedule_date,check_type,plan_check_time,user_id,dingtalk_subroot_id');
+//        $scheduleListIndex = [];
+//        foreach ($scheduleList as $v) {
+//            $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
+//        }
+//
+//
+//        $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
+//
+//
+//        $resultList = DingTalkAttendanceResult::findListByWhereAndWhereArr([
+//            'work_date' => $dayList, 'dingtalk_subroot_id' => $dingtalk_subroot_id_arr
+//        ], [], 'work_date,check_type,user_check_time,record_id,user_id,dingtalk_subroot_id');
+//        $resultListIndex = [];
+//        foreach ($resultList as $v) {
+//            $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
+//        }
+
+
+    }
+
 }

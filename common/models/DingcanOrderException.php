@@ -3,12 +3,12 @@ namespace common\models;
 
 use Yii;
 
-class DingcanOrder extends \common\models\BaseActiveRecord
+class DingcanOrderException extends \common\models\BaseActiveRecord
 {
 
     public static function tableName()
     {
-        return 'dingcan_order';
+        return 'dingcan_order_exception';
     }
 
 
