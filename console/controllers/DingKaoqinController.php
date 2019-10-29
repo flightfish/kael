@@ -339,7 +339,7 @@ class DingKaoqinController extends Controller
                 }
             }
 
-            DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns,$rows);
+            DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns,$rows);return 3;
 
         }
     }
