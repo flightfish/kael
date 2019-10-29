@@ -303,11 +303,15 @@ class DingKaoqinController extends Controller
         $columns=$rows=[];
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
-        },range(strtotime('2019-07-01'),time(),24*3600*10));
+        },range(strtotime('2019-07-01'),time(),24*3600*7));
 
         foreach ($dayList as $day) {
             echo date('Y-m-d H:i:s') . "\t {$day} 开始审批数据到kael\n";
-            $resultList = DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date' => $day], [['!=', 'proc_inst_id', 0]], 'id,proc_inst_id');
+            $resultList = DingtalkAttendanceResult::findListByWhereWithWhereArr([],
+                [['!=', 'proc_inst_id', 0],
+                    ['>=', 'work_date', $day],
+                    ['<', 'work_date', date("Y-m-d", strtotime($day) + 24 * 3600 * 7)]], 'id,proc_inst_id,work_date');
+            var_dump(array_unique(array_column($resultList,'work_date')));return;
             $proc_inst_id_arr = array_unique(array_column($resultList, 'proc_inst_id'));
             foreach ($proc_inst_id_arr as $proc_inst_id) {
                // $proc_inst_id='085ca781-205b-4cec-8d92-b9a3e7d076dc';
