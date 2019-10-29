@@ -277,6 +277,6 @@ class MeicanController extends Controller
         if (empty($columns)) {
             $columns = array_keys($rows[0]);
         }
-        DingcanOrder::addUpdateColumnRows($columns, $rows);
+        DingcanOrderException::addUpdateColumnRows($columns, $rows);
     }
 }
