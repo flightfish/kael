@@ -196,13 +196,11 @@ class MeicanController extends Controller
     {
         echo date('Y-m-d H:i:s') . "\t  开始导入异常订餐数据\n";
         $dingcanOrderExceptionOne = DingcanOrderException::findOneByWhere([], '', 'id desc');
-        var_dump($dingcanOrderExceptionOne['meal_date']);
         if (!empty($dingcanOrderExceptionOne)) {
             $startDate = date('Y-m-d', strtotime($dingcanOrderExceptionOne['meal_date']) + 24*3600);
         } else {
             $startDate = '2019-07-01';
         }
-        var_dump($startDate);die;
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($startDate), time(), 24 * 3600));var_dump($dayList);die;
