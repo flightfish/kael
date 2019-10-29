@@ -217,12 +217,12 @@ class MeicanController extends Controller
                         ['schedule_date' => $day],
                         [['!=', 'class_id', 0]],
                         'schedule_date,check_type,plan_check_time,user_id');
-                    var_dump($scheduleList);return;
+
                     $scheduleListIndex = [];
                     foreach ($scheduleList as $v) {
                         $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
                     }
-
+                    var_dump($scheduleListIndex);return;
                     $resultList = DingtalkAttendanceRecord::findListByWhereWithWhereArr(['work_date' => $day
                     ], [], 'work_date,check_type,user_check_time,user_id');
                     $resultListIndex = [];
