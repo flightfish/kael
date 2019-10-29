@@ -303,14 +303,14 @@ class DingKaoqinController extends Controller
             return date("Y-m-d",$v);
         },range(strtotime('2019-07-01'),time(),24*3600));
         foreach ($dayList as $day){
+            echo date('Y-m-d H:i:s')."\t {$day} 开始审批数据到kael\n";
             $resultList=DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date' => $day], [['!=', 'proc_inst_id', 0]],'id,proc_inst_id');
             $proc_inst_id_arr=array_column($resultList,'proc_inst_id');
-            var_dump($proc_inst_id_arr);
+            foreach ($proc_inst_id_arr as $proc_inst_id){
+                $process_instance = DingTalkApi::getProcessInstance($proc_inst_id);
+                var_dump( $process_instance);return 1;
+            }
 
         }
-
-        $proc_inst_id="70fd36ed-4f60-4176-bc78-c72ba0a0cd71";
-        $process_instance = DingTalkApi::getProcessInstance($proc_inst_id);
-        var_dump( $process_instance);
     }
 }
