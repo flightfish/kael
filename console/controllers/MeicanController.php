@@ -200,6 +200,7 @@ class MeicanController extends Controller
             echo "is_running";
             exit();
         }
+        var_dump(MeicanApi::listMember());return 1;
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
         },range(strtotime('2019-09-01'),time(),24*3600));
