@@ -217,7 +217,7 @@ class MeicanController extends Controller
             } else {
                 $dingcanListIndex = [];
                 foreach ($dingcanList as $v){
-                    $dingcanListIndex[$v['kael_id']][] = $v;
+                    $dingcanListIndex[$v['kael_id']][$v['meal_date']][] = $v;
                 }
 
 
