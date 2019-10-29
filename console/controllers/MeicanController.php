@@ -198,7 +198,7 @@ class MeicanController extends Controller
         $dingcanOrderExceptionOne = DingcanOrderException::findOneByWhere([], '', 'id desc');
         var_dump($dingcanOrderExceptionOne['meal_date']);
         if (!empty($dingcanOrderExceptionOne)) {
-            $startDate = date('Y-m-d', strtotime($dingcanOrderExceptionOne['meal_date'] + '+1 day'));
+            $startDate = date('Y-m-d', strtotime($dingcanOrderExceptionOne['meal_date']) + 24*3600);
         } else {
             $startDate = '2019-07-01';
         }
