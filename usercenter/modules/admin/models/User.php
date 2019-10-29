@@ -504,6 +504,7 @@ class User extends RequestBaseModel
         $oldPlatformIds = array_column(RelateUserPlatform::findListByUserPlatform($this->id),'platform_id');
         $delPlatforms = array_diff($oldPlatformIds,$this->data['platform_list']);
         $addPlatforms = array_diff($this->data['platform_list'],$oldPlatformIds);
+        return ['add'=>$addPlatforms,'del'=>$delPlatforms];
         $trans = RelateUserPlatform::getDb()->beginTransaction();
         try{
             RelateUserPlatform::batchAdd($this->id,$addPlatforms,$this->user['id']);
