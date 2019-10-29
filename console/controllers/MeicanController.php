@@ -201,6 +201,7 @@ class MeicanController extends Controller
         } else {
             $startDate = '2019-07-01';
         }
+        var_dump($startDate);die;
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($startDate), time(), 24 * 3600));var_dump($dayList);die;
