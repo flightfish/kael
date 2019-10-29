@@ -151,6 +151,7 @@ class MeicanController extends Controller
         //每天下午6点半
         $day = date('Y-m-d');
         $retJson = MeicanApi::listBill($day);
+        var_dump($retJson);return 1;
         $columns = [];
         $rows = [];
         $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
