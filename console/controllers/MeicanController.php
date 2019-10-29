@@ -231,9 +231,16 @@ class MeicanController extends Controller
                     foreach ($resultList as $v) {
                         $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
                     }
+                    foreach ($dingcanList as $can){
+                        $offDutySchedule = $scheduleListIndex[$userList[$can['kael_id']]['user_id']][$day . ':OffDuty'] ?? [];
+                        $onDutyResult = $resultListIndex[$userList[$can['kael_id']]['user_id']][$day . ':OnDuty'] ?? [];
+                        $offDutyResult = $resultListIndex[$userList[$can['kael_id']]['user_id']][$day . ':OffDuty'] ?? [];
+                        var_dump($offDutySchedule);
+                        var_dump($onDutyResult);
+                        var_dump($offDutyResult);
+                        return 3;
+                    }
 
-                    var_dump($resultListIndex);
-                    return;
                 }
 
 
