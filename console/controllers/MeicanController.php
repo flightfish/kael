@@ -203,10 +203,10 @@ class MeicanController extends Controller
             echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
             $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*', 'id desc');
 
-            $dayConf = $workDayConfig[$day] ?? [];
+            $dayConf = $workDayConfig[$day] ?? [];var_dump($dayConf);return;
             if(empty($dayConf['is_allow_dingcan'])){
                 $rows = array_merge($rows, $dingcanList);
-            }else{return 1;
+            }else{
                 if(!empty($dingcanList)){
                     $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
                         ['schedule_date' => $day],
