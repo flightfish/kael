@@ -949,7 +949,6 @@ class User extends RequestBaseModel
                 }
                 $userInfo = $userListEmail[$v[2]];
             }
-
             //增加
             if(!empty($v[3])){
                 $addPrivIds = explode(',',$v[3]);//增加
