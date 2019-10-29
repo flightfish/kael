@@ -207,23 +207,27 @@ class MeicanController extends Controller
             if(empty($dayConf['is_allow_dingcan'])){
                 $rows = array_merge($rows, $dingcanList);
             }else{
-                $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
-                    ['schedule_date' => $day],
-                    [['!=', 'class_id', 0]],
-                    'schedule_date,check_type,plan_check_time,user_id');
-                $scheduleListIndex = [];
-                foreach ($scheduleList as $v) {
-                    $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
+                if(!empty($dingcanList)){
+                    $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
+                        ['schedule_date' => $day],
+                        [['!=', 'class_id', 0]],
+                        'schedule_date,check_type,plan_check_time,user_id');
+                    $scheduleListIndex = [];
+                    foreach ($scheduleList as $v) {
+                        $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
+                    }
+
+                    $resultList = DingtalkAttendanceRecord::findListByWhereWithWhereArr(['work_date' => $day
+                    ], [], 'work_date,check_type,user_check_time,user_id');
+                    $resultListIndex = [];
+                    foreach ($resultList as $v) {
+                        $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
+                    }
+
+                    var_dump($scheduleListIndex);
+                    return;
                 }
 
-                $resultList = DingtalkAttendanceRecord::findListByWhereWithWhereArr(['work_date' => $day
-                ], [], 'work_date,check_type,user_check_time,user_id');
-                $resultListIndex = [];
-                foreach ($resultList as $v) {
-                    $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
-                }
-
-                var_dump($scheduleListIndex);return;
 
 //                //工作日9点
 //                if(
