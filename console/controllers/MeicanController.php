@@ -207,9 +207,6 @@ class MeicanController extends Controller
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步订餐数据到kael\n";
             $retJson = MeicanApi::listBill($day);
-            if(!empty($retJson)){
-                var_dump($retJson);
-            }
             $columns = [];
             $rows = [];
             $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
