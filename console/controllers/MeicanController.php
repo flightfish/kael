@@ -6,6 +6,7 @@ use common\models\CommonUser;
 use common\models\Department;
 use common\models\DingcanOrder;
 use common\models\DingcanOrderException;
+use common\models\DingtalkAttendanceRecord;
 use common\models\DingtalkAttendanceSchedule;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
@@ -227,7 +228,7 @@ class MeicanController extends Controller
         $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
 
 
-        $resultList = DingTalkAttendanceResult::findListByWhereAndWhereArr([
+        $resultList = DingtalkAttendanceRecord::findListByWhereAndWhereArr([
         ], [], 'work_date,check_type,user_check_time,record_id,user_id,dingtalk_subroot_id');
         $resultListIndex = [];
         foreach ($resultList as $v) {
