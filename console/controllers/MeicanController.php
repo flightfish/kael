@@ -339,11 +339,7 @@ class MeicanController extends Controller
                             count($canList) == 1
 
                         ) {
-
                             DingcanOrderException::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
-//                            updateAll(['status' => 1],
-//                                ['order_id' => $canList[0]['order_id'], ['supplier' => $canList[0]['supplier']]]);
-                            return 3;
                         }
                         //非工作日
                         elseif (
