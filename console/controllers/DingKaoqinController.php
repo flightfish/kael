@@ -142,16 +142,6 @@ class DingKaoqinController extends Controller
 
     }
 
-    public function actionProcessInstance(){
-        if(exec('ps -ef|grep "ding-kaoqin/syn"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
-            echo "is_running";
-            exit();
-        }
-        $proc_inst_id="70fd36ed-4f60-4176-bc78-c72ba0a0cd71";
-        $process_instance = DingTalkApi::getProcessInstance($proc_inst_id);
-        var_dump( $process_instance);
-    }
-
     public function synSchedule($day){
         //排班时间
         $scheduleList = DingTalkApi::getAttendanceListSchedule(date('Y-m-d',strtotime($day)));
@@ -299,5 +289,27 @@ class DingKaoqinController extends Controller
             $rows[] = array_values($tmp);
         }
         DingtalkAttendanceRecord::addUpdateColumnRows($columns,$rows);
+    }
+
+    /**
+     * 钉钉审批数据同步  ding-kaoqin/process-instance
+     */
+    public function actionProcessInstance(){
+        if(exec('ps -ef|grep "ding-kaoqin/process-instance"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
+        $dayList = array_map(function($v){
+            return date("Y-m-d",$v);
+        },range(strtotime('2019-07-01'),time(),24*3600));
+        foreach ($dayList as $day){
+            $resultList=DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date'=>$day],[]);
+            var_dump( $resultList);
+
+        }
+
+        $proc_inst_id="70fd36ed-4f60-4176-bc78-c72ba0a0cd71";
+        $process_instance = DingTalkApi::getProcessInstance($proc_inst_id);
+        var_dump( $process_instance);
     }
 }
