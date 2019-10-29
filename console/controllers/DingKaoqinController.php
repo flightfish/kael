@@ -308,7 +308,7 @@ class DingKaoqinController extends Controller
             echo date('Y-m-d H:i:s') . "\t {$day} 开始审批数据到kael\n";
             $resultList = DingtalkAttendanceResult::findListByWhereWithWhereArr(['work_date' => $day], [['!=', 'proc_inst_id', 0]], 'id,proc_inst_id');
             $proc_inst_id_arr = array_column($resultList, 'proc_inst_id');
-            foreach ($proc_inst_id_arr as $proc_inst_id) {
+            foreach ($proc_inst_id_arr as $proc_inst_id) {var_dump($proc_inst_id);
                 $res = DingTalkApi::getProcessInstance($proc_inst_id);
                 if ($res['errcode'] == 0) {
                     $processInstance = $res['process_instance'];
