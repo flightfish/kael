@@ -340,7 +340,7 @@ class MeicanController extends Controller
 
                         ) {
 
-                            DingtalkAttendanceSchedule::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
+                            DingcanOrderException::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
 //                            updateAll(['status' => 1],
 //                                ['order_id' => $canList[0]['order_id'], ['supplier' => $canList[0]['supplier']]]);
                             return 3;
@@ -351,7 +351,7 @@ class MeicanController extends Controller
                             && !isset($offDutySchedule['plan_check_time'])
                             && count($canList) == 1
                         ) {
-                            DingtalkAttendanceSchedule::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
+                            DingcanOrderException::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
                         }
                     }
                 }
