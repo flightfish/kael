@@ -324,7 +324,7 @@ class DingKaoqinController extends Controller
                         'dingtalk_department_name' => $processInstance['originator_dept_name'],
                         'process_status' => $processInstance['status'],
 
-                        'cc_user_id' => $processInstance['cc_userids'] ? json_encode($processInstance['cc_userids'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '',
+                        'cc_user_id' => isset($processInstance['cc_userids']) ? json_encode($processInstance['cc_userids'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : '',
                         'result' => $processInstance['result'],
                         'business_id' => $processInstance['business_id'],
                         'form_component_values' => json_encode($processInstance['form_component_values'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE),
