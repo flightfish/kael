@@ -211,8 +211,16 @@ class MeicanController extends Controller
             $dayConf = $workDayConfig[$day] ?? [];
 
             if (empty($dayConf['is_allow_dingcan'])) {
-                $rows = array_merge($rows, $dingcanList);
+                foreach ($dingcanList as $can){
+                    $rows[]=$can;
+                }
             } else {
+                $dingcanListIndex = [];
+                foreach ($dingcanList as $v){
+                    $dingcanListIndex[$v['kael_id']][$v['meal_date']][] = $v;
+                }
+                var_dump($dingcanListIndex);
+
                 if (!empty($dingcanList)) {
                     $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
                         ['schedule_date' => $day],
@@ -235,10 +243,23 @@ class MeicanController extends Controller
                         $offDutySchedule = $scheduleListIndex[$userList[$can['kael_id']]['user_id']][$day . ':OffDuty'] ?? [];
                         $onDutyResult = $resultListIndex[$userList[$can['kael_id']]['user_id']][$day . ':OnDuty'] ?? [];
                         $offDutyResult = $resultListIndex[$userList[$can['kael_id']]['user_id']][$day . ':OffDuty'] ?? [];
-                        var_dump($offDutySchedule);
-                        var_dump($onDutyResult);
-                        var_dump($offDutyResult);
-                        return 3;
+
+                        //工作日9点
+                        if (
+                            isset($offDutySchedule['plan_check_time']) && (
+                                !isset($offDutyResult['user_check_time']) ||
+                                $offDutyResult['user_check_time'] < $day . ' 21:00:00')
+
+                        ) {
+                            $rows[]=$can;
+                        }
+
+
+                        //非工作日
+                        if (!isset($offDutyResult['user_check_time']) && !isset($onDutyResult['user_check_time'])) {
+                            //未打卡
+                            $rows[]=$can;
+                        }
                     }
 
                 }
