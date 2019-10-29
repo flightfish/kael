@@ -925,6 +925,10 @@ class User extends RequestBaseModel
             $v = array_map('strval',$v);
             $v = array_map('trim',$v);
 
+            if(empty($v[0]) && empty($v[1]) && empty($v[2]) && empty($v[3]) && empty($v)){
+                continue;
+            }
+
             if (empty($v[1]) && empty($v[2])) {
                 array_push($error, '第' . ($k + 1) . '行，手机和邮箱不能同时为空');
                 continue;
