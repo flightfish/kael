@@ -49,4 +49,14 @@ class BaseActiveRecord extends \yii\db\ActiveRecord {
         . ' (' . implode(', ', $columns) . ') VALUES ' . implode(', ', $values);
         return $db->createCommand($sql)->execute();
     }
+    public static function findListByWhereWithWhereArr($where,$whereArr,$select='*',$order='',$limit=0,$status=0){
+        !isset($where['status']) && $status != -1 && $where['status'] = $status;
+        $query =  self::find()->select($select)->where($where);
+        foreach ($whereArr as $v){
+            $query = $query->andWhere($v);
+        }
+        !empty($order) && $query = $query->orderBy($order);
+        $limit>0 && $query = $query->limit($limit);
+        return $query->asArray(true)->all();
+    }
 }
