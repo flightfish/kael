@@ -214,13 +214,15 @@ class MeicanController extends Controller
                     $rows[]=$can;
                 }
             } else {
-                $dingcanListIndex = [];
-                foreach ($dingcanList as $v){
-                    $dingcanListIndex[$v['kael_id']][] = $v;
-                }
-var_dump($dingcanListIndex);
-
                 if (!empty($dingcanList)) {
+                    $dingcanListIndex = [];
+                    foreach ($dingcanList as $v){
+                        $dingcanListIndex[$v['kael_id']][] = $v;
+                    }
+
+                    foreach ($dingcanListIndex as $val){
+                        var_dump($val);
+                    }
                     $scheduleList = DingtalkAttendanceSchedule::findListByWhereWithWhereArr(
                         ['schedule_date' => $day],
                         [['!=', 'class_id', 0]],
