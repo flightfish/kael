@@ -196,7 +196,7 @@ class MeicanController extends Controller
             return date("Y-m-d",$v);
         },range(strtotime('2019-07-01'),time(),24*3600));
         $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList),null,'day');
-
+        return $workDayConfig;
 
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
