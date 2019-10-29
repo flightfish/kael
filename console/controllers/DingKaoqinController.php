@@ -307,7 +307,7 @@ class DingKaoqinController extends Controller
 
         foreach ($dayList as $day) {
             $day_end=date("Y-m-d", strtotime($day) + 24 * 3600 * 7);
-            echo date('Y-m-d H:i:s') . "\t {$day}-\t {$day_end} 开始审批数据到kael\n";
+            echo date('Y-m-d H:i:s') . "\t {$day}-{$day_end} 开始审批数据到kael\n";
             $resultList = DingtalkAttendanceResult::findListByWhereWithWhereArr([],
                 [['!=', 'proc_inst_id', 0],
                     ['>=', 'work_date', $day],
