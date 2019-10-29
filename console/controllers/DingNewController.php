@@ -6,8 +6,11 @@ use common\libs\DingTalkApiJZ;
 use common\models\CommonUser;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkDepartmentUser;
+use common\models\DingtalkHrmUser;
 use common\models\DingtalkUser;
 use common\models\DepartmentRelateToKael;
+use common\models\RelateDingtalkDepartmentPlatform;
+use common\models\RelateUserPlatform;
 use usercenter\components\exception\Exception;
 use yii\console\Controller;
 
@@ -39,19 +42,25 @@ class DingNewController extends Controller
             $this->updateDingDepartment(2);
             echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
 
-            echo date('Y-m-d H:i:s')."\t部门同步path_name开始\n";
-            $this->updateDingDepartmentPathName();
-            echo date('Y-m-d H:i:s')."\t部门同步path_name结束\n";
+//            echo date('Y-m-d H:i:s')."\t部门同步path_name开始\n";
+//            $this->updateDingDepartmentPathName();
+//            echo date('Y-m-d H:i:s')."\t部门同步path_name结束\n";
 
             sleep(1);
 
             echo date('Y-m-d H:i:s')."\t开始同步钉钉人员到kael\n";
-            $this->updateDingUser(1);
+            $this->updateDingDepartmentUser(1);
             echo date('Y-m-d H:i:s')."\t员工同步结束\n";
 
             echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉人员到kael\n";
-            $this->updateDingUser(2);
+            $this->updateDingDepartmentUser(2);
             echo date('Y-m-d H:i:s')."\t员工同步兼职团队结束\n";
+
+            sleep(1);
+
+
+
+
 
         }catch (\Exception $e){
             throw $e;
@@ -110,15 +119,15 @@ class DingNewController extends Controller
             DepartmentRelateToKael::updateAll(['status'=>1],['department_id'=>$delIds]);
         }
         //更新level
-        $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id where status = 0 and parentid = 1";
+        $sql = "update dingtalk_department set `level` = 1,`subroot_id` = id,`path_name` = alias_name,`path_id`=concat('|',{$corpType},'|',id,'|') where status = 0 and parentid = 1 and corp_type={$corpType}";
         DingtalkDepartment::getDb()->createCommand($sql)->execute();
         for($level =1 ; $level <= 10; $level++){
-            $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id where a.status = 0 and b.status = 0 and b.`level`={$level}";
+            $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id,a.path_name = concat(b.path_name,'/',a.alias_name),a.path_id = concat(b.path_id,a.id,'|') where a.status = 0 and b.status = 0 and b.`level`={$level} and b.corp_type={$corpType}";
             DingtalkDepartment::getDb()->createCommand($sql)->execute();
         }
     }
 
-    private function updateDingUser($corpType)
+    private function updateDingDepartmentUser($corpType)
     {
         //所有企业员工
         $allDepartmentUserAll = DingtalkDepartmentUser::findList(['corp_type'=>$corpType], '', 'user_id,department_id,relate_id');
@@ -154,6 +163,8 @@ class DingNewController extends Controller
                     throw new Exception("不支持的企业");
                 }
                 echo date('Y-m-d H:i:s') . "\t同步部门人员：{$v['name']}[{$v['id']}]\n";
+                $mainLeaderId = 0;
+                $mainLeaderName = "";
                 foreach ($userInfoList as $userInfo) {
                     echo "第" . $i . "次执行*******\n";
 
@@ -206,7 +217,12 @@ class DingNewController extends Controller
                         echo date('Y-m-d H:i:s') . "\t新增钉钉员工 {$userInfo['name']}[{$userInfo['userid']}]\n";
                         DingtalkDepartmentUser::add($userParams);
                     }
+                    if($userParams['is_leader']){
+                        $mainLeaderId = $userParams['kael_id'];
+                        $mainLeaderName = $userParams['name'];
+                    }
                 }
+//                DingtalkDepartment::updateAll(['main_leader_id' => $mainLeaderId, 'main_leader_name' => $mainLeaderName], ['id' => $v['id']]);
             }
         }
 
@@ -235,4 +251,102 @@ SQL;
         }
 
     }
+
+
+    private function updateDingUserAndEhr(){
+        $allDepartmentUserList = DingtalkDepartmentUser::findList([]);
+        $allUserListIndex = [];
+        foreach ($allDepartmentUserList as $v){
+            $allUserListIndex[$v['mobile']][] = $v;
+        }
+    }
+
+    public function hrmUserInfo($corpType){
+        $allUserIds = array_values(array_unique(array_column(DingtalkDepartmentUser::findList(['corp_type'=>$corpType], '', 'user_id'),'user_id')));
+        $allUserIdsChunkList = array_chunk($allUserIds,20);
+
+        $allHrmUserList = DingtalkHrmUser::findList(['corp_type'=>$corpType],'','user_id,main_dept_id,id');
+        $allHrmUserIndex = [];
+        foreach ($allHrmUserList as $v){
+            $allHrmUserIndex[$v['user_id']] = $v;
+        }
+
+        foreach ($allUserIdsChunkList as $userIdsChunkOne){
+            if($corpType == 1){
+                $resultList = DingTalkApi::getHrmUserInfoByUids($userIdsChunkOne);
+            }elseif($corpType == 2){
+                $resultList = DingTalkApiJZ::getHrmUserInfoByUids($userIdsChunkOne);
+            }else{
+                throw new Exception("不支持的corpType");
+            }
+            echo 'userList======='.json_encode($resultList,64|256)."\n";
+            foreach ($resultList as $resultUser){
+                $old = $allHrmUserIndex[$resultUser['userid']]??[];
+                $userField = array_column($resultUser['field_list'],'label','field_code');
+                if(empty($userField['sys00-mobile'])){
+                    !empty($old) && DingtalkHrmUser::updateAll(['status'=>1],['id'=>$old['id']]);
+                    continue;
+                }
+                $updateParmas = [
+                    'corp_type'=>$corpType,
+                    'user_id'=>$resultUser['userid'],
+                    'name'=>$userField['sys00-name'],
+                    'mobile'=>$userField['sys00-mobile'],
+                    'email'=>$userField['sys00-email']??'',
+                    'job_number'=>$userField['sys00-jobNumber']??'',
+                    'sex'=>$userField['sys02-sexType']??'',
+                    'main_dept_id'=>$userField['sys00-mainDeptId']??'0',
+                    'main_dept_name'=>$userField['sys00-mainDept']??'',
+                    'employee_type'=>$userField['sys01-employeeType']??'',
+                    'employee_status'=>$userField['sys01-employeeStatus']??'',
+                    'birth_time'=>$userField['sys02-birthTime']??'',
+                ];
+                if(!empty($old)){
+                    //update
+                    DingtalkHrmUser::updateAll($updateParmas,['id'=>$old['id']]);
+                }else{
+                    //insert
+                    DingtalkHrmUser::add($updateParmas);
+                }
+            }
+            sleep(1);
+        }
+
+    }
+
+
+    public function actionHrm(){
+        $this->hrmUserInfo(1);
+        $this->hrmUserInfo(2);
+    }
+
+    public function actionAutoPriv(){
+        //开通权限
+        $allNeedPrivList = RelateDingtalkDepartmentPlatform::findAllList();
+        $departmentPrivs = [];
+        foreach ($allNeedPrivList as $v){
+            $departmentPrivs[$v['department_id']][] = $v['platform_id'];
+        }
+        foreach ($departmentPrivs as $departmentId=>$platformIds){
+            $platformIds = array_values(array_unique($platformIds));
+            $departmentIdsInPath = DingtalkDepartment::findListByWhereAndWhereArr([],[['like','path_id',"|{$departmentId}|"]],'path_id');
+            $departmentIdsInPath = array_column($departmentIdsInPath,'path_id');
+            if(empty($departmentIdsInPath)){
+                continue;
+            }
+            $allKaelIds = DingtalkDepartmentUser::findList(['department_id'=>$departmentIdsInPath],'','kael_id');
+            $allKaelIds = array_values(array_unique($allKaelIds));
+            foreach ($allKaelIds as $kaelId){
+                if(empty($kaelId)){
+                    continue;
+                }
+                $oldPlatIds = RelateUserPlatform::find()
+                    ->select('platform_id')
+                    ->where(['user_id'=>$kaelId,'status'=>0])->asArray(true)->column();
+                $addPlat = array_diff($platformIds,$oldPlatIds);
+                !empty($addPlat) && RelateUserPlatform::batchAdd($kaelId,$addPlat);
+            }
+        }
+    }
+
 }

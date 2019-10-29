@@ -187,11 +187,11 @@ class Departments extends RequestBaseModel
 
         $departmentAdminList = RelateAdminDepartment::find()->where(['status'=>Department::STATUS_VALID])->asArray(true)->all();
         $platformList  = Platform::findAllList();
-        $departmentPlatformList = RelateDepartmentPlatform::find()->where(['status'=>RelateDepartmentPlatform::STATUS_VALID])->asArray(true)->all();
+//        $departmentPlatformList = RelateDepartmentPlatform::find()->where(['status'=>RelateDepartmentPlatform::STATUS_VALID])->asArray(true)->all();
         $userIds = array_column($departmentAdminList,'user_id');
         $userList = UserCenter::findListById($userIds);
         $departmentExtAdmin = [];
-        $departmentExtPlatform = [];
+//        $departmentExtPlatform = [];
         foreach($departmentAdminList as $k=>$v){
             !isset($departmentExtAdmin[$v['department_id']]) && $departmentExtAdmin[$v['department_id']] = [];
             !isset($departmentExtAdmin[$v['department_id']][$v['user_id']]) && $departmentExtAdmin[$v['department_id']][$v['user_id']] = [
@@ -204,15 +204,16 @@ class Departments extends RequestBaseModel
             ];
         }
 
-        foreach($departmentPlatformList as $k=>$v){
-
-            isset($platformList[$v['platform_id']])
-               &&  $departmentExtPlatform[$v['department_id']][] = $platformList[$v['platform_id']];
-
-        }
+//        foreach($departmentPlatformList as $k=>$v){
+//
+//            isset($platformList[$v['platform_id']])
+//               &&  $departmentExtPlatform[$v['department_id']][] = $platformList[$v['platform_id']];
+//
+//        }
 
         foreach($departmentList as $k=>$v){
-            $v['platform_list'] = isset($departmentExtPlatform[$v['department_id']]) ? $departmentExtPlatform[$v['department_id']] : [];
+//            $v['platform_list'] = isset($departmentExtPlatform[$v['department_id']]) ? $departmentExtPlatform[$v['department_id']] : [];
+//            $v['platform_list'] = isset($departmentExtPlatform[$v['department_id']]) ? $departmentExtPlatform[$v['department_id']] : [];
             $v['admin_list'] = isset($departmentExtAdmin[$v['department_id']]) ? array_values($departmentExtAdmin[$v['department_id']]) : [];
             $v['department_leader_email'] = $v['leader_user_id'] ?  $leaderUserList[$v['leader_user_id']]: null;
             $v['department_leader_id']    = $v['leader_user_id'] ?? null;
@@ -308,21 +309,22 @@ class Departments extends RequestBaseModel
             LogAuthUser::LogUser($this->user['id'],$this->department_id,LogAuthUser::OP_EDIT_GROUP,['platform'=>$this->platform_list,'department'=>$updateInfo]);
 
         }
-        //关联关系
-        //删除旧的
-        RelateDepartmentPlatform::updateAll(
-            ['status'=>RelateDepartmentPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
-            ['department_id'=>$this->department_id,'status'=>RelateDepartmentPlatform::STATUS_VALID]);
-        //添加新的
-        if(!empty($this->platform_list)){
-            $column = ['department_id','platform_id','create_user'];
-            $rows = [];
-            $this->platform_list = array_unique($this->platform_list);
-            foreach($this->platform_list as $platformId){
-                $rows[] = [$this->department_id,$platformId,$this->user['id']];
-            }
-            RelateDepartmentPlatform::batchInsertAll(RelateDepartmentPlatform::tableName(),$column,$rows,RelateDepartmentPlatform::getDb());
-        }
+//
+//        //关联关系  不处理了
+//        //删除旧的
+//        RelateDepartmentPlatform::updateAll(
+//            ['status'=>RelateDepartmentPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
+//            ['department_id'=>$this->department_id,'status'=>RelateDepartmentPlatform::STATUS_VALID]);
+//        //添加新的
+//        if(!empty($this->platform_list)){
+//            $column = ['department_id','platform_id','create_user'];
+//            $rows = [];
+//            $this->platform_list = array_unique($this->platform_list);
+//            foreach($this->platform_list as $platformId){
+//                $rows[] = [$this->department_id,$platformId,$this->user['id']];
+//            }
+//            RelateDepartmentPlatform::batchInsertAll(RelateDepartmentPlatform::tableName(),$column,$rows,RelateDepartmentPlatform::getDb());
+//        }
 
     }
 

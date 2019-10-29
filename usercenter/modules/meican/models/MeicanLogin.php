@@ -2,19 +2,8 @@
 
 namespace usercenter\modules\meican\models;
 
-use common\libs\Constant;
 use common\libs\DingTalkApi;
-use common\libs\UserToken;
-use common\models\CommonModulesUser;
 use common\models\CommonUser;
-use common\models\Department;
-use common\models\LogAuthUser;
-use common\models\Platform;
-use common\models\RelateAdminDepartment;
-use common\models\RelateDepartmentPlatform;
-use common\models\RelateUserPlatform;
-use common\models\Role;
-use common\models\UserCenter;
 use usercenter\components\exception\Exception;
 use usercenter\models\RequestBaseModel;
 use Yii;

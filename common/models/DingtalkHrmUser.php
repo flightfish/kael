@@ -3,12 +3,12 @@ namespace common\models;
 
 use Yii;
 
-class DingtalkDepartmentUser extends \common\models\BaseActiveRecord
+class DingtalkHrmUser extends \common\models\BaseActiveRecord
 {
 
     public static function tableName()
     {
-        return 'dingtalk_department_user';
+        return 'dingtalk_hrm_user';
     }
 
 
@@ -40,7 +40,6 @@ class DingtalkDepartmentUser extends \common\models\BaseActiveRecord
             $model->$k = $v;
         }
         $model->insert();
-        return $model->relate_id;
+        return $model->id;
     }
-
 }

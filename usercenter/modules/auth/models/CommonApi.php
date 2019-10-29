@@ -7,9 +7,7 @@ use common\libs\Cache;
 use common\libs\Constant;
 use common\libs\UserToken;
 use common\models\Platform;
-use common\models\RelateDepartmentPlatform;
 use common\models\RelateUserPlatform;
-use common\libs\AES;
 use common\models\CommonUser;
 use common\models\LogAuthUser;
 use common\models\UserCenter;
@@ -503,9 +501,9 @@ class CommonApi extends RequestBaseModel
             //深蓝
             $this->checkIp = false;
         }
-        if($platformInfo['platform_id'] == 6000&&$this->user['user_type'] == 0){
-            return $this->user;
-        }
+//        if($platformInfo['platform_id'] == 6000&&$this->user['user_type'] == 0){
+//            return $this->user;
+//        }
         //ip限定
         !empty($platformInfo['allow_ips']) && $platformInfo['allow_ips'] = $platformInfo['allow_ips'].','.(Yii::$app->params['allow_ips']);
         $serverIPList = explode(',', $platformInfo['server_ips']);
@@ -523,16 +521,17 @@ class CommonApi extends RequestBaseModel
 //        }
         //密码权限设置
 
-        if ($this->user['user_type'] == 0) {
-            if (empty($this->user['password']) || $this->user['password'] == md5('123456')) {
-//                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
-            }
-        }
+//        if ($this->user['user_type'] == 0) {
+//            if (empty($this->user['password']) || $this->user['password'] == md5('123456')) {
+////                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
+//            }
+//        }
         //判断部门权限
-        $relate = RelateDepartmentPlatform::findListByDepartmentPlatform($this->user['department_id'], $platformInfo['platform_id']);
-        if (empty($relate)) {
-            throw new Exception('权限不足，请确认有权限后重试|'.$this->user['id'].'|'.$host, Exception::ERROR_COMMON);
-        }
+//        $relate = RelateDepartmentPlatform::findListByDepartmentPlatform($this->user['department_id'], $platformInfo['platform_id']);
+//        if (empty($relate)) {
+//            throw new Exception('权限不足，请确认有权限后重试|'.$this->user['id'].'|'.$host, Exception::ERROR_COMMON);
+//        }
+        //判断人员权限
         $relate = RelateUserPlatform::findListByUserPlatform($this->user['id'], $platformInfo['platform_id']);
         if (empty($relate)) {
             throw new Exception('您的权限不足，请确认有权限后重试', Exception::ERROR_COMMON);

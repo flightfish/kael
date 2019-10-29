@@ -26,7 +26,7 @@ class DingKaoqinController extends Controller
         //dayList
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
-        },range(strtotime('2019-07-01'),time(),24*3600));
+        },range(strtotime('2019-10-01'),time(),24*3600));
         //钉钉信息
         $userIdToDepartmentId = array_column(DingtalkUser::findList([],'','user_id,department_id',-1),'department_id','user_id');
         $departmentIdToInfo = array_column(DingtalkDepartment::findList([],'','id,name,subroot_id',-1),null,'id');
@@ -69,6 +69,57 @@ class DingKaoqinController extends Controller
                 'dingtalk_subroot_name'=>$departmentInfo['subroot_name'],
             ],['user_id'=>$userId,'dingtalk_department_id'=>0]);
             DingtalkAttendanceResult::updateAll([
+                'dingtalk_department_id'=>$departmentInfo['department_id'],
+                'dingtalk_department_name'=>$departmentInfo['department_name'],
+                'dingtalk_subroot_id'=>$departmentInfo['subroot_id'],
+                'dingtalk_subroot_name'=>$departmentInfo['subroot_name'],
+            ],['user_id'=>$userId,'dingtalk_department_id'=>0]);
+        }
+        echo date('Y-m-d H:i:s')."\t 同步部门数据结束\n";
+    }
+
+    public function actionPaibanInit(){
+        if(exec('ps -ef|grep "ding-kaoqin/paiban-init"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
+        echo date('Y-m-d H:i:s')."\t组装用户ID\n";
+//        $userIds = array_values(array_filter(array_unique(array_column(DingtalkUser::findList([],'','user_id',-1),'user_id'))));
+        //dayList
+        $dayList = array_map(function($v){
+            return date("Y-m-d",$v);
+        },range(strtotime('2019-10-01'),strtotime('2019-12-01'),24*3600));
+        //钉钉信息
+        $userIdToDepartmentId = array_column(DingtalkUser::findList([],'','user_id,department_id',-1),'department_id','user_id');
+        $departmentIdToInfo = array_column(DingtalkDepartment::findList([],'','id,name,subroot_id',-1),null,'id');
+        $departmentIdToInfo[1] = ['id'=>1,'name'=>'小盒科技','subroot_id'=>1];
+        $userIds = array_keys($userIdToDepartmentId);
+        $userIdToDepartmentInfo = [];
+        foreach ($userIdToDepartmentId as $userId => $departmentId){
+            $departmentName = '';
+            $subrootId = 0;
+            $subrootName = '';
+            $departmentInfo = $departmentIdToInfo[$departmentId] ?? [];
+            if(!empty($departmentInfo)){
+                $departmentName = $departmentInfo['name'];
+                $subrootId = $departmentInfo['subroot_id'];
+                $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
+            }
+            $userIdToDepartmentInfo[$userId] = [
+                'department_id'=>$departmentId,
+                'department_name'=>$departmentName,
+                'subroot_id'=>$subrootId,
+                'subroot_name'=>$subrootName,
+            ];
+        }
+
+        foreach ($dayList as $day){
+            echo date('Y-m-d H:i:s')."\t {$day} 开始同步排班时间数据到kael\n";
+            $this->synSchedule($day);
+        }
+        echo date('Y-m-d H:i:s')."\t 同步部门数据\n";
+        foreach ($userIdToDepartmentInfo as $userId=>$departmentInfo){
+            DingtalkAttendanceSchedule::updateAll([
                 'dingtalk_department_id'=>$departmentInfo['department_id'],
                 'dingtalk_department_name'=>$departmentInfo['department_name'],
                 'dingtalk_subroot_id'=>$departmentInfo['subroot_id'],

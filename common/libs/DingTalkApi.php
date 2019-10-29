@@ -59,7 +59,7 @@ class DingTalkApi {
             if(!$retJson['hasMore']){
                 break;
             }
-            $offset += 200;
+            $offset += 100;
         }
         return $userInfoList;
     }
@@ -247,6 +247,14 @@ class DingTalkApi {
         $params = [
             'userid_list'=>is_array($uids)?implode(',',$uids):$uids,
             'field_filter_list'=>is_array($fields)?implode(',',$fields):$fields
+        ];
+        $response = self::curlGet(self::API_GET_USERINFO_BY_UIDS,$params);
+        return $response['result'];
+    }
+
+    public static function getHrmUserInfoByUids($uids){
+        $params = [
+            'userid_list'=>is_array($uids)?implode(',',$uids):$uids,
         ];
         $response = self::curlGet(self::API_GET_USERINFO_BY_UIDS,$params);
         return $response['result'];

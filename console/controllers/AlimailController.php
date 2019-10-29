@@ -139,8 +139,9 @@ class AlimailController extends Controller
         $delMailsChunkList = array_chunk($delMails,20);
         $aliDelMails = [];
         foreach ($delMailsChunkList as $vDelMailsChunk){
-            $aliDelMailsTmp = AliMailApi::userInfoList($vDelMailsChunk,['displayAlias']);
+            $aliDelMailsTmp = AliMailApi::userInfoList($vDelMailsChunk);
             foreach ($aliDelMailsTmp as $vv){
+                empty($vv['displayAlias']) && $vv['displayAlias'] = $vv['email'];
                 $aliDelMails[$vv['displayAlias']] = $vv['displayAlias'];
             }
         }
@@ -181,6 +182,8 @@ class AlimailController extends Controller
         foreach ($allEmailsChunk as $vallEmailsChunk){
             $aliEmailUserInfoListChunk = AliMailApi::userInfoList($vallEmailsChunk);
             foreach ($aliEmailUserInfoListChunk as $vv){
+//                echo json_encode($vv,64|256)."\n";
+                empty($vv['displayAlias']) && $vv['displayAlias'] = $vv['email'];
                 $emailToDepartment[$vv['displayAlias']] = $vv['departmentId'];
             }
 //            $emailToDepartment = array_column(AliMailApi::userInfoList($allEmails),'departmentId','email');

@@ -157,20 +157,25 @@ class RuKou extends RequestBaseModel
         }
 
         //密码权限设置
-        if($this->user['user_type'] == 0){
-            if(empty($this->user['password']) || $this->user['password'] == md5('123456')){
-//                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
-            }
-        }
+//        if($this->user['user_type'] == 0){
+//            if(empty($this->user['password']) || $this->user['password'] == md5('123456')){
+////                throw new Exception("密码过于简单，请修改密码后重试", Exception::ERROR_COMMON);
+//            }
+//        }
 
-        $data = [];
-        $deparmentPlatList = RelateDepartmentPlatform::findListByDepartment($this->user['department_id']);
-        $platformIdsDepartment = array_column($deparmentPlatList,'platform_id');
+//        $deparmentPlatList = RelateDepartmentPlatform::findListByDepartment($this->user['department_id']);
+//        $platformIdsDepartment = array_column($deparmentPlatList,'platform_id');
+//        $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],-1);
+//        $platformIds = array_column($relateList,'platform_id');
+//        $platformIds = array_intersect($platformIds,$platformIdsDepartment);
+//        $platformList = Platform::findListById($platformIds);
+
         $relateList = RelateUserPlatform::findListByUserPlatform($this->user['id'],-1);
         $platformIds = array_column($relateList,'platform_id');
-        $platformIds = array_intersect($platformIds,$platformIdsDepartment);
         $platformList = Platform::findListById($platformIds);
-        $ip = UserToken::getRealIP(false);;
+
+
+        $ip = UserToken::getRealIP(false);
 
 
         usort($relateList,function($a,$b){

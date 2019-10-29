@@ -147,20 +147,22 @@ class User extends RequestBaseModel
                 $platList = [];
 //                $platList = Platform::findAllList();
             }else{
-                $departmentAllowPlat = RelateDepartmentPlatform::findListByDepartment($this->department_id);
-                $platId = array_column($departmentAllowPlat,'platform_id');
-                $platList = Platform::findListById($platId);
+//                $departmentAllowPlat = RelateDepartmentPlatform::findListByDepartment($this->department_id);
+//                $platId = array_column($departmentAllowPlat,'platform_id');
+//                $platList = Platform::findListById($platId);
+                $platList = Platform::findAllList();
             }
         }elseif($this->user['admin'] == Role::ROLE_DEPARTMENT_ADMIN){
             if($this->department_id == -1){
                 $platList = [];
             }else{
-                $departmentAllowPlat = RelateDepartmentPlatform::findListByDepartment($this->department_id);
+//                $departmentAllowPlat = RelateDepartmentPlatform::findListByDepartment($this->department_id);
                 $departmentAllowPlatSelf = RelateAdminDepartment::findListByAdminDepartment($this->user['id'],$this->department_id);
-                $platIdAllow = array_column($departmentAllowPlat,'platform_id');
+//                $platIdAllow = array_column($departmentAllowPlat,'platform_id');
                 $platIdAllowSelf = array_column($departmentAllowPlatSelf,'platform_id');
-                $platId = array_intersect($platIdAllow,$platIdAllowSelf);
-                $platList = Platform::findListById($platId);
+//                $platId = array_intersect($platIdAllow,$platIdAllowSelf);
+                $platList = Platform::findListById($platIdAllowSelf);
+//                $platList = Platform::findAllList();
             }
 
         }else{

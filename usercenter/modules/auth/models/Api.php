@@ -2,16 +2,11 @@
 
 namespace usercenter\modules\auth\models;
 use common\libs\AppFunc;
-use common\libs\Constant;
 use common\libs\Qiniu;
-use common\libs\UserToken;
 use common\models\Department;
 use common\models\Platform;
-use common\models\RelateDepartmentPlatform;
 use common\models\RelateUserPlatform;
-use common\libs\AES;
 use common\models\CommonUser;
-use common\models\LogAuthUser;
 use common\models\UserCenter;
 use common\models\WorkLevel;
 use common\models\WorkType;
