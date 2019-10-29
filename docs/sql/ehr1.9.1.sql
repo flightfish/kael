@@ -26,6 +26,7 @@ CREATE TABLE `dingtalk_attendance_process_instance` (
    `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
    `proc_inst_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '审批实例id',
    `title` varchar(255)  NOT NULL DEFAULT '' COMMENT '审批实例标题',
+   `start_date` DATE NOT NULL DEFAULT '0000-00-00' COMMENT '发起日期',
    `start_time` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '开始时间',
    `finish_time` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
    `user_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '发起人员ID',
