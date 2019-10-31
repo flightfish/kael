@@ -332,13 +332,6 @@ class MeicanController extends Controller
                                 $rows[]=$can;
                             }
                         }
-
-                        //订餐大于1份
-                        elseif (count($canList) > 1) {
-                            foreach ($canList as $can){
-                                $rows[]=$can;
-                            }
-                        }
                     }
                 }
 
@@ -405,8 +398,7 @@ class MeicanController extends Controller
                         if (
                             isset($offDutySchedule['plan_check_time']) &&
                             isset($offDutyResult['user_check_time']) &&
-                            $offDutyResult['user_check_time'] >= $day . ' 21:00:00' &&
-                            count($canList) == 1
+                            $offDutyResult['user_check_time'] >= $day . ' 21:00:00'
 
                         ) {
                             DingcanOrderException::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
@@ -415,7 +407,6 @@ class MeicanController extends Controller
                         elseif (
                             (isset($offDutyResult['user_check_time']) || !isset($onDutyResult['user_check_time']))
                             && !isset($offDutySchedule['plan_check_time'])
-                            && count($canList) == 1
                         ) {
                             DingcanOrderException::updateAll(['status' => 1], ['id' => $canList[0]['id']]);
                         }
