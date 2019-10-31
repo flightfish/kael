@@ -138,7 +138,7 @@ class DingtalkJzController extends Controller
             }
             //0工号忽略 1姓名 2.3.4.5,6,7 1-6级部门 8手机 9邮箱
             $lastId += 1;
-            $tmp = ['id'=>$lastId,'name'=>$v[1],'mobile'=>$v[8],'department_name'=>join('|',[$v[7],$v[6],$v[5],$v[4],$v[3],$v[2]])];
+            $tmp = ['id'=>$lastId,'name'=>$v[1],'mobile'=>$v[8],'department_name'=>join('|',array_filter([$v[7],$v[6],$v[5],$v[4],$v[3],$v[2]]))];
             $tmp['department_id'] = $nameToInfo[$tmp['department_name']]['id'];
             echo json_encode($tmp,64|256)."\n";
             $rows[] = [$lastId,$tmp['mobile'],$tmp['name'],$tmp['department_name'],$tmp['department_id']];

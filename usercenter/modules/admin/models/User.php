@@ -501,7 +501,7 @@ class User extends RequestBaseModel
 //            ['status'=>RelateUserPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
 //            ['user_id' => $this->id,'platform_id'=>$platformListAllow,'status'=>RelateUserPlatform::STATUS_VALID]);
 
-        $oldPlatformIds = array_column(RelateUserPlatform::findListByUserPlatform($this->id),'platform_id');
+        $oldPlatformIds = array_column(RelateUserPlatform::findListByUserPlatform($this->id,$platformListAllow),'platform_id');
         $delPlatforms = array_diff($oldPlatformIds,$this->data['platform_list']);
         $addPlatforms = array_diff($this->data['platform_list'],$oldPlatformIds);
         $trans = RelateUserPlatform::getDb()->beginTransaction();
