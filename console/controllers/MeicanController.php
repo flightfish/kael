@@ -343,15 +343,13 @@ class MeicanController extends Controller
             $columns = array_keys($rows[0]);
         }
         DingcanOrderException::addUpdateColumnRows($columns, $rows);
+
+        $this->canExceptionUpdate();
     }
     /**
      * 更新异常数据
      */
-    public function actionCanExceptionUpdate(){
-        if(exec('ps -ef|grep "meican/can-exception-update"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
-            echo "is_running";
-            exit();
-        }
+    public function canExceptionUpdate(){
         echo date('Y-m-d H:i:s') . "\t  异常订餐数据校验,30天内\n";
         $startDate = date('Y-m-d', strtotime("-100 days"));
         $dayList = array_map(function ($v) {
