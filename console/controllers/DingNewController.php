@@ -125,6 +125,22 @@ class DingNewController extends Controller
             $sql = "update dingtalk_department a left join dingtalk_department b on a.parentid = b.id set a.`level` = b.level + 1,a.`subroot_id` = b.subroot_id,a.path_name = concat(b.path_name,'/',a.alias_name),a.path_id = concat(b.path_id,a.id,'|') where a.status = 0 and b.status = 0 and b.`level`={$level} and b.corp_type={$corpType}";
             DingtalkDepartment::getDb()->createCommand($sql)->execute();
         }
+        //更新基地
+        sleep(1);
+        $dingDeptList = DingtalkDepartment::findList(['corp_type'=>$corpType],'','id,path_name,base_name');
+        $baseList = ['北京','长春','西安','唐山','湘潭','武汉','长沙','上海','BD'];
+        foreach ($dingDeptList as $v){
+            $pathName = explode('/',$v['path_name']);
+            $base = '';
+            foreach ($pathName as $pathOne){
+                $pathOneFst = mb_substr($pathOne,0,2);
+                if(in_array($pathOneFst,$baseList)){
+                    $base = $pathOne;
+                    break;
+                }
+            }
+            $base != $v['base'] && DingtalkDepartment::updateAll(['base_name'=>$base],['id'=>$v['id']]);
+        }
     }
 
     private function updateDingDepartmentUser($corpType)
