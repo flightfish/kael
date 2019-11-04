@@ -13,7 +13,7 @@ class SendEmailController extends Controller
         $emailList = [
             'hujie@knowbox.cn',
             'wangjing2@knowbox.cn',
-            'houlk@knowbox.cn',
+//            'houlk@knowbox.cn',
             'luyl@knowbox.cn',
             'wangchao@knowbox.cn',
             'liqiang@knowbox.cn'
