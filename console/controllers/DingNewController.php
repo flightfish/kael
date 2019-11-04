@@ -77,7 +77,8 @@ class DingNewController extends Controller
             ->where(['status'=>0])
             ->andWhere('kael_id > 0')
             ->andWhere(['!=','base_name',''])
-            ->orderBy('corp_type desc, create_time desc');
+            ->orderBy('corp_type desc, create_time desc')
+            ->asArray(true)->all();
         $kaelIdToBaseName = [];
         foreach ($allDingtalkUser as $v){
             if(!empty($v['kael_id']) && empty($kaelIdToBaseName[$v['kael_id']])){
