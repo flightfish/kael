@@ -200,6 +200,7 @@ class DingNewController extends Controller
                     $userParams = [
                         'corp_type' => $corpType,
                         'department_id' => $v['id'],
+                        'base_name'=>$v['base_name'],
                         'kael_id'=>$mobileToKaelId[$userInfo['mobile']] ?? 0,
                         'user_id' => $userId,
                         'union_id' => $userInfo['unionid'],
