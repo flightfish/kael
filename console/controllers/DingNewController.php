@@ -3,6 +3,7 @@ namespace console\controllers;
 
 use common\libs\DingTalkApi;
 use common\libs\DingTalkApiJZ;
+use common\libs\IOApi;
 use common\models\CommonUser;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkDepartmentUser;
@@ -57,12 +58,42 @@ class DingNewController extends Controller
             echo date('Y-m-d H:i:s')."\t员工同步兼职团队结束\n";
 
             //更新基地
-
+            $this->updateDingUserBaseName();
 
             sleep(1);
 
         }catch (\Exception $e){
             throw $e;
+        }
+    }
+
+    private function updateDingUserBaseName(){
+        $allDingtalkUser = DingtalkDepartmentUser::find()
+            ->select('kael_id,base_name')
+            ->where(['status'=>0])
+            ->andWhere('kael_id > 0')
+            ->andWhere(['!=','base_name',''])
+            ->orderBy('corp_type desc, create_time desc');
+        $kaelIdToBaseName = [];
+        foreach ($allDingtalkUser as $v){
+            if(!empty($v['kael_id']) && empty($kaelIdToBaseName[$v['kael_id']])){
+                $kaelIdToBaseName[$v['kael_id']] = $v['base_name'];
+            }
+        }
+        $allList = DingtalkUser::findList([]);
+        foreach ($allList as $v){
+            $baseName = $kaelIdToBaseName[$v['kael_id']] ?? '';
+            if($v['base_name'] != $baseName){
+                try{
+                    echo "update base name {$v['kael_id']}-{$v['base_name']}\n";
+                    $ret = IOApi::updateUserBaseName($v['kael_id'],$v['base_name']);
+                    echo "io ret ".json_encode($ret,64|256)."\n";
+                    DingtalkUser::updateAll(['base_name'=>$baseName],['kael_id'=>$v['kael_id']]);
+                }catch (\Exception $e){
+                    echo $e->getMessage()."\n";
+                }
+
+            }
         }
     }
 

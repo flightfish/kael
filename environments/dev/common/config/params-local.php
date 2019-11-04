@@ -46,5 +46,4 @@ return [
 
     'boss_url'=>'https://dev-bslive.knowbox.cn',
     'io_url'=>'https://dev-iolive.knowbox.cn'
-
 ];
