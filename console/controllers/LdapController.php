@@ -22,6 +22,10 @@ class LdapController extends Controller
             echo "未设置ldap地址\n";
             exit();
         }
+        //更新离职
+        $sqlRestore = "update user set ldap_update_time = '0000-00-00 00:00:00' where status = 0 and ldap_update_time = '2038-01-01 00:00:00'";
+        CommonUser::getDb()->createCommand($sqlRestore)->execute();
+
         echo Yii::$app->params['ldap_addr'].':'.Yii::$app->params['ldap_port']."\n";
         $ds = ldap_connect(Yii::$app->params['ldap_addr'],Yii::$app->params['ldap_port']) or die("Could not connect to LDAP server.");
         ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
