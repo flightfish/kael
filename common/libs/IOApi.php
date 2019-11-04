@@ -14,7 +14,7 @@ class IOApi {
         $url = \Yii::$app->params['io_url'].$path;
         $ret = AppFunc::postJson($url,$data);
         $retJson = json_decode($ret,true);
-        if(empty($retJson) || $retJson['code'] != 0){
+        if(empty($retJson) || ($retJson['code']??-1) != 0){
             throw new Exception("IO请求失败：".strval($ret));
         }
         return $retJson['data'];
