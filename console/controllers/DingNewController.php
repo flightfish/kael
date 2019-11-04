@@ -97,7 +97,7 @@ class DingNewController extends Controller
                     echo $e->getMessage()."\n";
                 }
             }else{
-                echo "not change {$v['kael_id']}";
+                echo "not change {$v['kael_id']}\n";
             }
         }
     }
