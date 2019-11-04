@@ -123,9 +123,12 @@ where a.`status` = 0 and a.user_type=0 and b.relate_id > 0
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
 
+        $kaelIdToBaseName = array_column(DingtalkUser::findList([],'','kael_id,base_name'),'base_name','kael_id');
+
         foreach ($userList as $user){
             $user['name'] = $user['username'];
             $user['user_id'] = $user['id'];
+            $user['base_name'] = $kaelIdToBaseName[$user['id']] ?? '';
 
             $headers = [
                 "Referer: https://bslive.knowbox.cn/",
@@ -165,6 +168,10 @@ SQL;
             }
             $user['name'] = $user['username'];
             $user['user_id'] = $user['id'];
+            $dingtalkUser = DingtalkUser::findOneByWhere(['kael_id'=>$user['id']]);
+            $user['base_name'] = $dingtalkUser['base_name'] ?? '';
+
+
             $headers = [
                 "Referer: https://bslive.knowbox.cn/",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
@@ -217,36 +224,6 @@ SQL;
 //            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
-        }
-    }
-
-
-    public function actionBossIoJiDi(){
-        if(exec('ps -ef|grep "priv/boss-io-jidi"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
-            echo "is_running";
-            exit();
-        }
-        $userIds = RelateUserPlatform::find()
-            ->select('user_id')
-            ->where(['status'=>0,'platform_id'=>50004])
-            ->distinct(true)
-            ->asArray(true)
-            ->column();
-
-        foreach ($userIds as $userId){
-            DingtalkUser::findOneByWhere();
-
-            $headers = [
-                "Referer: https://bslive.knowbox.cn/",
-                "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
-                "Sec-Fetch-Mode: cors",
-                "Accept: application/json, text/plain, */*",
-                "Content-Type: application/json",
-            ];
-            echo json_encode($user,64|256)."\n";
-            $user = json_encode($user,64|256);
-            $ret = AppFunc::curlPost(Yii::$app->params['io_url'].'/employee/employeeValidateForKael.do',$user,$headers);
-            echo $ret."\n";
         }
     }
 }
