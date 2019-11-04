@@ -56,11 +56,10 @@ class DingNewController extends Controller
             $this->updateDingDepartmentUser(2);
             echo date('Y-m-d H:i:s')."\t员工同步兼职团队结束\n";
 
+            //更新基地
+
+
             sleep(1);
-
-
-
-
 
         }catch (\Exception $e){
             throw $e;
@@ -101,6 +100,8 @@ class DingNewController extends Controller
             if(in_array($v['id'],$oldDepartmentIds)){
                 $params = ['name'=>$v['name'],'parentid'=>$v['parentid']];
                 if(empty($oldDepartments[$v['id']]['alias_name'])){
+                    $params['alias_name'] = $v['name'];
+                }elseif($corpType == 2){
                     $params['alias_name'] = $v['name'];
                 }
                 if($oldDepartments[$v['id']]['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$oldDepartments[$v['id']]['main_leader_id']])){
@@ -249,6 +250,8 @@ class DingNewController extends Controller
             DingtalkDepartmentUser::updateAll(['status'=>1],['relate_id'=>$delRelateIds]);
         }
     }
+
+
 
 
     private function updateDingDepartmentPathName(){

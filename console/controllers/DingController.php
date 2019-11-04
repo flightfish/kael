@@ -138,9 +138,9 @@ class DingController extends Controller
         foreach ($allDepartmentList as $v){
             if(in_array($v['id'],$oldDepartmentIds)){
                 $params = ['name'=>$v['name'],'parentid'=>$v['parentid']];
-                if(empty($oldDepartments[$v['id']]['alias_name'])){
+//                if(empty($oldDepartments[$v['id']]['alias_name'])){
                     $params['alias_name'] = $v['name'];
-                }
+//                }
                 if($oldDepartments[$v['id']]['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$oldDepartments[$v['id']]['main_leader_id']])){
                     echo date('Y-m-d H:i:s')."\t部门负责人离职,重置为空,部门编号:".$v['id']."\t原部门负责人编号:".$oldDepartments[$v['id']]['main_leader_id']."\n";
                     $params['main_leader_id'] = 0;
