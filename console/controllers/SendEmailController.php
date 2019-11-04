@@ -68,8 +68,8 @@ class SendEmailController extends Controller
         $objSheet->fromArray($data);
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
         $objWriter->save($filename);
-        $mail= \Yii::$app->mailer->compose();
         foreach ($emailList as $emailAddr){
+            $mail= \Yii::$app->mailer->compose();
             $mail->setTo($emailAddr)
                 ->setFrom( ['mail_service@knowbox.cn'=>'基地邮件通知'])
                 ->setSubject("候选人名单")
