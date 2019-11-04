@@ -58,13 +58,17 @@ class DingNewController extends Controller
             echo date('Y-m-d H:i:s')."\t员工同步兼职团队结束\n";
 
             //更新基地
-            $this->updateDingUserBaseName();
+//            $this->updateDingUserBaseName();
 
             sleep(1);
 
         }catch (\Exception $e){
             throw $e;
         }
+    }
+
+    public function actionUpdateBaseName(){
+        $this->updateDingUserBaseName();
     }
 
     private function updateDingUserBaseName(){
