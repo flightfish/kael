@@ -139,7 +139,7 @@ class DingNewController extends Controller
                     break;
                 }
             }
-            $base != $v['base'] && DingtalkDepartment::updateAll(['base_name'=>$base],['id'=>$v['id']]);
+            $base != $v['base_name'] && DingtalkDepartment::updateAll(['base_name'=>$base],['id'=>$v['id']]);
         }
     }
 
