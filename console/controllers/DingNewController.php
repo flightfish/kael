@@ -159,7 +159,7 @@ class DingNewController extends Controller
             echo "level: ".$level."\n";
             if($level == 0){
                 $departmentList = [
-                    ['id'=>1,'name'=>'小盒科技']
+                    ['id'=>1,'name'=>'小盒科技','base_name'=>'']
                 ];
             }else{
                 $departmentList = DingtalkDepartment::find()
