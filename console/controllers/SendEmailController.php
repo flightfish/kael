@@ -1,13 +1,6 @@
 <?php
 namespace console\controllers;
 
-use common\libs\AliMailApi;
-use common\libs\AppFunc;
-use common\libs\DingTalkApi;
-use common\models\AlimailStatus;
-use common\models\DBCommon;
-use common\models\DingtalkDepartment;
-use common\models\DingtalkUser;
 use common\models\ehr\TrCandidateForSchool;
 use Yii;
 use yii\console\Controller;
