@@ -44,4 +44,6 @@ return [
 
     'proxy_dingtalk_jianzhi' => ['106.75.87.8','8888'],
 
+    'boss_url'=>'https://dev-bslive.knowbox.cn',
+    'io_url'=>'https://dev-iolive.knowbox.cn'
 ];
