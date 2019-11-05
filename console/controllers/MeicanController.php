@@ -195,14 +195,20 @@ class MeicanController extends Controller
     /**
      * 同步订餐数据
      */
-    public function actionDingCanOrderInit(){
-        if(exec('ps -ef|grep "meican/ding-can-order-init"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+    public function actionDingCanOrder(){
+        if(exec('ps -ef|grep "meican/ding-can-order"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
             echo "is_running";
             exit();
         }
-        $dayList = array_map(function($v){
-            return date("Y-m-d",$v);
-        },range(strtotime('2019-09-01'),time(),24*3600));
+        $oldDingcanOrder = DingcanOrder::findOneByWhere(['supplier' => 1], '*', 'meal_date desc');
+        if (empty($oldDingcanOrder)) {
+            $start = "2019-09-01";
+        } else {
+            $start = $oldDingcanOrder['meal_date'];
+        }
+        $dayList = array_map(function ($v) {
+            return date("Y-m-d", $v);
+        }, range(strtotime($start), time(), 24 * 3600));
 
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步订餐数据到kael\n";
