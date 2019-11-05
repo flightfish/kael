@@ -5,6 +5,8 @@ use common\libs\AppFunc;
 use common\libs\UserToken;
 use common\models\CommonUser;
 use common\models\Department;
+use common\models\DingtalkDepartmentUser;
+use common\models\DingtalkUser;
 use common\models\RelateUserPlatform;
 use usercenter\modules\meican\models\MeicanApi;
 use Yii;
@@ -101,7 +103,7 @@ SQL;
                 "Accept: application/json, text/plain, */*"
             ];
             echo $user['id']."\n";
-            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/permissionsMenu.do',[],$headers);
+            $ret = AppFunc::curlPost(Yii::$app->params['boss_url'].'/permissionsMenu.do',[],$headers);
             echo $ret."\n";
             sleep(1);
         }
@@ -121,9 +123,12 @@ where a.`status` = 0 and a.user_type=0 and b.relate_id > 0
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
 
+        $kaelIdToBaseName = array_column(DingtalkUser::findList([],'','kael_id,base_name'),'base_name','kael_id');
+
         foreach ($userList as $user){
             $user['name'] = $user['username'];
             $user['user_id'] = $user['id'];
+            $user['base_name'] = $kaelIdToBaseName[$user['id']] ?? '';
 
             $headers = [
                 "Referer: https://bslive.knowbox.cn/",
@@ -134,7 +139,7 @@ SQL;
             ];
             echo json_encode($user,64|256)."\n";
             $user = json_encode($user,64|256);
-            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost(Yii::$app->params['boss_url'].'/employee/employeeValidateForKael.do',$user,$headers);
 //            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
@@ -163,6 +168,10 @@ SQL;
             }
             $user['name'] = $user['username'];
             $user['user_id'] = $user['id'];
+            $dingtalkUser = DingtalkUser::findOneByWhere(['kael_id'=>$user['id']]);
+            $user['base_name'] = $dingtalkUser['base_name'] ?? '';
+
+
             $headers = [
                 "Referer: https://bslive.knowbox.cn/",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
@@ -173,7 +182,7 @@ SQL;
             echo json_encode($user,64|256)."\n";
             $userId = $user['id'];
             $user = json_encode($user,64|256);
-            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost(Yii::$app->params['boss_url'].'/employee/employeeValidateForKael.do',$user,$headers);
 //            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             $oldPlatIds = RelateUserPlatform::find()
@@ -211,7 +220,7 @@ SQL;
             ];
             echo json_encode($user,64|256)."\n";
             $user = json_encode($user,64|256);
-            $ret = AppFunc::curlPost('http://bslive.online.knowboxlan.cn/employee/employeeValidateForKael.do',$user,$headers);
+            $ret = AppFunc::curlPost(Yii::$app->params['boss_url'].'/employee/employeeValidateForKael.do',$user,$headers);
 //            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
