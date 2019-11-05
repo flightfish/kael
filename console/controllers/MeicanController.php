@@ -13,6 +13,7 @@ use common\models\DingtalkDepartment;
 use common\models\DingtalkUser;
 use common\models\WorkDayConfig;
 use usercenter\modules\meican\models\MeicanApi;
+use usercenter\modules\meican\models\ZzlApi;
 use Yii;
 use yii\console\Controller;
 
@@ -417,71 +418,6 @@ class MeicanController extends Controller
                     }
                 }
             }
-        }
-    }
-
-
-
-    /**
-     * 同步竹蒸笼订餐数据
-     */
-    public function actionDingCanOrderZzl(){
-        if(exec('ps -ef|grep "meican/ding-can-order-zzl"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
-            echo "is_running";
-            exit();
-        }
-        $oldDingcanOrder = DingcanOrder::findOneByWhere(['supplier' => 1], '*', 'meal_date desc');
-        if (empty($oldDingcanOrder)) {
-            $start = "2019-09-01";
-        } else {
-            $start = $oldDingcanOrder['meal_date'];
-        }
-        $dayList = array_map(function ($v) {
-            return date("Y-m-d", $v);
-        }, range(strtotime($start), time(), 24 * 3600));
-
-        foreach ($dayList as $day){
-            echo date('Y-m-d H:i:s')."\t {$day} 开始同步竹蒸笼订餐数据到kael\n";
-            $retJson = MeicanApi::listBill($day);
-            $columns = [];
-            $rows = [];
-            $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
-            $departmentIdToInfo = array_column(DingtalkDepartment::findList([], '', 'id,name,subroot_id', -1), null, 'id');
-            $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
-            foreach ($retJson['data']['orderList'] as $mealInfo) {
-                foreach ($mealInfo['mealList'] as $orderInfo) {
-                    $orderInfo['_meal'] = $mealInfo['meal'];
-                    $orderInfo['_time'] = $mealInfo['time'];
-                    $orderInfo['_type'] = $mealInfo['type'];
-                    $kaelId = intval($orderInfo['email']);
-                    $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
-                    $departmentName = '';
-                    $subrootId = 0;
-                    $subrootName = '';
-                    $departmentInfo = $departmentIdToInfo[$departmentId] ?? [];
-                    if (!empty($departmentInfo)) {
-                        $departmentName = $departmentInfo['name'];
-                        $subrootId = $departmentInfo['subroot_id'];
-                        $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
-                    }
-                    $tmp = [
-                        'order_id' => $orderInfo['orderId'],
-                        'meal_time' => $mealInfo['time'],
-                        'meal_date' => date('Y-m-d', strtotime($mealInfo['time'])),
-                        'kael_id' => intval($orderInfo['email']),
-                        'order_ext' => json_encode($orderInfo),
-                        'supplier' => 1,//1美餐 2竹蒸笼
-                        'dingtalk_department_id' => $departmentId,
-                        'dingtalk_department_name' => $departmentName,
-                        'dingtalk_subroot_id' => $subrootId,
-                        'dingtalk_subroot_name' => $subrootName,
-                        'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100
-                    ];
-                    empty($columns) && $columns = array_keys($tmp);
-                    $rows[] = array_values($tmp);
-                }
-            }
-            DingcanOrder::addUpdateColumnRows($columns, $rows);
         }
     }
 
