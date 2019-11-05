@@ -39,6 +39,7 @@ class DingTalkApiJZ {
 
     //注册业务事件回调接口
     const API_POST_REGISTER_CALL_BACK = "https://oapi.dingtalk.com/call_back/register_call_back";
+    const API_CHECK_PROCESS_LIST = "https://oapi.dingtalk.com/topapi/process/listbyuserid";
 
 
     //企业考勤排班详情
@@ -50,6 +51,21 @@ class DingTalkApiJZ {
 
     //添加待入职
     const API_TOPAPI_HRM_ADDPREENTRY = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/addpreentry';
+
+
+    public static function getCheckProcessList(){
+        $offset = 0;
+        $list = [];
+        while(1){
+            $retJson = self::curlPost(self::API_CHECK_PROCESS_LIST,['size'=>100,'offset'=>$offset]);
+            $list = array_merge($list,$retJson['process_list']);
+            if(empty($retJson['next_cursor'])){
+                break;
+            }
+            $offset  = $retJson['next_cursor'];
+        }
+        return $list;
+    }
 
     public static function addPreEntry($name,$mobile,$departmentId,$jobNumber){
         if (\Yii::$app->params['env'] != 'prod') {
