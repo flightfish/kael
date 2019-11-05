@@ -497,12 +497,24 @@ class User extends RequestBaseModel
 
 
 
-        RelateUserPlatform::updateAll(
-            ['status'=>RelateUserPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
-            ['user_id' => $this->id,'platform_id'=>$platformListAllow,'status'=>RelateUserPlatform::STATUS_VALID]);
-        RelateUserPlatform::batchAdd($this->id,$this->data['platform_list'],$this->user['id']);
-        LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_EDIT_USER_ROLE,$this->data);
-        
+//        RelateUserPlatform::updateAll(
+//            ['status'=>RelateUserPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
+//            ['user_id' => $this->id,'platform_id'=>$platformListAllow,'status'=>RelateUserPlatform::STATUS_VALID]);
+
+        $oldPlatformIds = array_column(RelateUserPlatform::findListByUserPlatform($this->id,$platformListAllow),'platform_id');
+        $delPlatforms = array_diff($oldPlatformIds,$this->data['platform_list']);
+        $addPlatforms = array_diff($this->data['platform_list'],$oldPlatformIds);
+        $trans = RelateUserPlatform::getDb()->beginTransaction();
+        try{
+            !empty($addPlatforms) && RelateUserPlatform::batchAdd($this->id,$addPlatforms,$this->user['id']);
+            !empty($delPlatforms) && RelateUserPlatform::updateAll(
+                ['status'=>RelateUserPlatform::STATUS_INVALID,'delete_user'=>$this->user['id']],
+                ['user_id' => $this->id,'platform_id'=>$delPlatforms,'status'=>RelateUserPlatform::STATUS_VALID]);
+            LogAuthUser::LogUser($this->user['id'],$this->id,LogAuthUser::OP_EDIT_USER_ROLE,$this->data);
+            $trans->commit();
+        }catch (\Exception $e){
+            $trans->rollBack();
+        }
         return true;
     }
 
@@ -894,11 +906,11 @@ class User extends RequestBaseModel
             !empty($v['email']) && $userListEmail[$v['email']] = $v;
         }
 
-        $departmentPrivList = [];
-        foreach($departmentIdList as $departmentIdOne){
-            $privOneList = $this->platformListByAdminDepartment($departmentIdOne);
-            $departmentPrivList[$departmentIdOne] = array_column($privOneList,'platform_id');
-        }
+//        $departmentPrivList = [];
+//        foreach($departmentIdList as $departmentIdOne){
+//            $privOneList = $this->platformListByAdminDepartment($departmentIdOne);
+//            $departmentPrivList[$departmentIdOne] = array_column($privOneList,'platform_id');
+//        }
 
         $addColumn = ['user_id','platform_id','create_user'];
         $addRows = [];
@@ -912,6 +924,10 @@ class User extends RequestBaseModel
             }
             $v = array_map('strval',$v);
             $v = array_map('trim',$v);
+
+            if(empty($v[0]) && empty($v[1]) && empty($v[2]) && empty($v[3]) && empty($v[4])){
+                continue;
+            }
 
             if (empty($v[1]) && empty($v[2])) {
                 array_push($error, '第' . ($k + 1) . '行，手机和邮箱不能同时为空');
@@ -933,34 +949,37 @@ class User extends RequestBaseModel
                 }
                 $userInfo = $userListEmail[$v[2]];
             }
-
             //增加
             if(!empty($v[3])){
                 $addPrivIds = explode(',',$v[3]);//增加
-                $departmentIdOne = $userInfo['department_id'];
-                $diff = array_diff($addPrivIds,$departmentPrivList[$departmentIdOne]);
-                if(!empty($diff)){
-                    //权限不足
-                    array_push($error, '第' . ($k + 1) . '行，对用户该平台无权限'.$uname);
-                    continue;
-                }
+//                $departmentIdOne = $userInfo['department_id'];
+//                $diff = array_diff($addPrivIds,$departmentPrivList[$departmentIdOne]);
+//                if(!empty($diff)){
+//                    //权限不足
+//                    array_push($error, '第' . ($k + 1) . '行，对用户该平台无权限'.$uname);
+//                    continue;
+//                }
+                $userOldPrivs = array_column(RelateUserPlatform::findListByUserPlatform($userInfo['id'],$addPrivIds),'platform_id');
                 $logPlatAuthAdd[$userInfo['id']] = $addPrivIds;
                 foreach($addPrivIds as $privOne){
-                    $delRelate[] = ['user_id'=>$userInfo['id'],'platform_id'=>$privOne];
-                    $addRows[] = [$userInfo['id'],$privOne,$this->user['id']];
+                    if(!in_array($privOne,$userOldPrivs)){
+                        $addRows[] = [$userInfo['id'],$privOne,$this->user['id']];
+                    }
+//                    $delRelate[] = ['user_id'=>$userInfo['id'],'platform_id'=>$privOne];
+//                    $addRows[] = [$userInfo['id'],$privOne,$this->user['id']];
                 }
             }
 
             //删除
             if(!empty($v[4])){
                 $delPriv = explode(',',$v[4]);//增加
-                $departmentIdOne = $userInfo['department_id'];
-                $diff = array_diff($delPriv,$departmentPrivList[$departmentIdOne]);
-                if(!empty($diff)){
-                    //权限不足
-                    array_push($error, '第' . ($k + 1) . '行，对用户该平台无权限'.$uname);
-                    continue;
-                }
+//                $departmentIdOne = $userInfo['department_id'];
+//                $diff = array_diff($delPriv,$departmentPrivList[$departmentIdOne]);
+//                if(!empty($diff)){
+//                    //权限不足
+//                    array_push($error, '第' . ($k + 1) . '行，对用户该平台无权限'.$uname);
+//                    continue;
+//                }
                 $logPlatAuthDel[$userInfo['id']] = $delPriv;
                 foreach($delPriv as $privOne){
                     $delRelate[] = ['user_id'=>$userInfo['id'],'platform_id'=>$privOne,'status'=>RelateUserPlatform::STATUS_VALID];
