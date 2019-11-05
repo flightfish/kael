@@ -20,8 +20,11 @@ class DingNewController extends Controller
 
 
     public function actionTest(){
-        $userInfoList = DingTalkApi::getDepartmentUserInfoList(1);
-        echo json_encode($userInfoList);
+//        $userInfoList = DingTalkApi::getDepartmentUserInfoList(1);
+//        echo json_encode($userInfoList);
+        $processList = DingTalkApi::getCheckProcessList();
+        $processList2 = DingTalkApiJZ::getCheckProcessList();
+        echo json_encode([1=>$processList,2=>$processList2],64|256);
     }
 
 
