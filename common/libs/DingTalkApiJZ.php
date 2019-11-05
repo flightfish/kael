@@ -58,11 +58,11 @@ class DingTalkApiJZ {
         $list = [];
         while(1){
             $retJson = self::curlPost(self::API_CHECK_PROCESS_LIST,['size'=>100,'offset'=>$offset]);
-            $list = array_merge($list,$retJson['process_list']);
-            if(empty($retJson['next_cursor'])){
+            $list = array_merge($list,$retJson['result']['process_list']);
+            if(empty($retJson['result']['next_cursor'])){
                 break;
             }
-            $offset  = $retJson['next_cursor'];
+            $offset  = $retJson['result']['next_cursor'];
         }
         return $list;
     }
