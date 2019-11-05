@@ -31,7 +31,7 @@ CREATE TABLE `dingtalk_attendance_process_instance` (
    `finish_time` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '结束时间',
    `user_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '发起人员ID',
    `dingtalk_department_id` bigint(20)  NOT NULL DEFAULT 0 COMMENT '钉钉部门ID',
-   `dingtalk_department_name` VARCHAR(100)  NOT NULL DEFAULT 0 COMMENT '钉钉部门名称',
+   `dingtalk_department_name` varchar(100)  NOT NULL DEFAULT 0 COMMENT '钉钉部门名称',
    `process_status` varchar(100) NOT NULL DEFAULT '' COMMENT '审批状态，分为NEW（新创建）RUNNING（运行中）TERMINATED（被终止）COMPLETED（完成)',
    `cc_user_id` varchar(255) NOT NULL DEFAULT '' COMMENT '抄送人。审批附带抄送人时才返回该字段。',
    `result` varchar(100) NOT NULL DEFAULT '' COMMENT '审批结果，分为 agree 和 refuse',
