@@ -23,7 +23,11 @@ class DingNewController extends Controller
 //        $userInfoList = DingTalkApi::getDepartmentUserInfoList(1);
 //        echo json_encode($userInfoList);
         $callback = DingTalkApi::callBackQuery();
-        $callback2 = DingTalkApiJZ::callBackQuery();
+        try{
+            $callback2 = DingTalkApiJZ::callBackQuery();
+        }catch (\Exception $e){
+            $callback2 = $e->getMessage();
+        }
 
         $processList = DingTalkApi::getCheckProcessList();
         $processList2 = DingTalkApiJZ::getCheckProcessList();
