@@ -31,26 +31,26 @@ class DingController extends BaseController{
     private $encodingAESKey = '1234567890123456789012345678901234567890123';
     private $nonce = 'nEXhMP4r';
 
-    public function actionRegister(){
-        $eventList = \Yii::$app->request->post('event_list',0);
-        if(!$eventList){
-            $eventList = $this->event_list;
-        }else{
-            foreach ($eventList as $k=>$event){
-                if(!in_array($event,$this->event_list)){
-                    unset($eventList[$k]);
-                }
-            }
-        }
-        $params = [
-            'call_back_tag'=>$eventList,
-            'token'=>$this->token,
-            'aes_key'=>$this->encodingAESKey,
-            'url'=>'http://kael.pdev.knowbox.cn/common/ding/call-back'
-        ];
-        $info = DingTalkApi::registerCallBack($params);
-        return ['msg'=>'操作成功'];
-    }
+//    public function actionRegister(){
+//        $eventList = \Yii::$app->request->post('event_list',0);
+//        if(!$eventList){
+//            $eventList = $this->event_list;
+//        }else{
+//            foreach ($eventList as $k=>$event){
+//                if(!in_array($event,$this->event_list)){
+//                    unset($eventList[$k]);
+//                }
+//            }
+//        }
+//        $params = [
+//            'call_back_tag'=>$eventList,
+//            'token'=>$this->token,
+//            'aes_key'=>$this->encodingAESKey,
+//            'url'=>'http://kael.pdev.knowbox.cn/common/ding/call-back'
+//        ];
+//        $info = DingTalkApi::registerCallBack($params);
+//        return ['msg'=>'操作成功'];
+//    }
 
     public function actionCallBack(){
         $eventType = \Yii::$app->request->post('EventType','');
