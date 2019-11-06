@@ -45,7 +45,6 @@ class ZzlController extends Controller
             echo date('Y-m-d H:i:s')."\t今天竹蒸笼数据再次更新\n";
 
         }
-        var_dump($dayList);die;
         if(!empty($dayList)){
             foreach ($dayList as $day){
                 echo date('Y-m-d H:i:s')."\t {$day} 开始同步竹蒸笼订餐数据到kael\n";
