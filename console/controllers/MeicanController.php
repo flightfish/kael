@@ -215,7 +215,7 @@ class MeicanController extends Controller
         } elseif ($start == date('Y-m-d')) {
             $dayList = [date('Y-m-d')];
         } else {
-            echo '今天竹蒸笼数据已经更新完毕';
+            echo '今天美餐数据已经更新完毕';
             return;
         }
         foreach ($dayList as $day){
