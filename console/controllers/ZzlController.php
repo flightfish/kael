@@ -144,7 +144,7 @@ class ZzlController extends Controller
                 $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
             }
             $tmp = [
-                'order_id' => '',
+                'order_id' => $orderInfo['userid'],
                 'meal_time' => date('Y-m-d H:i:s', $orderInfo['add_time']),
                 'meal_date' => date('Y-m-d',  $orderInfo['add_time']),
                 'kael_id' => intval(substr($orderInfo['userid'],1)),
