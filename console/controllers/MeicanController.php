@@ -173,6 +173,10 @@ class MeicanController extends Controller
                     $subrootId = $departmentInfo['subroot_id'];
                     $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
                 }
+                $goods_name = '';
+                foreach ($orderInfo['orderContent'] as $vx) {
+                    $goods_name .= ' ' . ($vx['restaurant'] ?? '') . ' ' . ($vx['name'] ?? '');
+                }
                 $tmp = [
                     'order_id' => $orderInfo['orderId'],
                     'meal_time' => $mealInfo['time'],
@@ -185,7 +189,7 @@ class MeicanController extends Controller
                     'dingtalk_subroot_id' => $subrootId,
                     'dingtalk_subroot_name' => $subrootName,
                     'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100,
-                    'goods_name' => ($orderInfo['orderContent']['restaurant'] ?? '') . ' ' . ($orderInfo['orderContent']['='] ?? ''),
+                    'goods_name' => $goods_name,
                 ];
                 empty($columns) && $columns = array_keys($tmp);
                 $rows[] = array_values($tmp);
@@ -242,6 +246,10 @@ class MeicanController extends Controller
                             $subrootId = $departmentInfo['subroot_id'];
                             $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
                         }
+                        $goods_name = '';
+                        foreach ($orderInfo['orderContent'] as $vx) {
+                            $goods_name .= ' ' . ($vx['restaurant'] ?? '') . ' ' . ($vx['name'] ?? '');
+                        }
                         $tmp = [
                             'order_id' => $orderInfo['orderId'],
                             'meal_time' => $mealInfo['time'],
@@ -254,7 +262,7 @@ class MeicanController extends Controller
                             'dingtalk_subroot_id' => $subrootId,
                             'dingtalk_subroot_name' => $subrootName,
                             'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100,
-                            'goods_name' => ($orderInfo['orderContent']['restaurant'] ?? '') . ' ' . ($orderInfo['orderContent']['='] ?? ''),
+                            'goods_name' => $goods_name,
                         ];
                         empty($columns) && $columns = array_keys($tmp);
                         $rows[] = array_values($tmp);
