@@ -63,7 +63,7 @@ class ZzlApi
     }
     public static function userList()
     {
-        $data = ['tel'=>'王超'];
+        $data = [];
         return self::curlApi(self::API_USERLIST,$data);
     }
 }
