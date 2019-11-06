@@ -51,4 +51,7 @@ CREATE TABLE `dingtalk_attendance_process_instance` (
 ALTER TABLE `dingcan_order`
   ADD COLUMN `goods_name` varchar(255) NOT NULL DEFAULT '' COMMENT '商品名称' AFTER `price`;
 
+ALTER TABLE `dingcan_order_exception`
+  ADD COLUMN `goods_name` varchar(255) NOT NULL DEFAULT '' COMMENT '商品名称' AFTER `price`;
+
 
