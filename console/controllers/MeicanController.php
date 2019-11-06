@@ -222,6 +222,7 @@ class MeicanController extends Controller
             $dayList = [date('Y-m-d')];
             echo date('Y-m-d H:i:s')."\t今天美餐数据再次更新\n";
         }
+        var_dump($dayList);
         return $dayList;
         if(!empty($dayList)){
             foreach ($dayList as $day){
