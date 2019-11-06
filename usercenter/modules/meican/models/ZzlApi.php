@@ -42,7 +42,11 @@ class ZzlApi
         }
         $data=[];
         $data['secretkey'] = \Yii::$app->params['zzl_secretkey'];
-        $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;echo $apiUrl; var_dump( $data);
+        $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;
+
+        $apiUrl='http://www.fan7.cn//order/list';
+        $data['secretkey'] = "sHKPiDPCOpIXPu4GjgxR35Gl5Eq5xO2l";
+        echo $apiUrl; var_dump( $data);
         $retStr = AppFunc::curlPost($apiUrl,$data);var_dump($retStr);die;
 
         $retJson = json_decode($retStr,true);
