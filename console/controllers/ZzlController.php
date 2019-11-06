@@ -113,7 +113,7 @@ class ZzlController extends Controller
             $start = "2019-11-05";
         } else {
             $start = $oldDingcanOrder['meal_date'];
-        }     $start = "2019-11-06";
+        }     $start = "2019-11-05";
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($start), time(), 24 * 3600));
@@ -131,7 +131,8 @@ class ZzlController extends Controller
         $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
         $departmentIdToInfo = array_column(DingtalkDepartment::findList([], '', 'id,name,subroot_id', -1), null, 'id');
         $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
-        foreach ($retJson['data']['orderList'] as $mealInfo) {
+        foreach ($retJson['data'] as $mealInfo) {
+            var_dump($mealInfo);die;
             foreach ($mealInfo['mealList'] as $orderInfo) {
                 $orderInfo['_meal'] = $mealInfo['meal'];
                 $orderInfo['_time'] = $mealInfo['time'];
