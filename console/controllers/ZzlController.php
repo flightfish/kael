@@ -145,7 +145,7 @@ class ZzlController extends Controller
             }
             $tmp = [
                 'order_id' => '',
-                'meal_time' => date('Y-m-d H:i:d', $orderInfo['add_time']),
+                'meal_time' => date('Y-m-d H:i:s', $orderInfo['add_time']),
                 'meal_date' => date('Y-m-d', strtotime($orderInfo['add_time'])),
                 'kael_id' => intval(substr($orderInfo['userid'],1)),
                 'order_ext' => json_encode($orderInfo),
