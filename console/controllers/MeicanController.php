@@ -184,7 +184,8 @@ class MeicanController extends Controller
                     'dingtalk_department_name' => $departmentName,
                     'dingtalk_subroot_id' => $subrootId,
                     'dingtalk_subroot_name' => $subrootName,
-                    'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100
+                    'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100,
+                    'goods_name' => $orderInfo['orderContent']['restaurant'].' '.$orderInfo['orderContent']['name'],
                 ];
                 empty($columns) && $columns = array_keys($tmp);
                 $rows[] = array_values($tmp);
@@ -203,14 +204,20 @@ class MeicanController extends Controller
         }
         $oldDingcanOrder = DingcanOrder::findOneByWhere(['supplier' => 1], '*', 'meal_date desc');
         if (empty($oldDingcanOrder)) {
-            $start = "2019-09-01";
+            $start = "2019-10-01";
         } else {
-            $start = $oldDingcanOrder['meal_date'];
+            $start = date('Y-m-d',strtotime($oldDingcanOrder['meal_date'])+24 * 3600);
         }
-        $dayList = array_map(function ($v) {
-            return date("Y-m-d", $v);
-        }, range(strtotime($start), time(), 24 * 3600));
-
+        if ($start < date('Y-m-d')) {
+            $dayList = array_map(function ($v) {
+                return date("Y-m-d", $v);
+            }, range(strtotime($start), time(), 24 * 3600));
+        } elseif ($start == date('Y-m-d')) {
+            $dayList = [date('Y-m-d')];
+        } else {
+            echo '今天竹蒸笼数据已经更新完毕';
+            return;
+        }
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步订餐数据到kael\n";
             $retJson = MeicanApi::listBill($day);
@@ -246,7 +253,8 @@ class MeicanController extends Controller
                         'dingtalk_department_name' => $departmentName,
                         'dingtalk_subroot_id' => $subrootId,
                         'dingtalk_subroot_name' => $subrootName,
-                        'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100
+                        'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100,
+                        'goods_name' => $orderInfo['orderContent']['restaurant'].' '.$orderInfo['orderContent']['name'],
                     ];
                     empty($columns) && $columns = array_keys($tmp);
                     $rows[] = array_values($tmp);
@@ -254,6 +262,8 @@ class MeicanController extends Controller
             }
             DingcanOrder::addUpdateColumnRows($columns, $rows);
         }
+        //竹蒸笼数据
+        ZzlController::SynDingCanOrderZzl();
     }
     /**
      * 同步异常数据
