@@ -112,13 +112,13 @@ class ZzlController extends Controller
         if (empty($oldDingcanOrder)) {
             $start = "2019-10-01";
         } else {
-            $start = $oldDingcanOrder['meal_date'];
+            $start = date('Y-m-d',strtotime($oldDingcanOrder['meal_date'])+24 * 3600);
         }
-var_dump($start);$start= "2019-11-05";
+        var_dump($start);
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($start), time(), 24 * 3600));
-        var_dump( range(strtotime($start), time(), 24 * 3600));return 1;
+
 
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步竹蒸笼订餐数据到kael\n";
@@ -146,7 +146,7 @@ var_dump($start);$start= "2019-11-05";
                 $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
             }
             $tmp = [
-                'order_id' => 'Zzl-'.$orderInfo['add_time'],
+                'order_id' => 'Zzl-'.$orderInfo['add_time'].intval(substr($orderInfo['userid'],1)),
                 'meal_time' => date('Y-m-d H:i:s', $orderInfo['add_time']),
                 'meal_date' => date('Y-m-d',  $orderInfo['add_time']),
                 'kael_id' => intval(substr($orderInfo['userid'],1)),
