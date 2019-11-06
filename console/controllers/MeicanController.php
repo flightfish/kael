@@ -377,8 +377,8 @@ class MeicanController extends Controller
      * 更新异常数据
      */
     public function canExceptionUpdate(){
-        echo date('Y-m-d H:i:s') . "\t  异常订餐数据校验,30天内\n";
-        $startDate = date('Y-m-d', strtotime("-100 days"));
+        echo date('Y-m-d H:i:s') . "\t  异常订餐数据校验,40天内\n";
+        $startDate = date('Y-m-d', strtotime("-40 days"));
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($startDate), time(), 24 * 3600));
