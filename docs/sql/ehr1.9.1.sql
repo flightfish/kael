@@ -48,4 +48,7 @@ CREATE TABLE `dingtalk_attendance_process_instance` (
    UNIQUE INDEX idx_proc_inst_id(`proc_inst_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+ALTER TABLE `dingcan_order`
+  ADD COLUMN `goods_name` varchar(255) NOT NULL DEFAULT '' COMMENT '商品名称' AFTER `price`;
+
 

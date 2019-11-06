@@ -124,7 +124,6 @@ class ZzlController extends Controller
             echo '今天数据已经更新完毕';
             return;
         }
-var_dump($dayList);die;
 
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步竹蒸笼订餐数据到kael\n";
@@ -162,7 +161,8 @@ var_dump($dayList);die;
                 'dingtalk_department_name' => $departmentName,
                 'dingtalk_subroot_id' => $subrootId,
                 'dingtalk_subroot_name' => $subrootName,
-                'price' => $orderInfo['goods_price']
+                'price' => $orderInfo['goods_price'],
+                'goods_name' => $orderInfo['goods_name'],
             ];
             empty($columns) && $columns = array_keys($tmp);
             $rows[] = array_values($tmp);
