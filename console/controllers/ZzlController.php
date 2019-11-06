@@ -132,11 +132,7 @@ class ZzlController extends Controller
         $departmentIdToInfo = array_column(DingtalkDepartment::findList([], '', 'id,name,subroot_id', -1), null, 'id');
         $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
         foreach ($retJson['data'] as $orderInfo) {
-            var_dump($orderInfo);
-            $retJson = ZzlApi::userList();
-            var_dump($retJson);die;
-
-            $kaelId = intval($orderInfo['email']);
+            $kaelId = intval($orderInfo['userid']);var_dump($kaelId);die;
             $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
             $departmentName = '';
             $subrootId = 0;
