@@ -40,9 +40,9 @@ class ZzlApi
         ){
             throw new Exception("配置参数错误",Exception::ERROR_COMMON);
         }
-        echo  'ssssss';return ;
+
         $data['secretkey'] = \Yii::$app->params['zzl_secretkey'];
-        $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;
+        $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;var_dump($apiUrl);return 1;
         $retStr = AppFunc::curlPost($apiUrl,$data);
 
         $retJson = json_decode($retStr,true);
