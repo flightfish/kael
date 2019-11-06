@@ -110,7 +110,7 @@ class ZzlController extends Controller
         }
         $oldDingcanOrder = DingcanOrder::findOneByWhere(['supplier' => 2], '*', 'meal_date desc');
         if (empty($oldDingcanOrder)) {
-            $start = "2019-09-01";
+            $start = "2019-11-05";
         } else {
             $start = $oldDingcanOrder['meal_date'];
         }
@@ -120,7 +120,7 @@ class ZzlController extends Controller
 
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步竹蒸笼订餐数据到kael\n";
-            $retJson = ZzlApi::orderList($day);
+            $retJson = ZzlApi::orderList($day); var_dump($retJson ); return;
             $columns = [];
             $rows = [];
             $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
