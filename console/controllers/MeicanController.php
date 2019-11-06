@@ -324,9 +324,16 @@ class MeicanController extends Controller
                         $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
                     }
                     foreach ($dingcanListIndex as $kaelId=>$canList){
-                        $offDutySchedule = $scheduleListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
-                        $onDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OnDuty'] ?? [];
-                        $offDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
+                        if (!isset($userList[$kaelId])) {
+                            $offDutySchedule = [];
+                            $onDutyResult = [];
+                            $offDutyResult = [];
+                        } else {
+                            $offDutySchedule = $scheduleListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
+                            $onDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OnDuty'] ?? [];
+                            $offDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
+                        }
+
                         //工作日9点
                         if (
                             isset($offDutySchedule['plan_check_time']) && (
@@ -406,9 +413,15 @@ class MeicanController extends Controller
                         $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
                     }
                     foreach ($dingcanListIndex as $kaelId=>$canList){
-                        $offDutySchedule = $scheduleListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
-                        $onDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OnDuty'] ?? [];
-                        $offDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
+                        if (!isset($userList[$kaelId])) {
+                            $offDutySchedule = [];
+                            $onDutyResult = [];
+                            $offDutyResult = [];
+                        } else {
+                            $offDutySchedule = $scheduleListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
+                            $onDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OnDuty'] ?? [];
+                            $offDutyResult = $resultListIndex[$userList[$kaelId]['user_id']][$day . ':OffDuty'] ?? [];
+                        }
 
                         //工作日9点
                         if (
