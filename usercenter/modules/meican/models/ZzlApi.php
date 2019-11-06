@@ -42,8 +42,8 @@ class ZzlApi
         }
 
         $data['secretkey'] = \Yii::$app->params['zzl_secretkey'];
-        $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;var_dump($data);return 1;
-        $retStr = AppFunc::curlPost($apiUrl,$data);
+        $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;
+        $retStr = AppFunc::curlPost($apiUrl,$data);var_dump($retStr);die;
 
         $retJson = json_decode($retStr,true);
         if(empty($retJson) || $retJson['resultCode'] != 'OK'){
