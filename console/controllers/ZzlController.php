@@ -132,7 +132,7 @@ class ZzlController extends Controller
         $departmentIdToInfo = array_column(DingtalkDepartment::findList([], '', 'id,name,subroot_id', -1), null, 'id');
         $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
         foreach ($retJson['data'] as $orderInfo) {
-            $kaelId = intval(substr($orderInfo['userid'],1));var_dump($kaelId);die;
+            $kaelId = intval(substr($orderInfo['userid'],1));
             $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
             $departmentName = '';
             $subrootId = 0;
@@ -144,7 +144,7 @@ class ZzlController extends Controller
                 $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
             }
             $tmp = [
-                'order_id' => $orderInfo['orderId'],
+                'order_id' => '',
                 'meal_time' => date('Y-m-d H:i:d', $orderInfo['add_time']),
                 'meal_date' => date('Y-m-d', strtotime($orderInfo['time'])),
                 'kael_id' => intval($orderInfo['email']),
@@ -155,7 +155,7 @@ class ZzlController extends Controller
                 'dingtalk_subroot_id' => $subrootId,
                 'dingtalk_subroot_name' => $subrootName,
                 'price' => $orderInfo['goods_price']
-            ];
+            ];var_dump($tmp);die;
             empty($columns) && $columns = array_keys($tmp);
             $rows[] = array_values($tmp);
         }
