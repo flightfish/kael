@@ -46,7 +46,7 @@ class ZzlApi
 
         $apiUrl='http://www.fan7.cn/order/list';
         $data['secretkey'] = "sHKPiDPCOpIXPu4GjgxR35Gl5Eq5xO2l";
-        $data['start_date'] = "2019-11-01";
+        $data['start_date'] = "2019-10-01";
         $data['end_date'] = "2019-11-31";
         echo $apiUrl; var_dump( $data);
         $retStr = AppFunc::curlPost($apiUrl,$data);var_dump($retStr);die;
