@@ -263,7 +263,7 @@ class MeicanController extends Controller
             DingcanOrder::addUpdateColumnRows($columns, $rows);
         }
         //竹蒸笼数据
-        ZzlController::SynDingCanOrderZzl();
+        ZzlController::SynDingCanOrderZzl();return 1;
         $this->SynCanExceptionInit();
     }
     /**
