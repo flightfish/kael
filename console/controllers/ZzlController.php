@@ -114,6 +114,7 @@ class ZzlController extends Controller
         } else {
             $start = $oldDingcanOrder['meal_date'];
         }
+        var_dump( $start);die;
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($start), time(), 24 * 3600));
