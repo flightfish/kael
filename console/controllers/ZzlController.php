@@ -110,10 +110,10 @@ class ZzlController extends Controller
         }
         $oldDingcanOrder = DingcanOrder::findOneByWhere(['supplier' => 2], '*', 'meal_date desc');
         if (empty($oldDingcanOrder)) {
-            $start = "2019-11-05";
+            $start = "2019-10-01";
         } else {
             $start = $oldDingcanOrder['meal_date'];
-        }     $start = "2019-11-05";
+        }
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($start), time(), 24 * 3600));
@@ -144,7 +144,7 @@ class ZzlController extends Controller
                 $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
             }
             $tmp = [
-                'order_id' => $orderInfo['userid'],
+                'order_id' => 'Zzl-'.$orderInfo['add_time'],
                 'meal_time' => date('Y-m-d H:i:s', $orderInfo['add_time']),
                 'meal_date' => date('Y-m-d',  $orderInfo['add_time']),
                 'kael_id' => intval(substr($orderInfo['userid'],1)),
