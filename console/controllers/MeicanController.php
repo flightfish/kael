@@ -299,7 +299,7 @@ class MeicanController extends Controller
 
 
         $columns = $rows = [];
-        $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
+        $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id',-1);
         foreach ($dayList as $day) {
             echo date('Y-m-d H:i:s') . "\t {$day} 开始同步异常订餐数据\n";
             $dingcanList = DingcanOrder::findListByWhereWithWhereArr(['meal_date' => $day], [], '*');
@@ -392,7 +392,7 @@ class MeicanController extends Controller
         }, range(strtotime($startDate), time(), 24 * 3600));
         $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
 
-        $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id');
+        $userList = DingTalkUser::findList([], 'kael_id', 'kael_id,name,user_id',-1);
         foreach ($dayList as $day) {
             echo date('Y-m-d H:i:s') . "\t {$day} 开始异常订餐--重新校验\n";
             $dingcanList = DingcanOrderException::findListByWhereWithWhereArr(['meal_date' => $day], [], '*');
