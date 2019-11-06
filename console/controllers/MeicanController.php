@@ -219,7 +219,7 @@ class MeicanController extends Controller
             return;
         }
         foreach ($dayList as $day){
-            echo date('Y-m-d H:i:s')."\t {$day} 开始同步订餐数据到kael\n";
+            echo date('Y-m-d H:i:s')."\t {$day} 开始同步美餐订餐数据到kael\n";
             $retJson = MeicanApi::listBill($day);
             $columns = [];
             $rows = [];

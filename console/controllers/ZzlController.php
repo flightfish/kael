@@ -41,7 +41,7 @@ class ZzlController extends Controller
         } elseif ($start == date('Y-m-d')) {
             $dayList = [date('Y-m-d')];
         } else {
-            echo '今天竹蒸笼数据已经更新完毕';
+            echo date('Y-m-d H:i:s')."\t今天竹蒸笼数据已经更新完毕\n";
             return;
         }
 
