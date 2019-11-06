@@ -202,6 +202,7 @@ class MeicanController extends Controller
             echo "is_running";
             exit();
         }
+        ZzlController::SynDingCanOrderZzl();return;
         $oldDingcanOrder = DingcanOrder::findOneByWhere(['supplier' => 1], '*', 'meal_date desc');
         if (empty($oldDingcanOrder)) {
             $start = "2019-10-01";
