@@ -264,22 +264,23 @@ class MeicanController extends Controller
         }
         //竹蒸笼数据
         ZzlController::SynDingCanOrderZzl();
+        $this->SynCanExceptionInit();
     }
     /**
      * 同步异常数据
      */
-    public function actionCanExceptionInit()
+    public function SynCanExceptionInit()
     {
-        if(exec('ps -ef|grep "meican/can-exception-init"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
-            echo "is_running";
-            exit();
-        }
+//        if(exec('ps -ef|grep "meican/can-exception-init"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+//            echo "is_running";
+//            exit();
+//        }
         echo date('Y-m-d H:i:s') . "\t  开始导入异常订餐数据\n";
         $dingcanOrderExceptionOne = DingcanOrderException::findOneByWhere([], '', 'id desc');
         if (!empty($dingcanOrderExceptionOne)) {
-            $startDate = date('Y-m-d', strtotime($dingcanOrderExceptionOne['meal_date']) + 24*3600);
+            $startDate = date('Y-m-d', time() - 5 * 24 * 3600);
         } else {
-            $startDate = '2019-07-01';
+            $startDate = '2019-10-01';
         }
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
