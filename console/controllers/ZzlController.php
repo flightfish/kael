@@ -125,7 +125,7 @@ class ZzlController extends Controller
     }
 
     public static function SynZzlDay($day){
-        $retJson = ZzlApi::orderList($day); var_dump($retJson ); return;
+        $retJson = ZzlApi::orderList($day);
         $columns = [];
         $rows = [];
         $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
