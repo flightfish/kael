@@ -45,7 +45,7 @@ class ZzlApi
         $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;
         $retStr = AppFunc::curlPost($apiUrl,$data);
         $retJson = json_decode($retStr,true);
-        if(empty($retJson) || $retJson['resultCode'] != 'OK'){
+        if(empty($retJson) || $retJson['status'] != 200){
             throw new Exception("竹蒸笼请求失败".($retStr));
         }
         return $retJson;
