@@ -43,14 +43,7 @@ class ZzlApi
 
         $data['secretkey'] = \Yii::$app->params['zzl_secretkey'];
         $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;
-
-//        $apiUrl='http://api.fan7.cn/order/list';
-//        $data['secretkey'] = "sHKPiDPCOpIXPu4GjgxR35Gl5Eq5xO2l";
-//        $data['start_date'] = "2019-10-01";
-//        $data['end_date'] = "2019-11-31";
-        echo $apiUrl; var_dump( $data);
-        $retStr = AppFunc::curlPost($apiUrl,$data);var_dump($retStr);die;
-
+        $retStr = AppFunc::curlPost($apiUrl,$data);
         $retJson = json_decode($retStr,true);
         if(empty($retJson) || $retJson['resultCode'] != 'OK'){
             throw new Exception("竹蒸笼请求失败".($retStr));
