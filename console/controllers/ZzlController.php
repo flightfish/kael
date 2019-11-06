@@ -118,6 +118,7 @@ var_dump($start);
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($start)+24 * 3600, time(), 24 * 3600));
+        var_dump($dayList);
 
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步竹蒸笼订餐数据到kael\n";
