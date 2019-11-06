@@ -42,49 +42,50 @@ class ZzlController extends Controller
             $dayList = [date('Y-m-d')];
         } else {
             echo date('Y-m-d H:i:s')."\t今天竹蒸笼数据已经更新完毕\n";
-            return;
-        }
 
-        foreach ($dayList as $day){
-            echo date('Y-m-d H:i:s')."\t {$day} 开始同步竹蒸笼订餐数据到kael\n";
-            $retJson = ZzlApi::orderList($day);
-            $columns = [];
-            $rows = [];
-            $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
-            $departmentIdToInfo = array_column(DingtalkDepartment::findList([], '', 'id,name,subroot_id', -1), null, 'id');
-            $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
-            if (!empty($retJson['data'])) {
-                foreach ($retJson['data'] as $orderInfo) {
-                    $kaelId = intval(substr($orderInfo['userid'], 1));
-                    $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
-                    $departmentName = '';
-                    $subrootId = 0;
-                    $subrootName = '';
-                    $departmentInfo = $departmentIdToInfo[$departmentId] ?? [];
-                    if (!empty($departmentInfo)) {
-                        $departmentName = $departmentInfo['name'];
-                        $subrootId = $departmentInfo['subroot_id'];
-                        $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
+        }
+        if(!empty($dayList)){
+            foreach ($dayList as $day){
+                echo date('Y-m-d H:i:s')."\t {$day} 开始同步竹蒸笼订餐数据到kael\n";
+                $retJson = ZzlApi::orderList($day);
+                $columns = [];
+                $rows = [];
+                $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
+                $departmentIdToInfo = array_column(DingtalkDepartment::findList([], '', 'id,name,subroot_id', -1), null, 'id');
+                $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
+                if (!empty($retJson['data'])) {
+                    foreach ($retJson['data'] as $orderInfo) {
+                        $kaelId = intval(substr($orderInfo['userid'], 1));
+                        $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
+                        $departmentName = '';
+                        $subrootId = 0;
+                        $subrootName = '';
+                        $departmentInfo = $departmentIdToInfo[$departmentId] ?? [];
+                        if (!empty($departmentInfo)) {
+                            $departmentName = $departmentInfo['name'];
+                            $subrootId = $departmentInfo['subroot_id'];
+                            $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
+                        }
+                        $tmp = [
+                            'order_id' => 'Zzl-' . $orderInfo['add_time'] . intval(substr($orderInfo['userid'], 1)),
+                            'meal_time' => date('Y-m-d H:i:s', $orderInfo['add_time']),
+                            'meal_date' => date('Y-m-d', $orderInfo['add_time']),
+                            'kael_id' => intval(substr($orderInfo['userid'], 1)),
+                            'order_ext' => json_encode($orderInfo),
+                            'supplier' => 2,//1美餐 2竹蒸笼
+                            'dingtalk_department_id' => $departmentId,
+                            'dingtalk_department_name' => $departmentName,
+                            'dingtalk_subroot_id' => $subrootId,
+                            'dingtalk_subroot_name' => $subrootName,
+                            'price' => $orderInfo['goods_price'],
+                            'goods_name' => $orderInfo['goods_name'] ?? '',
+                        ];
+                        empty($columns) && $columns = array_keys($tmp);
+                        $rows[] = array_values($tmp);
                     }
-                    $tmp = [
-                        'order_id' => 'Zzl-' . $orderInfo['add_time'] . intval(substr($orderInfo['userid'], 1)),
-                        'meal_time' => date('Y-m-d H:i:s', $orderInfo['add_time']),
-                        'meal_date' => date('Y-m-d', $orderInfo['add_time']),
-                        'kael_id' => intval(substr($orderInfo['userid'], 1)),
-                        'order_ext' => json_encode($orderInfo),
-                        'supplier' => 2,//1美餐 2竹蒸笼
-                        'dingtalk_department_id' => $departmentId,
-                        'dingtalk_department_name' => $departmentName,
-                        'dingtalk_subroot_id' => $subrootId,
-                        'dingtalk_subroot_name' => $subrootName,
-                        'price' => $orderInfo['goods_price'],
-                        'goods_name' => $orderInfo['goods_name'] ?? '',
-                    ];
-                    empty($columns) && $columns = array_keys($tmp);
-                    $rows[] = array_values($tmp);
                 }
+                DingcanOrder::addUpdateColumnRows($columns, $rows);
             }
-            DingcanOrder::addUpdateColumnRows($columns, $rows);
         }
     }
 
