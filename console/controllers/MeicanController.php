@@ -206,6 +206,7 @@ class MeicanController extends Controller
             echo "is_running";
             exit();
         }
+        ZzlController::SynDingCanOrderZzl();
         $oldDingcanOrder = DingcanOrder::findOneByWhere(['supplier' => 1], '*', 'meal_date desc');
         if (empty($oldDingcanOrder)) {
             $start = "2019-10-01";
@@ -222,8 +223,6 @@ class MeicanController extends Controller
             $dayList = [date('Y-m-d')];
             echo date('Y-m-d H:i:s')."\t今天美餐数据再次更新\n";
         }
-        var_dump($dayList);
-        return $dayList;
         if(!empty($dayList)){
             foreach ($dayList as $day){
                 echo date('Y-m-d H:i:s')."\t {$day} 开始同步美餐订餐数据到kael\n";
