@@ -133,6 +133,7 @@ class ZzlController extends Controller
         $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
         foreach ($retJson['data'] as $orderInfo) {
             $kaelId = intval(substr($orderInfo['userid'],1));
+            var_dump($kaelIdToDepartmentId);
             $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
             $departmentName = '';
             $subrootId = 0;
