@@ -44,7 +44,7 @@ class ZzlApi
         $data['secretkey'] = \Yii::$app->params['zzl_secretkey'];
         $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;
 
-        $apiUrl='http://www.fan7.cn/order/list';
+        $apiUrl='http://api.fan7.cn/goods/list';
         $data['secretkey'] = "sHKPiDPCOpIXPu4GjgxR35Gl5Eq5xO2l";
         $data['start_date'] = "2019-10-01";
         $data['end_date'] = "2019-11-31";
