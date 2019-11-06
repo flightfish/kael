@@ -45,9 +45,9 @@ class ZzlApi
         $data['secretkey'] = \Yii::$app->params['zzl_secretkey'];
         $apiUrl = \Yii::$app->params['zzl_url'].$urlPath;
         $retStr = AppFunc::curlPost($apiUrl,$data);
-        $retJson = json_decode($retStr,true);var_dump( $retJson);
-        if(empty($retJson) || $retJson['status'] != 200){
-            throw new Exception("竹蒸笼请求失败".($retStr));
+        $retJson = json_decode($retStr,true);
+        if (empty($retJson) || $retJson['status'] != 200 || $retJson['status'] != 404) {
+            throw new Exception("竹蒸笼请求失败" . ($retStr));
         }
         return $retJson;
     }
