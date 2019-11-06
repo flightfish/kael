@@ -191,7 +191,9 @@ class DingKaoqinController extends Controller
             ],['user_id'=>$userId,'dingtalk_department_id'=>0]);
         }
         echo date('Y-m-d H:i:s')."\t 同步部门数据结束\n";
-
+        echo date('Y-m-d H:i:s')."\t 开始同步考勤审批数据到kael\n";
+        $this->synProcessInstance();
+        echo date('Y-m-d H:i:s')."\t 同步考勤审批数据结束\n";
     }
 
     public function synSchedule($day){
@@ -402,11 +404,11 @@ class DingKaoqinController extends Controller
     /**
      * 钉钉审批数据同步  ding-kaoqin/process-instance
      */
-    public function actionProcessInstance(){
-        if(exec('ps -ef|grep "ding-kaoqin/process-instance"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
-            echo "is_running";
-            exit();
-        }
+    public function synProcessInstance(){
+//        if(exec('ps -ef|grep "ding-kaoqin/process-instance"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+//            echo "is_running";
+//            exit();
+//        }
         $columns=$rows=[];
         $dayList = array_map(function($v){
             return date("Y-m-d",$v);
