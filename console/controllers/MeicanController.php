@@ -175,7 +175,7 @@ class MeicanController extends Controller
                 }
                 $goods_name = '';
                 foreach ($orderInfo['orderContent'] as $vx) {
-                    $goods_name .= ' ' . ($vx['name'] ?? '');
+                    $goods_name .=  ($vx['name'] ?? '').' ';
                 }
                 $tmp = [
                     'order_id' => $orderInfo['orderId'],
@@ -248,7 +248,7 @@ class MeicanController extends Controller
                         }
                         $goods_name = '';
                         foreach ($orderInfo['orderContent'] as $vx) {
-                            $goods_name .= ' ' . ($vx['name'] ?? '');
+                            $goods_name .=  ($vx['name'] ?? '').' ';
                         }
                         $tmp = [
                             'order_id' => $orderInfo['orderId'],
