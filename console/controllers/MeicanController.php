@@ -185,7 +185,7 @@ class MeicanController extends Controller
                     'dingtalk_subroot_id' => $subrootId,
                     'dingtalk_subroot_name' => $subrootName,
                     'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100,
-                    'goods_name' => ($orderInfo['orderContent']['restaurant'].' '.$orderInfo['orderContent']['name'])??'',
+                    'goods_name' => $orderInfo['orderContent']['restaurant']??''.' '.$orderInfo['orderContent']['name']??'',
                 ];
                 empty($columns) && $columns = array_keys($tmp);
                 $rows[] = array_values($tmp);
@@ -254,7 +254,7 @@ class MeicanController extends Controller
                         'dingtalk_subroot_id' => $subrootId,
                         'dingtalk_subroot_name' => $subrootName,
                         'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100,
-                        'goods_name' => ($orderInfo['orderContent']['restaurant'].' '.$orderInfo['orderContent']['name'])??'',
+                        'goods_name' => $orderInfo['orderContent']['restaurant']??''.' '.$orderInfo['orderContent']['name']??'',
                     ];
                     empty($columns) && $columns = array_keys($tmp);
                     $rows[] = array_values($tmp);
