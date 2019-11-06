@@ -118,7 +118,7 @@ var_dump($start);$start= "2019-11-05";
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($start), time(), 24 * 3600));
-        var_dump($dayList);return 1;
+        var_dump( range(strtotime($start), time(), 24 * 3600));return 1;
 
         foreach ($dayList as $day){
             echo date('Y-m-d H:i:s')."\t {$day} 开始同步竹蒸笼订餐数据到kael\n";
