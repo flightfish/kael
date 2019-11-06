@@ -131,39 +131,36 @@ class ZzlController extends Controller
         $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id'), 'department_id', 'kael_id');
         $departmentIdToInfo = array_column(DingtalkDepartment::findList([], '', 'id,name,subroot_id', -1), null, 'id');
         $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
-        foreach ($retJson['data'] as $mealInfo) {
-            var_dump($mealInfo);die;
-            foreach ($mealInfo['mealList'] as $orderInfo) {
-                $orderInfo['_meal'] = $mealInfo['meal'];
-                $orderInfo['_time'] = $mealInfo['time'];
-                $orderInfo['_type'] = $mealInfo['type'];
-                $kaelId = intval($orderInfo['email']);
-                $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
-                $departmentName = '';
-                $subrootId = 0;
-                $subrootName = '';
-                $departmentInfo = $departmentIdToInfo[$departmentId] ?? [];
-                if (!empty($departmentInfo)) {
-                    $departmentName = $departmentInfo['name'];
-                    $subrootId = $departmentInfo['subroot_id'];
-                    $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
-                }
-                $tmp = [
-                    'order_id' => $orderInfo['orderId'],
-                    'meal_time' => $mealInfo['time'],
-                    'meal_date' => date('Y-m-d', strtotime($mealInfo['time'])),
-                    'kael_id' => intval($orderInfo['email']),
-                    'order_ext' => json_encode($orderInfo),
-                    'supplier' => 2,//1美餐 2竹蒸笼
-                    'dingtalk_department_id' => $departmentId,
-                    'dingtalk_department_name' => $departmentName,
-                    'dingtalk_subroot_id' => $subrootId,
-                    'dingtalk_subroot_name' => $subrootName,
-                    'price' => array_sum(array_column($orderInfo['orderContent'], 'priceInCent')) / 100
-                ];
-                empty($columns) && $columns = array_keys($tmp);
-                $rows[] = array_values($tmp);
+        foreach ($retJson['data'] as $orderInfo) {
+            $retJson = ZzlApi::userList();
+            var_dump($retJson);die;
+
+            $kaelId = intval($orderInfo['email']);
+            $departmentId = $kaelIdToDepartmentId[$kaelId] ?? 0;
+            $departmentName = '';
+            $subrootId = 0;
+            $subrootName = '';
+            $departmentInfo = $departmentIdToInfo[$departmentId] ?? [];
+            if (!empty($departmentInfo)) {
+                $departmentName = $departmentInfo['name'];
+                $subrootId = $departmentInfo['subroot_id'];
+                $subrootName = ($departmentIdToInfo[$subrootId] ?? [])['name'] ?? '';
             }
+            $tmp = [
+                'order_id' => $orderInfo['orderId'],
+                'meal_time' => date('Y-m-d H:i:d', $orderInfo['add_time']),
+                'meal_date' => date('Y-m-d', strtotime($orderInfo['time'])),
+                'kael_id' => intval($orderInfo['email']),
+                'order_ext' => json_encode($orderInfo),
+                'supplier' => 2,//1美餐 2竹蒸笼
+                'dingtalk_department_id' => $departmentId,
+                'dingtalk_department_name' => $departmentName,
+                'dingtalk_subroot_id' => $subrootId,
+                'dingtalk_subroot_name' => $subrootName,
+                'price' => $orderInfo['goods_price']
+            ];
+            empty($columns) && $columns = array_keys($tmp);
+            $rows[] = array_values($tmp);
         }
         DingcanOrder::addUpdateColumnRows($columns, $rows);
     }

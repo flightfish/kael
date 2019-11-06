@@ -13,6 +13,7 @@ class ZzlApi
 
     const API_LOGINURL = '/site/zyhz';
     const API_ORDERLIST = '/order/list';
+    const API_USERLIST = '/user/list';
 
     public static function genUserId($userId){
         return 'Z'.str_pad(strval($userId),10,'0',STR_PAD_LEFT);
@@ -59,5 +60,10 @@ class ZzlApi
             $data['end_date'] = date("Y-m-d",strtotime($day));
         }
         return self::curlApi(self::API_ORDERLIST,$data);
+    }
+    public static function userList()
+    {
+        $data = [];
+        return self::curlApi(self::API_USERLIST,$data);
     }
 }
