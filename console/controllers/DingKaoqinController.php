@@ -481,7 +481,7 @@ class DingKaoqinController extends Controller
                 'schedule_date' => $day
             ], [
                 ['!=', 'class_id', 0]
-            ],'schedule_date,check_type,plan_check_time,user_id');
+            ]);
             $scheduleListIndex = [];
             foreach ($scheduleList as $v) {
                 $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
