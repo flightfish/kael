@@ -535,7 +535,7 @@ class DingKaoqinController extends Controller
                         $rows[] = array_values($tmp);
                     } elseif (isset($onDutyResult['user_check_time'])) {
                         //打卡
-                        $tmp = $offDutyResult;
+                        $tmp = $onDutyResult;
                         $tmp['type'] = 0;
                         $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
                         $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
