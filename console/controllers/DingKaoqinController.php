@@ -510,16 +510,30 @@ class DingKaoqinController extends Controller
                         $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
                         $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
                         $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
-                        empty($columns) && $columns = array_keys($tmp);
                         $rows[] = array_values($tmp);
                     }
                     if (!isset($offDutyResult['user_check_time'])) {
-                        $tmp = $offDutyResult;
+                        var_dump($offDutySchedule);die;
+                        $tmp = [
+                            'id'=>$v['id'],
+                            'group_id'=>$v['groupId'] ?? 0,
+                            'plan_id'=>$v['planId'] ?? 0,
+                            'record_id'=>$v['recordId'] ?? 0,
+                            'work_date'=>$v['workDate']??'0000-00-00',
+                            'user_id'=>$v['userId'],
+                            'check_type'=>$v['checkType']??'',
+                            'time_result'=>$v['timeResult']??'',
+                            'location_result'=>$v['locationResult']??'',
+                            'approve_id'=>$v['approveId']??0,
+                            'proc_inst_id'=>$v['procInstId']??0,
+                            'base_check_time'=>$v['baseCheckTime']??'0000-00-00 00:00:00',
+                            'user_check_time'=>$v['userCheckTime']??'0000-00-00 00:00:00',
+                            'source_type'=>$v['sourceType'],
+                        ];
                         $tmp['type'] = 1;
                         $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
                         $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
                         $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
-                        empty($columns) && $columns = array_keys($tmp);
                         $rows[] = array_values($tmp);
                     }
                 } else {
@@ -531,7 +545,6 @@ class DingKaoqinController extends Controller
                         $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
                         $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
                         $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
-                        empty($columns) && $columns = array_keys($tmp);
                         $rows[] = array_values($tmp);
                     } elseif (isset($onDutyResult['user_check_time'])) {
                         //打卡
@@ -540,13 +553,12 @@ class DingKaoqinController extends Controller
                         $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
                         $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
                         $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
-                        empty($columns) && $columns = array_keys($tmp);
                         $rows[] = array_values($tmp);
                     }
                 }
 
             }
-var_dump($rows);die;
+            empty($columns) && $columns = array_keys($tmp);
             DingtalkAttendanceOvertime::addUpdateColumnRows($columns, $rows);
         }
 
