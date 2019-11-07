@@ -3,6 +3,7 @@ namespace console\controllers;
 
 use common\libs\DingTalkApi;
 use common\models\DingtalkAttendanceOvertime;
+use common\models\DingtalkAttendanceOvertimeExcept;
 use common\models\DingtalkAttendanceProcessInstance;
 use common\models\DingtalkAttendanceRecord;
 use common\models\DingtalkAttendanceResult;
@@ -473,14 +474,14 @@ class DingKaoqinController extends Controller
             return date("Y-m-d", $v);
         }, range(strtotime($start), time() - 24 * 3600, 24 * 3600));
         $userIdList = array_column(DingTalkUser::findList([], '', 'kael_id,name,user_id', -1), 'user_id');
-        $columns = $rows = [];
+        $columns = $rows = $param = $paramColumns = [];
         foreach ($dayList as $day) {
             echo date('Y-m-d H:i:s') . "\t {$day} 开始同步数据加班数据到kael\n";
             $scheduleList = DingTalkAttendanceSchedule::findListByWhereWithWhereArr([
                 'schedule_date' => $day
             ], [
                 ['!=', 'class_id', 0]
-            ], 'schedule_date,check_type,plan_check_time,user_id,class_id,class_setting_id');
+            ],'schedule_date,check_type,plan_check_time,user_id');
             $scheduleListIndex = [];
             foreach ($scheduleList as $v) {
                 $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
@@ -506,78 +507,59 @@ class DingKaoqinController extends Controller
                         $offDutyResult['user_check_time'] >= $day . ' 21:00:00'
                     ) {
                         $tmp = $offDutyResult;
-                        $tmp['type'] = 0;
                         $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
                         $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
                         $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
                         $rows[] = array_values($tmp);
+                        empty($columns) && $columns = array_keys($tmp);
                     }
                     if (!isset($offDutyResult['user_check_time'])) {
-                        var_dump($offDutySchedule);
-                        var_dump($offDutyResult);
-                        die;
-                        $tmp = [
-                            'id'=>$v['id'],
-                            'group_id'=>$v['groupId'] ?? 0,
-                            'plan_id'=>$v['planId'] ?? 0,
-                            'record_id'=>$v['recordId'] ?? 0,
-                            'work_date'=>$v['workDate']??'0000-00-00',
-                            'user_id'=>$v['userId'],
-                            'check_type'=>$v['checkType']??'',
-                            'time_result'=>$v['timeResult']??'',
-                            'location_result'=>$v['locationResult']??'',
-                            'approve_id'=>$v['approveId']??0,
-                            'proc_inst_id'=>$v['procInstId']??0,
-                            'base_check_time'=>$v['baseCheckTime']??'0000-00-00 00:00:00',
-                            'user_check_time'=>$v['userCheckTime']??'0000-00-00 00:00:00',
-                            'source_type'=>$v['sourceType'],
-                        ];
-                        $tmp['type'] = 1;
-                        $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
-                        $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
-                        $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
-                        $rows[] = array_values($tmp);
+                        $param[]=$offDutySchedule;
+                        empty($param) && $paramColumns = array_keys($param);
+
                     }
                 } else {
                     //非工作日
                     if (isset($offDutyResult['user_check_time'])) {
                         //打卡
                         $tmp = $offDutyResult;
-                        $tmp['type'] = 0;
                         $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
                         $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
                         $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
                         $rows[] = array_values($tmp);
+                        empty($columns) && $columns = array_keys($tmp);
                     } elseif (isset($onDutyResult['user_check_time'])) {
                         //打卡
                         $tmp = $onDutyResult;
-                        $tmp['type'] = 0;
                         $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
                         $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
                         $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
                         $rows[] = array_values($tmp);
+                        empty($columns) && $columns = array_keys($tmp);
                     }
                 }
 
             }
-            empty($columns) && $columns = array_keys($tmp);
             DingtalkAttendanceOvertime::addUpdateColumnRows($columns, $rows);
+            DingtalkAttendanceOvertimeExcept::addUpdateColumnRows($paramColumns, $param);
         }
 
 
         //对没有打卡的检测
         echo date('Y-m-d H:i:s') . "\t 开始检测加班表中没打卡数据\n";
-        $oldDingtalkAttendanceOvertimeList = DingtalkAttendanceOvertime::findListByWhereWithWhereArr(['type' => 1], [], '*');
-        $oldResultIds = array_column($oldDingtalkAttendanceOvertimeList, 'id');
-        $resultList = DingTalkAttendanceResult::findListByWhereWithWhereArr(['id' => $oldResultIds], []);
-        foreach ($resultList as $val) {
-            if (isset($val['user_check_time'])) {
-                if ($val['user_check_time'] >= $val['work_date'] . ' 21:00:00') {
-                    DingtalkAttendanceOvertime::updateAll(['type' => 0, 'user_check_time' => $val['user_check_time']], ['id' => $val['id']]);
+        $columnsExcept = $rowsExcept=[];
+        $oldDingtalkAttendanceOvertimeExceptList = DingtalkAttendanceOvertimeExcept::findListByWhereWithWhereArr([], [], '*');
+        foreach ($oldDingtalkAttendanceOvertimeExceptList as $val) {
+            $result=DingtalkAttendanceResult::findOneByWhere(['user_id'=>$val['user_id'],'work_date'=>$val['schedule_date'],'check_type'=>$val['check_type']]);
+            if (isset($result['user_check_time'])) {
+                if ($result['user_check_time'] >= $result['work_date'] . ' 21:00:00') {
+                    $rowsExcept[] = $result;
+                    empty($columnsExcept) && $columnsExcept = array_keys($rowsExcept);
                 } else {
-                    DingtalkAttendanceOvertime::updateAll(['status' => 1, 'user_check_time' => $val['user_check_time']], ['id' => $val['id']]);
+                    DingtalkAttendanceOvertimeExcept::updateAll(['status' => 1], ['id' => $val['id']]);
                 }
             }
         }
+        DingtalkAttendanceOvertime::addUpdateColumnRows($columnsExcept, $rowsExcept);
     }
 }
