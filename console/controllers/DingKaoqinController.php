@@ -515,7 +515,7 @@ class DingKaoqinController extends Controller
                     }
                     if (!isset($offDutyResult['user_check_time'])) {
                         $param[]=$offDutySchedule;
-                        empty($param) && $paramColumns = array_keys($param);
+                        empty($paramColumns) && $paramColumns = array_keys($param);
 
                     }
                 } else {
