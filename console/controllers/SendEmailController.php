@@ -232,7 +232,7 @@ SQL;
         $filename = '/data/wwwroot/kael/console/runtime/miniclass'.microtime(true).'.xls';
         $objPHPExcel = new \PHPExcel();
         $objSheet = $objPHPExcel->getActiveSheet();
-        $objSheet->setTitle('候选人名单');
+        $objSheet->setTitle('甩班信息');
         $objSheet->fromArray($data);
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
         $objWriter->save($filename);
@@ -241,8 +241,8 @@ SQL;
             $mail= \Yii::$app->mailer->compose();
             $mail->setTo($emailAddr)
                 ->setFrom( ['mail_service@knowbox.cn'=>'基地邮件通知'])
-                ->setSubject("候选人名单")
-                ->setTextBody("候选人名单")
+                ->setSubject("甩班信息")
+                ->setTextBody("甩班列表")
                 ->attach($filename);
             $ret = $mail->send();
             var_dump($ret);

@@ -404,7 +404,7 @@ SQL;
                 'corp_type'=>$coryType,
                 'user_id'=>$v['userid'],
                 'last_work_day'=>date('Y-m-d H:i:s',intval($v['userid']/1000)),
-                'reason_memo'=>$v['reason_memo'],
+                'reason_memo'=>$v['reason_memo']??'',
                 'reason_type'=>$v['reason_type'],
                 'pre_status'=>$v['pre_status'],
                 'handover_userid'=>$v['handover_userid'],
@@ -436,8 +436,8 @@ SQL;
 
 
     public function actionHrm(){
-        $this->hrmUserInfo(1);
-        $this->hrmUserInfo(2);
+//        $this->hrmUserInfo(1);
+//        $this->hrmUserInfo(2);
         $this->hrmUserDismiss(1);
         $this->hrmUserDismiss(2);
     }
