@@ -459,7 +459,7 @@ class DingKaoqinController extends Controller
         }
     }
     public function actionJiaban(){
-        if(exec('ps -ef|grep "meican/ding-can-order"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+        if (exec('ps -ef|grep "ding-kaoqin/jiaban"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1) {
             echo "is_running";
             exit();
         }
