@@ -39,9 +39,10 @@ class ZzlController extends Controller
                 return date("Y-m-d", $v);
             }, range(strtotime($start), time(), 24 * 3600));
         } elseif ($start == date('Y-m-d')) {
-            $dayList = [date('Y-m-d')];
+            $dayList = [date('Y-m-d', time() - 24 * 3600), date('Y-m-d')];
         } else {
-            echo date('Y-m-d H:i:s')."\t今天竹蒸笼数据已经更新完毕\n";
+            $dayList = [date('Y-m-d')];
+            echo date('Y-m-d H:i:s')."\t今天竹蒸笼数据再次更新\n";
 
         }
         if(!empty($dayList)){
