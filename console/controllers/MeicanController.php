@@ -295,7 +295,7 @@ class MeicanController extends Controller
         }
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
-        }, range(strtotime($startDate), time(), 24 * 3600));
+        }, range(strtotime($startDate), time() - 24 * 3600, 24 * 3600));
         $workDayConfig = array_column(WorkDayConfig::findDayConfig($dayList), null, 'day');
 
 
