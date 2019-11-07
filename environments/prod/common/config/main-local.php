@@ -24,7 +24,7 @@ return [
         ],
         'db_live' => [
             'class' => 'common\components\mysql\MysqlConnection',
-            'dsn' => 'mysql:host=10.9.89.16;port=3323;dbname=bukexuetang',
+            'dsn' => 'mysql:host=10.9.89.16;port=3313;dbname=bukexuetang',
             'username' => 'ehrRoot',
             'password' => 'ehrPassword',
             'charset' => 'utf8',
