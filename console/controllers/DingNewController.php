@@ -355,7 +355,7 @@ SQL;
             }else{
                 throw new Exception("不支持的corpType");
             }
-            echo 'userList======='.json_encode($resultList,64|256)."\n";
+//            echo 'userList======='.json_encode($resultList,64|256)."\n";
             foreach ($resultList as $resultUser){
                 $old = $allHrmUserIndex[$resultUser['userid']]??[];
                 $userField = array_column($resultUser['field_list'],'label','field_code');
