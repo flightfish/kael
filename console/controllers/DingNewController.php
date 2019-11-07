@@ -18,7 +18,7 @@ use yii\console\Controller;
 class DingNewController extends Controller
 {
 
-
+    //测试
     public function actionTest(){
 //        $userInfoList = DingTalkApi::getDepartmentUserInfoList(1);
 //        echo json_encode($userInfoList);

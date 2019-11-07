@@ -1,6 +1,8 @@
 <?php
 namespace console\controllers;
 
+use common\models\CommonUser;
+use common\models\DingtalkUser;
 use common\models\ehr\TrCandidateForSchool;
 use Yii;
 use yii\console\Controller;
@@ -137,6 +139,55 @@ class SendEmailController extends Controller
             $ret = $mail->send();
             var_dump($ret);
         }
+
+    }
+
+
+    public function actionBossClass(){
+        $sqlUserId = <<<SQL
+        select distinct a.id
+from user a
+left join  relate_user_platform b on a.id = b.user_id
+where a.status != 0 and a.user_type = 0 and b.user_id > 0;
+SQL;
+        $userIds = CommonUser::getDb()->createCommand($sqlUserId)->queryColumn();
+        $userIdsStr = join(',',$userIds);
+
+        $sqlMiniClass = <<<SQL
+select a.number,a.title,count(distinct ms.user_number) as student_count,
+       ci.start_time,ci.end_time,
+       a.adviser_number,t.name,
+       e.kael_id
+from mini_class a
+left join employee e on a.adviser_number = e.adviser_number -- and e.status = 1
+left join employee e2 on a.adviser_number = e2.adviser_number and e2.status = 1
+    and e2.kael_id not in ({$userIdsStr})
+
+    left join teacher t on t.number = a.adviser_number
+left join class_info ci on a.class_number = ci.number
+left join mini_class_student ms on a.number = ms.mini_class_number  and ms.status = 1
+where ci.end_time > '2019-11-07' and ci.start_time > '2019-10-15' and a.adviser_number > 0 and ci.status != 4 and a.istest = 0
+and a.title not like '%测试%' and a.title not like '%test%' and a.title not like '%预览%'
+and e2.number is null
+and e.kael_id in ($userIdsStr)
+group by a.number;
+SQL;
+        $miniClassList = CommonUser::getDb()->createCommand($sqlMiniClass)->queryAll();
+        if(empty($miniClassList)){
+            //无
+            echo "无小班未处理\n";
+            exit();
+        }
+        $kaelIds = array_column($miniClassList,'kael_id');
+        $kaelIdsStr = join(',',$kaelIds);
+
+        $sql = <<<SQL
+select a.kael_id,b.path_name from dingtalk_user a
+left join dingtalk_department b on a.department_id = b.id
+where a.kael_id in ($kaelIdsStr)
+SQL;
+        $kaelIdToDepartment = CommonUser::getDb()->createCommand($sql)->queryAll();
+
 
     }
 
