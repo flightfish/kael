@@ -8,6 +8,8 @@ use common\models\CommonUser;
 use common\models\DingtalkDepartment;
 use common\models\DingtalkDepartmentUser;
 use common\models\DingtalkHrmUser;
+use common\models\DingtalkHrmUserLeave;
+use common\models\DingtalkHrmUserLeaveDept;
 use common\models\DingtalkUser;
 use common\models\DepartmentRelateToKael;
 use common\models\RelateDingtalkDepartmentPlatform;
@@ -388,10 +390,56 @@ SQL;
 
     }
 
+    public function hrmUserDismiss($coryType){
+        $uids = DingTalkApi::getHrmLizhiUids();
+        if($coryType == 1){
+            $userInfoList = DingTalkApi::getHrmLizhiUserInfo($uids);
+        }elseif($coryType == 2){
+            $userInfoList = DingTalkApiJZ::getHrmLizhiUserInfo($uids);
+        }else{
+            throw new Exception("不支持的类型");
+        }
+        foreach ($userInfoList as $v){
+            $params = [
+                'corp_type'=>$coryType,
+                'user_id'=>$v['userid'],
+                'last_work_day'=>date('Y-m-d H:i:s',intval($v['userid']/1000)),
+                'reason_memo'=>$v['reason_memo'],
+                'reason_type'=>$v['reason_type'],
+                'pre_status'=>$v['pre_status'],
+                'handover_userid'=>$v['handover_userid'],
+                'ding_status'=>$v['status'],
+                'main_dept_name'=>$v['main_dept_name'],
+                'main_dept_id'=>$v['main_dept_id'],
+            ];
+            $columns = ['corp_type','user_id','dept_id','dept_path','is_main'];
+            $rows = [];
+            foreach ($v['dept_list'] as $vDept){
+                $rows[$vDept['dept_id']] = [
+                    $coryType,$v['userid'],
+                    $vDept['dept_id'],$vDept['dept_path'],
+                    $vDept['dept_id'] == $v['main_dept_id'] ? 1 : 0
+                ];
+            }
+            $old = DingtalkHrmUserLeave::findOneByUid($v['userid'],$coryType);
+            if(empty($old)){
+                DingtalkHrmUserLeave::add($params);
+                DingtalkHrmUserLeaveDept::batchInsertAll(
+                    DingtalkHrmUserLeaveDept::tableName(),
+                    $columns,
+                    $rows,
+                    DingtalkHrmUserLeaveDept::getDb()
+                );
+            }
+        }
+    }
+
 
     public function actionHrm(){
         $this->hrmUserInfo(1);
         $this->hrmUserInfo(2);
+        $this->hrmUserDismiss(1);
+        $this->hrmUserDismiss(2);
     }
 
     public function actionAutoPriv(){
