@@ -144,7 +144,7 @@ class SendEmailController extends Controller
 
 
     public function actionBossClass(){
-        $emailList = ['wangchao@knowbox.cn'];
+        $emailList = ['wangchao@knowbox.cn','liyb1@knowbox.cn','liqiang@knowbox.cn'];
         $currentDay = date("Y-m-d");
         $currentTime = date("Y-m-d H:i:s");
 
