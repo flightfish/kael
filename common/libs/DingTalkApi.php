@@ -26,6 +26,8 @@ class DingTalkApi {
     const API_CALLBACK_QUERY = 'https://oapi.dingtalk.com/call_back/get_call_back';//查询回调
     const API_GETUSERINFO_BYCODE = 'https://oapi.dingtalk.com/user/getuserinfo';//code换取userinfo
     const API_GET_USERINFO_BY_UIDS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/list';//花名册
+    const API_HRM_LIZHI_UIDS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/querydimission';//分页查询企业离职员工userid列表
+    const API_HRM_LIZHI_INFOS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/listdimission';//分页查询企业离职员工信息
     const API_POST_UPDATE_EMAIL_BY_UID = "https://oapi.dingtalk.com/user/update"; //更新用户信息
     const API_SEND_WORK_MESSAGE = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
 
@@ -35,7 +37,9 @@ class DingTalkApi {
 
     //注册业务事件回调接口
     const API_POST_REGISTER_CALL_BACK = "https://oapi.dingtalk.com/call_back/register_call_back";
-    const API_CHECK_PROCESS_LIST = "https://oapi.dingtalk.com/topapi/process/listbyuserid";
+    //审批
+    const API_CHECK_PROCESS_LIST = "https://oapi.dingtalk.com/topapi/process/listbyuserid";//可见审批末班
+    const API_TOPAPI_PROCESSINSTANCE_GET = "https://oapi.dingtalk.com/topapi/processinstance/get";//根据审批实例id调用此接口获取审批实例详情
 
     //考勤
     const API_TOPAPI_ATTENDANCE_LISTSCHEDULE = "https://oapi.dingtalk.com/topapi/attendance/listschedule";//企业考勤排班详情
@@ -56,8 +60,6 @@ class DingTalkApi {
         return $list;
     }
 
-    //根据审批实例id调用此接口获取审批实例详情
-    const API_TOPAPI_PROCESSINSTANCE_GET = "https://oapi.dingtalk.com/topapi/processinstance/get";
 
     public static function getDepartmentUserInfoList($departmentId){
         $offset = 0;
