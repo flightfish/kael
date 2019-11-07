@@ -45,5 +45,16 @@ class DingtalkAttendanceOvertime extends \common\models\BaseActiveRecord
         $limit>0 && $query = $query->limit($limit);
         return $query->asArray(true)->all();
     }
+    public static function findOneByWhere($where,$select='*',$order="",$status=0){
+        !isset($where['status']) && $status != -1 && $where['status'] = 0;
+        $query = static::find()
+            ->select($select)
+            ->where($where);
+        !empty($order) && $query = $query->orderBy($order);
+        return $query
+            ->limit(1)
+            ->asArray(true)
+            ->one();
+    }
 
 }
