@@ -407,7 +407,7 @@ SQL;
                 'reason_memo'=>$v['reason_memo']??'',
                 'reason_type'=>$v['reason_type'],
                 'pre_status'=>$v['pre_status'],
-                'handover_userid'=>$v['handover_userid'],
+                'handover_userid'=>$v['handover_userid']??'',
                 'ding_status'=>$v['status'],
                 'main_dept_name'=>$v['main_dept_name'],
                 'main_dept_id'=>$v['main_dept_id'],
