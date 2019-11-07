@@ -22,6 +22,13 @@ return [
             'password' => 'ehrPassword',
             'charset' => 'utf8',
         ],
+        'db_live' => [
+            'class' => 'common\components\mysql\MysqlConnection',
+            'dsn' => 'mysql:host=10.9.89.16;port=3323;dbname=bukexuetang',
+            'username' => 'ehrRoot',
+            'password' => 'ehrPassword',
+            'charset' => 'utf8',
+        ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' =>false,//这句一定有，false发送邮件，true只是生成邮件在runtime文件夹下，不发邮件
