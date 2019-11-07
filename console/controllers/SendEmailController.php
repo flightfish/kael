@@ -156,7 +156,7 @@ SQL;
         $sqlMiniClass = <<<SQL
 select a.number,a.title,count(distinct ms.user_number) as student_count,
        ci.start_time,ci.end_time,
-       a.adviser_number,t.name,
+       a.adviser_number,t.name as adviser_name,
        e.kael_id
 from mini_class a
 left join employee e on a.adviser_number = e.adviser_number -- and e.status = 1
@@ -187,7 +187,66 @@ left join dingtalk_department b on a.department_id = b.id
 where a.kael_id in ($kaelIdsStr)
 SQL;
         $kaelIdToDepartment = CommonUser::getDb()->createCommand($sql)->queryAll();
+        $kaelIdToDepartmentIndex = [];
+        foreach ($kaelIdToDepartment as $v){
+            !empty($v['path_name']) && $kaelIdToDepartmentIndex[$v['kael_id']] = $v['path_name'];
+        }
 
+        $data = [
+            [
+                '小班ID',
+                '小班名称',
+                '学生数',
+                '开课时间',
+                '结课时间',
+                '辅导老师ID',
+                '辅导老师名称',
+                '一级部门',
+                '二级部门',
+                '三级部门',
+                '四级部门',
+                '五级部门',
+                '六级部门'
+            ]
+        ];
+        foreach ($miniClassList as $v){
+            $pathName = $kaelIdToDepartmentIndex[$v['kael_id']] ?? '';
+            $pathNameArr = explode('/',$pathName);
+            $data[] = [
+                $v['number'],
+                $v['title'],
+                $v['student_count'],
+                $v['start_time'],
+                $v['end_time'],
+                $v['adviser_number'],
+                $v['adviser_name'],
+                $pathNameArr[0]??'',
+                $pathNameArr[1]??'',
+                $pathNameArr[2]??'',
+                $pathNameArr[3]??'',
+                $pathNameArr[4]??'',
+                $pathNameArr[5]??'',
+            ];
+        }
+
+        $filename = '/data/wwwroot/kael/console/runtime/miniclass'.microtime(true).'.xls';
+        $objPHPExcel = new \PHPExcel();
+        $objSheet = $objPHPExcel->getActiveSheet();
+        $objSheet->setTitle('甩班信息');
+        $objSheet->fromArray($data);
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
+        $objWriter->save($filename);
+        $emailList = ['wangchao@knowbox.cn'];
+        foreach ($emailList as $emailAddr){
+            $mail= \Yii::$app->mailer->compose();
+            $mail->setTo($emailAddr)
+                ->setFrom( ['mail_service@knowbox.cn'=>'基地邮件通知'])
+                ->setSubject("甩班信息")
+                ->setTextBody("甩班列表")
+                ->attach($filename);
+            $ret = $mail->send();
+            var_dump($ret);
+        }
 
     }
 
