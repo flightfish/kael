@@ -256,7 +256,7 @@ SQL;
                 ->setFrom( ['mail_service@knowbox.cn'=>'基地邮件通知'])
                 ->setSubject("{$currentDay}离职甩班通知")
                 ->setTextBody("截止{$currentTime}有未处理甩班{$count}个，甩班列表见附件。您可登录BOSS在CMS-小班列表的甩班列表tab中查看这些甩班并做处理。")
-                ->attach($filename);
+                ->attach($filename,['fileName'=>"{$currentDay}离职甩班表"]);
             $ret = $mail->send();
             var_dump($ret);
         }
