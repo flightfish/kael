@@ -471,7 +471,7 @@ class DingKaoqinController extends Controller
         }
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
-        }, range(strtotime($start), time(), 24 * 3600));
+        }, range(strtotime($start), time() - 24 * 3600, 24 * 3600));
         var_dump($dayList );
 
     }
