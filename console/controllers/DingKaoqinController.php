@@ -463,11 +463,11 @@ class DingKaoqinController extends Controller
             echo "is_running";
             exit();
         }
-        $oldDingcanOrder = DingtalkAttendanceOvertime::findOneByWhere([], '*', 'work_date desc');
-        if (empty($oldDingcanOrder)) {
+        $oldDingtalkAttendanceOvertime= DingtalkAttendanceOvertime::findOneByWhere([], '*', 'work_date desc');
+        if (empty($oldDingtalkAttendanceOvertime)) {
             $start = "2019-10-01";
         } else {
-            $start = date('Y-m-d', strtotime($oldDingcanOrder['meal_date']));
+            $start = date('Y-m-d', strtotime($oldDingtalkAttendanceOvertime['meal_date']));
         }
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
@@ -475,6 +475,7 @@ class DingKaoqinController extends Controller
         $userIdList = array_column(DingTalkUser::findList([], '', 'kael_id,name,user_id', -1), 'user_id');
         $columns = $rows = [];
         foreach ($dayList as $day) {
+            echo date('Y-m-d H:i:s') . "\t {$day} 开始同步数据加班数据到kael\n";
             $scheduleList = DingTalkAttendanceSchedule::findListByWhereWithWhereArr([
                 'schedule_date' => $day
             ], [
@@ -545,7 +546,23 @@ class DingKaoqinController extends Controller
                 }
 
             }
-            DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns, $rows);
+            DingtalkAttendanceOvertime::addUpdateColumnRows($columns, $rows);
+        }
+
+
+        //对没有打卡的检测
+        echo date('Y-m-d H:i:s') . "\t 开始检测加班表中没打卡数据\n";
+        $oldDingtalkAttendanceOvertimeList = DingtalkAttendanceOvertime::findListByWhereWithWhereArr(['type' => 1], [], '*');
+        $oldResultIds = array_column($oldDingtalkAttendanceOvertimeList, 'id');
+        $resultList = DingTalkAttendanceResult::findListByWhereWithWhereArr(['id' => $oldResultIds], []);
+        foreach ($resultList as $val) {
+            if (isset($val['user_check_time'])) {
+                if ($val['user_check_time'] >= $val['work_date'] . ' 21:00:00') {
+                    DingtalkAttendanceOvertime::updateAll(['type' => 0, 'user_check_time' => $val['user_check_time']], ['id' => $val['id']]);
+                } else {
+                    DingtalkAttendanceOvertime::updateAll(['status' => 1, 'user_check_time' => $val['user_check_time']], ['id' => $val['id']]);
+                }
+            }
         }
     }
 }
