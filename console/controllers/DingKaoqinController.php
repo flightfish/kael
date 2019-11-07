@@ -513,7 +513,9 @@ class DingKaoqinController extends Controller
                         $rows[] = array_values($tmp);
                     }
                     if (!isset($offDutyResult['user_check_time'])) {
-                        var_dump($offDutySchedule);die;
+                        var_dump($offDutySchedule);
+                        var_dump($offDutyResult);
+                        die;
                         $tmp = [
                             'id'=>$v['id'],
                             'group_id'=>$v['groupId'] ?? 0,
