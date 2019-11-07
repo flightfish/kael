@@ -467,7 +467,7 @@ class DingKaoqinController extends Controller
         if (empty($oldDingtalkAttendanceOvertime)) {
             $start = "2019-10-01";
         } else {
-            $start = date('Y-m-d', strtotime($oldDingtalkAttendanceOvertime['meal_date']));
+            $start = date('Y-m-d', strtotime($oldDingtalkAttendanceOvertime['work_date']));
         }
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
@@ -535,7 +535,7 @@ class DingKaoqinController extends Controller
                         $rows[] = array_values($tmp);
                     } elseif (isset($onDutyResult['user_check_time'])) {
                         //打卡
-                        $tmp = $offDutyResult;
+                        $tmp = $onDutyResult;
                         $tmp['type'] = 0;
                         $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
                         $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
@@ -546,7 +546,7 @@ class DingKaoqinController extends Controller
                 }
 
             }
-            var_dump($rows);die;
+var_dump($rows);die;
             DingtalkAttendanceOvertime::addUpdateColumnRows($columns, $rows);
         }
 
