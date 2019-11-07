@@ -227,7 +227,7 @@ SQL;
             $pathName = $kaelIdToDepartmentIndex[$v['kael_id']] ?? '';
             $pathNameArr = explode('/',$pathName);
             $data[] = [
-                $v['number'],
+                '\''.$v['number'],
                 $v['title'],
                 $v['student_count'],
                 $v['start_time'],
@@ -246,7 +246,7 @@ SQL;
         $filename = '/data/wwwroot/kael/console/runtime/miniclass'.microtime(true).'.xls';
         $objPHPExcel = new \PHPExcel();
         $objSheet = $objPHPExcel->getActiveSheet();
-        $objSheet->setTitle('甩班信息');
+        $objSheet->setTitle("{$currentDay}离职甩班表");
         $objSheet->fromArray($data);
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
         $objWriter->save($filename);
