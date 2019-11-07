@@ -560,5 +560,6 @@ class DingKaoqinController extends Controller
             }
         }
         DingtalkAttendanceOvertime::addUpdateColumnRows($columnsExcept, $rowsExcept);
+        echo date('Y-m-d H:i:s') . "\t 检测加班表中没打卡数据结束\n";
     }
 }
