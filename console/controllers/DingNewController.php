@@ -391,7 +391,7 @@ SQL;
     }
 
     public function hrmUserDismiss($coryType){
-        $oldUserIds = DingtalkHrmUserLeave::findList(['cory_type'=>$coryType],'','userid');
+        $oldUserIds = DingtalkHrmUserLeave::findList(['cory_type'=>$coryType],'','user_id');
         if($coryType == 1){
             $uids = DingTalkApi::getHrmLizhiUids();
             $uids = array_values(array_diff($uids,$oldUserIds));
