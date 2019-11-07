@@ -227,7 +227,7 @@ SQL;
             $pathName = $kaelIdToDepartmentIndex[$v['kael_id']] ?? '';
             $pathNameArr = explode('/',$pathName);
             $data[] = [
-                $v['number'],
+                '\''.$v['number'],
                 $v['title'],
                 $v['student_count'],
                 $v['start_time'],
@@ -246,7 +246,7 @@ SQL;
         $filename = '/data/wwwroot/kael/console/runtime/miniclass'.microtime(true).'.xls';
         $objPHPExcel = new \PHPExcel();
         $objSheet = $objPHPExcel->getActiveSheet();
-        $objSheet->setTitle('甩班信息');
+        $objSheet->setTitle("{$currentDay}离职甩班表");
         $objSheet->fromArray($data);
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
         $objWriter->save($filename);
@@ -256,7 +256,7 @@ SQL;
                 ->setFrom( ['mail_service@knowbox.cn'=>'基地邮件通知'])
                 ->setSubject("{$currentDay}离职甩班通知")
                 ->setTextBody("截止{$currentTime}有未处理甩班{$count}个，甩班列表见附件。您可登录BOSS在CMS-小班列表的甩班列表tab中查看这些甩班并做处理。")
-                ->attach($filename);
+                ->attach($filename,['fileName'=>"{$currentDay}离职甩班表.xls"]);
             $ret = $mail->send();
             var_dump($ret);
         }
