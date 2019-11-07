@@ -467,7 +467,7 @@ class DingKaoqinController extends Controller
         if (empty($oldDingtalkAttendanceOvertime)) {
             $start = "2019-10-01";
         } else {
-            $start = date('Y-m-d', strtotime($oldDingtalkAttendanceOvertime['meal_date']));
+            $start = date('Y-m-d', strtotime($oldDingtalkAttendanceOvertime['work_date']));
         }
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
