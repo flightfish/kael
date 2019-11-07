@@ -541,6 +541,7 @@ class DingKaoqinController extends Controller
 
             }
             DingtalkAttendanceOvertime::addUpdateColumnRows($columns, $rows);
+            var_dump($paramColumns );var_dump($param);
             DingtalkAttendanceOvertimeExcept::addUpdateColumnRows($paramColumns, $param);
         }
 
