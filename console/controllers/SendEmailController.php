@@ -185,7 +185,7 @@ SQL;
                 $mail->setTo($emailAddr)
                     ->setFrom( ['mail_service@knowbox.cn'=>'基地邮件通知'])
                     ->setSubject("{$currentDay}离职甩班通知")
-                    ->setTextBody("截止{$currentTime}，没有未处理甩班{$count}个。");
+                    ->setTextBody("截止{$currentTime}，未监控到甩班。");
                 $ret = $mail->send();
                 var_dump($ret);
             }
