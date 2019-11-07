@@ -391,10 +391,22 @@ SQL;
     }
 
     public function hrmUserDismiss($coryType){
-        $uids = DingTalkApi::getHrmLizhiUids();
+        $oldUserIds = DingtalkHrmUserLeave::findList(['cory_type'=>$coryType],'','userid');
         if($coryType == 1){
+            $uids = DingTalkApi::getHrmLizhiUids();
+            $uids = array_values(array_diff($uids,$oldUserIds));
+            if(empty($uids)){
+                echo "没有新增离职";
+                return [];
+            }
             $userInfoList = DingTalkApi::getHrmLizhiUserInfo($uids);
         }elseif($coryType == 2){
+            $uids = DingTalkApi::getHrmLizhiUids();
+            $uids = array_values(array_diff($uids,$oldUserIds));
+            if(empty($uids)){
+                echo "没有新增离职";
+                return [];
+            }
             $userInfoList = DingTalkApiJZ::getHrmLizhiUserInfo($uids);
         }else{
             throw new Exception("不支持的类型");
