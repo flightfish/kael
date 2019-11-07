@@ -402,7 +402,7 @@ SQL;
             }
             $userInfoList = DingTalkApi::getHrmLizhiUserInfo($uids);
         }elseif($coryType == 2){
-            $uids = DingTalkApi::getHrmLizhiUids();
+            $uids = DingTalkApiJZ::getHrmLizhiUids();
             $uids = array_values(array_diff($uids,$oldUserIds));
             if(empty($uids)){
                 echo "没有新增离职";
