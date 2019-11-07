@@ -70,6 +70,7 @@ class DingTalkApi {
             $retJson = self::curlPost(self::API_HRM_LIZHI_INFOS,['userid_list'=>join(',',$userIds)]);
             $list = array_merge($list,$retJson['result']);
         }
+        sleep(1);
         return $list;
     }
 

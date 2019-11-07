@@ -35,7 +35,10 @@ class DingNewController extends Controller
 //        echo json_encode(['p1'=>$processList,'p2'=>$processList2,'c1'=>$callback,'c2'=>$callback2],64|256);
 
         $uids = DingTalkApi::getHrmLizhiUids();
-        echo json_encode($uids);
+        echo json_encode($uids)."\n";
+        echo "count:".count($uids)."\n";
+        $userInfo = DingTalkApi::getHrmLizhiUserInfo($uids);
+        echo json_encode($userInfo,64|256)."\n";
     }
 
 
