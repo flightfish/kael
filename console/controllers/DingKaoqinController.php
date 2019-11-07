@@ -2,6 +2,7 @@
 namespace console\controllers;
 
 use common\libs\DingTalkApi;
+use common\models\DingtalkAttendanceOvertime;
 use common\models\DingtalkAttendanceProcessInstance;
 use common\models\DingtalkAttendanceRecord;
 use common\models\DingtalkAttendanceResult;
@@ -456,5 +457,22 @@ class DingKaoqinController extends Controller
             }
             DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns,$rows);
         }
+    }
+    public function actionJiaban(){
+        if(exec('ps -ef|grep "meican/ding-can-order"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
+        $oldDingcanOrder = DingtalkAttendanceOvertime::findOneByWhere([], '*', 'work_date desc');
+        if (empty($oldDingcanOrder)) {
+            $start = "2019-10-01";
+        } else {
+            $start = date('Y-m-d', strtotime($oldDingcanOrder['meal_date']));
+        }
+        $dayList = array_map(function ($v) {
+            return date("Y-m-d", $v);
+        }, range(strtotime($start), time(), 24 * 3600));
+        var_dump($dayList );
+
     }
 }
