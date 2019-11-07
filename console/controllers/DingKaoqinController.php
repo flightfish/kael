@@ -553,7 +553,7 @@ class DingKaoqinController extends Controller
             if (isset($result['user_check_time'])) {
                 if ($result['user_check_time'] >= $result['work_date'] . ' 21:00:00') {
                     $rowsExcept[] = $result;
-                    empty($columnsExcept) && $columnsExcept = array_keys($rowsExcept);
+                    empty($columnsExcept) && $columnsExcept = array_keys($result);
                 } else {
                     DingtalkAttendanceOvertimeExcept::updateAll(['status' => 1], ['id' => $val['id']]);
                 }
