@@ -25,7 +25,11 @@ class DingTalkApi {
     const API_DEPARTMENT_PARENTLIST = 'https://oapi.dingtalk.com/department/list_parent_depts_by_dept';//获取父级IDList
     const API_CALLBACK_QUERY = 'https://oapi.dingtalk.com/call_back/get_call_back';//查询回调
     const API_GETUSERINFO_BYCODE = 'https://oapi.dingtalk.com/user/getuserinfo';//code换取userinfo
+    //hrm
     const API_GET_USERINFO_BY_UIDS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/list';//花名册
+    const API_HRM_LIZHI_UIDS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/querydimission';//分页查询企业离职员工userid列表
+    const API_HRM_LIZHI_INFOS = 'https://oapi.dingtalk.com/topapi/smartwork/hrm/employee/listdimission';//分页查询企业离职员工信息
+
     const API_POST_UPDATE_EMAIL_BY_UID = "https://oapi.dingtalk.com/user/update"; //更新用户信息
     const API_SEND_WORK_MESSAGE = "https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2";
 
@@ -35,12 +39,43 @@ class DingTalkApi {
 
     //注册业务事件回调接口
     const API_POST_REGISTER_CALL_BACK = "https://oapi.dingtalk.com/call_back/register_call_back";
-    const API_CHECK_PROCESS_LIST = "https://oapi.dingtalk.com/topapi/process/listbyuserid";
+    //审批
+    const API_CHECK_PROCESS_LIST = "https://oapi.dingtalk.com/topapi/process/listbyuserid";//可见审批末班
+    const API_TOPAPI_PROCESSINSTANCE_GET = "https://oapi.dingtalk.com/topapi/processinstance/get";//根据审批实例id调用此接口获取审批实例详情
 
     //考勤
     const API_TOPAPI_ATTENDANCE_LISTSCHEDULE = "https://oapi.dingtalk.com/topapi/attendance/listschedule";//企业考勤排班详情
     const API_TOPAPI_ATTENDANCE_LISTRECORD = "https://oapi.dingtalk.com/attendance/listRecord";//考勤打卡记录
     const API_TOPAPI_ATTENDANCE_LIST = "https://oapi.dingtalk.com/attendance/list";//考勤记录
+
+    public static function getHrmLizhiUids(){
+        $offset = 0;
+        $list = [];
+        while(1){
+            $retJson = self::curlPost(self::API_HRM_LIZHI_UIDS,['size'=>50,'offset'=>$offset]);
+            $list = array_merge($list,$retJson['result']['data_list']);
+            if(empty($retJson['result']['next_cursor'])){
+                break;
+            }
+            $offset  = $retJson['result']['next_cursor'];
+            sleep(1);
+        }
+        return $list;
+    }
+
+    public static function getHrmLizhiUserInfo($userIdsAll){
+        $list = [];
+        $userIdsList = array_chunk($userIdsAll,50);
+        foreach ($userIdsList as $userIds){
+            $retJson = self::curlPost(self::API_HRM_LIZHI_INFOS,['userid_list'=>join(',',$userIds)]);
+            $list = array_merge($list,$retJson['result']);
+        }
+        sleep(1);
+        return $list;
+    }
+
+
+
 
     public static function getCheckProcessList(){
         $offset = 0;
@@ -56,8 +91,6 @@ class DingTalkApi {
         return $list;
     }
 
-    //根据审批实例id调用此接口获取审批实例详情
-    const API_TOPAPI_PROCESSINSTANCE_GET = "https://oapi.dingtalk.com/topapi/processinstance/get";
 
     public static function getDepartmentUserInfoList($departmentId){
         $offset = 0;

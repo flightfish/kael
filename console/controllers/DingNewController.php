@@ -22,16 +22,23 @@ class DingNewController extends Controller
     public function actionTest(){
 //        $userInfoList = DingTalkApi::getDepartmentUserInfoList(1);
 //        echo json_encode($userInfoList);
-        $callback = DingTalkApi::callBackQuery();
-        try{
-            $callback2 = DingTalkApiJZ::callBackQuery();
-        }catch (\Exception $e){
-            $callback2 = $e->getMessage();
-        }
 
-        $processList = DingTalkApi::getCheckProcessList();
-        $processList2 = DingTalkApiJZ::getCheckProcessList();
-        echo json_encode(['p1'=>$processList,'p2'=>$processList2,'c1'=>$callback,'c2'=>$callback2],64|256);
+//        $callback = DingTalkApi::callBackQuery();
+//        try{
+//            $callback2 = DingTalkApiJZ::callBackQuery();
+//        }catch (\Exception $e){
+//            $callback2 = $e->getMessage();
+//        }
+//
+//        $processList = DingTalkApi::getCheckProcessList();
+//        $processList2 = DingTalkApiJZ::getCheckProcessList();
+//        echo json_encode(['p1'=>$processList,'p2'=>$processList2,'c1'=>$callback,'c2'=>$callback2],64|256);
+
+        $uids = DingTalkApi::getHrmLizhiUids();
+        echo json_encode($uids)."\n";
+        echo "count:".count($uids)."\n";
+        $userInfo = DingTalkApi::getHrmLizhiUserInfo($uids);
+        echo json_encode($userInfo,64|256)."\n";
     }
 
 
