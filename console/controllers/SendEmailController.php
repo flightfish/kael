@@ -144,6 +144,10 @@ class SendEmailController extends Controller
 
 
     public function actionBossClass(){
+        $emailList = ['wangchao@knowbox.cn'];
+        $currentDay = date("Y-m-d");
+        $currentTime = date("Y-m-d H:i:s");
+
         $sqlUserId = <<<SQL
         select distinct a.id
 from user a
@@ -172,9 +176,19 @@ and e2.number is null
 and e.kael_id in ($userIdsStr)
 group by a.number;
 SQL;
-        $miniClassList = CommonUser::getDb()->createCommand($sqlMiniClass)->queryAll();
+        $miniClassList = Yii::$app->db_live->createCommand($sqlMiniClass)->queryAll();
+        $count = count($miniClassList);
         if(empty($miniClassList)){
             //无
+            foreach ($emailList as $emailAddr){
+                $mail= \Yii::$app->mailer->compose();
+                $mail->setTo($emailAddr)
+                    ->setFrom( ['mail_service@knowbox.cn'=>'基地邮件通知'])
+                    ->setSubject("{$currentDay}离职甩班通知")
+                    ->setTextBody("截止{$currentTime}，没有未处理甩班{$count}个。");
+                $ret = $mail->send();
+                var_dump($ret);
+            }
             echo "无小班未处理\n";
             exit();
         }
@@ -236,13 +250,12 @@ SQL;
         $objSheet->fromArray($data);
         $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel,'Excel5');
         $objWriter->save($filename);
-        $emailList = ['wangchao@knowbox.cn'];
         foreach ($emailList as $emailAddr){
             $mail= \Yii::$app->mailer->compose();
             $mail->setTo($emailAddr)
                 ->setFrom( ['mail_service@knowbox.cn'=>'基地邮件通知'])
-                ->setSubject("甩班信息")
-                ->setTextBody("甩班列表")
+                ->setSubject("{$currentDay}离职甩班通知")
+                ->setTextBody("截止{$currentTime}有未处理甩班{$count}个，甩班列表见附件。您可登录BOSS在CMS-小班列表的甩班列表tab中查看这些甩班并做处理。")
                 ->attach($filename);
             $ret = $mail->send();
             var_dump($ret);
