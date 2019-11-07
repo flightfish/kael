@@ -22,12 +22,12 @@ class ZzlApi
     public static function genLoginUrl($userId,$userName,$departmentName){
         if(
             empty(\Yii::$app->params['zzl_secretkey'])
-            || empty(\Yii::$app->params['zzl_url'])
+            || empty(\Yii::$app->params['zzl_url_www'])
         ){
             throw new Exception("配置参数错误",Exception::ERROR_COMMON);
         }
         $uid = self::genUserId($userId);
-        $url = \Yii::$app->params['zzl_url']
+        $url = \Yii::$app->params['zzl_url_www']
             .self::API_LOGINURL
             ."?userid={$uid}&department_name={$departmentName}&username={$userName}&secretkey=".\Yii::$app->params['zzl_secretkey'];
         return $url;

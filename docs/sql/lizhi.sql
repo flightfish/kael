@@ -16,8 +16,6 @@ CREATE TABLE `dingtalk_hrm_user_leave` (
  `corp_type` int(11) NOT NULL DEFAULT '0' COMMENT '1主企业 2兼职企业',
  `user_id` varchar(100) NOT NULL DEFAULT '' COMMENT '用户ID',
  `last_work_day` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '最后工作时间',
- `dept_id_list` varchar(1000) not null default '' comment '离职前部门id',
- `dept_path_list` varchar(10000) not null default '' comment '离职前部门路径列表',
  `reason_memo` varchar(2000) not null default '' comment '离职原因备注',
  `reason_type` int(11) not null default '0' comment '离职原因类型：1，家庭原因；2，个人原因；3，发展原因；4，合同到期不续签；5，协议解除；6，无法胜任工作；7，经济性裁员；8，严重违法违纪；9，其他',
  `pre_status` int(11) NOT NULL DEFAULT '0' COMMENT '离职前工作状态：1，待入职；2，试用期；3，正式',
