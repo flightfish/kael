@@ -58,6 +58,7 @@ class DingTalkApi {
                 break;
             }
             $offset  = $retJson['result']['next_cursor'];
+            sleep(1);
         }
         return $list;
     }
