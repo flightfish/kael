@@ -418,12 +418,12 @@ SQL;
                 'user_id'=>$v['userid'],
                 'last_work_day'=>date('Y-m-d H:i:s',intval($v['userid']/1000)),
                 'reason_memo'=>$v['reason_memo']??'',
-                'reason_type'=>$v['reason_type'],
+                'reason_type'=>$v['reason_type']??0,
                 'pre_status'=>$v['pre_status'],
                 'handover_userid'=>$v['handover_userid']??'',
                 'ding_status'=>$v['status'],
-                'main_dept_name'=>$v['main_dept_name'],
-                'main_dept_id'=>$v['main_dept_id'],
+                'main_dept_name'=>$v['main_dept_name']??'',
+                'main_dept_id'=>$v['main_dept_id']??0,
             ];
             $columns = ['corp_type','user_id','dept_id','dept_path','is_main'];
             $rows = [];
