@@ -515,8 +515,6 @@ class DingKaoqinController extends Controller
                     }
                     if (!isset($offDutyResult['user_check_time'])) {
                         $param[]=$offDutySchedule;
-                        empty($paramColumns) && $paramColumns = array_keys($param);
-
                     }
                 } else {
                     //非工作日
@@ -542,6 +540,7 @@ class DingKaoqinController extends Controller
             }
             DingtalkAttendanceOvertime::addUpdateColumnRows($columns, $rows);
             var_dump($paramColumns );var_dump($param);
+            empty($paramColumns) && $paramColumns = array_keys($param);
             DingtalkAttendanceOvertimeExcept::addUpdateColumnRows($paramColumns, $param);
         }
 
