@@ -469,11 +469,83 @@ class DingKaoqinController extends Controller
         } else {
             $start = date('Y-m-d', strtotime($oldDingcanOrder['meal_date']));
         }
-        $start = "2019-11-05";
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($start), time() - 24 * 3600, 24 * 3600));
-        var_dump($dayList );
+        $userIdList = array_column(DingTalkUser::findList([], '', 'kael_id,name,user_id', -1), 'user_id');
+        $columns = $rows = [];
+        foreach ($dayList as $day) {
+            $scheduleList = DingTalkAttendanceSchedule::findListByWhereWithWhereArr([
+                'schedule_date' => $day
+            ], [
+                ['!=', 'class_id', 0]
+            ], 'schedule_date,check_type,plan_check_time,user_id,class_id,class_setting_id');
+            $scheduleListIndex = [];
+            foreach ($scheduleList as $v) {
+                $scheduleListIndex[$v['user_id']][$v['schedule_date'] . ':' . $v['check_type']] = $v;
+            }
 
+            $resultList = DingTalkAttendanceResult::findListByWhereWithWhereArr([
+                'work_date' => $day
+            ], []);
+            $resultListIndex = [];
+            foreach ($resultList as $v) {
+                $resultListIndex[$v['user_id']][$v['work_date'] . ':' . $v['check_type']] = $v;
+            }
+            foreach ($userIdList as $userId) {
+                $offDutySchedule = $scheduleListIndex[$userId][$day . ':OffDuty'] ?? [];
+                $onDutyResult = $resultListIndex[$userId][$day . ':OnDuty'] ?? [];
+                $offDutyResult = $resultListIndex[$userId][$day . ':OffDuty'] ?? [];
+
+                if (isset($offDutySchedule['plan_check_time'])) {
+                    //工作日9点
+                    if (
+                        isset($offDutySchedule['plan_check_time']) &&
+                        isset($offDutyResult['user_check_time']) &&
+                        $offDutyResult['user_check_time'] >= $day . ' 21:00:00'
+                    ) {
+                        $tmp = $offDutyResult;
+                        $tmp['type'] = 0;
+                        $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
+                        $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
+                        $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
+                        empty($columns) && $columns = array_keys($tmp);
+                        $rows[] = array_values($tmp);
+                    }
+                    if (!isset($offDutyResult['user_check_time'])) {
+                        $tmp = $offDutyResult;
+                        $tmp['type'] = 1;
+                        $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
+                        $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
+                        $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
+                        empty($columns) && $columns = array_keys($tmp);
+                        $rows[] = array_values($tmp);
+                    }
+                } else {
+                    //非工作日
+                    if (isset($offDutyResult['user_check_time'])) {
+                        //打卡
+                        $tmp = $offDutyResult;
+                        $tmp['type'] = 0;
+                        $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
+                        $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
+                        $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
+                        empty($columns) && $columns = array_keys($tmp);
+                        $rows[] = array_values($tmp);
+                    } elseif (isset($onDutyResult['user_check_time'])) {
+                        //打卡
+                        $tmp = $offDutyResult;
+                        $tmp['type'] = 0;
+                        $tmp['class_id'] = $offDutySchedule['class_id'] ?? 0;
+                        $tmp['class_setting_id'] = $offDutySchedule['class_setting_id'] ?? 0;
+                        $tmp['plan_check_time'] = $offDutySchedule['plan_check_time'] ?? '0000-00-00 00:00:00';
+                        empty($columns) && $columns = array_keys($tmp);
+                        $rows[] = array_values($tmp);
+                    }
+                }
+
+            }
+            DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns, $rows);
+        }
     }
 }
