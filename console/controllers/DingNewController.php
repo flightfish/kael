@@ -451,9 +451,9 @@ SQL;
     public function actionHrm(){
 //        $this->hrmUserInfo(1);
 //        $this->hrmUserInfo(2);
-        //同步2企业离职信息
+        echo "同步2企业离职信息\n";
         $this->hrmUserDismiss(2);
-        //同步1企业离职信息
+        echo "同步1企业离职信息\n";
         $this->hrmUserDismiss(1);
 
     }
