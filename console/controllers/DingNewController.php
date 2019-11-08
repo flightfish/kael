@@ -431,7 +431,7 @@ SQL;
                 $rows[$vDept['dept_id']] = [
                     $coryType,$v['userid'],
                     $vDept['dept_id'],$vDept['dept_path'],
-                    $vDept['dept_id'] == $v['main_dept_id'] ? 1 : 0
+                    $vDept['dept_id'] == $params['main_dept_id'] ? 1 : 0
                 ];
             }
             $old = DingtalkHrmUserLeave::findOneByUid($v['userid'],$coryType);
