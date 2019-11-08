@@ -477,7 +477,7 @@ class DingKaoqinController extends Controller
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($start), time() - 24 * 3600, 24 * 3600));
-        return $dayList;
+        var_dump($dayList);return;
         $userIdList = array_column(DingTalkUser::findList([], '', 'kael_id,name,user_id', -1), 'user_id');
         $columns = $rows = $param = $paramColumns = [];
         foreach ($dayList as $day) {
