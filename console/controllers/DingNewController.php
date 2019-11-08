@@ -12,6 +12,7 @@ use common\models\DingtalkHrmUserLeave;
 use common\models\DingtalkHrmUserLeaveDept;
 use common\models\DingtalkUser;
 use common\models\DepartmentRelateToKael;
+use common\models\ehr\BusinessDepartment;
 use common\models\RelateDingtalkDepartmentPlatform;
 use common\models\RelateUserPlatform;
 use usercenter\components\exception\Exception;
@@ -296,7 +297,8 @@ class DingNewController extends Controller
                         $mainLeaderName = $userParams['name'];
                     }
                 }
-//                DingtalkDepartment::updateAll(['main_leader_id' => $mainLeaderId, 'main_leader_name' => $mainLeaderName], ['id' => $v['id']]);
+                DingtalkDepartment::updateAll(['main_leader_id' => $mainLeaderId, 'main_leader_name' => $mainLeaderName], ['id' => $v['id'],'status'=>0]);
+                BusinessDepartment::updateAll(['main_leader_id' => $mainLeaderId, 'main_leader_name' => $mainLeaderName], ['depart_id' => $v['id'],'status'=>0]);
             }
         }
 

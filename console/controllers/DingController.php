@@ -141,11 +141,12 @@ class DingController extends Controller
 //                if(empty($oldDepartments[$v['id']]['alias_name'])){
                     $params['alias_name'] = $v['name'];
 //                }
-                if($oldDepartments[$v['id']]['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$oldDepartments[$v['id']]['main_leader_id']])){
-                    echo date('Y-m-d H:i:s')."\t部门负责人离职,重置为空,部门编号:".$v['id']."\t原部门负责人编号:".$oldDepartments[$v['id']]['main_leader_id']."\n";
-                    $params['main_leader_id'] = 0;
-                    $params['main_leader_name'] = '';
-                }
+
+//                if($oldDepartments[$v['id']]['main_leader_id'] && ! $user = DingtalkUser::findOneByWhere(['kael_id'=>$oldDepartments[$v['id']]['main_leader_id']])){
+//                    echo date('Y-m-d H:i:s')."\t部门负责人离职,重置为空,部门编号:".$v['id']."\t原部门负责人编号:".$oldDepartments[$v['id']]['main_leader_id']."\n";
+//                    $params['main_leader_id'] = 0;
+//                    $params['main_leader_name'] = '';
+//                }
                 DingtalkDepartment::updateAll($params,['id'=>$v['id']]);
             }elseif(in_array($v['id'],$insertIds)){
                 $rows[] = [$v['id'],$v['name'],$v['name'],$v['parentid'],2];
@@ -332,7 +333,7 @@ class DingController extends Controller
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department']) ? json_decode($userInfo['department'], true) : $userInfo['department'];
                         if ($dids = array_column(DingtalkDepartment::findListByWhereAndWhereArr(['main_leader_id' => $kaelId], [['not in', 'id', $departmentIds]], 'id'), 'id')) {
-                            DingtalkDepartment::updateAll(['main_leader_id' => 0, 'main_leader_name' => ''], ['id' => $dids]);
+//                            DingtalkDepartment::updateAll(['main_leader_id' => 0, 'main_leader_name' => ''], ['id' => $dids]);
                         }
                         //update
                         $isLeaderInDepts = self::convertJsonMapToArray($userInfo['isLeaderInDepts']);
@@ -408,8 +409,8 @@ class DingController extends Controller
                                         DingtalkDepartment::updateAll(['main_leader_id' => $kaelId, 'main_leader_name' => $userInfo['name']], ['id' => $did]);
                                     }
                                 } elseif ($dingDepartment['main_leader_id'] == $kaelId) {
-                                    echo $kaelId . "\t 不再是部门" . $did . "的负责人";
-                                    DingtalkDepartment::updateAll(['main_leader_id' => 0, 'main_leader_name' => ''], ['main_leader_id' => $kaelId, 'id' => $did]);
+//                                    echo $kaelId . "\t 不再是部门" . $did . "的负责人";
+//                                    DingtalkDepartment::updateAll(['main_leader_id' => 0, 'main_leader_name' => ''], ['main_leader_id' => $kaelId, 'id' => $did]);
                                 }
                             }
                         }
@@ -835,7 +836,7 @@ class DingController extends Controller
                         //更新实际部门相关
                         $departmentIds = !is_array($userInfo['department']) ? json_decode($userInfo['department'], true) : $userInfo['department'];
                         if ($dids = array_column(DingtalkDepartment::findListByWhereAndWhereArr(['main_leader_id' => $kaelId], [['not in', 'id', $departmentIds]], 'id'), 'id')) {
-                            DingtalkDepartment::updateAll(['main_leader_id' => 0, 'main_leader_name' => ''], ['id' => $dids]);
+//                            DingtalkDepartment::updateAll(['main_leader_id' => 0, 'main_leader_name' => ''], ['id' => $dids]);
                         }
                         //update
                         $isLeaderInDepts = self::convertJsonMapToArray($userInfo['isLeaderInDepts']);
