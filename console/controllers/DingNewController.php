@@ -438,16 +438,21 @@ SQL;
                     $vDept['dept_id'] == $params['main_dept_id'] ? 1 : 0
                 ];
             }
-            $old = DingtalkHrmUserLeave::findOneByUid($v['userid'],$coryType);
-            if(empty($old)){
-                DingtalkHrmUserLeave::add($params);
-                !empty($rows) && DingtalkHrmUserLeaveDept::batchInsertAll(
-                    DingtalkHrmUserLeaveDept::tableName(),
-                    $columns,
-                    $rows,
-                    DingtalkHrmUserLeaveDept::getDb()
-                );
+            try{
+                $old = DingtalkHrmUserLeave::findOneByUid($v['userid'],$coryType);
+                if(empty($old)){
+                    DingtalkHrmUserLeave::add($params);
+                    !empty($rows) && DingtalkHrmUserLeaveDept::batchInsertAll(
+                        DingtalkHrmUserLeaveDept::tableName(),
+                        $columns,
+                        $rows,
+                        DingtalkHrmUserLeaveDept::getDb()
+                    );
+                }
+            }catch (\Exception $e){
+                continue;
             }
+
         }
     }
 
