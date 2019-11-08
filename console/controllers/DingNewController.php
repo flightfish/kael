@@ -416,6 +416,7 @@ SQL;
             echo json_encode($v,64|256)."\n";
             if(!in_array($v['status'],[1,2])){
                 echo "=======================================\n";
+                continue;
             }
             $params = [
                 'corp_type'=>$coryType,
@@ -450,6 +451,8 @@ SQL;
                     );
                 }
             }catch (\Exception $e){
+                echo "===========ERR===================\n";
+                echo $e->getMessage()."\n";
                 continue;
             }
 
