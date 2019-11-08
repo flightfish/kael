@@ -148,12 +148,13 @@ class SendEmailController extends Controller
             'wangchao@knowbox.cn',
             'liyb1@knowbox.cn',
             'liqiang@knowbox.cn',
-//            'lijf@knowbox.cn',
-//            'liwj1@knowbox.cn',
-//            'liubo@knowbox.cn',
-//            'jingyx@knowbox.cn',
-//            'shaml@knowbox.cn',
-//            'liuwei3@knowbox.cn',
+
+            'lijf@knowbox.cn',
+            'liwj1@knowbox.cn',
+            'liubo@knowbox.cn',
+            'jingyx@knowbox.cn',
+            'shaml@knowbox.cn',
+            'liuwei3@knowbox.cn',
         ];
         $currentDay = date("Y-m-d");
         $currentTime = date("Y-m-d H:i:s");
@@ -274,8 +275,9 @@ SQL;
             if($a[12] != $b[12]){
                 return $a[12]<=>$b[12];
             }
+            return 0;
         });
-        array_push($data,$dataTitle);
+        array_unshift($data,$dataTitle);
 
         $filename = '/data/wwwroot/kael/console/runtime/miniclass'.microtime(true).'.xls';
         $objPHPExcel = new \PHPExcel();
