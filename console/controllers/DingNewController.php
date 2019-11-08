@@ -413,6 +413,10 @@ SQL;
             throw new Exception("不支持的类型");
         }
         foreach ($userInfoList as $v){
+            echo json_encode($v,64|256)."\n";
+            if(!in_array($v['status'],[1,2])){
+                echo "=======================================\n";
+            }
             $params = [
                 'corp_type'=>$coryType,
                 'user_id'=>$v['userid'],
