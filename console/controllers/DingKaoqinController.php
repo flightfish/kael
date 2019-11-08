@@ -475,9 +475,14 @@ class DingKaoqinController extends Controller
             $start = date('Y-m-d', strtotime($oldDingtalkAttendanceOvertime['work_date']));
         }
         $start = "2019-11-07";
-        $dayList = array_map(function ($v) {
-            return date("Y-m-d", $v);
-        }, range(strtotime($start), time() - 24 * 3600, 24 * 3600));
+        if ($start == date('Y-m-d', time() - 24 * 3600)) {
+            $dayList = [$start];
+        } else {
+            $dayList = array_map(function ($v) {
+                return date("Y-m-d", $v);
+            }, range(strtotime($start), time() - 24 * 3600, 24 * 3600));
+        }
+
         var_dump($dayList);return;
         $userIdList = array_column(DingTalkUser::findList([], '', 'kael_id,name,user_id', -1), 'user_id');
         $columns = $rows = $param = $paramColumns = [];
