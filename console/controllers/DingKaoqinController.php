@@ -459,6 +459,10 @@ class DingKaoqinController extends Controller
             DingtalkAttendanceProcessInstance::addUpdateColumnRows($columns,$rows);
         }
     }
+
+    /**
+     * 加班
+     */
     public function actionJiaban(){
         if (exec('ps -ef|grep "ding-kaoqin/jiaban"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1) {
             echo "is_running";
@@ -473,6 +477,7 @@ class DingKaoqinController extends Controller
         $dayList = array_map(function ($v) {
             return date("Y-m-d", $v);
         }, range(strtotime($start), time() - 24 * 3600, 24 * 3600));
+        return $dayList;
         $userIdList = array_column(DingTalkUser::findList([], '', 'kael_id,name,user_id', -1), 'user_id');
         $columns = $rows = $param = $paramColumns = [];
         foreach ($dayList as $day) {
