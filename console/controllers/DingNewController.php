@@ -115,7 +115,7 @@ class DingNewController extends Controller
             if($v['base_name'] != $baseName){
                 try{
                     echo "update base name {$v['kael_id']}-{$baseName}\n";
-                    $ret = IOApi::updateUserBaseName($v['kael_id'],$v['base_name']);
+                    $ret = IOApi::updateUserBaseName($v['kael_id'],$baseName);
                     echo "io ret ".json_encode($ret,64|256)."\n";
                     DingtalkUser::updateAll(['base_name'=>$baseName],['kael_id'=>$v['kael_id']]);
                 }catch (\Exception $e){
