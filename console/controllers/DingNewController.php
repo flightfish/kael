@@ -451,10 +451,11 @@ SQL;
     public function actionHrm(){
 //        $this->hrmUserInfo(1);
 //        $this->hrmUserInfo(2);
-        //同步1企业离职信息
-        $this->hrmUserDismiss(1);
         //同步2企业离职信息
         $this->hrmUserDismiss(2);
+        //同步1企业离职信息
+        $this->hrmUserDismiss(1);
+
     }
 
     public function actionAutoPriv(){
