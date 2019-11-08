@@ -421,7 +421,7 @@ SQL;
             $params = [
                 'corp_type'=>$coryType,
                 'user_id'=>$v['userid'],
-                'last_work_day'=>date('Y-m-d H:i:s',intval($v['userid']/1000)),
+                'last_work_day'=>date('Y-m-d H:i:s',intval($v['last_work_day']/1000)),
                 'reason_memo'=>$v['reason_memo']??'',
                 'reason_type'=>$v['reason_type']??0,
                 'pre_status'=>$v['pre_status'],
