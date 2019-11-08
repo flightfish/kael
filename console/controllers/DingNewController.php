@@ -87,7 +87,11 @@ class DingNewController extends Controller
         }
     }
 
-    public function actionUpdateBaseName(){
+    public function actionBaseName(){
+        if(exec('ps -ef|grep "ding-new/base-name"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
+            echo "is_running";
+            exit();
+        }
         $this->updateDingUserBaseName();
     }
 
