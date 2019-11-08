@@ -363,6 +363,9 @@ SQL;
                     !empty($old) && DingtalkHrmUser::updateAll(['status'=>1],['id'=>$old['id']]);
                     continue;
                 }
+                if(substr($userField['sys00-mobile'],0,3) == '+86'){
+                    $userField['sys00-mobile'] = substr($userField['sys00-mobile'],3);
+                }
                 $updateParmas = [
                     'corp_type'=>$corpType,
                     'user_id'=>$resultUser['userid'],
