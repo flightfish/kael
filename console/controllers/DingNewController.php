@@ -355,8 +355,8 @@ SQL;
             }else{
                 throw new Exception("不支持的corpType");
             }
-//            echo 'userList======='.json_encode($resultList,64|256)."\n";
             foreach ($resultList as $resultUser){
+                echo json_encode($resultUser,64|256)."\n";
                 $old = $allHrmUserIndex[$resultUser['userid']]??[];
                 $userField = array_column($resultUser['field_list'],'label','field_code');
                 if(empty($userField['sys00-mobile'])){
