@@ -461,8 +461,10 @@ SQL;
 
 
     public function actionHrm(){
-//        $this->hrmUserInfo(1);
-//        $this->hrmUserInfo(2);
+        echo "同步2企业花名册\n";
+        $this->hrmUserInfo(2);
+        echo "同步1企业花名册\n";
+        $this->hrmUserInfo(1);
         echo "同步2企业离职信息\n";
         $this->hrmUserDismiss(2);
         echo "同步1企业离职信息\n";
