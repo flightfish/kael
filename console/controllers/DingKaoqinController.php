@@ -481,7 +481,7 @@ class DingKaoqinController extends Controller
                 return date("Y-m-d", $v);
             }, range(strtotime($start), time() - 24 * 3600, 24 * 3600));
         }
-        $userIdList = array_column(DingTalkUser::findList([], '', 'kael_id,name,user_id', -1), 'user_id');
+        $userIdList = array_column(DingTalkUser::findList([], '', 'kael_id,name,user_id,job_number', -1), 'job_number');
         $columns = $rows = $param = $paramColumns = [];
         foreach ($dayList as $day) {
             echo date('Y-m-d H:i:s') . "\t {$day} 开始同步数据加班数据到kael\n";
