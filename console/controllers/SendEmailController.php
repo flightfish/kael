@@ -144,7 +144,17 @@ class SendEmailController extends Controller
 
 
     public function actionBossClass(){
-        $emailList = ['wangchao@knowbox.cn','liyb1@knowbox.cn','liqiang@knowbox.cn'];
+        $emailList = [
+            'wangchao@knowbox.cn',
+            'liyb1@knowbox.cn',
+            'liqiang@knowbox.cn',
+//            'lijf@knowbox.cn',
+//            'liwj1@knowbox.cn',
+//            'liubo@knowbox.cn',
+//            'jingyx@knowbox.cn',
+//            'shaml@knowbox.cn',
+//            'liuwei3@knowbox.cn',
+        ];
         $currentDay = date("Y-m-d");
         $currentTime = date("Y-m-d H:i:s");
 
@@ -170,11 +180,14 @@ left join employee e2 on a.adviser_number = e2.adviser_number and e2.status = 1
     left join teacher t on t.number = a.adviser_number
 left join class_info ci on a.class_number = ci.number
 left join mini_class_student ms on a.number = ms.mini_class_number  and ms.status = 1
+left join course c on c.number=a.course_number
 where ci.end_time > '2019-11-07' and ci.start_time > '2019-10-15' and a.adviser_number > 0 and ci.status != 4 and a.istest = 0
 and a.title not like '%测试%' and a.title not like '%test%' and a.title not like '%预览%'
+and c.category!=5
 and e2.number is null
 and e.kael_id in ($userIdsStr)
-group by a.number;
+group by a.number
+having student_count > 0
 SQL;
         $miniClassList = Yii::$app->db_live->createCommand($sqlMiniClass)->queryAll();
         $count = count($miniClassList);
@@ -206,23 +219,22 @@ SQL;
             !empty($v['path_name']) && $kaelIdToDepartmentIndex[$v['kael_id']] = $v['path_name'];
         }
 
-        $data = [
-            [
-                '小班ID',
-                '小班名称',
-                '学生数',
-                '开课时间',
-                '结课时间',
-                '辅导老师ID',
-                '辅导老师名称',
-                '一级部门',
-                '二级部门',
-                '三级部门',
-                '四级部门',
-                '五级部门',
-                '六级部门'
-            ]
+        $dataTitle = [
+            '小班ID',
+            '小班名称',
+            '学生数',
+            '开课时间',
+            '结课时间',
+            '辅导老师ID',
+            '辅导老师名称',
+            '一级部门',
+            '二级部门',
+            '三级部门',
+            '四级部门',
+            '五级部门',
+            '六级部门'
         ];
+        $data = [];
         foreach ($miniClassList as $v){
             $pathName = $kaelIdToDepartmentIndex[$v['kael_id']] ?? '';
             $pathNameArr = explode('/',$pathName);
@@ -243,6 +255,28 @@ SQL;
             ];
         }
 
+        usort($data,function ($a,$b){
+            if($a[7] != $b[7]){
+                return $a[7]<=>$b[7];
+            }
+            if($a[8] != $b[8]){
+                return $a[8]<=>$b[8];
+            }
+            if($a[9] != $b[9]){
+                return $a[9]<=>$b[9];
+            }
+            if($a[10] != $b[10]){
+                return $a[10]<=>$b[10];
+            }
+            if($a[11] != $b[11]){
+                return $a[11]<=>$b[11];
+            }
+            if($a[12] != $b[12]){
+                return $a[12]<=>$b[12];
+            }
+        });
+        array_push($data,$dataTitle);
+
         $filename = '/data/wwwroot/kael/console/runtime/miniclass'.microtime(true).'.xls';
         $objPHPExcel = new \PHPExcel();
         $objSheet = $objPHPExcel->getActiveSheet();
@@ -255,7 +289,7 @@ SQL;
             $mail->setTo($emailAddr)
                 ->setFrom( ['mail_service@knowbox.cn'=>'基地邮件通知'])
                 ->setSubject("{$currentDay}离职甩班通知")
-                ->setTextBody("截止{$currentTime}有未处理甩班{$count}个，甩班列表见附件。您可登录BOSS在CMS-小班列表的甩班列表tab中查看这些甩班并做处理。")
+                ->setTextBody("截止{$currentTime}有未处理甩班{$count}个，甩班列表见附件。")
                 ->attach($filename,['fileName'=>"{$currentDay}离职甩班表.xls"]);
             $ret = $mail->send();
             var_dump($ret);
