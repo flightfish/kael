@@ -427,7 +427,7 @@ SQL;
             ];
             $columns = ['corp_type','user_id','dept_id','dept_path','is_main'];
             $rows = [];
-            foreach ($v['dept_list'] as $vDept){
+            foreach ($v['dept_list']??[] as $vDept){
                 $rows[$vDept['dept_id']] = [
                     $coryType,$v['userid'],
                     $vDept['dept_id'],$vDept['dept_path'],
@@ -437,7 +437,7 @@ SQL;
             $old = DingtalkHrmUserLeave::findOneByUid($v['userid'],$coryType);
             if(empty($old)){
                 DingtalkHrmUserLeave::add($params);
-                DingtalkHrmUserLeaveDept::batchInsertAll(
+                !empty($rows) && DingtalkHrmUserLeaveDept::batchInsertAll(
                     DingtalkHrmUserLeaveDept::tableName(),
                     $columns,
                     $rows,
