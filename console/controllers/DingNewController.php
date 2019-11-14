@@ -334,7 +334,7 @@ class DingNewController extends Controller
 //    }
 
 
-    private function updateDingUserAndEhr(){
+    private function updateDingUser(){
         //department
         $allDepartmentList = DingtalkDepartment::findList();
         $allDepartmentListIndex = array_column($allDepartmentList,null,'id');
@@ -393,7 +393,7 @@ class DingNewController extends Controller
                 $mainDeptSubrootId = 1;
             }else{
                 $mainDeptInfo = $allDepartmentListIndex[$mainDeptId]??[];
-                $mainDeptSubrootId = $mainDeptInfo['subroot_id'];
+                $mainDeptSubrootId = $mainDeptInfo['subroot_id'] ?? 1;
             }
             $dingUserParams = [
                 'kael_id'=>$oldDingtalkUser['kael_id']??0,
