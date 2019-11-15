@@ -29,10 +29,11 @@ class EhrBusinessRelateController extends Controller
             '课程用户池'=>465,
             '云选平台'=>471,
             '外部投放'=>472,
+            'BD'=>475
         ];
 
 
-        $filePath = './ehr_business_line_20191027.xlsx';
+        $filePath = './ehr_business_line_20191115.xlsx';
         $PHPReader = new \PHPExcel_Reader_Excel2007();
         $objPHPExcel = $PHPReader->load($filePath); // Reader读出来后，加载给Excel实例
         $data = $objPHPExcel->getSheet(0)->toArray();
@@ -124,6 +125,9 @@ class EhrBusinessRelateController extends Controller
             'version_id','user_id','business_id','hc'
         ];
         echo json_encode($rows,64|256)."\n";
+        $kaelIds = array_column($rows,1);
+        echo json_encode($kaelIds)."\n";
+//        BusinessLineRelateStaff::updateAll(['status'=>1],['user_id'=>$kaelIds,'status'=>0,'version_id'=>4]);
 //        DBCommon::batchInsertAll(BusinessLineRelateStaff::tableName(),$columns,$rows,BusinessLineRelateStaff::getDb(),'INSERT');
     }
 }
