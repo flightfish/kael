@@ -702,27 +702,28 @@ class DingController extends Controller
                         continue;
                     }
 
-                    if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
+//                    if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
+                    $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
+                    if(empty($tmpImportJianzhi)){
+                        $columnsTmpJz = ['mobile','name','ding_userid','ding_error'];
+                        DBCommon::batchInsertAll(
+                            TmpImportJianzhi::tableName(),
+                            $columnsTmpJz,
+                            [
+                                [$userInfo['mobile'],$userInfo['name'],$userInfo['userid'],'OLD IMPORT']
+                            ],
+                            TmpImportJianzhi::getDb(),
+                            'INSERT IGNORE'
+                        );
                         $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
-                        if(empty($tmpImportJianzhi)){
-                            $columnsTmpJz = ['mobile','name','ding_userid','ding_error'];
-                            DBCommon::batchInsertAll(
-                                TmpImportJianzhi::tableName(),
-                                $columnsTmpJz,
-                                [
-                                    [$userInfo['mobile'],$userInfo['name'],$userInfo['userid'],'OLD IMPORT']
-                                ],
-                                TmpImportJianzhi::getDb(),
-                                'INSERT IGNORE'
-                            );
-                            $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
-                        }
-                        $userInfo['jobnumber'] = self::tmpIdToWorknumber($tmpImportJianzhi['id']);
-                        DingTalkApiJZ::updateUser($userInfo['userid'],['jobnumber'=>$userInfo['jobnumber']]);
+                    }
+                    $userInfo['jobnumber'] = self::tmpIdToWorknumber($tmpImportJianzhi['id']);
+                    DingTalkApiJZ::updateUser($userInfo['userid'],['jobnumber'=>$userInfo['jobnumber']]);
 //                        $userInfo['jobnumber'] = 'NO_'.microtime(true);
 //                        echo "员工:{$userInfo['name']}[{$userInfo['userid']}]没有工号" . "\n";
 //                        continue;
-                    }
+
+//                    }
 
 
                     if (!in_array($userId, $allUserIds)) {
