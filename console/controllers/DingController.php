@@ -245,7 +245,7 @@ class DingController extends Controller
                         try {
                             $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'], 'sys00-mainDept');
                             //多部门的主部门
-                            sleep(60);
+                            sleep(5);
                         } catch (\Exception $e) {
                             echo date('Y-m-d H:i:s') . "api_error\t钉钉账号:" . $userId . "\t 接口错误[智能人事获取花名册用户信息]:" . $e->getMessage() . "\n";
                             continue;
