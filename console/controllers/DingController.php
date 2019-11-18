@@ -703,7 +703,7 @@ class DingController extends Controller
                     }
 
 //                    if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
-                    $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
+                    $tmpImportJianzhi = TmpImportJianzhi::find()->select('id,work_number')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
                     if(empty($tmpImportJianzhi)){
                         $columnsTmpJz = ['mobile','name','ding_userid','ding_error'];
                         DBCommon::batchInsertAll(
@@ -715,10 +715,17 @@ class DingController extends Controller
                             TmpImportJianzhi::getDb(),
                             'INSERT IGNORE'
                         );
-                        $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
+                        $tmpImportJianzhi = TmpImportJianzhi::find()->select('id,work_number')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
                     }
-                    $userInfo['jobnumber'] = self::tmpIdToWorknumber($tmpImportJianzhi['id']);
-                    DingTalkApiJZ::updateUser($userInfo['userid'],['jobnumber'=>$userInfo['jobnumber']]);
+                    $newJobNumber = self::tmpIdToWorknumber($tmpImportJianzhi['id']);
+                    if(empty($tmpImportJianzhi['work_number'])){
+                        TmpImportJianzhi::updateAll(['work_number'=>$newJobNumber],['id'=>$tmpImportJianzhi['id']]);
+                    }
+                    if(empty($userInfo['jobnumber']) || $userInfo['jobnumber']!=$newJobNumber){
+                        $userInfo['jobnumber'] = $newJobNumber;
+                        DingTalkApiJZ::updateUser($userInfo['userid'],['jobnumber'=>$userInfo['jobnumber']]);
+                    }
+
 //                        $userInfo['jobnumber'] = 'NO_'.microtime(true);
 //                        echo "员工:{$userInfo['name']}[{$userInfo['userid']}]没有工号" . "\n";
 //                        continue;
