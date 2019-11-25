@@ -97,6 +97,7 @@ class DingController extends BaseController
             ]
         ];
         foreach ($deptList as &$v){
+            $v['id'] = intval($v['id']);
             if($v['parentid'] == 1 && isset($retList[$v['corp_type']])){
                 $retList[$v['corp_type']]['children'][] = &$v;
             }elseif(isset($deptList[$v['parentid']])){
@@ -129,6 +130,8 @@ class DingController extends BaseController
                 $v['parentid'] = $v['corp_type'];
             }
             unset($v['corp_type']);
+            $v['id'] = intval($v['id']);
+            $v['parentid'] = intval($v['parentid']);
             $retList[] = $v;
         }
         return ['list'=>$retList];
