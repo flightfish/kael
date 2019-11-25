@@ -98,11 +98,19 @@ class ZzlController extends Controller
             echo "is_running";
             exit();
         }
+        $columns = [];
+        $rows = [];
         $oldDingcanOrder = DingcanOrder::findList(['supplier' => 2], 'id');
         foreach ($oldDingcanOrder as $val){
          $order_ext=json_decode($val['order_ext'] ,true);
           if($order_ext['status']==2){
-              var_dump( $val);return;
+              $tmp = $val;
+              $tmp['status'] = 1;
+              empty($columns) && $columns = array_keys($tmp);
+              $rows[] = array_values($tmp);
+              DingcanOrder::addUpdateColumnRows($columns, $rows);
+
+              return;
           }
         }
         return $oldDingcanOrder;
