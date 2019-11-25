@@ -100,7 +100,8 @@ class ZzlController extends Controller
         }
         $oldDingcanOrder = DingcanOrder::findOneByWhere(['supplier' => 2], '*');
         foreach ($oldDingcanOrder as $val){
-            var_dump($val );
+         $order_ext=json_decode($val['order_ext'] ,true);
+            var_dump($order_ext);
         }
         return $oldDingcanOrder;
 
