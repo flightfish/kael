@@ -91,7 +91,7 @@ class ZzlController extends Controller
     }
 
     /**
-     * 同步竹蒸笼订餐数据
+     * 修复竹蒸笼订餐数据( 去除status=2 取消的订单)
      */
     public  function actionRepairTmp(){
         if(exec('ps -ef|grep "zzl/repair-tmp"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
