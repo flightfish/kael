@@ -190,7 +190,7 @@ class DingNewController extends Controller
         //更新基地
         sleep(1);
         $dingDeptList = DingtalkDepartment::findList(['corp_type'=>$corpType],'','id,path_name,base_name');
-        $baseList = ['北京','长春','西安','唐山','湘潭','武汉','长沙','上海','BD'];
+        $baseList = ['北京','长春','西安','唐山','湘潭','武汉','长沙','上海','BD','合肥'];
         foreach ($dingDeptList as $v){
             $pathName = explode('/',$v['path_name']);
             $base = '';

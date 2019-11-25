@@ -83,4 +83,55 @@ class DingController extends BaseController
         }
     }
 
+    public function actionDeptTree(){
+        $deptList = DingtalkDepartment::findList([],'','id,corp_type,name,path_id,parentid');
+        $deptList = array_column($deptList,null,'id');
+        $retList = [
+            1=>[
+                'id'=>1,
+                'name'=>'小盒科技',
+            ],
+            2=>[
+                'id'=>2,
+                'name'=>'兼职辅导',
+            ]
+        ];
+        foreach ($deptList as &$v){
+            if($v['parentid'] == 1 && isset($retList[$v['corp_type']])){
+                $retList[$v['corp_type']]['children'][] = &$v;
+            }elseif(isset($deptList[$v['parentid']])){
+                $deptList[$v['parentid']]['children'][] = &$v;
+            }
+            unset($v['corp_type']);
+            unset($v['parentid']);
+            unset($v['path_id']);
+        }
+        $retList = array_values($retList);
+        return ['tree'=>$retList];
+    }
+
+    public function actionDeptList(){
+        $deptList = DingtalkDepartment::findList([],'','id,corp_type,name,parentid');
+        $retList = [
+            [
+                'id'=>1,
+                'name'=>'小盒科技',
+                'parentid'=>0
+            ],
+            [
+                'id'=>2,
+                'name'=>'兼职辅导',
+                'parentid'=>0
+            ]
+        ];
+        foreach ($deptList as $v){
+            if($v['parentid'] == 1){
+                $v['parentid'] = $v['corp_type'];
+            }
+            unset($v['corp_type']);
+            $retList[] = $v;
+        }
+        return ['list'=>$retList];
+    }
+
 }
