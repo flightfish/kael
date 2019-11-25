@@ -113,7 +113,23 @@ class ZzlController extends Controller
             }
         }
         DingcanOrder::addUpdateColumnRows($columns, $rows);
-        echo date('Y-m-d H:i:s')."\t完毕kael\n";
+        echo date('Y-m-d H:i:s')."\t完毕1kael\n";
+        $columns2 = [];
+        $rows2 = [];
+        $oldDingcanOrderException = DingcanOrderException::findList(['supplier' => 2], 'id');
+        foreach ($oldDingcanOrderException as $val) {
+            $order_ext = json_decode($val['order_ext'], true);
+            if ($order_ext['status'] == 2) {
+                $tmp = $val;
+                $tmp['status'] = 1;
+                empty($columns2) && $columns2 = array_keys($tmp);
+                $rows2[] = array_values($tmp);
+
+
+            }
+        }
+        DingcanOrderException::addUpdateColumnRows($columns2, $rows2);
+        echo date('Y-m-d H:i:s') . "\t完毕2kael\n";
 
 
     }
