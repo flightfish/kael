@@ -93,7 +93,7 @@ class ZzlController extends Controller
     /**
      * 同步竹蒸笼订餐数据
      */
-    public static function actionRepairTmp(){
+    public  function actionRepairTmp(){
         if(exec('ps -ef|grep "zzl/repair-tmp"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
             echo "is_running";
             exit();
