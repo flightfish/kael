@@ -101,7 +101,9 @@ class ZzlController extends Controller
         $oldDingcanOrder = DingcanOrder::findList(['supplier' => 2], 'id');
         foreach ($oldDingcanOrder as $val){
          $order_ext=json_decode($val['order_ext'] ,true);
-            var_dump([$order_ext,$val]);
+          if($order_ext['status']==2){
+              var_dump( $val);return;
+          }
         }
         return $oldDingcanOrder;
 
