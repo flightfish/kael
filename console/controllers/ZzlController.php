@@ -113,8 +113,12 @@ class ZzlController extends Controller
 
             }
         }
+        if(empty($rows)){
+            echo date('Y-m-d H:i:s')."\t数据正常kael\n";
+        }
         DingcanOrder::addUpdateColumnRows($columns, $rows);
         echo date('Y-m-d H:i:s')."\t完毕1kael\n";
+
         $columns2 = [];
         $rows2 = [];
         $oldDingcanOrderException = DingcanOrderException::findList(['supplier' => 2], 'id');
@@ -128,6 +132,9 @@ class ZzlController extends Controller
 
 
             }
+        }
+        if(empty($rows2)){
+            echo date('Y-m-d H:i:s')."\t数据正常kael\n";
         }
         DingcanOrderException::addUpdateColumnRows($columns2, $rows2);
         echo date('Y-m-d H:i:s') . "\t完毕2kael\n";
