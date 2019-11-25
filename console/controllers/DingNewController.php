@@ -15,6 +15,7 @@ use common\models\DepartmentRelateToKael;
 use common\models\ehr\BusinessDepartment;
 use common\models\RelateDingtalkDepartmentPlatform;
 use common\models\RelateUserPlatform;
+use common\models\UserCenter;
 use usercenter\components\exception\Exception;
 use yii\console\Controller;
 
@@ -62,10 +63,6 @@ class DingNewController extends Controller
             echo date('Y-m-d H:i:s')."\t开始同步兼职团队钉钉部门到kael\n";
             $this->updateDingDepartment(2);
             echo date('Y-m-d H:i:s')."\t部门同步兼职团队结束\n";
-
-//            echo date('Y-m-d H:i:s')."\t部门同步path_name开始\n";
-//            $this->updateDingDepartmentPathName();
-//            echo date('Y-m-d H:i:s')."\t部门同步path_name结束\n";
 
             sleep(1);
 
@@ -194,11 +191,13 @@ class DingNewController extends Controller
         foreach ($dingDeptList as $v){
             $pathName = explode('/',$v['path_name']);
             $base = '';
-            foreach ($pathName as $pathOne){
-                $pathOneFst = mb_substr($pathOne,0,2);
-                if(in_array($pathOneFst,$baseList)){
-                    $base = $pathOne;
-                    break;
+            if(false === mb_strpos($v['path_name'],'外派')){
+                foreach ($pathName as $pathOne){
+                    $pathOneFst = mb_substr($pathOne,0,2);
+                    if(in_array($pathOneFst,$baseList)){
+                        $base = $pathOne;
+                        break;
+                    }
                 }
             }
             $base != $v['base_name'] && DingtalkDepartment::updateAll(['base_name'=>$base],['id'=>$v['id']]);
@@ -316,32 +315,145 @@ class DingNewController extends Controller
 
 
 
-    private function updateDingDepartmentPathName(){
-        for($level =1 ; $level <= 10; $level++){
-            if($level==1){
-                $sql = "update dingtalk_department set path_name=alias_name where level ={$level} and status=0;";
-            }else{
-                $sql = <<<SQL
-update  dingtalk_department s
-left join dingtalk_department p on s.parentid = p.id
-set s.path_name = concat(p.path_name,'/',s.alias_name)
-where s.status = 0 and p.status=0 and s.level={$level};
-SQL;
-            }
+//    private function updateDingDepartmentPathName(){
+//        for($level =1 ; $level <= 10; $level++){
+//            if($level==1){
+//                $sql = "update dingtalk_department set path_name=alias_name where level ={$level} and status=0;";
+//            }else{
+//                $sql = <<<SQL
+//update  dingtalk_department s
+//left join dingtalk_department p on s.parentid = p.id
+//set s.path_name = concat(p.path_name,'/',s.alias_name)
+//where s.status = 0 and p.status=0 and s.level={$level};
+//SQL;
+//            }
+//
+//            DingtalkDepartment::getDb()->createCommand($sql)->execute();
+//        }
+//
+//    }
 
-            DingtalkDepartment::getDb()->createCommand($sql)->execute();
+
+    private function updateDingUser(){
+        //department
+        $allDepartmentList = DingtalkDepartment::findList();
+        $allDepartmentListIndex = array_column($allDepartmentList,null,'id');
+        //dinguser
+        $allDingUserList = DingtalkUser::findList();
+        $allDingUserListIndex = array_column($allDingUserList,null,'user_id');
+        //hrmuser
+        $allHrmUserList = DingtalkHrmUser::findList();
+        $allHrmUserListIndex = [];
+        foreach ($allHrmUserList as $v){
+            $allHrmUserListIndex[$v['corp_type'].'-'.$v['user_id']] = $v;
         }
-
-    }
-
-
-    private function updateDingUserAndEhr(){
-        $allDepartmentUserList = DingtalkDepartmentUser::findList([]);
-        $allUserListIndex = [];
+        //departmentuser
+        $allDepartmentUserList = DingtalkDepartmentUser::findList();
+        $allDepartmentUserListIndex = [];
         foreach ($allDepartmentUserList as $v){
-            $allUserListIndex[$v['mobile']][] = $v;
+            $allDepartmentUserListIndex[$v['mobile']][] = $v;
         }
+
+        foreach ($allDepartmentUserListIndex as $mobile=>$v1List){
+            $departmentsArr = [];
+            $userIdsArr = [];
+            $mainUserId = 0;
+            $mainCorpType = 0;
+            $mainCorpDeptIds = [];
+            $oldHrms = [];
+            $oldDingtalkUser = [];
+            $mainUserInfo = [];
+            $birthDay = '';
+            $hireDay = '';
+            foreach ($v1List as $v1){
+                if(empty($mainCorpType) || ($v1['corp_type'] == 1 && $mainCorpType != 1)){
+                    $mainCorpDeptIds = [];
+                    $mainCorpType = $v1['corp_type'];
+                    $mainUserId = $v1['user_id'];
+                    $mainUserInfo = $v1;
+                    $v1['hired_date'] != '0000-00-00 00:00:00' && $hireDay = $v1['hired_date'];
+                }
+                empty($oldHrms[$v1['corp_type']]) && $oldHrms[$v1['corp_type']] = $allHrmUserListIndex[$v1['corp_type'].'-'.$v1['user_id']] ?? [];
+                empty($oldDingtalkUser) && $oldDingtalkUser = $allDingUserListIndex[$v1['user_id']] ?? [];
+                $userIdsArr[$v1['corp_type']] = $v1['userid'];
+                $departmentsArr[] = $v1['department_id'] == 1 ? $v1['corp_type'] : $v1['department_id'];
+                $mainCorpDeptIds[] = $v1['department_id'];
+                if(empty($birthDay) && !empty($oldHrms[$v1['corp_type']]) && !empty($oldHrms[$v1['corp_type']]['birth_time'])){
+                    $birthDay = date('m-d',strtotime($oldHrms[$v1['corp_type']]['birth_time']));
+                }
+            }
+            if(!empty($oldHrms[$v1['corp_type']])){
+                $mainDeptId = ($oldHrms[$v1['corp_type']]['main_dept_id'] == -1) ? 1 : $oldHrms[$v1['corp_type']]['main_dept_id'];
+            }elseif(in_array(1,$mainCorpDeptIds)){
+                $mainDeptId = 1;
+            }else{
+                $mainDeptId = $mainCorpDeptIds[0];
+            }
+            if($mainDeptId == 1){
+                $mainDeptSubrootId = 1;
+            }else{
+                $mainDeptInfo = $allDepartmentListIndex[$mainDeptId]??[];
+                $mainDeptSubrootId = $mainDeptInfo['subroot_id'] ?? 1;
+            }
+            $dingUserParams = [
+                'kael_id'=>$oldDingtalkUser['kael_id']??0,
+                'corp_type'=>$mainCorpType,
+                'user_id'=>$mainUserId,
+                'name'=>$mainUserInfo['name'],
+                'mobile'=>$mobile,
+                'avatar'=>$mainUserInfo['avatar'],
+                'job_number'=>$mainUserInfo['job_number'],
+                'union_id'=>$mainUserInfo['union_id'],
+                'open_id'=>$mainUserInfo['open_id'],
+                'departments'=>join(',',$departmentsArr),
+                'department_id'=>$mainDeptId,
+                'department_subroot'=>$mainDeptSubrootId,
+                'hired_date'=>$hireDay,
+                'birthday'=>$birthDay,
+            ];
+            if(empty($dingUserParams['kael_id'])){
+                //没有kaelId
+                $kaelUser = UserCenter::find()
+                    ->where(['mobile' =>$mobile,'status'=>[0,1]])
+                    ->orderBy('status asc,id desc')
+                    ->limit(1)
+                    ->asArray(true)
+                    ->one();
+                if (!empty($kaelUser)){
+                    //有kaelid
+                    $kaelParams = [];
+                    $kaelUser['user_type'] != 0 && $kaelParams['user_type'] = 0;
+                    $kaelUser['status'] !=0 && $kaelParams['status'] = 0;
+                    $kaelUser['work_number'] != $dingUserParams['job_number'] && $kaelParams['work_number'] == $dingUserParams['job_number'];
+                    $kaelUser['username'] != $dingUserParams['name'] && $kaelParams['username'] == $dingUserParams['name'];
+                    !empty($kaelParams) && UserCenter::updateAll($kaelParams, ['id' => $kaelUser['id']]);
+                    $kaelId = $kaelUser['id'];
+                }else{
+                    $kaelParams = [
+                        'username' => $dingUserParams['name'],
+                        'password' => md5('1!Aaaaaaa'),
+                        'sex' => 1, //1男 2女
+                        'work_number' => $dingUserParams['job_number'],
+                        'mobile' => $userInfo['mobile'] ?? '',
+                        'user_type' => 0,
+                        'status'=>0
+                    ];
+                    $kaelId = UserCenter::addUser($kaelParams);
+                }
+                $dingUserParams['kael_id'] = $kaelId;
+
+                if(!empty($oldDingtalkUser)){
+                    unset($allDingUserListIndex[$oldDingtalkUser['user_id']]);
+                    DingtalkUser::updateAll($dingUserParams,['user_id'=>$oldDingtalkUser['user_id']]);
+                }else{
+                    DingtalkUser::add($dingUserParams);
+                }
+            }
+        }
+
     }
+
+
 
     public function hrmUserInfo($corpType){
         $allUserIds = array_values(array_unique(array_column(DingtalkDepartmentUser::findList(['corp_type'=>$corpType], '', 'user_id'),'user_id')));
