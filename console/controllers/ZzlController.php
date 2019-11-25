@@ -98,10 +98,10 @@ class ZzlController extends Controller
             echo "is_running";
             exit();
         }
-        $oldDingcanOrder = DingcanOrder::findOneByWhere(['supplier' => 2], '*');
+        $oldDingcanOrder = DingcanOrder::findList(['supplier' => 2], 'id');
         foreach ($oldDingcanOrder as $val){
          $order_ext=json_decode($val['order_ext'] ,true);
-            var_dump($order_ext);
+            var_dump([$order_ext,$val]);
         }
         return $oldDingcanOrder;
 
