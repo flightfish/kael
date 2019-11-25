@@ -80,6 +80,7 @@ class ZzlController extends Controller
                             'dingtalk_subroot_name' => $subrootName,
                             'price' => $orderInfo['goods_price'],
                             'goods_name' => $orderInfo['goods_name'] ?? '',
+                            'status' => $orderInfo['status'] == 2 ? 1 : 0,
                         ];
                         empty($columns) && $columns = array_keys($tmp);
                         $rows[] = array_values($tmp);
