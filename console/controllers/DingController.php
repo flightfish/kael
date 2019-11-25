@@ -245,7 +245,7 @@ class DingController extends Controller
                         try {
                             $mainDingDepartmentForUserInfo = DingTalkApi::getUserInfoForFieldsByUids($userInfo['userid'], 'sys00-mainDept');
                             //多部门的主部门
-                            sleep(60);
+                            sleep(5);
                         } catch (\Exception $e) {
                             echo date('Y-m-d H:i:s') . "api_error\t钉钉账号:" . $userId . "\t 接口错误[智能人事获取花名册用户信息]:" . $e->getMessage() . "\n";
                             continue;
@@ -702,27 +702,35 @@ class DingController extends Controller
                         continue;
                     }
 
-                    if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
-                        $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
-                        if(empty($tmpImportJianzhi)){
-                            $columnsTmpJz = ['mobile','name','ding_userid','ding_error'];
-                            DBCommon::batchInsertAll(
-                                TmpImportJianzhi::tableName(),
-                                $columnsTmpJz,
-                                [
-                                    [$userInfo['mobile'],$userInfo['name'],$userInfo['userid'],'OLD IMPORT']
-                                ],
-                                TmpImportJianzhi::getDb(),
-                                'INSERT IGNORE'
-                            );
-                            $tmpImportJianzhi = TmpImportJianzhi::find()->select('id')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
-                        }
-                        $userInfo['jobnumber'] = self::tmpIdToWorknumber($tmpImportJianzhi['id']);
+//                    if (!isset($userInfo['jobnumber']) || !$userInfo['jobnumber']) {
+                    $tmpImportJianzhi = TmpImportJianzhi::find()->select('id,work_number')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
+                    if(empty($tmpImportJianzhi)){
+                        $columnsTmpJz = ['mobile','name','ding_userid','ding_error'];
+                        DBCommon::batchInsertAll(
+                            TmpImportJianzhi::tableName(),
+                            $columnsTmpJz,
+                            [
+                                [$userInfo['mobile'],$userInfo['name'],$userInfo['userid'],'OLD IMPORT']
+                            ],
+                            TmpImportJianzhi::getDb(),
+                            'INSERT IGNORE'
+                        );
+                        $tmpImportJianzhi = TmpImportJianzhi::find()->select('id,work_number')->where(['mobile'=>$userInfo['mobile']])->asArray(true)->one();
+                    }
+                    $newJobNumber = self::tmpIdToWorknumber($tmpImportJianzhi['id']);
+                    if(empty($tmpImportJianzhi['work_number'])){
+                        TmpImportJianzhi::updateAll(['work_number'=>$newJobNumber],['id'=>$tmpImportJianzhi['id']]);
+                    }
+                    if(empty($userInfo['jobnumber']) || $userInfo['jobnumber']!=$newJobNumber){
+                        $userInfo['jobnumber'] = $newJobNumber;
                         DingTalkApiJZ::updateUser($userInfo['userid'],['jobnumber'=>$userInfo['jobnumber']]);
+                    }
+
 //                        $userInfo['jobnumber'] = 'NO_'.microtime(true);
 //                        echo "员工:{$userInfo['name']}[{$userInfo['userid']}]没有工号" . "\n";
 //                        continue;
-                    }
+
+//                    }
 
 
                     if (!in_array($userId, $allUserIds)) {

@@ -127,10 +127,7 @@ class KaelPlatform extends RequestBaseModel
         $trans = Platform::getDb()->beginTransaction();
         try{
             Platform::updateAll(['status'=>Platform::STATUS_INVALID],['platform_id' => $this->platform_id]);
-            if(empty($platfromId)){
-                throw new Exception("删除失败",Exception::ERROR_COMMON);
-            }
-            LogPlatform::log(LogPlatform::DEL,$platfromId,$this->user['id'],'');
+            LogPlatform::log(LogPlatform::DEL,$this->platform_id,$this->user['id'],'');
             $trans->commit();
         }catch (\Exception $e){
             $trans->rollBack();
