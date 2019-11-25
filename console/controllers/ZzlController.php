@@ -113,6 +113,7 @@ class ZzlController extends Controller
             }
         }
         DingcanOrder::addUpdateColumnRows($columns, $rows);
+        echo date('Y-m-d H:i:s')."\t完毕kael\n";
 
 
     }
