@@ -602,8 +602,8 @@ class DingNewController extends Controller
         }
         foreach ($departmentPrivs as $departmentId=>$platformIds){
             $platformIds = array_values(array_unique($platformIds));
-            $departmentIdsInPath = DingtalkDepartment::findListByWhereAndWhereArr([],[['like','path_id',"|{$departmentId}|"]],'path_id');
-            $departmentIdsInPath = array_column($departmentIdsInPath,'path_id');
+            $departmentIdsInPath = DingtalkDepartment::findListByWhereAndWhereArr([],[['like','path_id',"|{$departmentId}|"]],'id');
+            $departmentIdsInPath = array_column($departmentIdsInPath,'id');
             if(empty($departmentIdsInPath)){
                 continue;
             }

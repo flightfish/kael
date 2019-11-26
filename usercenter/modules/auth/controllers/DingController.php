@@ -84,57 +84,83 @@ class DingController extends BaseController
     }
 
     public function actionDeptTree(){
-        $deptList = DingtalkDepartment::findList([],'','id,corp_type,name,path_id,parentid');
-        $deptList = array_column($deptList,null,'id');
-        $retList = [
-            1=>[
-                'id'=>1,
-                'name'=>'小盒科技',
-            ],
-            2=>[
-                'id'=>2,
-                'name'=>'兼职辅导',
-            ]
-        ];
-        foreach ($deptList as &$v){
-            $v['id'] = intval($v['id']);
-            if($v['parentid'] == 1 && isset($retList[$v['corp_type']])){
-                $retList[$v['corp_type']]['children'][] = &$v;
-            }elseif(isset($deptList[$v['parentid']])){
-                $deptList[$v['parentid']]['children'][] = &$v;
+        try{
+            $deptList = DingtalkDepartment::findList([],'','id,corp_type,name,path_id,parentid');
+            $deptList = array_column($deptList,null,'id');
+            $retList = [
+                1=>[
+                    'id'=>1,
+                    'name'=>'小盒科技',
+                ],
+                2=>[
+                    'id'=>2,
+                    'name'=>'兼职辅导',
+                ]
+            ];
+            foreach ($deptList as &$v){
+                $v['id'] = intval($v['id']);
+                if($v['parentid'] == 1 && isset($retList[$v['corp_type']])){
+                    $retList[$v['corp_type']]['children'][] = &$v;
+                }elseif(isset($deptList[$v['parentid']])){
+                    $deptList[$v['parentid']]['children'][] = &$v;
+                }
+                unset($v['corp_type']);
+                unset($v['parentid']);
+                unset($v['path_id']);
             }
-            unset($v['corp_type']);
-            unset($v['parentid']);
-            unset($v['path_id']);
+            $retList = array_values($retList);
+            $ret =  ['tree'=>$retList];
+            return $this->success($ret);
+
+        }catch (\Exception $exception){
+            return $this->error($exception);
         }
-        $retList = array_values($retList);
-        return ['tree'=>$retList];
+
     }
 
     public function actionDeptList(){
-        $deptList = DingtalkDepartment::findList([],'','id,corp_type,name,parentid');
-        $retList = [
-            [
-                'id'=>1,
-                'name'=>'小盒科技',
-                'parentid'=>0
-            ],
-            [
-                'id'=>2,
-                'name'=>'兼职辅导',
-                'parentid'=>0
-            ]
-        ];
-        foreach ($deptList as $v){
-            if($v['parentid'] == 1){
-                $v['parentid'] = $v['corp_type'];
+        try{
+            $deptList = DingtalkDepartment::findList([],'','id,corp_type,name,parentid');
+            $retList = [
+                [
+                    'id'=>1,
+                    'name'=>'小盒科技',
+                    'parentid'=>0
+                ],
+                [
+                    'id'=>2,
+                    'name'=>'兼职辅导',
+                    'parentid'=>0
+                ]
+            ];
+            foreach ($deptList as $v){
+                if($v['parentid'] == 1){
+                    $v['parentid'] = $v['corp_type'];
+                }
+                unset($v['corp_type']);
+                $v['id'] = intval($v['id']);
+                $v['parentid'] = intval($v['parentid']);
+                $retList[] = $v;
             }
-            unset($v['corp_type']);
-            $v['id'] = intval($v['id']);
-            $v['parentid'] = intval($v['parentid']);
-            $retList[] = $v;
+            $ret = ['list'=>$retList];
+            return $this->success($ret);
+        }catch (\Exception $exception){
+            return $this->error($exception);
         }
-        return ['list'=>$retList];
     }
 
+    public function actionDeptSubId(){
+        try{
+            $id = \Yii::$app->request->post('id',0);
+            if(empty($id) || !is_numeric($id)){
+                throw new Exception("参数错误");
+            }
+            $departmentIdsInPath = DingtalkDepartment::findListByWhereAndWhereArr([],[['like','path_id',"|{$id}|"]],'id');
+            $subId = array_column($departmentIdsInPath,'id');
+            return $this->success(['subid'=>$subId]);
+        }catch (\Exception $exception){
+            return $this->error($exception);
+        }
+
+    }
 }
