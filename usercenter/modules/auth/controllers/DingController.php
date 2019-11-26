@@ -156,7 +156,9 @@ class DingController extends BaseController
                 throw new Exception("参数错误");
             }
             $departmentIdsInPath = DingtalkDepartment::findListByWhereAndWhereArr([],[['like','path_id',"|{$id}|"]],'id');
-            $subId = array_column($departmentIdsInPath,'id');
+            $subId = array_map(function($v){
+                return intval($v['id']);
+            },$departmentIdsInPath);
             return $this->success(['subid'=>$subId]);
         }catch (\Exception $exception){
             return $this->error($exception);
