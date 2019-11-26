@@ -91,7 +91,7 @@ class ZzlController extends Controller
         }
     }
     /**
-     * 修复企业在小盒兼职中的数据
+     * 修复美餐数据中企业在小盒兼职中的数据
      */
     public  function actionRepairTmp(){
         if(exec('ps -ef|grep "zzl/repair-tmp"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
