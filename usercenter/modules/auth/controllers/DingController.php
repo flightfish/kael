@@ -159,6 +159,9 @@ class DingController extends BaseController
             $subId = array_map(function($v){
                 return intval($v['id']);
             },$departmentIdsInPath);
+            if(in_array($id,[1,2])){
+                $subId[] = intval($id);
+            }
             return $this->success(['subid'=>$subId]);
         }catch (\Exception $exception){
             return $this->error($exception);
