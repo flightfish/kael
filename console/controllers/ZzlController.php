@@ -51,7 +51,7 @@ class ZzlController extends Controller
                 $retJson = ZzlApi::orderList($day);
                 $columns = [];
                 $rows = [];
-                $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id',-1), 'department_id', 'kael_id');
+                $kaelIdToDepartmentId = array_column(DingtalkUser::findList(['corp_type' => 1], '', 'kael_id,department_id',-1), 'department_id', 'kael_id');
                 $departmentIdToInfo = array_column(DingtalkDepartment::findList([], '', 'id,name,subroot_id', -1), null, 'id');
                 $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
                 if (!empty($retJson['data'])) {
