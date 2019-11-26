@@ -2,11 +2,13 @@
 namespace console\controllers;
 
 use common\libs\AppFunc;
+use common\libs\BossApi;
 use common\libs\UserToken;
 use common\models\CommonUser;
 use common\models\Department;
 use common\models\DingtalkDepartmentUser;
 use common\models\DingtalkUser;
+use common\models\live\LiveEmployee;
 use common\models\RelateUserPlatform;
 use usercenter\modules\meican\models\MeicanApi;
 use Yii;
@@ -224,6 +226,37 @@ SQL;
 //            $ret = AppFunc::curlPost('https://beta-bslive.knowbox.cn/employee/employeeValidateForKael.do',$user,$headers);
             echo $ret."\n";
             //sleep(1);
+        }
+    }
+
+    //离职状态
+    public function actionBossEmployee(){
+        $kaelIds = LiveEmployee::find()
+            ->select('kael_id')
+            ->where(['status'=>[1,3]]) // 1 在职 2 离职 3 将离职
+            ->andWhere('kael_id > 0')
+            ->asArray(true)
+            ->column();
+        $kaelIdsDels = LiveEmployee::find()
+            ->select('kael_id')
+            ->where(['status'=>[2]]) // 1 在职 2 离职 3 将离职
+            ->andWhere('kael_id > 0')
+            ->asArray(true)
+            ->column();
+        $kaelIds = array_values(array_unique($kaelIds));
+        $kaelIdsDels = array_values(array_unique($kaelIdsDels));
+        $validKaelIds = CommonUser::find()
+            ->select('id')
+            ->where(['status'=>0])
+            ->asArray(true)
+            ->column();
+        $needDelIds = array_diff($kaelIds,$validKaelIds);
+        $needReIds = array_intersect($kaelIdsDels,$validKaelIds);
+        foreach ($needDelIds as $delId) {
+            BossApi::employeeUpdateJobStatus($delId,2);
+        }
+        foreach ($needReIds as $reId){
+            BossApi::employeeUpdateJobStatus($reId,1);
         }
     }
 }
