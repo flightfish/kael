@@ -5,6 +5,7 @@ use common\libs\AppFunc;
 use common\libs\UserToken;
 use common\models\CommonUser;
 use common\models\Department;
+use common\models\DingtalkDepartment;
 use common\models\DingtalkDepartmentUser;
 use common\models\DingtalkUser;
 use common\models\RelateUserPlatform;
@@ -170,6 +171,45 @@ SQL;
             $user['user_id'] = $user['id'];
             $dingtalkUser = DingtalkUser::findOneByWhere(['kael_id'=>$user['id']]);
             $user['base_name'] = $dingtalkUser['base_name'] ?? '';
+
+            $deptList = [];
+
+            if(!empty($dingtalkUser)){
+                $mainDeptId = $dingtalkUser['department_id'];
+                if($dingtalkUser['corp_type'] == 2 && $mainDeptId == 1){
+                    $mainDeptId = 2;
+                }
+                $dingtalkDepaertmentUser = DingtalkDepartmentUser::findList(['kael_id'=>$user['id']]);
+                $deptIds = array_values(array_unique(array_column($dingtalkDepaertmentUser,'department_id')));
+                !in_array($mainDeptId,$deptIds) && $deptIds[] = $mainDeptId;
+                $deptListAll = DingtalkDepartment::findList(['id'=>$deptIds],'','id,name,path_name');
+                foreach ($deptListAll as $v){
+                    $deptList[] = [
+                        'id'=>$v['id'],
+                        'name'=>$v['name'],
+                        'path_name'=>$v['path_name'],
+                        'is_main'=>$v['id'] == $mainDeptId ? 1 : 0,
+                    ];
+                }
+                if($mainDeptId == 1){
+                    $deptList[] = [
+                        'id'=>1,
+                        'name'=>'小盒科技',
+                        'path_name'=>'小盒科技',
+                        'is_main'=>1,
+                    ];
+                }elseif($mainDeptId == 2){
+                    $deptList[] = [
+                        'id'=>2,
+                        'name'=>'兼职辅导',
+                        'path_name'=>'兼职辅导',
+                        'is_main'=>1,
+                    ];
+                }
+            }
+
+
+            $user['dept_list'] = $deptList;
 
 
             $headers = [
