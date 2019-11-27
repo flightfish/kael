@@ -131,6 +131,47 @@ SQL;
             $user['user_id'] = $user['id'];
             $user['base_name'] = $kaelIdToBaseName[$user['id']] ?? '';
 
+            $deptList = [];
+
+            if(!empty($dingtalkUser)){
+                $mainDeptId = $dingtalkUser['department_id'];
+                if($dingtalkUser['corp_type'] == 2 && $mainDeptId == 1){
+                    $mainDeptId = 2;
+                }
+                $dingtalkDepaertmentUser = DingtalkDepartmentUser::findList(['kael_id'=>$user['id']]);
+                $deptIds = array_values(array_unique(array_column($dingtalkDepaertmentUser,'department_id')));
+                !in_array($mainDeptId,$deptIds) && $deptIds[] = $mainDeptId;
+                $deptListAll = DingtalkDepartment::findList(['id'=>$deptIds],'','id,name,path_name');
+                foreach ($deptListAll as $v){
+                    $deptList[] = [
+                        'id'=>$v['id'],
+                        'name'=>$v['name'],
+                        'path_name'=>$v['path_name'],
+                        'is_main'=>$v['id'] == $mainDeptId ? 1 : 0,
+                    ];
+                }
+                if($mainDeptId == 1){
+                    $deptList[] = [
+                        'id'=>1,
+                        'name'=>'小盒科技',
+                        'path_name'=>'小盒科技',
+                        'is_main'=>1,
+                    ];
+                }elseif($mainDeptId == 2){
+                    $deptList[] = [
+                        'id'=>2,
+                        'name'=>'兼职辅导',
+                        'path_name'=>'兼职辅导',
+                        'is_main'=>1,
+                    ];
+                }
+            }
+
+
+            $user['dept_list'] = $deptList;
+
+
+
             $headers = [
                 "Referer: https://bslive.knowbox.cn/",
                 "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36",
