@@ -142,6 +142,7 @@ SQL;
                 $deptIds = array_values(array_unique(array_column($dingtalkDepaertmentUser,'department_id')));
                 !in_array($mainDeptId,$deptIds) && $deptIds[] = $mainDeptId;
                 $deptListAll = DingtalkDepartment::findList(['id'=>$deptIds],'','id,name,path_name');
+                var_dump($deptIds);
                 foreach ($deptListAll as $v){
                     $deptList[] = [
                         'id'=>intval($v['id']),
