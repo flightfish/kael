@@ -144,7 +144,7 @@ SQL;
                 $deptListAll = DingtalkDepartment::findList(['id'=>$deptIds],'','id,name,path_name');
                 foreach ($deptListAll as $v){
                     $deptList[] = [
-                        'id'=>$v['id'],
+                        'id'=>intval($v['id']),
                         'name'=>$v['name'],
                         'path_name'=>$v['path_name'],
                         'is_main'=>$v['id'] == $mainDeptId ? 1 : 0,
