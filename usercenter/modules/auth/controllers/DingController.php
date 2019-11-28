@@ -203,7 +203,7 @@ class DingController extends BaseController
             $allDeptIds = array_map(function($v){
                 return intval($v['id']);
             },$departmentIdsInPath);
-            $rootIds = array_diff($deptIds,[1,2]);
+            $rootIds = array_diff([1,2],$deptIds);
             $allDeptIds = array_merge($rootIds,$allDeptIds);
             return $this->success(['dept_id_all'=>$allDeptIds]);
         }catch (\Exception $exception){
