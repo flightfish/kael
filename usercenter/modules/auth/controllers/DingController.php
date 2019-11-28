@@ -171,7 +171,7 @@ class DingController extends BaseController
     }
 
 
-    public function actionSubIdByKael(){
+    public function actionDetpIdAllByKael(){
         try{
             $kaelId = \Yii::$app->request->post('kael_id',0);
             if(empty($kaelId) || !is_numeric($kaelId)){
@@ -205,7 +205,7 @@ class DingController extends BaseController
             },$departmentIdsInPath);
             $rootIds = array_diff($deptIds,[1,2]);
             $allDeptIds = array_merge($rootIds,$allDeptIds);
-            return $this->success(['dept_id_list'=>$allDeptIds]);
+            return $this->success(['dept_id_all'=>$allDeptIds]);
         }catch (\Exception $exception){
             return $this->error($exception);
         }
