@@ -171,7 +171,7 @@ class DingController extends BaseController
     }
 
 
-    public function actionDetpIdAllByKael(){
+    public function actionDeptIdAllByKael(){
         try{
             $kaelId = \Yii::$app->request->post('kael_id',0);
             if(empty($kaelId) || !is_numeric($kaelId)){
