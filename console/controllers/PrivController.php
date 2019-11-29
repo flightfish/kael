@@ -142,12 +142,12 @@ SQL;
                 $dingtalkDepaertmentUser = DingtalkDepartmentUser::findList(['kael_id'=>$user['id']]);
                 $deptIds = array_values(array_unique(array_column($dingtalkDepaertmentUser,'department_id')));
                 !in_array($mainDeptId,$deptIds) && $deptIds[] = $mainDeptId;
-                $deptListAll = DingtalkDepartment::findList(['id'=>$deptIds],'','id,name,path_name,path_id');
+                $deptListAll = DingtalkDepartment::findList(['id'=>$deptIds],'','id,name,path_name_ding,path_id');
                 foreach ($deptListAll as $v){
                     $deptList[] = [
                         'id'=>intval($v['id']),
                         'name'=>$v['name'],
-                        'path_name'=>$v['path_name'],
+                        'path_name'=>$v['path_name_ding'],
                         'path_id'=>$v['path_id'],
                         'is_main'=>$v['id'] == $mainDeptId ? 1 : 0,
                     ];
@@ -227,12 +227,12 @@ SQL;
                 $dingtalkDepaertmentUser = DingtalkDepartmentUser::findList(['kael_id'=>$user['id']]);
                 $deptIds = array_values(array_unique(array_column($dingtalkDepaertmentUser,'department_id')));
                 !in_array($mainDeptId,$deptIds) && $deptIds[] = $mainDeptId;
-                $deptListAll = DingtalkDepartment::findList(['id'=>$deptIds],'','id,name,path_name,path_id');
+                $deptListAll = DingtalkDepartment::findList(['id'=>$deptIds],'','id,name,path_name_ding,path_id');
                 foreach ($deptListAll as $v){
                     $deptList[] = [
                         'id'=>$v['id'],
                         'name'=>$v['name'],
-                        'path_name'=>$v['path_name'],
+                        'path_name'=>$v['path_name_ding'],
                         'path_id'=>$v['path_id'],
                         'is_main'=>$v['id'] == $mainDeptId ? 1 : 0,
                     ];
