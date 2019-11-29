@@ -108,5 +108,6 @@ return [
     'boss_url'=>'http://bslive.online.knowboxlan.cn',
 //    'io_url'=>'https://iolive.knowbox.cn',
     'io_url'=>'https://beta2-ioweblive.knowbox.cn',
+    'boss_id'=>50004,
 
 ];

@@ -50,4 +50,5 @@ return [
     'boss_url'=>'https://dev-bslive.knowbox.cn',
 //    'io_url'=>'https://dev-iolive.knowbox.cn'
     'io_url'=>'https://qa4-ioweblive.knowbox.cn',//qa
+    'boss_id'=>100014,
 ];

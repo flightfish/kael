@@ -116,10 +116,11 @@ SQL;
             echo "is_running";
             exit();
         }
+        $bossId = Yii::$app->params['boss_id'];
         $sql = <<<SQL
 select DISTINCT a.*
 from `user` a
- left join relate_user_platform b on a.id=b.user_id and b.platform_id=50004 and b.status=0
+ left join relate_user_platform b on a.id=b.user_id and b.platform_id={$bossId} and b.status=0
 where a.`status` = 0 and a.user_type=0 and b.relate_id > 0
 SQL;
         $userList = CommonUser::getDb()->createCommand($sql)->queryAll();
