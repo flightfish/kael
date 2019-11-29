@@ -1,0 +1,1 @@
+alter table dingtalk_department add path_name_ding varchar(1000)  not null default '' after path_name;
