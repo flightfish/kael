@@ -338,6 +338,7 @@ SQL;
             ->where(['status'=>0])
             ->asArray(true)
             ->column();
+
         $needDelIds = array_diff($kaelIds,$validKaelIds);
         $needReIds = array_intersect($kaelIdsDels,$validKaelIds);
         foreach ($needDelIds as $delId) {
