@@ -51,7 +51,7 @@ class ZzlController extends Controller
                 $retJson = ZzlApi::orderList($day);
                 $columns = [];
                 $rows = [];
-                $kaelIdToDepartmentId = array_column(DingtalkUser::findList([], '', 'kael_id,department_id',-1), 'department_id', 'kael_id');
+                $kaelIdToDepartmentId = array_column(DingtalkUser::findList(['corp_type' => 1], '', 'kael_id,department_id',-1), 'department_id', 'kael_id');
                 $departmentIdToInfo = array_column(DingtalkDepartment::findList([], '', 'id,name,subroot_id', -1), null, 'id');
                 $departmentIdToInfo[1] = ['id' => 1, 'name' => '小盒科技', 'subroot_id' => 1];
                 if (!empty($retJson['data'])) {
@@ -90,9 +90,8 @@ class ZzlController extends Controller
             }
         }
     }
-
     /**
-     * 修复竹蒸笼订餐数据( 去除status=2 取消的订单)
+     * 修复美餐数据中企业在小盒兼职中的数据
      */
     public  function actionRepairTmp(){
         if(exec('ps -ef|grep "zzl/repair-tmp"|grep -v grep | grep -v cd | grep -v "/bin/sh"  |wc -l') > 1){
@@ -101,43 +100,16 @@ class ZzlController extends Controller
         }
         $columns = [];
         $rows = [];
-        $oldDingcanOrder = DingcanOrder::findList(['supplier' => 2], 'id');
+        $oldDingcanOrder = DingcanOrder::findList(['id'=>[9983,12430,12668]]);
+
         foreach ($oldDingcanOrder as $val) {
-            $order_ext = json_decode($val['order_ext'], true);
-            if ($order_ext['status'] == 2) {
-                $tmp = $val;
-                $tmp['status'] = 1;
-                empty($columns) && $columns = array_keys($tmp);
-                $rows[] = array_values($tmp);
-
-
-            }
-        }
-        if(empty($rows)){
-            echo date('Y-m-d H:i:s')."\t数据正常kael\n";
+            $tmp = $val;
+            $tmp['dingtalk_department_id'] = 55223488;
+            $tmp['dingtalk_subroot_id'] = 55092607;
+            empty($columns) && $columns = array_keys($tmp);
+            $rows[] = array_values($tmp);
         }
         DingcanOrder::addUpdateColumnRows($columns, $rows);
         echo date('Y-m-d H:i:s')."\t完毕1kael\n";
-
-        $columns2 = [];
-        $rows2 = [];
-        $oldDingcanOrderException = DingcanOrderException::findList(['supplier' => 2], 'id');
-        foreach ($oldDingcanOrderException as $val) {
-            $order_ext = json_decode($val['order_ext'], true);
-            if ($order_ext['status'] == 2) {
-                $tmp = $val;
-                $tmp['status'] = 1;
-                empty($columns2) && $columns2 = array_keys($tmp);
-                $rows2[] = array_values($tmp);
-
-
-            }
-        }
-        if(empty($rows2)){
-            echo date('Y-m-d H:i:s')."\t数据正常kael\n";
-        }
-        DingcanOrderException::addUpdateColumnRows($columns2, $rows2);
-        echo date('Y-m-d H:i:s') . "\t完毕2kael\n";
     }
-
 }

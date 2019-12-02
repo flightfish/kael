@@ -14,6 +14,10 @@ return [
     ],//公司ip
 
     'proxy_dingtalk_jianzhi' => ['106.75.87.8','8888'],
+
     'io_url'=>'https://qa4-ioweblive.knowbox.cn',//qa
     'boss_url'=>'https://qa4-bslive.knowbox.cn',
+
+    'boss_id'=>50004,
+
 ];

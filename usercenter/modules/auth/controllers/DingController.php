@@ -2,6 +2,7 @@
 namespace usercenter\modules\auth\controllers;
 
 use common\models\DingtalkDepartment;
+use common\models\DingtalkDepartmentUser;
 use common\models\DingtalkUser;
 use usercenter\components\exception\Exception;
 use usercenter\modules\auth\models\Api;
@@ -163,6 +164,48 @@ class DingController extends BaseController
                 $subId[] = intval($id);
             }
             return $this->success(['subid'=>$subId]);
+        }catch (\Exception $exception){
+            return $this->error($exception);
+        }
+
+    }
+
+
+    public function actionDeptIdAllByKael(){
+        try{
+            $kaelId = \Yii::$app->request->post('kael_id',0);
+            if(empty($kaelId) || !is_numeric($kaelId)){
+                throw new Exception("参数错误");
+            }
+
+            $deptIds = [];
+            $departmentList = DingtalkDepartmentUser::findList(['kael_id'=>$kaelId],'','department_id,corp_type');
+            foreach ($departmentList as $v){
+                if($v['department_id'] == 1){
+                    $deptIds[] = intval($v['corp_type']);
+                }else{
+                    $deptIds[] = intval($v['department_id']);
+                }
+            }
+            $deptIds = array_values(array_unique($deptIds));
+            if(count($deptIds) == 0){
+                $departmentIdsInPath = [];
+            }elseif(count($deptIds) == 1){
+                $departmentIdsInPath = DingtalkDepartment::findListByWhereAndWhereArr([],[['like','path_id',"|{$deptIds[0]}|"]],'id');
+            }else{
+                $likesWhere = ['or'];
+                foreach ($deptIds as $likeDeptId){
+                    $likesWhere[] = ['like','path_id',"|{$likeDeptId}|"];
+                }
+                $departmentIdsInPath = DingtalkDepartment::findListByWhereAndWhereArr([],[$likesWhere],'id');
+            }
+
+            $allDeptIds = array_map(function($v){
+                return intval($v['id']);
+            },$departmentIdsInPath);
+            $rootIds = array_intersect([1,2],$deptIds);
+            $allDeptIds = array_merge($rootIds,$allDeptIds);
+            return $this->success(['dept_id_all'=>$allDeptIds]);
         }catch (\Exception $exception){
             return $this->error($exception);
         }
