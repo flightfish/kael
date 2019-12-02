@@ -332,7 +332,7 @@ SQL;
             ->asArray(true)
             ->column();
         $kaelIds = array_values(array_unique($kaelIds));
-        $kaelIdsDels = array_values(array_unique($kaelIdsDels));
+        $kaelIdsDels = array_values(array_unique(array_diff($kaelIdsDels,$kaelIds)));
         $validKaelIds = CommonUser::find()
             ->select('id')
             ->where(['status'=>0])
@@ -341,10 +341,12 @@ SQL;
         $needDelIds = array_diff($kaelIds,$validKaelIds);
         $needReIds = array_intersect($kaelIdsDels,$validKaelIds);
         foreach ($needDelIds as $delId) {
-            BossApi::employeeUpdateJobStatus($delId,2);
+            echo "del: $delId\n";
+       //     BossApi::employeeUpdateJobStatus($delId,2);
         }
         foreach ($needReIds as $reId){
-            BossApi::employeeUpdateJobStatus($reId,1);
+            echo "re: $reId\n";
+        //    BossApi::employeeUpdateJobStatus($reId,1);
         }
     }
 }
